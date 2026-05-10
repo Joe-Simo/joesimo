@@ -1,150 +1,227 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  AppWindow,
-  BookOpen,
-  BriefcaseBusiness,
-  Camera,
-  GitBranch,
-  Layers3,
-  Mail,
-  Palette,
-  PencilLine,
-  Rocket,
-  Video,
-  X,
-} from "lucide-react";
+export type IconKey =
+  | "appWindow"
+  | "arrowUpRight"
+  | "bookOpen"
+  | "briefcase"
+  | "camera"
+  | "code"
+  | "github"
+  | "home"
+  | "linkedin"
+  | "mail"
+  | "menu"
+  | "palette"
+  | "video"
+  | "x";
 
-export type NavItem = {
+export type AccentKey = "ink" | "signal" | "green" | "red";
+
+export type SiteNodeId =
+  | "home"
+  | "work"
+  | "apps"
+  | "design"
+  | "writing"
+  | "links"
+  | "contact";
+
+export type SiteRecordKind = "origin" | "shelf" | "profile" | "contact";
+
+export type SiteAction = {
   label: string;
   href: string;
+  external?: boolean;
 };
 
-export type Channel = {
+export type SiteRecord = {
+  id: SiteNodeId;
+  label: string;
+  kind: SiteRecordKind;
+  status: string;
+  primaryAction: SiteAction;
+  secondaryAction?: SiteAction;
+  iconKey: IconKey;
+  accent: AccentKey;
+  sectionAnchor: `#${string}`;
+  externalUrl?: string;
+  canvas: {
+    x: number;
+    y: number;
+    animated?: boolean;
+  };
+};
+
+export type SocialChannel = {
   label: string;
   handle: string;
   href: string;
-  icon: LucideIcon;
+  iconKey: IconKey;
   description: string;
 };
 
-export type PortfolioArea = {
-  value: string;
-  label: string;
-  title: string;
-  description: string;
-  href: string;
-  icon: LucideIcon;
-  action: string;
+export const heroCopy = {
+  title: "Joe Simo",
+  intro: "I build web things with a bias for sharp interfaces.",
+  detail:
+    "This is the front door for code, apps, notes, design pieces, and a direct way to reach me.",
 };
 
-export const navItems: NavItem[] = [
-  { label: "Work", href: "#work" },
-  { label: "Apps", href: "#apps" },
-  { label: "Design", href: "#design" },
-  { label: "Blog", href: "/blog" },
-];
-
-export const channels: Channel[] = [
+export const socialChannels: SocialChannel[] = [
   {
     label: "GitHub",
     handle: "@joe-simo",
     href: "https://github.com/joe-simo",
-    icon: GitBranch,
-    description: "Code, repos, and public build history.",
+    iconKey: "github",
+    description: "Code and public build history.",
   },
   {
     label: "X",
     handle: "@joesimo",
     href: "https://x.com/joesimo",
-    icon: X,
-    description: "Short notes, links, and shipping updates.",
+    iconKey: "x",
+    description: "Short notes and links.",
   },
   {
     label: "Instagram",
     handle: "@joesimo_",
     href: "https://www.instagram.com/joesimo_/",
-    icon: Camera,
-    description: "Design details and workbench snapshots.",
+    iconKey: "camera",
+    description: "Visual notes.",
   },
   {
     label: "LinkedIn",
     handle: "josephsimo",
     href: "https://www.linkedin.com/in/josephsimo/",
-    icon: BriefcaseBusiness,
-    description: "Professional profile and work background.",
+    iconKey: "linkedin",
+    description: "Professional profile.",
   },
   {
     label: "YouTube",
     handle: "@jos007",
     href: "https://www.youtube.com/@jos007",
-    icon: Video,
-    description: "Videos, demos, and whatever makes it to camera.",
+    iconKey: "video",
+    description: "Videos and demos.",
+  },
+  {
+    label: "Email",
+    handle: "hello@joesimo.com",
+    href: "mailto:hello@joesimo.com",
+    iconKey: "mail",
+    description: "Direct contact.",
   },
 ];
 
-export const portfolioAreas: PortfolioArea[] = [
+const githubChannel = socialChannels[0];
+const instagramChannel = socialChannels[2];
+const xChannel = socialChannels[1];
+
+export const siteRecords: SiteRecord[] = [
   {
-    value: "work",
+    id: "home",
+    label: "Joe",
+    kind: "origin",
+    status: "Web things, interface systems, and personal notes.",
+    primaryAction: { label: "View links", href: "#links" },
+    secondaryAction: { label: "Email", href: "mailto:hello@joesimo.com" },
+    iconKey: "home",
+    accent: "ink",
+    sectionAnchor: "#top",
+    canvas: { x: 360, y: 250 },
+  },
+  {
+    id: "work",
     label: "Work",
-    title: "Selected work",
-    description:
-      "A home for real case studies, launches, and product decisions once the public pieces are ready.",
-    href: "#work",
-    icon: Rocket,
-    action: "Open work",
+    kind: "shelf",
+    status: "Public case studies are kept private until they are ready.",
+    primaryAction: { label: "Email for work", href: "mailto:hello@joesimo.com" },
+    secondaryAction: { label: "Section", href: "#work" },
+    iconKey: "briefcase",
+    accent: "signal",
+    sectionAnchor: "#work",
+    canvas: { x: 34, y: 108 },
   },
   {
-    value: "apps",
+    id: "apps",
     label: "Apps",
-    title: "App index",
-    description:
-      "A clean index for current and past apps without inflated metrics or placeholder products.",
-    href: "#apps",
-    icon: AppWindow,
-    action: "View apps",
+    kind: "shelf",
+    status: "Public app work is easiest to follow through GitHub.",
+    primaryAction: {
+      label: "View GitHub",
+      href: githubChannel.href,
+      external: true,
+    },
+    secondaryAction: { label: "Section", href: "#apps" },
+    iconKey: "appWindow",
+    accent: "green",
+    sectionAnchor: "#apps",
+    externalUrl: githubChannel.href,
+    canvas: { x: 80, y: 430, animated: true },
   },
   {
-    value: "design",
+    id: "design",
     label: "Design",
-    title: "Design archive",
-    description:
-      "Interface systems, prototypes, visual explorations, and the small details behind them.",
-    href: "#design",
-    icon: Palette,
-    action: "See designs",
+    kind: "shelf",
+    status: "Visual notes and interface fragments show up when they are public.",
+    primaryAction: {
+      label: "View Instagram",
+      href: instagramChannel.href,
+      external: true,
+    },
+    secondaryAction: { label: "Section", href: "#design" },
+    iconKey: "palette",
+    accent: "red",
+    sectionAnchor: "#design",
+    externalUrl: instagramChannel.href,
+    canvas: { x: 686, y: 96 },
   },
   {
-    value: "blog",
-    label: "Blog",
-    title: "Writing desk",
-    description:
-      "A blog route is wired in for essays, build notes, and personal field reports when posts are published.",
-    href: "/blog",
-    icon: BookOpen,
-    action: "Read blog",
+    id: "writing",
+    label: "Writing",
+    kind: "shelf",
+    status: "No public writing here yet.",
+    primaryAction: { label: "Open writing", href: "/blog" },
+    secondaryAction: { label: "Follow notes", href: xChannel.href, external: true },
+    iconKey: "bookOpen",
+    accent: "ink",
+    sectionAnchor: "#writing",
+    canvas: { x: 732, y: 412 },
+  },
+  {
+    id: "links",
+    label: "Links",
+    kind: "profile",
+    status: "GitHub, X, Instagram, LinkedIn, YouTube, and email.",
+    primaryAction: { label: "View links", href: "#links" },
+    secondaryAction: { label: "Email", href: "mailto:hello@joesimo.com" },
+    iconKey: "arrowUpRight",
+    accent: "signal",
+    sectionAnchor: "#links",
+    canvas: { x: 362, y: 584, animated: true },
+  },
+  {
+    id: "contact",
+    label: "Contact",
+    kind: "contact",
+    status: "Send a direct note about work, apps, or a useful introduction.",
+    primaryAction: { label: "Email", href: "mailto:hello@joesimo.com" },
+    iconKey: "mail",
+    accent: "green",
+    sectionAnchor: "#contact",
+    canvas: { x: 372, y: -34 },
   },
 ];
 
-export const workPrinciples = [
-  {
-    title: "Minimal surface",
-    body: "Fewer sections, clearer decisions, and enough whitespace for the work to breathe.",
-    icon: Layers3,
-  },
-  {
-    title: "Real content only",
-    body: "No invented apps, fake post dates, or vanity metrics. Empty states stay honest until content exists.",
-    icon: PencilLine,
-  },
-  {
-    title: "Quiet interaction",
-    body: "Micro-interactions support discovery without turning the portfolio into a carnival.",
-    icon: AppWindow,
-  },
-];
+export const shelfRecords = siteRecords.filter(
+  (record): record is SiteRecord & { kind: "shelf" } =>
+    record.kind === "shelf",
+);
 
-export const contactLink = {
-  label: "Get in touch",
-  href: "mailto:hello@joesimo.com",
-  icon: Mail,
-};
+export const navItems = [
+  { label: "Work", href: "#work" },
+  { label: "Apps", href: "#apps" },
+  { label: "Writing", href: "#writing" },
+  { label: "Links", href: "#links" },
+  { label: "Contact", href: "#contact" },
+] as const;
+
+export const contactLink = socialChannels[5];

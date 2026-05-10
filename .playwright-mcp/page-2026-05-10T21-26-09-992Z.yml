@@ -1,0 +1,244 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7]:
+      - img [ref=e8]
+    - generic [ref=e11]:
+      - button "Open issues overlay" [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: "1"
+          - generic [ref=e15]: "2"
+        - generic [ref=e16]:
+          - text: Issue
+          - generic [ref=e17]: s
+      - button "Collapse issues badge" [ref=e18]:
+        - img [ref=e19]
+  - generic [ref=e21]:
+    - banner [ref=e22]:
+      - generic [ref=e23]:
+        - link "joesimo.com" [ref=e24] [cursor=pointer]:
+          - /url: "#"
+        - navigation "Profile links" [ref=e25]:
+          - link "GitHub" [ref=e26] [cursor=pointer]:
+            - /url: https://github.com/joe-simo
+          - link "X" [ref=e27] [cursor=pointer]:
+            - /url: https://x.com/joesimo
+          - link "Instagram" [ref=e28] [cursor=pointer]:
+            - /url: https://www.instagram.com/joesimo_/
+          - link "LinkedIn" [ref=e29] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/josephsimo/
+          - link "YouTube" [ref=e30] [cursor=pointer]:
+            - /url: https://www.youtube.com/@jos007
+        - generic [ref=e31]:
+          - 'button "Theme: Dark" [ref=e32]':
+            - img
+            - generic [ref=e33]: Theme
+          - button "Email" [ref=e34] [cursor=pointer]:
+            - img
+            - text: Email
+    - main [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - paragraph [ref=e39]: joesimo.com
+            - heading "Joe Simo" [level=1] [ref=e40]
+            - paragraph [ref=e41]: I build web things and keep this as the front door.
+            - paragraph [ref=e42]: If you're looking for me, the useful links are here. Work, apps, notes, and design pieces will show up when they're public.
+          - generic [ref=e43]:
+            - button "GitHub" [ref=e44] [cursor=pointer]:
+              - img
+              - text: GitHub
+            - button "Email" [ref=e45] [cursor=pointer]:
+              - img
+              - text: Email
+        - application [ref=e48]:
+          - generic [ref=e50]:
+            - generic:
+              - generic:
+                - img
+                - img:
+                  - img "Edge from home to work" [ref=e51] [cursor=pointer]
+                - img:
+                  - img "Edge from home to apps" [ref=e54] [cursor=pointer]
+                - img:
+                  - img "Edge from home to design" [ref=e57] [cursor=pointer]
+                - img:
+                  - img "Edge from home to writing" [ref=e60] [cursor=pointer]
+                - img:
+                  - img "Edge from home to links" [ref=e63] [cursor=pointer]
+              - generic:
+                - group [ref=e66]:
+                  - generic [ref=e67]:
+                    - generic [ref=e70]:
+                      - img [ref=e72]
+                      - generic [ref=e75]: Home
+                    - generic [ref=e76]:
+                      - heading "Joe Simo" [level=2] [ref=e77]
+                      - paragraph [ref=e78]: Front door for web things, notes, and links.
+                    - link "Open" [ref=e79] [cursor=pointer]:
+                      - /url: "#"
+                      - text: Open
+                      - img [ref=e80]
+                - group [ref=e83]:
+                  - generic [ref=e84]:
+                    - generic [ref=e87]:
+                      - img [ref=e89]
+                      - generic [ref=e93]: Work
+                    - generic [ref=e94]:
+                      - heading "Work" [level=2] [ref=e95]
+                      - paragraph [ref=e96]: No public case studies yet.
+                    - link "Open" [ref=e97] [cursor=pointer]:
+                      - /url: "#work"
+                      - text: Open
+                      - img [ref=e98]
+                - group [ref=e101]:
+                  - generic [ref=e102]:
+                    - generic [ref=e105]:
+                      - img [ref=e107]
+                      - generic [ref=e109]: Apps
+                    - generic [ref=e110]:
+                      - heading "Apps" [level=2] [ref=e111]
+                      - paragraph [ref=e112]: GitHub is the best place for code right now.
+                    - link "Open" [ref=e113] [cursor=pointer]:
+                      - /url: "#apps"
+                      - text: Open
+                      - img [ref=e114]
+                - group [ref=e117]:
+                  - generic [ref=e118]:
+                    - generic [ref=e121]:
+                      - img [ref=e123]
+                      - generic [ref=e129]: Design
+                    - generic [ref=e130]:
+                      - heading "Design" [level=2] [ref=e131]
+                      - paragraph [ref=e132]: Visual notes will probably show up on Instagram first.
+                    - link "Open" [ref=e133] [cursor=pointer]:
+                      - /url: "#design"
+                      - text: Open
+                      - img [ref=e134]
+                - group [ref=e137]:
+                  - generic [ref=e138]:
+                    - generic [ref=e141]:
+                      - img [ref=e143]
+                      - generic [ref=e145]: Writing
+                    - generic [ref=e146]:
+                      - heading "Writing" [level=2] [ref=e147]
+                      - paragraph [ref=e148]: No posts yet.
+                    - link "Open" [ref=e149] [cursor=pointer]:
+                      - /url: /blog
+                      - text: Open
+                      - img [ref=e150]
+                - group [ref=e153]:
+                  - generic [ref=e154]:
+                    - generic [ref=e157]:
+                      - img [ref=e159]
+                      - generic [ref=e162]: Links
+                    - generic [ref=e163]:
+                      - heading "Links" [level=2] [ref=e164]
+                      - paragraph [ref=e165]: GitHub, X, Instagram, LinkedIn, YouTube, email.
+                    - link "Open" [ref=e166] [cursor=pointer]:
+                      - /url: "#links"
+                      - text: Open
+                      - img [ref=e167]
+          - img
+          - generic [ref=e170]:
+            - button "Reset" [ref=e171]
+            - button "Work" [ref=e172]
+            - button "Apps" [ref=e173]
+            - button "Design" [ref=e174]
+            - button "Writing" [ref=e175]
+            - button "Links" [ref=e176]
+          - generic "Control Panel" [ref=e177]:
+            - button "Zoom In" [ref=e178] [cursor=pointer]:
+              - img [ref=e179]
+            - button "Zoom Out" [ref=e181] [cursor=pointer]:
+              - img [ref=e182]
+            - button "Fit View" [ref=e184] [cursor=pointer]:
+              - img [ref=e185]
+      - generic [ref=e188]:
+        - generic [ref=e189]:
+          - generic [ref=e190]:
+            - paragraph [ref=e191]: Direct links
+            - heading "Links" [level=2] [ref=e192]
+          - paragraph [ref=e193]: Useful exits, kept in one place.
+        - generic [ref=e194]:
+          - link "GitHub @joe-simo Code" [ref=e195] [cursor=pointer]:
+            - /url: https://github.com/joe-simo
+            - img [ref=e197]
+            - generic [ref=e201]:
+              - generic [ref=e202]: GitHub
+              - generic [ref=e203]: "@joe-simo"
+              - generic [ref=e204]: Code
+            - img [ref=e205]
+          - link "X @joesimo Updates" [ref=e208] [cursor=pointer]:
+            - /url: https://x.com/joesimo
+            - img [ref=e210]
+            - generic [ref=e213]:
+              - generic [ref=e214]: X
+              - generic [ref=e215]: "@joesimo"
+              - generic [ref=e216]: Updates
+            - img [ref=e217]
+          - link "Instagram @joesimo_ Visual notes" [ref=e220] [cursor=pointer]:
+            - /url: https://www.instagram.com/joesimo_/
+            - img [ref=e222]
+            - generic [ref=e225]:
+              - generic [ref=e226]: Instagram
+              - generic [ref=e227]: "@joesimo_"
+              - generic [ref=e228]: Visual notes
+            - img [ref=e229]
+          - link "LinkedIn josephsimo Profile" [ref=e232] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/josephsimo/
+            - img [ref=e234]
+            - generic [ref=e238]:
+              - generic [ref=e239]: LinkedIn
+              - generic [ref=e240]: josephsimo
+              - generic [ref=e241]: Profile
+            - img [ref=e242]
+          - link "YouTube @jos007 Videos" [ref=e245] [cursor=pointer]:
+            - /url: https://www.youtube.com/@jos007
+            - img [ref=e247]
+            - generic [ref=e250]:
+              - generic [ref=e251]: YouTube
+              - generic [ref=e252]: "@jos007"
+              - generic [ref=e253]: Videos
+            - img [ref=e254]
+          - link "Email hello@joesimo.com Direct" [ref=e257] [cursor=pointer]:
+            - /url: mailto:hello@joesimo.com
+            - img [ref=e259]
+            - generic [ref=e262]:
+              - generic [ref=e263]: Email
+              - generic [ref=e264]: hello@joesimo.com
+              - generic [ref=e265]: Direct
+            - img [ref=e266]
+      - generic [ref=e269]:
+        - generic [ref=e270]:
+          - generic [ref=e271]:
+            - paragraph [ref=e272]: Public shelves
+            - heading "Work, apps, design, writing" [level=2] [ref=e273]
+          - paragraph [ref=e274]: Empty shelves stay quiet until there is something public to point at.
+        - generic [ref=e275]:
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - img [ref=e279]
+              - heading "Work" [level=3] [ref=e283]
+            - paragraph [ref=e284]: No public case studies yet.
+          - generic [ref=e285]:
+            - generic [ref=e286]:
+              - img [ref=e288]
+              - heading "Apps" [level=3] [ref=e290]
+            - paragraph [ref=e291]: GitHub is the best place for code right now.
+          - generic [ref=e292]:
+            - generic [ref=e293]:
+              - img [ref=e295]
+              - heading "Design" [level=3] [ref=e301]
+            - paragraph [ref=e302]: Visual notes will probably show up on Instagram first.
+          - generic [ref=e303]:
+            - generic [ref=e304]:
+              - img [ref=e306]
+              - heading "Writing" [level=3] [ref=e308]
+            - paragraph [ref=e309]: No posts yet.
+    - contentinfo [ref=e310]:
+      - separator [ref=e311]
+      - generic [ref=e312]:
+        - link "Joe Simo" [ref=e313] [cursor=pointer]:
+          - /url: "#"
+        - paragraph [ref=e314]: joesimo.com
+  - alert [ref=e315]

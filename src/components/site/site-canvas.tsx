@@ -1,194 +1,76 @@
-"use client";
-
-import { useMemo } from "react";
-import {
-  Background,
-  BackgroundVariant,
-  Controls,
-  Handle,
-  MarkerType,
-  Position,
-  ReactFlow,
-  useEdgesState,
-  useNodesState,
-  type Edge,
-  type Node,
-  type NodeProps,
-} from "@xyflow/react";
-import { ArrowUpRight, Home, type LucideIcon } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { portfolioAreas } from "@/lib/site-data";
+import { SiteCanvasDesktopLoader } from "@/components/site/site-canvas-desktop-loader";
+import { SiteIcon } from "@/components/site/site-icons";
+import { siteRecords } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-type SiteNodeData = {
-  label: string;
-  title: string;
-  description: string;
-  href: string;
-  icon: LucideIcon;
-  accent: "blue" | "red" | "ink";
-};
+const accentClasses = {
+  ink: "border-foreground/45 text-foreground",
+  signal: "border-[var(--workbench-accent)]/70 text-[var(--workbench-accent)]",
+  green: "border-[var(--workbench-green)]/70 text-[var(--workbench-green)]",
+  red: "border-[var(--workbench-red)]/70 text-[var(--workbench-red)]",
+} as const;
 
-type SiteNode = Node<SiteNodeData, "site">;
-
-const accentClasses: Record<SiteNodeData["accent"], string> = {
-  blue: "border-[var(--accent-blue)]/60 text-[var(--accent-blue)]",
-  red: "border-[var(--accent-red)]/60 text-[var(--accent-red)]",
-  ink: "border-foreground/40 text-foreground",
-};
-
-const initialNodes: SiteNode[] = [
-  {
-    id: "home",
-    type: "site",
-    position: { x: 238, y: 156 },
-    data: {
-      label: "Home",
-      title: "Joe Simo",
-      description: "The center of the site: work, apps, design, writing.",
-      href: "#",
-      icon: Home,
-      accent: "ink",
-    },
-  },
-  ...portfolioAreas.map((area, index): SiteNode => {
-    const positions = [
-      { x: 8, y: 48 },
-      { x: 8, y: 286 },
-      { x: 472, y: 48 },
-      { x: 472, y: 286 },
-    ];
-
-    return {
-      id: area.value,
-      type: "site",
-      position: positions[index],
-      data: {
-        label: area.label,
-        title: area.title,
-        description: area.description,
-        href: area.href,
-        icon: area.icon,
-        accent: index % 2 === 0 ? "blue" : "red",
-      },
-    };
-  }),
-];
-
-const initialEdges: Edge[] = portfolioAreas.map((area, index) => ({
-  id: `home-${area.value}`,
-  source: "home",
-  target: area.value,
-  type: "smoothstep",
-  animated: index === 1,
-  markerEnd: {
-    type: MarkerType.ArrowClosed,
-    color: "var(--foreground)",
-  },
-  style: {
-    stroke: "var(--foreground)",
-    strokeOpacity: 0.28,
-    strokeWidth: 1.4,
-  },
-}));
-
-function SiteCanvasNode({ data, selected }: NodeProps<SiteNode>) {
-  const Icon = data.icon;
-
+export function SiteCanvas() {
   return (
-    <div
-      className={cn(
-        "group w-56 rounded-lg border bg-background p-4 shadow-sm transition duration-300",
-        "hover:-translate-y-0.5 hover:shadow-md",
-        selected ? "border-foreground shadow-md" : "border-border",
-      )}
-    >
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="!size-2 !border-background !bg-foreground"
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="!size-2 !border-background !bg-foreground"
-      />
-
-      <div className="flex items-start justify-between gap-3">
-        <span
-          className={cn(
-            "grid size-9 place-items-center rounded-lg border",
-            accentClasses[data.accent],
-          )}
-        >
-          <Icon className="size-4" aria-hidden="true" />
-        </span>
-        <span className="font-mono text-xs text-muted-foreground">
-          {data.label}
-        </span>
-      </div>
-
-      <div className="mt-5 flex flex-col gap-2">
-        <h2 className="text-xl font-semibold tracking-normal">{data.title}</h2>
-        <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
-          {data.description}
-        </p>
-      </div>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        render={<a href={data.href} className="nodrag mt-4 w-fit" />}
-        nativeButton={false}
-      >
-        Open
-        <ArrowUpRight data-icon="inline-end" />
-      </Button>
-    </div>
+    <>
+      <SiteCanvasMobile />
+      <SiteCanvasDesktopLoader />
+    </>
   );
 }
 
-export function SiteCanvas() {
-  const nodeTypes = useMemo(() => ({ site: SiteCanvasNode }), []);
-  const [nodes, , onNodesChange] = useNodesState<SiteNode>(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState<Edge>(initialEdges);
+function SiteCanvasMobile() {
+  const records = siteRecords.filter((record) => record.id !== "home");
 
   return (
-    <div className="site-flow relative h-[500px] overflow-hidden rounded-lg border border-border bg-muted/20">
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-lg border border-border bg-background/90 px-3 py-2 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
-        HTML-on-canvas workbench
+    <div
+      className="overflow-hidden rounded-[1.25rem] border border-border bg-background md:hidden"
+      aria-label="Joe Simo operating map"
+    >
+      <div className="relative min-h-36 border-b border-border p-4">
+        <div className="absolute left-8 right-8 top-1/2 h-px bg-border" />
+        <div className="relative mx-auto grid size-24 place-items-center rounded-full border border-foreground/30 bg-background shadow-[0_18px_60px_oklch(0.145_0_0_/_0.08)]">
+          <span className="font-pixel text-[10px] uppercase text-muted-foreground">
+            Joe Simo
+          </span>
+        </div>
       </div>
-      <ReactFlow<SiteNode, Edge>
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        fitView
-        fitViewOptions={{ padding: 0.18 }}
-        minZoom={0.32}
-        maxZoom={1.4}
-        nodesConnectable={false}
-        edgesFocusable={false}
-        panOnScroll
-        zoomOnScroll={false}
-        zoomOnDoubleClick={false}
-        proOptions={{ hideAttribution: true }}
-        colorMode="light"
-      >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={22}
-          size={1}
-          color="oklch(0.145 0 0 / 0.22)"
-        />
-        <Controls
-          position="bottom-right"
-          showInteractive={false}
-          orientation="horizontal"
-        />
-      </ReactFlow>
+
+      <div className="flex snap-x gap-3 overflow-x-auto p-4">
+        {records.map((record) => (
+          <a
+            key={record.id}
+            href={record.primaryAction.href}
+            target={record.primaryAction.external ? "_blank" : undefined}
+            rel={record.primaryAction.external ? "noreferrer" : undefined}
+            className="group grid min-w-[76%] snap-start gap-4 rounded-lg border border-border bg-background p-4 outline-none transition hover:-translate-y-0.5 hover:border-foreground/35 focus-visible:border-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
+          >
+            <span className="flex items-start justify-between gap-4">
+              <span
+                className={cn(
+                  "grid size-9 place-items-center rounded-md border",
+                  accentClasses[record.accent],
+                )}
+              >
+                <SiteIcon iconKey={record.iconKey} aria-hidden />
+              </span>
+              <span className="font-mono text-[11px] uppercase text-muted-foreground">
+                {record.kind === "shelf" ? "area" : record.kind}
+              </span>
+            </span>
+            <span className="grid gap-1">
+              <span className="text-lg font-medium">{record.label}</span>
+              <span className="text-sm leading-6 text-muted-foreground">
+                {record.status}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase text-muted-foreground transition group-hover:text-foreground">
+              {record.primaryAction.label}
+              <SiteIcon iconKey="arrowUpRight" aria-hidden />
+            </span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

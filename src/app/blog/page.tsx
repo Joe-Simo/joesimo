@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, PencilLine } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Writing from Joe Simo.",
+  title: "Writing status",
+  description: "Current writing status from Joe Simo.",
 };
 
 export default function BlogPage() {
   return (
     <main className="min-h-screen bg-background px-5 py-8 text-foreground sm:px-8 lg:px-10">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-10">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
         <Button
           variant="ghost"
           render={<Link href="/" />}
@@ -25,31 +24,28 @@ export default function BlogPage() {
         </Button>
 
         <section className="flex flex-col gap-5">
+          <p className="font-pixel text-xs uppercase text-muted-foreground">
+            joesimo.com
+          </p>
           <h1 className="text-5xl font-semibold leading-none tracking-normal sm:text-6xl">
-            Blog.
+            Writing status
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-            The route is ready for real posts. I did not add placeholder
-            articles, fake dates, or sample reading times.
+            I have not published any writing here yet.
           </p>
         </section>
 
-        <Card className="rounded-lg border-foreground/10 bg-muted/20 shadow-none">
-          <CardHeader>
-            <span className="grid size-10 place-items-center rounded-lg border border-border bg-background">
-              <PencilLine className="size-4" aria-hidden="true" />
-            </span>
-            <CardTitle className="text-2xl font-semibold tracking-normal">
-              No published posts yet.
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-6 text-muted-foreground">
-              When real writing exists, this page can render posts from MDX,
-              a CMS, or a typed local content collection.
-            </p>
-          </CardContent>
-        </Card>
+        <section className="grid gap-4 border-t border-border pt-6 text-sm leading-6 text-muted-foreground sm:grid-cols-[9rem_1fr]">
+          <h2 className="font-pixel text-xs uppercase text-foreground">
+            Status
+          </h2>
+          <p>No published writing yet.</p>
+
+          <h2 className="font-pixel text-xs uppercase text-foreground">
+            Next
+          </h2>
+          <p>I will add work here only when it is ready to stand on its own.</p>
+        </section>
       </div>
     </main>
   );

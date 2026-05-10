@@ -1,47 +1,38 @@
-import { ArrowUpRight } from "lucide-react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { channels } from "@/lib/site-data";
+import { SiteIcon } from "@/components/site/site-icons";
+import { socialChannels } from "@/lib/site-data";
 
 export function SocialLinks() {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {channels.map((channel) => {
-        const Icon = channel.icon;
+    <div className="grid border-y border-border sm:grid-cols-2 lg:grid-cols-3 lg:border-x">
+      {socialChannels.map((channel) => (
+        <a
+          key={channel.label}
+          href={channel.href}
+          target={channel.href.startsWith("mailto:") ? undefined : "_blank"}
+          rel={channel.href.startsWith("mailto:") ? undefined : "noreferrer"}
+          className="group grid min-h-32 grid-cols-[auto_1fr_auto] items-start gap-3 border-b border-border p-4 outline-none transition hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/30 last:border-b-0 sm:[&:nth-child(2n)]:border-l lg:border-b-0 lg:border-l lg:[&:nth-child(3n+1)]:border-l-0 lg:[&:nth-child(n+4)]:border-t"
+        >
+          <span className="grid size-9 place-items-center rounded-md border border-border bg-background text-foreground transition group-hover:border-foreground/35">
+            <SiteIcon iconKey={channel.iconKey} aria-hidden />
+          </span>
 
-        return (
-          <a
-            key={channel.label}
-            href={channel.href}
-            target="_blank"
-            rel="noreferrer"
-            className="group outline-none"
-          >
-            <Card className="h-full rounded-lg border-foreground/10 bg-background shadow-none transition duration-300 group-hover:-translate-y-0.5 group-hover:border-foreground/30 group-focus-visible:ring-3 group-focus-visible:ring-ring/50">
-              <CardHeader className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
-                <span className="grid size-9 place-items-center rounded-lg border border-border text-foreground">
-                  <Icon className="size-4" aria-hidden="true" />
-                </span>
-                <div className="min-w-0">
-                  <CardTitle className="text-base">{channel.label}</CardTitle>
-                  <p className="truncate font-mono text-xs text-muted-foreground">
-                    {channel.handle}
-                  </p>
-                </div>
-                <ArrowUpRight
-                  className="size-4 text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
-                  aria-hidden="true"
-                />
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {channel.description}
-                </p>
-              </CardContent>
-            </Card>
-          </a>
-        );
-      })}
+          <span className="min-w-0">
+            <span className="block text-sm font-medium">{channel.label}</span>
+            <span className="block truncate font-mono text-xs text-muted-foreground">
+              {channel.handle}
+            </span>
+            <span className="mt-3 block text-sm text-muted-foreground">
+              {channel.description}
+            </span>
+          </span>
+
+          <SiteIcon
+            iconKey="arrowUpRight"
+            className="text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+            aria-hidden
+          />
+        </a>
+      ))}
     </div>
   );
 }

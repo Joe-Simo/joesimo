@@ -1,0 +1,221 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "joesimo.com" [ref=e5] [cursor=pointer]:
+          - /url: "#top"
+        - generic [ref=e6]:
+          - 'button "Theme: Light" [ref=e7]':
+            - img
+            - generic [ref=e8]: Theme
+          - navigation "Mobile navigation" [ref=e9]:
+            - button "Open navigation menu" [ref=e10]:
+              - img
+    - main [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - paragraph [ref=e15]: operating map
+            - heading "Joe Simo" [level=1] [ref=e16]
+            - paragraph [ref=e17]: I build web things with a bias for sharp interfaces.
+            - paragraph [ref=e18]: This is the front door for code, apps, notes, design pieces, and a direct way to reach me.
+          - generic [ref=e19]:
+            - button "GitHub" [ref=e20] [cursor=pointer]:
+              - img
+              - text: GitHub
+            - button "Links" [ref=e21] [cursor=pointer]:
+              - img
+              - text: Links
+        - generic "Joe Simo operating map" [ref=e23]:
+          - generic [ref=e27]: Joe Simo
+          - generic [ref=e28]:
+            - link "area Work Public case studies are kept private until they are ready. Email for work" [ref=e29] [cursor=pointer]:
+              - /url: mailto:hello@joesimo.com
+              - generic [ref=e30]:
+                - img [ref=e32]
+                - generic [ref=e36]: area
+              - generic [ref=e37]:
+                - generic [ref=e38]: Work
+                - generic [ref=e39]: Public case studies are kept private until they are ready.
+              - generic [ref=e40]:
+                - text: Email for work
+                - img [ref=e41]
+            - link "area Apps Public app work is easiest to follow through GitHub. View GitHub" [ref=e44] [cursor=pointer]:
+              - /url: https://github.com/joe-simo
+              - generic [ref=e45]:
+                - img [ref=e47]
+                - generic [ref=e49]: area
+              - generic [ref=e50]:
+                - generic [ref=e51]: Apps
+                - generic [ref=e52]: Public app work is easiest to follow through GitHub.
+              - generic [ref=e53]:
+                - text: View GitHub
+                - img [ref=e54]
+            - link "area Design Visual notes and interface fragments show up when they are public. View Instagram" [ref=e57] [cursor=pointer]:
+              - /url: https://www.instagram.com/joesimo_/
+              - generic [ref=e58]:
+                - img [ref=e60]
+                - generic [ref=e66]: area
+              - generic [ref=e67]:
+                - generic [ref=e68]: Design
+                - generic [ref=e69]: Visual notes and interface fragments show up when they are public.
+              - generic [ref=e70]:
+                - text: View Instagram
+                - img [ref=e71]
+            - link "area Writing No public writing here yet. Open writing" [ref=e74] [cursor=pointer]:
+              - /url: /blog
+              - generic [ref=e75]:
+                - img [ref=e77]
+                - generic [ref=e79]: area
+              - generic [ref=e80]:
+                - generic [ref=e81]: Writing
+                - generic [ref=e82]: No public writing here yet.
+              - generic [ref=e83]:
+                - text: Open writing
+                - img [ref=e84]
+            - link "profile Links GitHub, X, Instagram, LinkedIn, YouTube, and email. View links" [ref=e87] [cursor=pointer]:
+              - /url: "#links"
+              - generic [ref=e88]:
+                - img [ref=e90]
+                - generic [ref=e93]: profile
+              - generic [ref=e94]:
+                - generic [ref=e95]: Links
+                - generic [ref=e96]: GitHub, X, Instagram, LinkedIn, YouTube, and email.
+              - generic [ref=e97]:
+                - text: View links
+                - img [ref=e98]
+            - link "contact Contact Send a direct note about work, apps, or a useful introduction. Email" [ref=e101] [cursor=pointer]:
+              - /url: mailto:hello@joesimo.com
+              - generic [ref=e102]:
+                - img [ref=e104]
+                - generic [ref=e107]: contact
+              - generic [ref=e108]:
+                - generic [ref=e109]: Contact
+                - generic [ref=e110]: Send a direct note about work, apps, or a useful introduction.
+              - generic [ref=e111]:
+                - text: Email
+                - img [ref=e112]
+      - generic [ref=e115]:
+        - generic [ref=e116]:
+          - paragraph [ref=e117]: index
+          - heading "Public surfaces" [level=2] [ref=e118]
+        - generic [ref=e119]:
+          - article [ref=e120]:
+            - generic [ref=e121]:
+              - img [ref=e123]
+              - heading "Work" [level=3] [ref=e127]
+            - paragraph [ref=e128]: Public case studies are kept private until they are ready.
+            - link "Email for work" [ref=e129] [cursor=pointer]:
+              - /url: mailto:hello@joesimo.com
+              - text: Email for work
+              - img [ref=e130]
+          - article [ref=e133]:
+            - generic [ref=e134]:
+              - img [ref=e136]
+              - heading "Apps" [level=3] [ref=e138]
+            - paragraph [ref=e139]: Public app work is easiest to follow through GitHub.
+            - link "View GitHub" [ref=e140] [cursor=pointer]:
+              - /url: https://github.com/joe-simo
+              - text: View GitHub
+              - img [ref=e141]
+          - article [ref=e144]:
+            - generic [ref=e145]:
+              - img [ref=e147]
+              - heading "Design" [level=3] [ref=e153]
+            - paragraph [ref=e154]: Visual notes and interface fragments show up when they are public.
+            - link "View Instagram" [ref=e155] [cursor=pointer]:
+              - /url: https://www.instagram.com/joesimo_/
+              - text: View Instagram
+              - img [ref=e156]
+          - article [ref=e159]:
+            - generic [ref=e160]:
+              - img [ref=e162]
+              - heading "Writing" [level=3] [ref=e164]
+            - paragraph [ref=e165]: No public writing here yet.
+            - link "Open writing" [ref=e166] [cursor=pointer]:
+              - /url: /blog
+              - text: Open writing
+              - img [ref=e167]
+      - generic [ref=e170]:
+        - generic [ref=e171]:
+          - paragraph [ref=e172]: exits
+          - heading "Profiles" [level=2] [ref=e173]
+        - generic [ref=e174]:
+          - link "GitHub @joe-simo Code and public build history." [ref=e175] [cursor=pointer]:
+            - /url: https://github.com/joe-simo
+            - img [ref=e177]
+            - generic [ref=e181]:
+              - generic [ref=e182]: GitHub
+              - generic [ref=e183]: "@joe-simo"
+              - generic [ref=e184]: Code and public build history.
+            - img [ref=e185]
+          - link "X @joesimo Short notes and links." [ref=e188] [cursor=pointer]:
+            - /url: https://x.com/joesimo
+            - img [ref=e190]
+            - generic [ref=e193]:
+              - generic [ref=e194]: X
+              - generic [ref=e195]: "@joesimo"
+              - generic [ref=e196]: Short notes and links.
+            - img [ref=e197]
+          - link "Instagram @joesimo_ Visual notes." [ref=e200] [cursor=pointer]:
+            - /url: https://www.instagram.com/joesimo_/
+            - img [ref=e202]
+            - generic [ref=e205]:
+              - generic [ref=e206]: Instagram
+              - generic [ref=e207]: "@joesimo_"
+              - generic [ref=e208]: Visual notes.
+            - img [ref=e209]
+          - link "LinkedIn josephsimo Professional profile." [ref=e212] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/josephsimo/
+            - img [ref=e214]
+            - generic [ref=e218]:
+              - generic [ref=e219]: LinkedIn
+              - generic [ref=e220]: josephsimo
+              - generic [ref=e221]: Professional profile.
+            - img [ref=e222]
+          - link "YouTube @jos007 Videos and demos." [ref=e225] [cursor=pointer]:
+            - /url: https://www.youtube.com/@jos007
+            - img [ref=e227]
+            - generic [ref=e230]:
+              - generic [ref=e231]: YouTube
+              - generic [ref=e232]: "@jos007"
+              - generic [ref=e233]: Videos and demos.
+            - img [ref=e234]
+          - link "Email hello@joesimo.com Direct contact." [ref=e237] [cursor=pointer]:
+            - /url: mailto:hello@joesimo.com
+            - img [ref=e239]
+            - generic [ref=e242]:
+              - generic [ref=e243]: Email
+              - generic [ref=e244]: hello@joesimo.com
+              - generic [ref=e245]: Direct contact.
+            - img [ref=e246]
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - paragraph [ref=e251]: contact
+          - heading "Send a note" [level=2] [ref=e252]
+        - generic [ref=e253]:
+          - paragraph [ref=e254]: Reach out about work, apps, design, writing, or a useful introduction.
+          - button "hello@joesimo.com" [ref=e255] [cursor=pointer]:
+            - img
+            - text: hello@joesimo.com
+    - contentinfo [ref=e256]:
+      - separator [ref=e257]
+      - generic [ref=e258]:
+        - link "Joe Simo" [ref=e259] [cursor=pointer]:
+          - /url: "#top"
+        - generic [ref=e260]:
+          - link "GitHub" [ref=e261] [cursor=pointer]:
+            - /url: https://github.com/joe-simo
+          - link "X" [ref=e262] [cursor=pointer]:
+            - /url: https://x.com/joesimo
+          - link "Instagram" [ref=e263] [cursor=pointer]:
+            - /url: https://www.instagram.com/joesimo_/
+          - link "LinkedIn" [ref=e264] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/josephsimo/
+          - link "YouTube" [ref=e265] [cursor=pointer]:
+            - /url: https://www.youtube.com/@jos007
+          - link "Email" [ref=e266] [cursor=pointer]:
+            - /url: mailto:hello@joesimo.com
+  - button "Open Next.js Dev Tools" [ref=e272] [cursor=pointer]:
+    - img [ref=e273]
+  - alert [ref=e276]

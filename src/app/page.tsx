@@ -1,211 +1,230 @@
-import { ArrowRight, ExternalLink, Mail } from "lucide-react";
-
-import { MicroPlayground } from "@/components/site/micro-playground";
+import { MobileNav } from "@/components/site/mobile-nav";
 import { SiteCanvas } from "@/components/site/site-canvas";
+import { SiteIcon } from "@/components/site/site-icons";
 import { SocialLinks } from "@/components/site/social-links";
-import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   contactLink,
+  heroCopy,
   navItems,
-  portfolioAreas,
-  workPrinciples,
+  shelfRecords,
+  socialChannels,
 } from "@/lib/site-data";
+
+const githubLink = socialChannels.find((channel) => channel.label === "GitHub");
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-10">
-          <a href="#" className="text-lg font-semibold tracking-normal">
+    <div
+      id="top"
+      className="min-h-screen bg-background text-foreground selection:bg-foreground selection:text-background"
+    >
+      <header className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-[88rem] items-center justify-between gap-4 px-5 sm:px-8 lg:px-10">
+          <a
+            href="#top"
+            className="font-pixel text-sm uppercase tracking-normal outline-none transition hover:text-[var(--workbench-accent)] focus-visible:text-[var(--workbench-accent)]"
+          >
             joesimo.com
           </a>
+
           <nav
             aria-label="Primary navigation"
             className="hidden items-center gap-1 md:flex"
           >
             {navItems.map((item) => (
               <a
-                key={item.label}
+                key={item.href}
                 href={item.href}
-                className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                className="rounded-md px-3 py-2 text-sm text-muted-foreground outline-none transition hover:bg-muted hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30"
               >
                 {item.label}
               </a>
             ))}
           </nav>
-          <Button render={<a href={contactLink.href} />} nativeButton={false}>
-            <Mail data-icon="inline-start" />
-            {contactLink.label}
-          </Button>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <MobileNav />
+            <Button
+              render={<a href={contactLink.href} />}
+              nativeButton={false}
+              className="hidden h-9 sm:inline-flex"
+            >
+              <SiteIcon iconKey="mail" data-icon="inline-start" />
+              Email
+            </Button>
+          </div>
         </div>
       </header>
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-24">
-          <div className="flex flex-col gap-7">
+        <section className="mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-[88rem] content-center gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[0.38fr_0.62fr] lg:px-10">
+          <div className="relative z-10 flex min-w-0 flex-col justify-center gap-7 lg:pb-16">
             <div className="flex flex-col gap-5">
-              <h1 className="max-w-2xl text-5xl font-semibold leading-[0.95] tracking-normal sm:text-6xl lg:text-7xl">
-                Joe Simo / joesimo.com
+              <p className="font-pixel text-xs uppercase text-muted-foreground">
+                operating map
+              </p>
+              <h1 className="max-w-2xl text-6xl font-medium leading-[0.9] tracking-normal sm:text-7xl lg:text-8xl">
+                {heroCopy.title}
               </h1>
-              <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                A minimal personal site for work, apps, design, writing, and
-                tiny interactions that reward curiosity without getting loud.
+              <p className="max-w-xl text-xl leading-8 text-foreground sm:text-2xl sm:leading-9">
+                {heroCopy.intro}
+              </p>
+              <p className="max-w-xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                {heroCopy.detail}
               </p>
             </div>
+
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                render={<a href="#work" />}
-                nativeButton={false}
-                className="h-10"
-              >
-                See the work
-                <ArrowRight data-icon="inline-end" />
-              </Button>
+              {githubLink ? (
+                <Button
+                  size="lg"
+                  render={
+                    <a
+                      href={githubLink.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    />
+                  }
+                  nativeButton={false}
+                  className="h-10"
+                >
+                  <SiteIcon iconKey="github" data-icon="inline-start" />
+                  GitHub
+                </Button>
+              ) : null}
               <Button
                 size="lg"
                 variant="outline"
-                render={<a href="/blog" />}
+                render={<a href="#links" />}
                 nativeButton={false}
                 className="h-10"
               >
-                Open blog
+                <SiteIcon iconKey="arrowUpRight" data-icon="inline-start" />
+                Links
               </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">Next.js</Badge>
-              <Badge variant="outline">Tailwind CSS</Badge>
-              <Badge variant="outline">shadcn/ui</Badge>
-              <Badge variant="outline">micro-interactions</Badge>
             </div>
           </div>
 
-          <SiteCanvas />
+          <div className="min-w-0 lg:-ml-10">
+            <SiteCanvas />
+          </div>
         </section>
-
-        <MicroPlayground />
 
         <section
           id="work"
-          className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-10 sm:px-8 lg:px-10"
+          className="mx-auto grid w-full max-w-[88rem] gap-8 px-5 py-14 sm:px-8 lg:grid-cols-[0.28fr_0.72fr] lg:px-10"
         >
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div className="flex max-w-2xl flex-col gap-3">
-              <h2 className="text-3xl font-semibold tracking-normal sm:text-4xl">
-                Portfolio map.
-              </h2>
-              <p className="text-sm leading-6 text-muted-foreground sm:text-base">
-                The structure is ready for real apps, case studies, design
-                snapshots, and blog entries. I left fake content out on purpose.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              render={<a href="https://github.com/joe-simo" target="_blank" />}
-              nativeButton={false}
-            >
-              GitHub profile
-              <ExternalLink data-icon="inline-end" />
-            </Button>
+          <div className="flex flex-col gap-3">
+            <p className="font-pixel text-xs uppercase text-muted-foreground">
+              index
+            </p>
+            <h2 className="text-3xl font-medium tracking-normal sm:text-4xl">
+              Public surfaces
+            </h2>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2">
-            {portfolioAreas.map((area) => {
-              const Icon = area.icon;
-
-              return (
-                <Card
-                  key={area.value}
-                  id={area.value === "work" ? undefined : area.value}
-                  className="rounded-lg border-foreground/10 bg-background shadow-none transition duration-300 hover:-translate-y-0.5 hover:border-foreground/30"
+          <div className="grid border-y border-border">
+            {shelfRecords.map((record) => (
+              <article
+                key={record.id}
+                id={record.id}
+                className="grid gap-4 border-b border-border py-5 last:border-b-0 sm:grid-cols-[11rem_1fr_auto] sm:items-center"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="grid size-9 place-items-center rounded-md border border-border bg-background">
+                    <SiteIcon iconKey={record.iconKey} aria-hidden />
+                  </span>
+                  <h3 className="font-medium">{record.label}</h3>
+                </div>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {record.status}
+                </p>
+                <a
+                  href={record.primaryAction.href}
+                  target={record.primaryAction.external ? "_blank" : undefined}
+                  rel={record.primaryAction.external ? "noreferrer" : undefined}
+                  className="inline-flex h-8 w-fit items-center gap-1.5 rounded-md px-2.5 font-mono text-[11px] uppercase text-muted-foreground outline-none transition hover:bg-muted hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
                 >
-                  <CardHeader>
-                    <span className="grid size-9 place-items-center rounded-lg border border-border text-foreground">
-                      <Icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <CardTitle className="text-2xl font-semibold tracking-normal">
-                      {area.title}
-                    </CardTitle>
-                    <CardAction>
-                      <a
-                        href={area.href}
-                        className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition hover:text-foreground"
-                      >
-                        {area.action}
-                        <ArrowRight className="size-3.5" aria-hidden="true" />
-                      </a>
-                    </CardAction>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {area.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  {record.primaryAction.label}
+                  <SiteIcon iconKey="arrowUpRight" aria-hidden />
+                </a>
+              </article>
+            ))}
           </div>
         </section>
 
         <section
-          id="design"
-          className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-10 sm:px-8 lg:px-10"
+          id="links"
+          className="mx-auto grid w-full max-w-[88rem] gap-8 px-5 py-14 sm:px-8 lg:grid-cols-[0.28fr_0.72fr] lg:px-10"
         >
-          <div className="grid gap-3 md:grid-cols-3">
-            {workPrinciples.map((principle) => {
-              const Icon = principle.icon;
-
-              return (
-                <Card
-                  key={principle.title}
-                  className="rounded-lg border-foreground/10 bg-muted/20 shadow-none"
-                >
-                  <CardHeader>
-                    <span className="grid size-9 place-items-center rounded-lg border border-border bg-background text-foreground">
-                      <Icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <CardTitle>{principle.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {principle.body}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-10 sm:px-8 lg:px-10">
           <div className="flex flex-col gap-3">
-            <h2 className="text-3xl font-semibold tracking-normal sm:text-4xl">
-              Social and profile links.
-            </h2>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Simple exits to the places people usually check first.
+            <p className="font-pixel text-xs uppercase text-muted-foreground">
+              exits
             </p>
+            <h2 className="text-3xl font-medium tracking-normal sm:text-4xl">
+              Profiles
+            </h2>
           </div>
           <SocialLinks />
         </section>
+
+        <section
+          id="contact"
+          className="mx-auto grid w-full max-w-[88rem] gap-8 px-5 py-14 sm:px-8 lg:grid-cols-[0.28fr_0.72fr] lg:px-10"
+        >
+          <div className="flex flex-col gap-3">
+            <p className="font-pixel text-xs uppercase text-muted-foreground">
+              contact
+            </p>
+            <h2 className="text-3xl font-medium tracking-normal sm:text-4xl">
+              Send a note
+            </h2>
+          </div>
+          <div className="flex flex-col gap-5 border-y border-border py-6">
+            <p className="max-w-2xl text-lg leading-8 text-foreground">
+              Reach out about work, apps, design, writing, or a useful
+              introduction.
+            </p>
+            <Button
+              render={<a href={contactLink.href} />}
+              nativeButton={false}
+              className="h-10 w-fit"
+            >
+              <SiteIcon iconKey="mail" data-icon="inline-start" />
+              {contactLink.handle}
+            </Button>
+          </div>
+        </section>
       </main>
 
-      <footer className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-10 sm:px-8 lg:px-10">
+      <footer className="mx-auto flex w-full max-w-[88rem] flex-col gap-5 px-5 py-10 sm:px-8 lg:px-10">
         <Separator />
-        <div className="flex flex-col justify-between gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center">
-          <a href="#" className="text-lg font-semibold text-foreground">
-            joesimo.com
+        <div className="flex flex-col justify-between gap-5 text-sm text-muted-foreground sm:flex-row sm:items-center">
+          <a
+            href="#top"
+            className="font-pixel text-xs uppercase text-foreground outline-none transition hover:text-[var(--workbench-accent)] focus-visible:text-[var(--workbench-accent)]"
+          >
+            Joe Simo
           </a>
-          <p>Minimal personal page for Joe Simo.</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {socialChannels.map((channel) => (
+              <a
+                key={channel.label}
+                href={channel.href}
+                target={channel.href.startsWith("mailto:") ? undefined : "_blank"}
+                rel={
+                  channel.href.startsWith("mailto:") ? undefined : "noreferrer"
+                }
+                className="outline-none transition hover:text-foreground focus-visible:text-foreground"
+              >
+                {channel.label}
+              </a>
+            ))}
+          </div>
         </div>
       </footer>
     </div>
