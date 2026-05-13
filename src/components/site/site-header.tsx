@@ -1,0 +1,60 @@
+import Link from "next/link";
+
+import { MobileNav } from "@/components/site/mobile-nav";
+import { PrimaryNav } from "@/components/site/primary-nav";
+import { ThemeToggle } from "@/components/site/theme-toggle";
+import { type NavHref } from "@/lib/site-data";
+
+function isInternalRouteHref(href: string) {
+  return href.startsWith("/") && !href.startsWith("//");
+}
+
+function BrandMark({ homeHref }: { homeHref: string }) {
+  const content = (
+    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground">
+      Joe Simo
+    </span>
+  );
+
+  const className =
+    "inline-flex min-h-11 shrink-0 items-center rounded-md outline-none transition hover:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/30";
+
+  if (isInternalRouteHref(homeHref)) {
+    return (
+      <Link href={homeHref} aria-label="Joe Simo home" className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={homeHref} aria-label="Joe Simo home" className={className}>
+      {content}
+    </a>
+  );
+}
+
+export function SiteHeader({
+  homeHref = "#joe",
+  sectionPrefix = "",
+  activeHref,
+}: {
+  homeHref?: string;
+  sectionPrefix?: string;
+  activeHref?: NavHref;
+}) {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/88 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <div className="site-header-shell flex min-h-16 items-center justify-between gap-3 sm:gap-4">
+        <BrandMark homeHref={homeHref} />
+
+        <PrimaryNav activeHref={activeHref} sectionPrefix={sectionPrefix} />
+
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <MobileNav sectionPrefix={sectionPrefix} />
+        </div>
+      </div>
+    </header>
+  );
+}

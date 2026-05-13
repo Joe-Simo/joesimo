@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -14,6 +14,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 const themeOptions = [
   { value: "light", label: "Light", icon: SunIcon },
@@ -50,6 +51,7 @@ function getServerSnapshot() {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(
     subscribeToHydration,
     getHydratedSnapshot,
@@ -62,12 +64,14 @@ export function ThemeToggle() {
   const CurrentIcon = currentOption.icon;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
         render={
           <Button
+            type="button"
             variant="outline"
-            size="icon"
+            size="icon-lg"
+            className="size-11"
             aria-label={`Theme: ${currentOption.label}`}
           />
         }
@@ -75,7 +79,12 @@ export function ThemeToggle() {
         <CurrentIcon aria-hidden />
         <span className="sr-only">Theme</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-36">
+
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="min-w-36 border border-border"
+      >
         <DropdownMenuGroup>
           <DropdownMenuLabel>Theme</DropdownMenuLabel>
           <DropdownMenuRadioGroup
@@ -83,14 +92,23 @@ export function ThemeToggle() {
             onValueChange={(value) => {
               if (isThemeValue(value)) {
                 setTheme(value);
+                setOpen(false);
               }
             }}
           >
             {themeOptions.map((option) => {
               const Icon = option.icon;
+              const selected = option.value === displayTheme;
 
               return (
-                <DropdownMenuRadioItem key={option.value} value={option.value}>
+                <DropdownMenuRadioItem
+                  key={option.value}
+                  value={option.value}
+                  className={cn(
+                    "min-h-11 px-2 pr-8",
+                    selected && "bg-muted text-foreground",
+                  )}
+                >
                   <Icon aria-hidden />
                   {option.label}
                 </DropdownMenuRadioItem>

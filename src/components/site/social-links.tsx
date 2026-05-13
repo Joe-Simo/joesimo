@@ -1,6 +1,10 @@
 import { SiteIcon } from "@/components/site/site-icons";
 import { socialChannels } from "@/lib/site-data";
 
+function ExternalCue({ show }: { show: boolean }) {
+  return show ? <span className="sr-only">opens in a new tab</span> : null;
+}
+
 export function SocialLinks() {
   return (
     <div className="grid border-y border-border sm:grid-cols-2 lg:grid-cols-3 lg:border-x">
@@ -31,6 +35,7 @@ export function SocialLinks() {
             className="text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
             aria-hidden
           />
+          <ExternalCue show={!channel.href.startsWith("mailto:")} />
         </a>
       ))}
     </div>

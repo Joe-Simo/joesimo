@@ -1,20 +1,124 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { GeistMono } from "geist/font/mono";
-import { GeistPixelSquare } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
+import { ThemeMeta } from "@/components/site/theme-meta";
 import { ThemeProvider } from "@/components/site/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import "@xyflow/react/dist/style.css";
+import { siteDescription, socialChannels } from "@/lib/site-data";
 import "./globals.css";
 
+const geistPixelSquare = localFont({
+  src: "./fonts/GeistPixel-Square.woff2",
+  variable: "--font-geist-pixel-square",
+  weight: "500",
+  fallback: [
+    "Geist Mono",
+    "ui-monospace",
+    "SFMono-Regular",
+    "Menlo",
+    "Monaco",
+    "monospace",
+  ],
+  adjustFontFallback: false,
+});
+
+const siteUrl = "https://joesimo.com";
+const siteName = "joesimo.com";
+const personName = "Joe Simo";
+const siteTitle = `${personName} / ${siteName}`;
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://joesimo.com"),
-  title: {
-    default: "Joe Simo / joesimo.com",
-    template: "%s / joesimo.com",
+  metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "/",
   },
-  description:
-    "The personal front door for Joe Simo: links, code, writing, and public work as it appears.",
+  applicationName: siteName,
+  authors: [{ name: personName, url: siteUrl }],
+  creator: personName,
+  publisher: personName,
+  title: {
+    default: siteTitle,
+    template: `%s / ${siteName}`,
+  },
+  description: siteDescription,
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@joesimo",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/twitter-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteUrl}/#person`,
+  name: personName,
+  url: siteUrl,
+  email: "mailto:hello@joesimo.com",
+  description: siteDescription,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Fort Myers",
+    addressRegion: "FL",
+    addressCountry: "US",
+  },
+  sameAs: socialChannels
+    .filter((channel) => channel.href.startsWith("http"))
+    .map((channel) => channel.href),
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  name: siteName,
+  url: siteUrl,
+  inLanguage: ["en", "es"],
+  author: {
+    "@id": `${siteUrl}/#person`,
+  },
+  publisher: {
+    "@id": `${siteUrl}/#person`,
+  },
+  description: siteDescription,
+};
+
+const jsonLd = [personJsonLd, websiteJsonLd];
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbfbfb" },
+    { media: "(prefers-color-scheme: dark)", color: "#08090a" },
+  ],
 };
 
 export default function RootLayout({
@@ -27,7 +131,7 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${geistPixelSquare.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider
@@ -36,7 +140,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>{children}</TooltipProvider>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+            }}
+          />
+          <ThemeMeta />
+          {children}
         </ThemeProvider>
       </body>
     </html>

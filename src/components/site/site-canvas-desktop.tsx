@@ -1,155 +1,122 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import {
-  Background,
-  BackgroundVariant,
-  Controls,
-  Handle,
-  MarkerType,
-  Panel,
-  Position,
-  ReactFlow,
-  useEdgesState,
-  useNodesState,
-  useReactFlow,
-  type Edge,
-  type Node,
-  type NodeProps,
-  type ReactFlowInstance,
-} from "@xyflow/react";
-import { useTheme } from "next-themes";
+  type CSSProperties,
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { SiteIcon } from "@/components/site/site-icons";
 import {
-  navItems,
-  siteRecords,
+  scrollToExperienceSection,
+  useSiteExperienceState,
+} from "@/components/site/use-site-experience-state";
+import { WebGLSignalField } from "@/components/site/webgl-signal-field";
+import {
+  defaultActiveNodeId,
+  originNodeId,
   type AccentKey,
-  type SiteRecord,
+  type SiteAction,
+  type SiteCanvasRecord,
   type SiteNodeId,
 } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-type SiteNodeData = Omit<SiteRecord, "id" | "canvas"> & {
-  isFocused?: boolean;
-  isRelated?: boolean;
+type CanvasPoint = {
+  x: number;
+  y: number;
 };
 
-type SiteNode = Node<SiteNodeData, "site">;
-type SiteEdge = Edge;
+type SignaturePhaseId = "breakage" | "signals" | "interface";
 
-const nodeSize = {
-  width: 260,
-  height: 172,
+type SignaturePhase = {
+  id: SignaturePhaseId;
+  nodeId: SiteNodeId;
+  code: string;
+  label: string;
+  word: string;
+  detail: string;
 };
 
 const accentClasses: Record<AccentKey, string> = {
-  ink: "border-foreground/45 text-foreground",
-  signal: "border-[var(--workbench-accent)]/70 text-[var(--workbench-accent)]",
-  green: "border-[var(--workbench-green)]/70 text-[var(--workbench-green)]",
-  red: "border-[var(--workbench-red)]/70 text-[var(--workbench-red)]",
+  ink: "border-border",
+  signal: "border-border",
+  live: "border-border",
 };
 
-const actionTargets = new Set(["work", "apps", "design", "writing", "links"]);
+const routeDisplayLabels: Partial<Record<SiteNodeId, string>> = {
+  method: "Background",
+  work: "Work",
+  trail: "Links",
+  contact: "Email",
+};
 
-const initialNodes: SiteNode[] = siteRecords.map((record) => ({
-  id: record.id,
-  type: "site",
-  position: record.canvas,
-  width: nodeSize.width,
-  height: nodeSize.height,
-  draggable: false,
-  selectable: false,
-  ariaLabel: `${record.label}: ${record.status}`,
-  data: {
-    label: record.label,
-    kind: record.kind,
-    status: record.status,
-    primaryAction: record.primaryAction,
-    secondaryAction: record.secondaryAction,
-    iconKey: record.iconKey,
-    accent: record.accent,
-    sectionAnchor: record.sectionAnchor,
-    externalUrl: record.externalUrl,
+const signaturePhases = [
+  {
+    id: "breakage",
+    nodeId: "method",
+    code: "01",
+    label: "Support",
+    word: "Breakage",
+    detail: "Support taught Joe to start with the failure path.",
   },
-}));
+  {
+    id: "signals",
+    nodeId: "method",
+    code: "02",
+    label: "Telematics",
+    word: "Signals",
+    detail: "Telematics shaped how he reads systems, timing, and state.",
+  },
+  {
+    id: "interface",
+    nodeId: "work",
+    code: "03",
+    label: "Interface",
+    word: "Surface",
+    detail: "sim0 is the current public surface of that method.",
+  },
+] as const satisfies readonly SignaturePhase[];
 
-const initialEdges: SiteEdge[] = siteRecords
-  .filter((record) => record.id !== "home")
-  .map((record) => ({
-    id: `home-${record.id}`,
-    source: "home",
-    target: record.id,
-    type: "smoothstep",
-    animated: Boolean(record.canvas.animated),
-    selectable: false,
-    focusable: false,
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: "var(--border)",
-    },
-    style: {
-      stroke: "var(--foreground)",
-      strokeOpacity: 0.22,
-      strokeWidth: 1.25,
-    },
-  }));
-
-function useReducedMotion() {
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-
-    update();
-    media.addEventListener("change", update);
-
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  return reducedMotion;
-}
-
-function isRelatedNode(focusId: string | null, nodeId: string) {
-  if (!focusId || focusId === "home") {
-    return true;
+function clampProgress(value: number) {
+  if (!Number.isFinite(value)) {
+    return 0;
   }
 
-  if (focusId === nodeId || nodeId === "home") {
-    return true;
-  }
-
-  return initialEdges.some(
-    (edge) =>
-      (edge.source === focusId && edge.target === nodeId) ||
-      (edge.target === focusId && edge.source === nodeId),
-  );
+  return Math.min(1, Math.max(0, value));
 }
 
-function isActiveEdge(focusId: string | null, edge: SiteEdge) {
-  if (!focusId) {
-    return false;
-  }
-
-  if (focusId === "home") {
-    return true;
-  }
-
-  return edge.source === focusId || edge.target === focusId;
+function createNodePoints(records: readonly SiteCanvasRecord[]) {
+  return Object.fromEntries(
+    records.map((record) => [record.id, record.map.desktopPoint]),
+  ) as Partial<Record<SiteNodeId, CanvasPoint>>;
 }
 
-function getNodeCenter(record: SiteRecord, node?: SiteNode) {
-  const width = node?.measured?.width ?? node?.width ?? nodeSize.width;
-  const height = node?.measured?.height ?? node?.height ?? nodeSize.height;
+function routePath(
+  target: CanvasPoint,
+  nodePoints: Partial<Record<SiteNodeId, CanvasPoint>>,
+  tension = 0.5,
+) {
+  const source = nodePoints[originNodeId];
 
-  return {
-    x: record.canvas.x + width / 2,
-    y: record.canvas.y + height / 2,
-  };
+  if (!source) {
+    return "";
+  }
+
+  const pull = 0.28 + tension * 0.24;
+  const deltaX = target.x - source.x;
+  const firstControlX = source.x + deltaX * pull;
+  const secondControlX = target.x - deltaX * pull;
+
+  return `M ${source.x} ${source.y} C ${firstControlX} ${source.y}, ${secondControlX} ${target.y}, ${target.x} ${target.y}`;
 }
 
-function actionTargetProps(action: SiteRecord["primaryAction"]) {
+function actionTargetProps(action: SiteAction) {
   return action.external
     ? {
         target: "_blank",
@@ -158,244 +125,558 @@ function actionTargetProps(action: SiteRecord["primaryAction"]) {
     : {};
 }
 
-function SiteCanvasNode({ data }: NodeProps<SiteNode>) {
-  const kindLabel = data.kind === "shelf" ? "area" : data.kind;
-
-  return (
-    <article
-      className={cn(
-        "group/site-node grid w-[260px] gap-4 rounded-[1.1rem] border bg-background/96 p-4 text-left shadow-[0_1px_0_oklch(0.145_0_0_/_0.05)] backdrop-blur transition duration-300",
-        "hover:-translate-y-1 hover:shadow-[0_24px_70px_oklch(0.145_0_0_/_0.12)]",
-        data.isFocused
-          ? "border-foreground shadow-[0_24px_70px_oklch(0.145_0_0_/_0.16)]"
-          : "border-border",
-        data.isRelated === false && "opacity-55",
-      )}
-    >
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="!size-2 !border-background !bg-foreground"
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="!size-2 !border-background !bg-foreground"
-      />
-
-      <div className="flex items-start justify-between gap-3">
-        <span
-          className={cn(
-            "grid size-10 place-items-center rounded-md border bg-background",
-            accentClasses[data.accent],
-          )}
-        >
-          <SiteIcon iconKey={data.iconKey} aria-hidden />
-        </span>
-        <span className="font-mono text-[11px] uppercase text-muted-foreground">
-          {kindLabel}
-        </span>
-      </div>
-
-      <div className="grid gap-2">
-        <h2 className="text-xl font-medium tracking-normal">{data.label}</h2>
-        <p className="text-sm leading-6 text-muted-foreground">{data.status}</p>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        <a
-          href={data.primaryAction.href}
-          {...actionTargetProps(data.primaryAction)}
-          className="nodrag inline-flex h-8 items-center gap-1.5 rounded-md bg-foreground px-2.5 font-mono text-[11px] uppercase text-background outline-none transition hover:-translate-y-px focus-visible:ring-3 focus-visible:ring-ring/45"
-        >
-          {data.primaryAction.label}
-          <SiteIcon iconKey="arrowUpRight" aria-hidden />
-        </a>
-        {data.secondaryAction ? (
-          <a
-            href={data.secondaryAction.href}
-            {...actionTargetProps(data.secondaryAction)}
-            className="nodrag inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 font-mono text-[11px] uppercase text-muted-foreground outline-none transition hover:bg-muted hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
-          >
-            {data.secondaryAction.label}
-          </a>
-        ) : null}
-      </div>
-    </article>
-  );
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function CanvasController({
-  flow,
-  focusedNodeId,
-  reducedMotion,
-  onFocus,
-  onReset,
+function CanvasNode({
+  active,
+  highlighted,
+  onCommit,
+  onKeyNavigate,
+  onPreview,
+  point,
+  record,
+  tabIndex,
 }: {
-  flow: ReactFlowInstance<SiteNode, SiteEdge> | null;
-  focusedNodeId: SiteNodeId | null;
-  reducedMotion: boolean;
-  onFocus: (nodeId: SiteNodeId) => void;
-  onReset: () => void;
+  active: boolean;
+  highlighted: boolean;
+  onCommit: (record: SiteCanvasRecord) => void;
+  onKeyNavigate: (
+    event: KeyboardEvent<HTMLButtonElement>,
+    nodeId: SiteNodeId,
+  ) => void;
+  onPreview: (nodeId: SiteNodeId | null) => void;
+  point: CanvasPoint;
+  record: SiteCanvasRecord;
+  tabIndex: 0 | -1;
 }) {
-  const { getNode } = useReactFlow<SiteNode, SiteEdge>();
-
-  const focusRecord = useCallback(
-    (nodeId: SiteNodeId) => {
-      const record = siteRecords.find((candidate) => candidate.id === nodeId);
-
-      if (!record || !flow) {
-        return;
-      }
-
-      const center = getNodeCenter(record, getNode(nodeId));
-
-      onFocus(nodeId);
-      void flow.setCenter(center.x, center.y, {
-        duration: reducedMotion ? 0 : 420,
-        zoom: nodeId === "home" ? 0.82 : 0.98,
-      });
-    },
-    [flow, getNode, onFocus, reducedMotion],
-  );
-
   return (
-    <Panel position="top-left" className="site-flow-panel">
-      <button type="button" onClick={onReset}>
-        Reset
-      </button>
-      {navItems.map((item) => {
-        const nodeId = item.href.slice(1) as SiteNodeId;
-
-        if (!actionTargets.has(nodeId)) {
-          return null;
+    <button
+      type="button"
+      onClick={() => onCommit(record)}
+      onFocus={() => onPreview(record.id)}
+      onBlur={() => onPreview(null)}
+      onKeyDown={(event) => onKeyNavigate(event, record.id)}
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "touch") {
+          onPreview(record.id);
         }
-
-        return (
-          <button
-            key={item.href}
-            type="button"
-            aria-pressed={focusedNodeId === nodeId}
-            onClick={() => focusRecord(nodeId)}
-          >
-            {item.label}
-          </button>
-        );
-      })}
-    </Panel>
+      }}
+      onPointerLeave={() => onPreview(null)}
+      role="radio"
+      aria-checked={active}
+      aria-controls="site-map-detail"
+      aria-label={`Select ${record.label}`}
+      tabIndex={tabIndex}
+      data-map-node-id={record.id}
+      className={cn(
+        "site-min-node site-min-node-route site-min-map-node",
+        accentClasses[record.accent],
+        active && "site-min-node-active",
+        highlighted && "site-min-node-highlighted",
+      )}
+      style={{ left: `${point.x}%`, top: `${point.y}%` }}
+    >
+      <SiteIcon iconKey={record.iconKey} aria-hidden />
+      <span className="site-min-node-label">
+        {routeDisplayLabels[record.id] ?? record.label}
+      </span>
+      {highlighted ? <span className="site-node-active-dot" aria-hidden /> : null}
+    </button>
   );
 }
 
-export function SiteCanvasDesktop() {
-  const nodeTypes = useMemo(() => ({ site: SiteCanvasNode }), []);
-  const { resolvedTheme } = useTheme();
-  const reducedMotion = useReducedMotion();
-  const [nodes, , onNodesChange] = useNodesState<SiteNode>(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState<SiteEdge>(initialEdges);
-  const [flow, setFlow] =
-    useState<ReactFlowInstance<SiteNode, SiteEdge> | null>(null);
-  const [focusedNodeId, setFocusedNodeId] = useState<SiteNodeId | null>(null);
-  const [hoveredNodeId, setHoveredNodeId] = useState<SiteNodeId | null>(null);
+function OriginNode({
+  onPreview,
+  onTrace,
+  point,
+  record,
+  signaturePlaying,
+}: {
+  onPreview: (nodeId: SiteNodeId | null) => void;
+  onTrace: () => void;
+  point: CanvasPoint;
+  record: SiteCanvasRecord;
+  signaturePlaying: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onTrace}
+      onFocus={() => onPreview(record.id)}
+      onBlur={() => onPreview(null)}
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "touch") {
+          onPreview(record.id);
+        }
+      }}
+      onPointerLeave={() => onPreview(null)}
+      aria-label="Trace Joe Simo method"
+      aria-pressed={signaturePlaying}
+      className={cn(
+        "site-min-node site-min-node-origin site-min-map-node site-signature-origin",
+        signaturePlaying && "site-signature-origin-active",
+      )}
+      style={{ left: `${point.x}%`, top: `${point.y}%` }}
+    >
+      {record.media?.kind === "portrait" ? (
+        <span className="site-origin-portrait">
+          <Image
+            src={record.media.src}
+            alt=""
+            width={record.media.width}
+            height={record.media.height}
+            sizes="82px"
+            className="size-full object-cover grayscale"
+          />
+        </span>
+      ) : (
+        <span className="grid size-full overflow-hidden rounded-md bg-muted">
+          <span className="grid size-full place-items-center font-pixel text-[10px] uppercase">
+          JS
+          </span>
+        </span>
+      )}
+      <span className="site-origin-caption" aria-hidden>
+        <span>Joe Simo</span>
+        <span>Fort Myers</span>
+      </span>
+    </button>
+  );
+}
 
-  const focusId = hoveredNodeId ?? focusedNodeId;
+function SignalArtifact({
+  progress,
+  record,
+}: {
+  progress: number;
+  record: SiteCanvasRecord;
+}) {
+  if (!record.media || record.media.kind !== "artifact") {
+    return null;
+  }
 
-  const renderedNodes = useMemo(
+  const measuredProgress = clampProgress(progress);
+  const artifactStyle = {
+    "--artifact-offset": `${Math.round((1 - measuredProgress) * 10)}px`,
+    "--artifact-opacity": String(0.08 + measuredProgress * 0.74),
+  } as CSSProperties;
+
+  return (
+    <a
+      href={record.primaryAction.href}
+      {...actionTargetProps(record.primaryAction)}
+      aria-label={record.primaryAction.ariaLabel}
+      className="site-signal-artifact group outline-none focus-visible:ring-3 focus-visible:ring-ring/35"
+      style={artifactStyle}
+    >
+      <span className="site-signal-artifact-meta">
+        {record.scene.code} / {record.scene.eyebrow}
+      </span>
+      <span className="site-signal-artifact-image">
+        <Image
+          src={record.media.src}
+          alt={record.media.alt}
+          width={record.media.width}
+          height={record.media.height}
+          sizes="28vw"
+          className="size-full object-cover object-center transition duration-300 group-hover:scale-[1.012]"
+        />
+      </span>
+    </a>
+  );
+}
+
+function RouteStatus({ record }: { record: SiteCanvasRecord }) {
+  return (
+    <div id="site-map-detail" className="sr-only">
+      {record.label}: {record.status} {record.detail} {record.proof}
+    </div>
+  );
+}
+
+function SignatureReadout({
+  announce,
+  phase,
+  playing,
+}: {
+  announce: boolean;
+  phase: SignaturePhase | null;
+  playing: boolean;
+}) {
+  const displayPhase = phase ?? signaturePhases[0];
+
+  return (
+    <>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {playing && announce
+          ? `${displayPhase.label}. ${displayPhase.word}. ${displayPhase.detail}`
+          : ""}
+      </p>
+      <div
+        className="site-signature-readout"
+        data-visible={playing ? "true" : "false"}
+        aria-hidden
+      >
+        <span className="site-signature-kicker">
+          Trace Joe / {displayPhase.code}
+        </span>
+        <strong className="site-signature-word">{displayPhase.word}</strong>
+        <span className="site-signature-detail">{displayPhase.detail}</span>
+        <span className="site-signature-axis">
+          {signaturePhases.map((item) => (
+            <span
+              key={item.id}
+              data-active={item.id === displayPhase.id ? "true" : "false"}
+            >
+              {item.label}
+            </span>
+          ))}
+        </span>
+      </div>
+    </>
+  );
+}
+
+export function SiteCanvasDesktopMap({
+  onReady,
+  records,
+}: {
+  onReady?: () => void;
+  quickActions: SiteAction[];
+  records: SiteCanvasRecord[];
+}) {
+  useEffect(() => {
+    onReady?.();
+  }, [onReady]);
+
+  const nodePoints = useMemo(() => createNodePoints(records), [records]);
+  const [signatureNodeId, setSignatureNodeId] = useState<SiteNodeId | null>(
+    null,
+  );
+  const [signaturePhaseId, setSignaturePhaseId] =
+    useState<SignaturePhaseId | null>(null);
+  const [signaturePlaying, setSignaturePlaying] = useState(false);
+  const [signatureAnnounce, setSignatureAnnounce] = useState(false);
+  const [routeCommitNodeId, setRouteCommitNodeId] =
+    useState<SiteNodeId | null>(null);
+  const signatureTimeoutsRef = useRef<number[]>([]);
+  const routeCommitTimeoutRef = useRef<number | null>(null);
+  const introTracePlayedRef = useRef(false);
+  const {
+    activeNodeId,
+    activeRecord,
+    commitNode,
+    focusableNodeId,
+    navigateWithKeys,
+    previewNode,
+    reset,
+    routeProgressById,
+    tracedNodeId,
+    tracedRecord,
+    visibleRecords,
+  } = useSiteExperienceState(records, { syncSections: true });
+  const originRecord = records.find((record) => record.id === originNodeId);
+  const workArtifactRecord = records.find((record) => record.id === "work");
+  const webglNodes = useMemo(
     () =>
-      nodes.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-          isFocused: node.id === focusId,
-          isRelated: isRelatedNode(focusId, node.id),
-        },
+      records.map((record) => ({
+        id: record.id,
+        depth: record.route.depth,
+        tension: record.route.tension,
+        x: record.map.desktopPoint.x,
+        y: record.map.desktopPoint.y,
+        sceneMode: record.sceneMode,
       })),
-    [focusId, nodes],
+    [records],
   );
-
-  const renderedEdges = useMemo(
+  const edges = useMemo(
     () =>
-      edges.map((edge) => {
-        const active = isActiveEdge(focusId, edge);
-
-        return {
-          ...edge,
-          animated: !reducedMotion && edge.animated && (!focusId || active),
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: active ? "var(--workbench-accent)" : "var(--border)",
-          },
-          style: {
-            stroke: active ? "var(--workbench-accent)" : "var(--foreground)",
-            strokeOpacity: focusId ? (active ? 0.78 : 0.09) : 0.22,
-            strokeWidth: active ? 2 : 1.25,
-          },
-        };
-      }),
-    [edges, focusId, reducedMotion],
+      visibleRecords.map((record) => ({
+        record,
+        path: routePath(
+          record.map.desktopPoint,
+          nodePoints,
+          record.route.tension,
+        ),
+      })),
+    [nodePoints, visibleRecords],
   );
+  const originPoint = originRecord ? nodePoints[originRecord.id] : undefined;
+  const tracedRouteProgress = Math.max(
+    routeProgressById[tracedNodeId] ?? 0,
+    tracedNodeId === defaultActiveNodeId ? 0.3 : 0,
+    tracedNodeId === activeNodeId ? 0.18 : 0,
+  );
+  const displayNodeId = routeCommitNodeId ?? signatureNodeId ?? tracedNodeId;
+  const displayRecord =
+    records.find((record) => record.id === displayNodeId) ?? tracedRecord;
+  const signaturePhase =
+    signaturePhases.find((phase) => phase.id === signaturePhaseId) ?? null;
+  const displayRouteProgress =
+    signaturePlaying || routeCommitNodeId ? 1 : tracedRouteProgress;
+  const shouldShowArtifact =
+    displayRecord.id === "work" || signaturePhase?.id === "interface";
+  const artifactRecord = shouldShowArtifact ? workArtifactRecord : null;
+  const artifactProgress = shouldShowArtifact
+    ? Math.max(
+        displayRouteProgress,
+        displayRecord.id === "work" && displayRecord.id === activeNodeId
+          ? 0.9
+          : 0.72,
+      )
+    : 0;
 
-  const resetMap = useCallback(() => {
-    setFocusedNodeId(null);
-    void flow?.fitView({
-      padding: 0.08,
-      duration: reducedMotion ? 0 : 420,
+  const clearSignatureTrace = useCallback(() => {
+    signatureTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
     });
-  }, [flow, reducedMotion]);
-
-  const focusNode = useCallback((nodeId: SiteNodeId) => {
-    setFocusedNodeId(nodeId);
+    signatureTimeoutsRef.current = [];
+    setSignaturePlaying(false);
+    setSignatureAnnounce(false);
+    setSignatureNodeId(null);
+    setSignaturePhaseId(null);
   }, []);
 
+  const clearRouteCommit = useCallback(() => {
+    if (routeCommitTimeoutRef.current) {
+      window.clearTimeout(routeCommitTimeoutRef.current);
+      routeCommitTimeoutRef.current = null;
+    }
+
+    setRouteCommitNodeId(null);
+  }, []);
+
+  const openRoute = useCallback(
+    (record: SiteCanvasRecord) => {
+      clearRouteCommit();
+      setRouteCommitNodeId(record.id);
+      commitNode(record.id);
+
+      const delay = prefersReducedMotion() ? 0 : 240;
+
+      routeCommitTimeoutRef.current = window.setTimeout(() => {
+        scrollToExperienceSection(record, { focusEntry: true });
+        setRouteCommitNodeId(null);
+        routeCommitTimeoutRef.current = null;
+      }, delay);
+    },
+    [clearRouteCommit, commitNode],
+  );
+
+  const startSignatureTrace = useCallback((commitFinal = true) => {
+    clearSignatureTrace();
+    clearRouteCommit();
+
+    if (prefersReducedMotion()) {
+      if (commitFinal) {
+        commitNode("work");
+        const workRecord = records.find((record) => record.id === "work");
+
+        if (workRecord) {
+          scrollToExperienceSection(workRecord, { focusEntry: true });
+        }
+      }
+
+      return;
+    }
+
+    setSignaturePlaying(true);
+    setSignatureAnnounce(commitFinal);
+
+    signaturePhases.forEach((phase, index) => {
+      const timeoutId = window.setTimeout(() => {
+        setSignaturePhaseId(phase.id);
+        setSignatureNodeId(phase.nodeId);
+
+        if (index === signaturePhases.length - 1) {
+          if (commitFinal) {
+            commitNode(phase.nodeId);
+            const workRecord = records.find((record) => record.id === phase.nodeId);
+
+            if (workRecord) {
+              window.setTimeout(() => {
+                scrollToExperienceSection(workRecord, { focusEntry: true });
+              }, 860);
+            }
+          }
+
+          window.setTimeout(() => {
+            clearSignatureTrace();
+          }, 1540);
+        }
+      }, index * 680);
+
+      signatureTimeoutsRef.current.push(timeoutId);
+    });
+  }, [clearRouteCommit, clearSignatureTrace, commitNode, records]);
+
+  useEffect(() => {
+    if (introTracePlayedRef.current || prefersReducedMotion()) {
+      return;
+    }
+
+    const url = new URL(window.location.href);
+
+    if (url.hash || url.search) {
+      return;
+    }
+
+    introTracePlayedRef.current = true;
+
+    const timeoutId = window.setTimeout(() => {
+      startSignatureTrace(false);
+    }, 720);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [startSignatureTrace]);
+
+  useEffect(() => clearSignatureTrace, [clearSignatureTrace]);
+  useEffect(() => clearRouteCommit, [clearRouteCommit]);
+
   return (
-    <div className="site-flow relative hidden h-[min(72svh,680px)] min-h-[560px] overflow-hidden rounded-[1.5rem] border border-border bg-background shadow-[0_24px_90px_oklch(0.145_0_0_/_0.08)] md:block">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,var(--border)_1px,transparent_1px),linear-gradient(0deg,var(--border)_1px,transparent_1px)] bg-[size:64px_64px] opacity-[0.18]" />
-      <ReactFlow<SiteNode, SiteEdge>
-        aria-label="Joe Simo operating map"
-        nodes={renderedNodes}
-        edges={renderedEdges}
-        nodeTypes={nodeTypes}
-        onInit={setFlow}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={(_, node) => focusNode(node.id as SiteNodeId)}
-        onNodeMouseEnter={(_, node) => setHoveredNodeId(node.id as SiteNodeId)}
-        onNodeMouseLeave={() => setHoveredNodeId(null)}
-        onPaneClick={resetMap}
-        fitView
-        fitViewOptions={{ padding: 0.08 }}
-        minZoom={0.34}
-        maxZoom={1.18}
-        nodesConnectable={false}
-        nodesDraggable={false}
-        elementsSelectable={false}
-        edgesFocusable={false}
-        panOnDrag
-        panOnScroll={false}
-        zoomOnScroll={false}
-        zoomOnDoubleClick={false}
-        preventScrolling={false}
-        proOptions={{ hideAttribution: false }}
-        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
+    <div
+      className="site-flow site-flow-map relative h-full overflow-hidden"
+      data-active-node={activeNodeId}
+      data-traced-node={displayNodeId}
+      data-signature-state={signaturePlaying ? "playing" : "idle"}
+    >
+      <p id="site-map-keyboard-hint" className="sr-only">
+        Use arrow keys to select a section.
+      </p>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {activeRecord.label} selected. {activeRecord.status}
+      </p>
+
+      <WebGLSignalField
+        activeNodeId={displayNodeId}
+        activeRouteProgress={displayRouteProgress}
+        className="site-webgl-signal-field"
+        nodes={webglNodes}
+        originNodeId={originNodeId}
+        sceneMode={displayRecord.sceneMode}
+      />
+
+      <div className="site-map-topline" aria-hidden>
+        <span>Joe Method</span>
+        <span>
+          {displayRecord.scene.code} / {displayRecord.scene.coordinate}
+        </span>
+      </div>
+
+      <SignatureReadout
+        announce={signatureAnnounce}
+        phase={signaturePhase}
+        playing={signaturePlaying}
+      />
+
+      {artifactRecord ? (
+        <SignalArtifact progress={artifactProgress} record={artifactRecord} />
+      ) : null}
+
+      <div className="site-map-controls" role="group" aria-label="Map controls">
+        <button
+          type="button"
+          onClick={reset}
+          aria-label="Focus background"
+          title="Focus background"
+          disabled={activeRecord.id === defaultActiveNodeId}
+        >
+          <SiteIcon iconKey="briefcase" aria-hidden />
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            scrollToExperienceSection(activeRecord, { focusEntry: true })
+          }
+          aria-label={`Read ${activeRecord.label}`}
+          title="Read"
+        >
+          <SiteIcon iconKey="arrowUpRight" aria-hidden />
+        </button>
+      </div>
+
+      <svg
+        className="site-map-lines pointer-events-none absolute inset-0 size-full"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        aria-hidden
       >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={28}
-          size={1}
-          color="var(--border)"
+        {edges.map(({ record, path }) => {
+          const active = displayNodeId === record.id;
+          const routeProgress = Math.max(
+            routeProgressById[record.id] ?? 0,
+            active ? 0.18 : 0,
+          );
+          const routeStyle = {
+            "--route-progress": clampProgress(routeProgress),
+          } as CSSProperties;
+
+          return (
+            <path
+              key={record.id}
+              d={path}
+              pathLength={1}
+              className={cn(
+                "site-map-edge",
+                active && "site-map-edge-active",
+              )}
+              style={routeStyle}
+              vectorEffect="non-scaling-stroke"
+            />
+          );
+        })}
+      </svg>
+
+      {originRecord && originPoint ? (
+        <OriginNode
+          onPreview={previewNode}
+          onTrace={() => startSignatureTrace(true)}
+          point={originPoint}
+          record={originRecord}
+          signaturePlaying={signaturePlaying}
         />
-        <CanvasController
-          flow={flow}
-          focusedNodeId={focusedNodeId}
-          reducedMotion={reducedMotion}
-          onFocus={focusNode}
-          onReset={resetMap}
-        />
-        <Controls
-          position="bottom-right"
-          showInteractive={false}
-          orientation="horizontal"
-        />
-      </ReactFlow>
+      ) : null}
+
+      <div
+        className="site-map-radio-layer"
+        role="radiogroup"
+        aria-label="Joe Simo sections"
+        aria-describedby="site-map-keyboard-hint"
+      >
+        {visibleRecords.map((record) => {
+          const point = nodePoints[record.id];
+
+          if (!point) {
+            return null;
+          }
+
+          return (
+            <CanvasNode
+              key={record.id}
+              active={record.id === activeNodeId}
+              highlighted={record.id === displayNodeId}
+              onCommit={openRoute}
+              onKeyNavigate={(event, nodeId) =>
+                navigateWithKeys(
+                  event,
+                  nodeId,
+                  (id) => `[data-map-node-id="${id}"]`,
+                )
+              }
+              onPreview={previewNode}
+              point={point}
+              record={record}
+              tabIndex={record.id === focusableNodeId ? 0 : -1}
+            />
+          );
+        })}
+      </div>
+
+      <RouteStatus record={displayRecord} />
     </div>
   );
 }
