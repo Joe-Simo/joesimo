@@ -19,7 +19,7 @@ export function SiteFooter() {
           Telematics Engineering.
         </p>
         <span className="pt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          {"Joe -> Background -> Work -> Links -> Contact"}
+          {"Joe -> Breakage -> Signals -> Surface -> Trail -> Contact"}
         </span>
       </div>
       <div className="flex flex-wrap gap-x-2 gap-y-2 sm:justify-end">

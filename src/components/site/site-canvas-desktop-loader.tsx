@@ -41,7 +41,7 @@ function StaticMapFallback({ records }: { records: SiteCanvasRecord[] }) {
         Joe Simo map loading. Sections are available below.
       </p>
       <div className="site-map-topline" aria-hidden>
-        <span>Joe Method</span>
+        <span>Method Instrument</span>
         <span>static field</span>
       </div>
       <svg

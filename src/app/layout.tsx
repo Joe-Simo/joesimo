@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { headers } from "next/headers";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { ThemeMeta } from "@/components/site/theme-meta";
@@ -85,6 +86,10 @@ const personJsonLd = {
   url: siteUrl,
   email: "mailto:hello@joesimo.com",
   description: siteDescription,
+  image: `${siteUrl}/media/joe-simo-x-avatar.webp`,
+  jobTitle: "Devsigner",
+  mainEntityOfPage: siteUrl,
+  knowsLanguage: ["English", "Spanish"],
   address: {
     "@type": "PostalAddress",
     addressLocality: "Fort Myers",
@@ -102,7 +107,7 @@ const websiteJsonLd = {
   "@id": `${siteUrl}/#website`,
   name: siteName,
   url: siteUrl,
-  inLanguage: ["en", "es"],
+  inLanguage: "en",
   author: {
     "@id": `${siteUrl}/#person`,
   },
@@ -121,11 +126,13 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html
       lang="en"
@@ -139,9 +146,11 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          nonce={nonce}
         >
           <script
             type="application/ld+json"
+            nonce={nonce}
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
             }}

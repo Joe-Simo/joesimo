@@ -14,26 +14,30 @@ import {
   scrollToExperienceSection,
   useSiteExperienceState,
 } from "@/components/site/use-site-experience-state";
-import type {
-  AccentKey,
-  SiteAction,
-  SiteCanvasRecord,
-  SiteNodeId,
+import {
+  traceStages,
+  type AccentKey,
+  type SiteAction,
+  type SiteCanvasRecord,
+  type SiteNodeId,
 } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 const accentClasses: Record<AccentKey, string> = {
   ink: "border-border text-foreground",
   signal: "border-border text-foreground",
+  fault: "border-border text-foreground",
   live: "border-border text-foreground",
 };
 
 const routeDisplayLabels: Partial<Record<SiteNodeId, string>> = {
-  method: "Background",
+  method: "Method",
   work: "Work",
-  trail: "Links",
+  trail: "Trail",
   contact: "Email",
 };
+
+type MobileMethodStopId = (typeof traceStages)[number]["id"];
 
 function actionTargetProps(action: SiteAction) {
   return action.external
@@ -105,8 +109,12 @@ export function SiteCanvasMobile({
     null,
   );
   const [signaturePlaying, setSignaturePlaying] = useState(false);
+  const [manualStopId, setManualStopId] =
+    useState<MobileMethodStopId | null>(null);
   const signatureTimeoutsRef = useRef<number[]>([]);
-  const displayNodeId = signatureNodeId ?? tracedNodeId;
+  const manualStop =
+    traceStages.find((stop) => stop.id === manualStopId) ?? null;
+  const displayNodeId = signatureNodeId ?? manualStop?.nodeId ?? tracedNodeId;
   const displayRecord =
     records.find((record) => record.id === displayNodeId) ?? tracedRecord;
   const visibleQuickActions = getVisibleQuickActions(
@@ -125,6 +133,7 @@ export function SiteCanvasMobile({
 
   const startSignatureTrace = useCallback(() => {
     clearSignatureTrace();
+    setManualStopId(null);
 
     if (prefersReducedMotion()) {
       commitNode("work");
@@ -139,18 +148,17 @@ export function SiteCanvasMobile({
 
     setSignaturePlaying(true);
 
-    const sequence = [...visibleRecords, records.find((record) => record.id === "work")]
-      .filter((record): record is SiteCanvasRecord => Boolean(record));
-
-    sequence.forEach((record, index) => {
+    traceStages.forEach((stage, index) => {
       const timeoutId = window.setTimeout(() => {
-        setSignatureNodeId(record.id);
+        setSignatureNodeId(stage.nodeId);
 
-        if (index === sequence.length - 1) {
-          commitNode(record.id);
+        if (index === traceStages.length - 1) {
+          commitNode(stage.nodeId);
           window.setTimeout(() => {
-            if (record.id === "work") {
-              scrollToExperienceSection(record, { focusEntry: true });
+            const workRecord = records.find((record) => record.id === "work");
+
+            if (workRecord) {
+              scrollToExperienceSection(workRecord, { focusEntry: true });
             }
             clearSignatureTrace();
           }, 260);
@@ -159,7 +167,7 @@ export function SiteCanvasMobile({
 
       signatureTimeoutsRef.current.push(timeoutId);
     });
-  }, [clearSignatureTrace, commitNode, records, visibleRecords]);
+  }, [clearSignatureTrace, commitNode, records]);
 
   useEffect(() => clearSignatureTrace, [clearSignatureTrace]);
 
@@ -175,12 +183,34 @@ export function SiteCanvasMobile({
       >
         {activeRecord.label} selected. {activeRecord.status}
       </p>
-      <div className="grid max-w-full overflow-hidden border-y border-border bg-background">
+      <div className="site-mobile-console grid max-w-full overflow-visible border-y border-border bg-background">
         <div className="grid gap-3 border-b border-border p-3">
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              Joe method / {displayRecord.shortLabel} active
+            <span className="min-w-0 truncate font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              Method Instrument / {displayRecord.shortLabel}
             </span>
+          </div>
+
+          <div
+            className="site-mobile-trace-stops"
+            role="group"
+            aria-label="Trace Joe Simo method"
+          >
+            {traceStages.map((stop) => (
+              <button
+                key={stop.id}
+                type="button"
+                aria-pressed={manualStopId === stop.id}
+                onClick={() => {
+                  clearSignatureTrace();
+                  setManualStopId(stop.id);
+                  commitNode(stop.nodeId);
+                }}
+              >
+                <span>{stop.code}</span>
+                <strong>{stop.label}</strong>
+              </button>
+            ))}
           </div>
 
           <div className="site-mobile-map-field relative min-h-[12rem] min-w-0">
@@ -211,7 +241,7 @@ export function SiteCanvasMobile({
             <button
               type="button"
               onClick={startSignatureTrace}
-              aria-label="Trace Joe Simo background to current work"
+              aria-label="Trace Joe Simo method to current work"
               aria-pressed={signaturePlaying}
               className="absolute left-1/2 top-1/2 z-10 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center overflow-hidden rounded-md border border-border bg-background font-pixel text-[10px] uppercase text-muted-foreground outline-none transition hover:border-foreground/35 focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/35"
             >
@@ -232,7 +262,10 @@ export function SiteCanvasMobile({
                   <button
                     key={record.id}
                     type="button"
-                    onClick={() => commitNode(record.id)}
+                    onClick={() => {
+                      setManualStopId(null);
+                      commitNode(record.id);
+                    }}
                     onFocus={() => previewNode(record.id)}
                     onBlur={() => previewNode(null)}
                     onPointerEnter={(event) => {
@@ -251,11 +284,11 @@ export function SiteCanvasMobile({
                     role="radio"
                     aria-checked={active}
                     aria-controls="site-mobile-map-detail"
-                    aria-label={`Select ${record.label}`}
+                    aria-label={`Preview ${record.label}`}
                     tabIndex={record.id === focusableNodeId ? 0 : -1}
                     data-mobile-map-node-id={record.id}
                     className={cn(
-                      "group absolute z-10 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-md border border-border bg-background font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground outline-none transition hover:border-foreground/35 focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/35",
+                      "site-mobile-node group absolute z-10 -translate-x-1/2 -translate-y-1/2 rounded-md border border-border bg-background text-muted-foreground outline-none transition hover:border-foreground/35 focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/35",
                       active && "border-foreground text-foreground",
                       highlighted && "border-[color-mix(in_oklab,var(--signal-accent)_56%,var(--border))] text-foreground",
                     )}
@@ -269,31 +302,13 @@ export function SiteCanvasMobile({
                     >
                       <SiteIcon iconKey={record.iconKey} aria-hidden />
                     </span>
-                    <span className="sr-only">{record.shortLabel}</span>
+                    <span className="site-mobile-node-label">
+                      {routeDisplayLabels[record.id] ?? record.label}
+                    </span>
                   </button>
                 );
               })}
             </div>
-          </div>
-
-          <div
-            className="grid grid-cols-2 gap-x-3 gap-y-2 border-t border-border pt-3"
-            aria-hidden
-          >
-            {visibleRecords.map((record) => (
-              <span
-                key={record.id}
-                className={cn(
-                  "flex min-w-0 items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground",
-                  displayNodeId === record.id && "text-foreground",
-                )}
-              >
-                <span className="h-px w-5 shrink-0 bg-current" />
-                <span className="truncate">
-                  {routeDisplayLabels[record.id] ?? record.label}
-                </span>
-              </span>
-            ))}
           </div>
         </div>
 
@@ -302,7 +317,7 @@ export function SiteCanvasMobile({
           className="grid content-between gap-4 p-4"
         >
           <div className="grid gap-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
               {originRecord.label} / {displayRecord.scene.code} / {displayRecord.label}
             </p>
             <div className="grid gap-2">

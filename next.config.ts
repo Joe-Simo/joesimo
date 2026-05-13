@@ -1,19 +1,5 @@
 import type { NextConfig } from "next";
 
-const contentSecurityPolicy = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "frame-ancestors 'none'",
-  "form-action 'self'",
-  "img-src 'self' data: blob:",
-  "font-src 'self' data:",
-  "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline'",
-  "connect-src 'self'",
-  "upgrade-insecure-requests",
-].join("; ");
-
 const nextConfig: NextConfig = {
   async headers() {
     return [
@@ -34,16 +20,24 @@ const nextConfig: NextConfig = {
               "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()",
           },
           {
-            key: "Content-Security-Policy",
-            value: contentSecurityPolicy,
-          },
-          {
             key: "Strict-Transport-Security",
-            value: "max-age=31536000",
+            value: "max-age=63072000; includeSubDomains",
           },
           {
             key: "X-Frame-Options",
             value: "DENY",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
+          },
+          {
+            key: "Cross-Origin-Resource-Policy",
+            value: "same-origin",
+          },
+          {
+            key: "Origin-Agent-Cluster",
+            value: "?1",
           },
         ],
       },

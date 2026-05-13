@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   type CSSProperties,
   type KeyboardEvent,
@@ -16,14 +17,17 @@ import {
   scrollToExperienceSection,
   useSiteExperienceState,
 } from "@/components/site/use-site-experience-state";
-import { WebGLSignalField } from "@/components/site/webgl-signal-field";
+import type { WebGLSignalFieldProps } from "@/components/site/webgl-signal-field";
 import {
   defaultActiveNodeId,
   originNodeId,
+  traceStages,
   type AccentKey,
   type SiteAction,
   type SiteCanvasRecord,
   type SiteNodeId,
+  type TraceStage,
+  type TraceStageId,
 } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
@@ -32,56 +36,29 @@ type CanvasPoint = {
   y: number;
 };
 
-type SignaturePhaseId = "breakage" | "signals" | "interface";
-
-type SignaturePhase = {
-  id: SignaturePhaseId;
-  nodeId: SiteNodeId;
-  code: string;
-  label: string;
-  word: string;
-  detail: string;
-};
-
 const accentClasses: Record<AccentKey, string> = {
   ink: "border-border",
   signal: "border-border",
+  fault: "border-border",
   live: "border-border",
 };
 
 const routeDisplayLabels: Partial<Record<SiteNodeId, string>> = {
-  method: "Background",
+  method: "Method",
   work: "Work",
-  trail: "Links",
+  trail: "Trail",
   contact: "Email",
 };
 
-const signaturePhases = [
+const WebGLSignalField = dynamic<WebGLSignalFieldProps>(
+  () =>
+    import("@/components/site/webgl-signal-field").then(
+      (module) => module.WebGLSignalField,
+    ),
   {
-    id: "breakage",
-    nodeId: "method",
-    code: "01",
-    label: "Support",
-    word: "Breakage",
-    detail: "Support taught Joe to start with the failure path.",
+    ssr: false,
   },
-  {
-    id: "signals",
-    nodeId: "method",
-    code: "02",
-    label: "Telematics",
-    word: "Signals",
-    detail: "Telematics shaped how he reads systems, timing, and state.",
-  },
-  {
-    id: "interface",
-    nodeId: "work",
-    code: "03",
-    label: "Interface",
-    word: "Surface",
-    detail: "sim0 is the current public surface of that method.",
-  },
-] as const satisfies readonly SignaturePhase[];
+);
 
 function clampProgress(value: number) {
   if (!Number.isFinite(value)) {
@@ -89,6 +66,16 @@ function clampProgress(value: number) {
   }
 
   return Math.min(1, Math.max(0, value));
+}
+
+function phaseFromProgress(progress: number) {
+  const boundedProgress = clampProgress(progress);
+  const phaseIndex = Math.min(
+    traceStages.length - 1,
+    Math.round(boundedProgress * (traceStages.length - 1)),
+  );
+
+  return traceStages[phaseIndex] ?? traceStages[0];
 }
 
 function createNodePoints(records: readonly SiteCanvasRecord[]) {
@@ -129,6 +116,27 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function allowsWebGLImport() {
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const dataPreference = (
+    navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+      };
+    }
+  ).connection?.saveData;
+
+  if (motionQuery.matches || dataPreference) {
+    return false;
+  }
+
+  const canvas = document.createElement("canvas");
+
+  return Boolean(
+    canvas.getContext("webgl2") ?? canvas.getContext("webgl"),
+  );
+}
+
 function CanvasNode({
   active,
   highlighted,
@@ -167,7 +175,7 @@ function CanvasNode({
       role="radio"
       aria-checked={active}
       aria-controls="site-map-detail"
-      aria-label={`Select ${record.label}`}
+      aria-label={`Preview ${record.label}`}
       tabIndex={tabIndex}
       data-map-node-id={record.id}
       className={cn(
@@ -288,6 +296,125 @@ function SignalArtifact({
   );
 }
 
+function StaticSignalField({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn("site-webgl-signal-field", className)}
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 0,
+        overflow: "hidden",
+        pointerEvents: "none",
+      }}
+      aria-hidden
+    >
+      <div className="site-webgl-static-field" />
+    </div>
+  );
+}
+
+function LazySignalField(props: WebGLSignalFieldProps) {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timeoutId = window.setTimeout(() => {
+      if (!cancelled && allowsWebGLImport()) {
+        setEnabled(true);
+      }
+    }, 180);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  if (!enabled) {
+    return <StaticSignalField className={props.className} />;
+  }
+
+  return <WebGLSignalField {...props} />;
+}
+
+function ExternalCue({ show }: { show: boolean }) {
+  return show ? <span className="sr-only">opens in a new tab</span> : null;
+}
+
+function InspectorAction({
+  action,
+  primary = false,
+}: {
+  action: SiteAction;
+  primary?: boolean;
+}) {
+  return (
+    <a
+      href={action.href}
+      {...actionTargetProps(action)}
+      aria-label={action.ariaLabel}
+      className={cn(
+        "site-route-inspector-action",
+        primary && "site-route-inspector-action-primary",
+      )}
+    >
+      {action.label}
+      <SiteIcon iconKey="arrowUpRight" aria-hidden />
+      <ExternalCue show={Boolean(action.external)} />
+    </a>
+  );
+}
+
+function RouteInspector({
+  onRead,
+  point,
+  record,
+}: {
+  onRead: (record: SiteCanvasRecord) => void;
+  point?: CanvasPoint;
+  record: SiteCanvasRecord;
+}) {
+  const style = point
+    ? ({
+        "--inspector-x": `${point.x}%`,
+        "--inspector-y": `${point.y}%`,
+        "--inspector-translate-x":
+          point.x > 72 ? "-108%" : point.x < 36 ? "2rem" : "-50%",
+        "--inspector-translate-y":
+          point.y > 68 ? "-78%" : point.y < 32 ? "0" : "-50%",
+      } as CSSProperties)
+    : undefined;
+
+  return (
+    <aside
+      className="site-min-detail site-route-inspector"
+      aria-label={`${record.label} route inspector`}
+      style={style}
+    >
+      <span className="site-route-inspector-kicker">
+        {record.scene.code} / {record.scene.eyebrow}
+      </span>
+      <div className="site-route-inspector-copy">
+        <strong>{record.status}</strong>
+        <span>{record.detail}</span>
+      </div>
+      <span className="site-route-inspector-proof">{record.proof}</span>
+      <div className="site-route-rail" role="group" aria-label={`${record.label} actions`}>
+        <button
+          type="button"
+          onClick={() => onRead(record)}
+          className="site-route-inspector-action site-route-inspector-action-primary"
+        >
+          {record.readActionLabel}
+          <SiteIcon iconKey="arrowUpRight" aria-hidden />
+        </button>
+        <InspectorAction action={record.primaryAction} />
+      </div>
+    </aside>
+  );
+}
+
 function RouteStatus({ record }: { record: SiteCanvasRecord }) {
   return (
     <div id="site-map-detail" className="sr-only">
@@ -302,10 +429,10 @@ function SignatureReadout({
   playing,
 }: {
   announce: boolean;
-  phase: SignaturePhase | null;
+  phase: TraceStage | null;
   playing: boolean;
 }) {
-  const displayPhase = phase ?? signaturePhases[0];
+  const displayPhase = phase ?? traceStages[0];
 
   return (
     <>
@@ -325,7 +452,7 @@ function SignatureReadout({
         <strong className="site-signature-word">{displayPhase.word}</strong>
         <span className="site-signature-detail">{displayPhase.detail}</span>
         <span className="site-signature-axis">
-          {signaturePhases.map((item) => (
+          {traceStages.map((item) => (
             <span
               key={item.id}
               data-active={item.id === displayPhase.id ? "true" : "false"}
@@ -336,6 +463,75 @@ function SignatureReadout({
         </span>
       </div>
     </>
+  );
+}
+
+function TraceController({
+  activePhase,
+  onCommit,
+  onSettle,
+  onTraceProgress,
+  progress,
+}: {
+  activePhase: TraceStage;
+  onCommit: (phase: TraceStage) => void;
+  onSettle: () => void;
+  onTraceProgress: (progress: number) => void;
+  progress: number;
+}) {
+  const ariaValue = phaseFromProgress(progress).ariaValue;
+
+  return (
+    <div
+      className="site-trace-controller"
+      style={
+        {
+          "--manual-trace-progress": String(progress),
+          "--manual-trace-percent": `${progress * 100}%`,
+        } as CSSProperties
+      }
+    >
+      <label
+        htmlFor="site-method-trace"
+        className="site-trace-controller-label"
+      >
+        Operate the method
+      </label>
+      <input
+        id="site-method-trace"
+        aria-label="Trace Joe Simo method"
+        type="range"
+        min={0}
+        max={1}
+        step={0.001}
+        value={progress}
+        aria-valuetext={ariaValue}
+        onChange={(event) => {
+          onTraceProgress(Number(event.currentTarget.value));
+        }}
+        onBlur={onSettle}
+        onKeyUp={onSettle}
+        onPointerUp={onSettle}
+      />
+      <div className="site-trace-controller-stops" role="group" aria-label="Method trace stops">
+        {traceStages.map((phase) => {
+          return (
+            <button
+              key={phase.id}
+              type="button"
+              aria-pressed={phase.id === activePhase.id}
+              onClick={() => {
+                onTraceProgress(phase.progress);
+                onCommit(phase);
+              }}
+            >
+              <span>{phase.code}</span>
+              <strong>{phase.word}</strong>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -356,14 +552,24 @@ export function SiteCanvasDesktopMap({
     null,
   );
   const [signaturePhaseId, setSignaturePhaseId] =
-    useState<SignaturePhaseId | null>(null);
+    useState<TraceStageId | null>(null);
   const [signaturePlaying, setSignaturePlaying] = useState(false);
   const [signatureAnnounce, setSignatureAnnounce] = useState(false);
   const [routeCommitNodeId, setRouteCommitNodeId] =
     useState<SiteNodeId | null>(null);
+  const [manualTraceActive, setManualTraceActive] = useState(false);
+  const [manualTraceProgress, setManualTraceProgress] = useState(0);
+  const [originIntroVisible, setOriginIntroVisible] = useState(() => {
+    if (typeof window === "undefined") {
+      return true;
+    }
+
+    const url = new URL(window.location.href);
+
+    return !url.hash && !url.search;
+  });
   const signatureTimeoutsRef = useRef<number[]>([]);
   const routeCommitTimeoutRef = useRef<number | null>(null);
-  const introTracePlayedRef = useRef(false);
   const {
     activeNodeId,
     activeRecord,
@@ -409,15 +615,27 @@ export function SiteCanvasDesktopMap({
     tracedNodeId === defaultActiveNodeId ? 0.3 : 0,
     tracedNodeId === activeNodeId ? 0.18 : 0,
   );
-  const displayNodeId = routeCommitNodeId ?? signatureNodeId ?? tracedNodeId;
+  const manualPhase = phaseFromProgress(manualTraceProgress);
+  const manualNodeId = manualTraceActive ? manualPhase.nodeId : null;
+  const displayNodeId =
+    routeCommitNodeId ??
+    signatureNodeId ??
+    manualNodeId ??
+    (originIntroVisible ? originNodeId : tracedNodeId);
   const displayRecord =
     records.find((record) => record.id === displayNodeId) ?? tracedRecord;
   const signaturePhase =
-    signaturePhases.find((phase) => phase.id === signaturePhaseId) ?? null;
+    traceStages.find((phase) => phase.id === signaturePhaseId) ?? null;
+  const displayPhase =
+    signaturePhase ?? (manualTraceActive ? manualPhase : null);
   const displayRouteProgress =
-    signaturePlaying || routeCommitNodeId ? 1 : tracedRouteProgress;
+    signaturePlaying || routeCommitNodeId
+      ? 1
+      : manualTraceActive
+        ? Math.max(0.18, manualTraceProgress)
+        : tracedRouteProgress;
   const shouldShowArtifact =
-    displayRecord.id === "work" || signaturePhase?.id === "interface";
+    displayRecord.id === "work" || displayPhase?.id === "surface";
   const artifactRecord = shouldShowArtifact ? workArtifactRecord : null;
   const artifactProgress = shouldShowArtifact
     ? Math.max(
@@ -427,6 +645,11 @@ export function SiteCanvasDesktopMap({
           : 0.72,
       )
     : 0;
+  const showRouteInspector =
+    !originIntroVisible ||
+    manualTraceActive ||
+    signaturePlaying ||
+    Boolean(routeCommitNodeId);
 
   const clearSignatureTrace = useCallback(() => {
     signatureTimeoutsRef.current.forEach((timeoutId) => {
@@ -448,16 +671,18 @@ export function SiteCanvasDesktopMap({
     setRouteCommitNodeId(null);
   }, []);
 
-  const openRoute = useCallback(
+  const commitRoute = useCallback(
     (record: SiteCanvasRecord) => {
       clearRouteCommit();
+      setOriginIntroVisible(false);
+      setManualTraceActive(false);
+      setManualTraceProgress(0);
       setRouteCommitNodeId(record.id);
       commitNode(record.id);
 
-      const delay = prefersReducedMotion() ? 0 : 240;
+      const delay = prefersReducedMotion() ? 160 : 760;
 
       routeCommitTimeoutRef.current = window.setTimeout(() => {
-        scrollToExperienceSection(record, { focusEntry: true });
         setRouteCommitNodeId(null);
         routeCommitTimeoutRef.current = null;
       }, delay);
@@ -465,9 +690,46 @@ export function SiteCanvasDesktopMap({
     [clearRouteCommit, commitNode],
   );
 
+  const updateManualTrace = useCallback(
+    (progress: number) => {
+      clearSignatureTrace();
+      clearRouteCommit();
+      setOriginIntroVisible(false);
+
+      const nextProgress = clampProgress(progress);
+
+      setManualTraceActive(true);
+      setManualTraceProgress(nextProgress);
+    },
+    [clearRouteCommit, clearSignatureTrace],
+  );
+
+  const commitManualPhase = useCallback(
+    (phase: TraceStage) => {
+      setManualTraceActive(true);
+      setManualTraceProgress(phase.progress);
+      commitNode(phase.nodeId);
+    },
+    [commitNode],
+  );
+
+  const settleManualTrace = useCallback(() => {
+    if (!manualTraceActive) {
+      return;
+    }
+
+    const settledPhase = phaseFromProgress(manualTraceProgress);
+
+    setManualTraceProgress(settledPhase.progress);
+    commitNode(settledPhase.nodeId);
+  }, [commitNode, manualTraceActive, manualTraceProgress]);
+
   const startSignatureTrace = useCallback((commitFinal = true) => {
     clearSignatureTrace();
     clearRouteCommit();
+    setOriginIntroVisible(false);
+    setManualTraceActive(false);
+    setManualTraceProgress(0);
 
     if (prefersReducedMotion()) {
       if (commitFinal) {
@@ -485,21 +747,14 @@ export function SiteCanvasDesktopMap({
     setSignaturePlaying(true);
     setSignatureAnnounce(commitFinal);
 
-    signaturePhases.forEach((phase, index) => {
+    traceStages.forEach((phase, index) => {
       const timeoutId = window.setTimeout(() => {
         setSignaturePhaseId(phase.id);
         setSignatureNodeId(phase.nodeId);
 
-        if (index === signaturePhases.length - 1) {
+        if (index === traceStages.length - 1) {
           if (commitFinal) {
             commitNode(phase.nodeId);
-            const workRecord = records.find((record) => record.id === phase.nodeId);
-
-            if (workRecord) {
-              window.setTimeout(() => {
-                scrollToExperienceSection(workRecord, { focusEntry: true });
-              }, 860);
-            }
           }
 
           window.setTimeout(() => {
@@ -512,28 +767,6 @@ export function SiteCanvasDesktopMap({
     });
   }, [clearRouteCommit, clearSignatureTrace, commitNode, records]);
 
-  useEffect(() => {
-    if (introTracePlayedRef.current || prefersReducedMotion()) {
-      return;
-    }
-
-    const url = new URL(window.location.href);
-
-    if (url.hash || url.search) {
-      return;
-    }
-
-    introTracePlayedRef.current = true;
-
-    const timeoutId = window.setTimeout(() => {
-      startSignatureTrace(false);
-    }, 720);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [startSignatureTrace]);
-
   useEffect(() => clearSignatureTrace, [clearSignatureTrace]);
   useEffect(() => clearRouteCommit, [clearRouteCommit]);
 
@@ -543,6 +776,7 @@ export function SiteCanvasDesktopMap({
       data-active-node={activeNodeId}
       data-traced-node={displayNodeId}
       data-signature-state={signaturePlaying ? "playing" : "idle"}
+      data-manual-trace={manualTraceActive ? "active" : "idle"}
     >
       <p id="site-map-keyboard-hint" className="sr-only">
         Use arrow keys to select a section.
@@ -551,7 +785,7 @@ export function SiteCanvasDesktopMap({
         {activeRecord.label} selected. {activeRecord.status}
       </p>
 
-      <WebGLSignalField
+      <LazySignalField
         activeNodeId={displayNodeId}
         activeRouteProgress={displayRouteProgress}
         className="site-webgl-signal-field"
@@ -561,7 +795,7 @@ export function SiteCanvasDesktopMap({
       />
 
       <div className="site-map-topline" aria-hidden>
-        <span>Joe Method</span>
+        <span>Method Instrument</span>
         <span>
           {displayRecord.scene.code} / {displayRecord.scene.coordinate}
         </span>
@@ -569,20 +803,42 @@ export function SiteCanvasDesktopMap({
 
       <SignatureReadout
         announce={signatureAnnounce}
-        phase={signaturePhase}
-        playing={signaturePlaying}
+        phase={displayPhase}
+        playing={signaturePlaying || manualTraceActive}
+      />
+
+      <TraceController
+        activePhase={displayPhase ?? traceStages[0]}
+        onCommit={commitManualPhase}
+        onSettle={settleManualTrace}
+        onTraceProgress={updateManualTrace}
+        progress={manualTraceProgress}
       />
 
       {artifactRecord ? (
         <SignalArtifact progress={artifactProgress} record={artifactRecord} />
       ) : null}
 
+      {showRouteInspector ? (
+        <RouteInspector
+          onRead={(record) =>
+            scrollToExperienceSection(record, { focusEntry: true })
+          }
+          point={nodePoints[displayRecord.id]}
+          record={displayRecord}
+        />
+      ) : null}
+
       <div className="site-map-controls" role="group" aria-label="Map controls">
         <button
           type="button"
-          onClick={reset}
-          aria-label="Focus background"
-          title="Focus background"
+          onClick={() => {
+            setManualTraceProgress(0);
+            setManualTraceActive(false);
+            reset();
+          }}
+          aria-label="Focus method"
+          title="Focus method"
           disabled={activeRecord.id === defaultActiveNodeId}
         >
           <SiteIcon iconKey="briefcase" aria-hidden />
@@ -606,11 +862,13 @@ export function SiteCanvasDesktopMap({
         aria-hidden
       >
         {edges.map(({ record, path }) => {
-          const active = displayNodeId === record.id;
-          const routeProgress = Math.max(
-            routeProgressById[record.id] ?? 0,
-            active ? 0.18 : 0,
-          );
+          const active = !originIntroVisible && displayNodeId === record.id;
+          const routeProgress = originIntroVisible
+            ? 0.16
+            : Math.max(
+                routeProgressById[record.id] ?? 0,
+                active ? displayRouteProgress : 0,
+              );
           const routeStyle = {
             "--route-progress": clampProgress(routeProgress),
           } as CSSProperties;
@@ -637,7 +895,7 @@ export function SiteCanvasDesktopMap({
           onTrace={() => startSignatureTrace(true)}
           point={originPoint}
           record={originRecord}
-          signaturePlaying={signaturePlaying}
+          signaturePlaying={signaturePlaying || manualTraceActive}
         />
       ) : null}
 
@@ -657,9 +915,9 @@ export function SiteCanvasDesktopMap({
           return (
             <CanvasNode
               key={record.id}
-              active={record.id === activeNodeId}
-              highlighted={record.id === displayNodeId}
-              onCommit={openRoute}
+              active={!originIntroVisible && record.id === activeNodeId}
+              highlighted={!originIntroVisible && record.id === displayNodeId}
+              onCommit={commitRoute}
               onKeyNavigate={(event, nodeId) =>
                 navigateWithKeys(
                   event,

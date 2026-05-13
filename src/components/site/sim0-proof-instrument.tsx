@@ -191,6 +191,34 @@ export function Sim0ProofInstrument({
           ) : null}
         </a>
       </div>
+
+      <div
+        className="sim0-proof-cuts"
+        role="radiogroup"
+        aria-label="sim0 proof cuts"
+      >
+        {sim0ProofPoints.map((hotspot, index) => {
+          const isActive = activeId === hotspot.id;
+
+          return (
+            <button
+              key={hotspot.id}
+              type="button"
+              role="radio"
+              aria-checked={isActive}
+              tabIndex={isActive ? 0 : -1}
+              className={cn("sim0-proof-cut", isActive && "is-active")}
+              onClick={() => setActiveId(hotspot.id)}
+              onFocus={() => setActiveId(hotspot.id)}
+              onKeyDown={(event) => handleKeyDown(event, index)}
+            >
+              <span>{hotspot.code}</span>
+              <strong>{hotspot.label}</strong>
+              <em>{hotspot.visibleLabel}</em>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

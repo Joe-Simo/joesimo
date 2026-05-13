@@ -106,7 +106,12 @@ function syncMapStateToUrl(nodeId: SiteNodeId) {
   const url = new URL(window.location.href);
   url.hash = "";
 
-  if (nodeId === originNodeId || nodeId === defaultActiveNodeId) {
+  const defaultUrlNodes = new Set<SiteNodeId>([
+    originNodeId,
+    defaultActiveNodeId,
+  ]);
+
+  if (defaultUrlNodes.has(nodeId)) {
     url.searchParams.delete("map");
   } else {
     url.searchParams.set("map", nodeId);

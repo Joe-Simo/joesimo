@@ -17,10 +17,12 @@ export type WebGLSignalFieldProps = {
   activeNodeId?: string;
   activeRouteProgress?: number;
   className?: string;
+  isTracing?: boolean;
   nodes?: readonly WebGLSignalNode[];
   originNodeId?: string;
   sceneMode?: SceneMode;
   style?: CSSProperties;
+  traceVelocity?: number;
 };
 
 type ClipPoint = {
@@ -288,19 +290,24 @@ export function WebGLSignalField({
   activeNodeId,
   activeRouteProgress,
   className,
+  isTracing = false,
   nodes = [],
   originNodeId,
   sceneMode = "method",
   style,
+  traceVelocity = 0,
 }: WebGLSignalFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const activeNodeIdRef = useRef(activeNodeId);
   const activeRouteProgressRef = useRef(activeRouteProgress);
+  const isTracingRef = useRef(isTracing);
   const sceneModeRef = useRef(sceneMode);
+  const traceVelocityRef = useRef(traceVelocity);
   const applyRouteProgressRef = useRef<(() => void) | null>(null);
   const refreshActiveRouteRef = useRef<(() => void) | null>(null);
   const applySceneModeRef = useRef<(() => void) | null>(null);
+  const applyTraceStateRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     activeNodeIdRef.current = activeNodeId;
@@ -316,6 +323,12 @@ export function WebGLSignalField({
     sceneModeRef.current = sceneMode;
     applySceneModeRef.current?.();
   }, [sceneMode]);
+
+  useEffect(() => {
+    isTracingRef.current = isTracing;
+    traceVelocityRef.current = traceVelocity;
+    applyTraceStateRef.current?.();
+  }, [isTracing, traceVelocity]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -389,8 +402,24 @@ export function WebGLSignalField({
       opacity: 0.18,
       transparent: true,
     });
+    const signalHeadPositions = new Float32Array([4, 4, 0]);
+    const signalHeadGeometry = new THREE.BufferGeometry().setAttribute(
+      "position",
+      new THREE.BufferAttribute(signalHeadPositions, 3),
+    );
+    const signalHeadMaterial = new THREE.PointsMaterial({
+      blending: THREE.AdditiveBlending,
+      color: 0x0076d6,
+      depthTest: false,
+      depthWrite: false,
+      opacity: 0.62,
+      size: 20,
+      sizeAttenuation: false,
+      transparent: true,
+    });
     const routes = new THREE.LineSegments(routeGeometry, routeMaterial);
     const points = new THREE.Points(fieldGeometry, fieldMaterial);
+    const signalHead = new THREE.Points(signalHeadGeometry, signalHeadMaterial);
 
     let activeRoute: THREE.LineSegments | null = null;
     let animationFrame = 0;
@@ -401,7 +430,8 @@ export function WebGLSignalField({
 
     routes.renderOrder = 1;
     points.renderOrder = 2;
-    scene.add(routes, points);
+    signalHead.renderOrder = 3;
+    scene.add(routes, points, signalHead);
     renderer.setClearColor(0x000000, 0);
 
     function shouldAnimate() {
@@ -466,16 +496,20 @@ export function WebGLSignalField({
       const profile = SCENE_PROFILES[sceneModeRef.current];
 
       hostElement.dataset.sceneMode = sceneModeRef.current;
-      sceneEnergyUniform.value = profile.energy;
+      const velocityLift = Math.min(Math.abs(traceVelocityRef.current) * 0.12, 0.28);
+      sceneEnergyUniform.value =
+        profile.energy * (isTracingRef.current ? 1.16 : 1) + velocityLift;
       inkColor.setHex(ink);
       accentColor.setStyle(accent || (dark ? "#66d9ff" : "#0057ff"));
       routeMaterial.color.setHex(ink);
       routeMaterial.opacity = (dark ? 0.055 : 0.06) * profile.routeOpacity;
       activeRouteMaterial.color.copy(accentColor);
       activeRouteMaterial.opacity =
-        (dark ? 0.34 : 0.3) * profile.activeRouteOpacity;
+        (dark ? 0.2 : 0.14) * profile.activeRouteOpacity;
+      signalHeadMaterial.color.copy(accentColor);
+      signalHeadMaterial.opacity = (dark ? 0.74 : 0.62) * profile.activeRouteOpacity;
       renderNow();
-      renderBurst(520);
+      renderBurst(isTracingRef.current ? 900 : 520);
     }
 
     function clearPointer() {
@@ -562,8 +596,32 @@ export function WebGLSignalField({
         : Math.max(2, Math.ceil(vertexCount * progress));
 
       activeRoute.geometry.setDrawRange(0, drawCount);
+      updateSignalHead(progress);
       renderNow();
       renderBurst(420);
+    }
+
+    function updateSignalHead(progress: number) {
+      const originNode = getOriginNode(nodes, originNodeId);
+      const targetNode = nodes.find((node) => node.id === activeNodeIdRef.current);
+
+      if (!originNode || !targetNode || targetNode.id === originNode.id || reducedMotion) {
+        signalHead.visible = false;
+        return;
+      }
+
+      const point = cubicClipPoint(
+        toClipPoint(originNode),
+        toClipPoint(targetNode),
+        progress,
+        targetNode.tension,
+        targetNode.depth,
+      );
+      const positionAttribute = signalHeadGeometry.getAttribute("position");
+
+      signalHead.visible = true;
+      positionAttribute.setXYZ(0, point.x, point.y, 0);
+      positionAttribute.needsUpdate = true;
     }
 
     function refreshActiveRoute() {
@@ -587,6 +645,7 @@ export function WebGLSignalField({
     applyRouteProgressRef.current = applyActiveRouteProgress;
     refreshActiveRouteRef.current = refreshActiveRoute;
     applySceneModeRef.current = applySceneStyle;
+    applyTraceStateRef.current = applySceneStyle;
 
     const resizeObserver = new ResizeObserver(resize);
     const themeObserver = new MutationObserver(applySceneStyle);
@@ -621,6 +680,7 @@ export function WebGLSignalField({
       applyRouteProgressRef.current = null;
       refreshActiveRouteRef.current = null;
       applySceneModeRef.current = null;
+      applyTraceStateRef.current = null;
       cancelAnimation();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
@@ -633,11 +693,13 @@ export function WebGLSignalField({
       canvas.removeEventListener("webglcontextrestored", handleContextRestored);
       window.removeEventListener("blur", clearPointer);
       window.removeEventListener("resize", resize);
-      scene.remove(routes, points);
+      scene.remove(routes, points, signalHead);
       routes.geometry.dispose();
       points.geometry.dispose();
+      signalHead.geometry.dispose();
       routeMaterial.dispose();
       activeRouteMaterial.dispose();
+      signalHeadMaterial.dispose();
       fieldMaterial.dispose();
 
       if (activeRoute) {
