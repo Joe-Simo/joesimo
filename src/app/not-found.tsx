@@ -6,10 +6,10 @@ import { SiteIcon } from "@/components/site/site-icons";
 import { siteRecords } from "@/lib/site-data";
 
 const featuredRecords = siteRecords.filter((record) =>
-  ["work", "trail", "contact"].includes(record.id),
+  ["work", "trail"].includes(record.id),
 );
 const notFoundCopy =
-  "The direct paths are home, work, links, and email.";
+  "The direct paths are home, portfolio, blog, and footer socials.";
 
 export default function NotFound() {
   return (
@@ -54,29 +54,22 @@ export default function NotFound() {
               className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 text-sm font-medium outline-none transition hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35"
             >
               <SiteIcon iconKey="appWindow" aria-hidden />
-              Work
+              Portfolio
             </Link>
             <Link
-              href="/#trail"
+              href="/#blog"
               className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 text-sm font-medium outline-none transition hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35"
             >
               <SiteIcon iconKey="bookOpen" aria-hidden />
-              Links
+              Blog
             </Link>
-            <a
-              href="mailto:hello@joesimo.com"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 text-sm font-medium outline-none transition hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35"
-            >
-              <SiteIcon iconKey="mail" aria-hidden />
-              Email
-            </a>
           </div>
 
           <div className="grid border-y border-border">
             {featuredRecords.map((record) => (
               <Link
                 key={record.id}
-                href={`/${record.sectionAnchor}`}
+                href={record.id === "trail" ? "/#blog" : `/${record.sectionAnchor}`}
                 className="grid gap-3 border-b border-border py-5 outline-none transition last:border-b-0 hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35 md:grid-cols-[8rem_minmax(0,1fr)]"
               >
                 <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">

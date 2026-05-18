@@ -3,7 +3,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import * as THREE from "three";
 
-import type { SceneMode } from "@/lib/site-data";
+import type { CaseActionId, InvestigationStatus, SceneMode } from "@/lib/site-data";
 
 export type WebGLSignalNode = {
   depth?: number;
@@ -14,12 +14,19 @@ export type WebGLSignalNode = {
 };
 
 export type WebGLSignalFieldProps = {
+  activeActionId?: CaseActionId;
   activeNodeId?: string;
   activeRouteProgress?: number;
+  caseComplete?: boolean;
   className?: string;
+  completionProgress?: number;
+  inspectedNodeIds?: readonly string[];
+  interactionMode?: "idle" | "proof" | "receipt" | "scrubbing";
+  investigationStatus?: InvestigationStatus;
   isTracing?: boolean;
   nodes?: readonly WebGLSignalNode[];
   originNodeId?: string;
+  previewNodeId?: string;
   sceneMode?: SceneMode;
   style?: CSSProperties;
   traceVelocity?: number;
@@ -210,6 +217,7 @@ function createRouteGeometry(
   nodes: readonly WebGLSignalNode[],
   originNodeId?: string,
   targetNodeId?: string,
+  targetNodeIds?: readonly string[],
 ) {
   const originNode = getOriginNode(nodes, originNodeId);
 
@@ -220,9 +228,14 @@ function createRouteGeometry(
     );
   }
 
+  const targetSet = targetNodeIds?.length ? new Set(targetNodeIds) : undefined;
   const targets = nodes.filter((node) => {
     if (node.id === originNode.id) {
       return false;
+    }
+
+    if (targetSet) {
+      return targetSet.has(node.id);
     }
 
     return targetNodeId ? node.id === targetNodeId : true;
@@ -286,13 +299,39 @@ function clampProgress(value: number | undefined) {
   return Math.min(1, Math.max(0, value));
 }
 
+function getSupportedWebGLContext(
+  canvas: HTMLCanvasElement,
+): WebGLRenderingContext | WebGL2RenderingContext | null {
+  const attributes: WebGLContextAttributes = {
+    alpha: true,
+    antialias: true,
+    powerPreference: "low-power",
+  };
+
+  return (
+    (canvas.getContext("webgl2", attributes) as WebGL2RenderingContext | null) ??
+    (canvas.getContext("webgl", attributes) as WebGLRenderingContext | null) ??
+    (canvas.getContext(
+      "experimental-webgl",
+      attributes,
+    ) as WebGLRenderingContext | null)
+  );
+}
+
 export function WebGLSignalField({
+  activeActionId = "find",
   activeNodeId,
   activeRouteProgress,
+  caseComplete = false,
   className,
+  completionProgress = 0,
+  inspectedNodeIds = [],
+  interactionMode = "idle",
+  investigationStatus = "idle",
   isTracing = false,
   nodes = [],
   originNodeId,
+  previewNodeId,
   sceneMode = "method",
   style,
   traceVelocity = 0,
@@ -300,14 +339,31 @@ export function WebGLSignalField({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const activeNodeIdRef = useRef(activeNodeId);
+  const activeActionIdRef = useRef(activeActionId);
   const activeRouteProgressRef = useRef(activeRouteProgress);
+  const caseCompleteRef = useRef(caseComplete);
+  const completionProgressRef = useRef(completionProgress);
+  const inspectedNodeIdsRef = useRef(inspectedNodeIds);
+  const interactionModeRef = useRef(interactionMode);
+  const investigationStatusRef = useRef(investigationStatus);
   const isTracingRef = useRef(isTracing);
+  const previewNodeIdRef = useRef(previewNodeId);
   const sceneModeRef = useRef(sceneMode);
   const traceVelocityRef = useRef(traceVelocity);
   const applyRouteProgressRef = useRef<(() => void) | null>(null);
   const refreshActiveRouteRef = useRef<(() => void) | null>(null);
+  const refreshInspectedRouteRef = useRef<(() => void) | null>(null);
   const applySceneModeRef = useRef<(() => void) | null>(null);
   const applyTraceStateRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    activeActionIdRef.current = activeActionId;
+    caseCompleteRef.current = caseComplete;
+    interactionModeRef.current = interactionMode;
+    previewNodeIdRef.current = previewNodeId;
+    applySceneModeRef.current?.();
+    refreshInspectedRouteRef.current?.();
+  }, [activeActionId, caseComplete, interactionMode, previewNodeId]);
 
   useEffect(() => {
     activeNodeIdRef.current = activeNodeId;
@@ -315,9 +371,21 @@ export function WebGLSignalField({
   }, [activeNodeId]);
 
   useEffect(() => {
+    inspectedNodeIdsRef.current = inspectedNodeIds;
+    refreshInspectedRouteRef.current?.();
+  }, [inspectedNodeIds]);
+
+  useEffect(() => {
     activeRouteProgressRef.current = activeRouteProgress;
     applyRouteProgressRef.current?.();
   }, [activeRouteProgress]);
+
+  useEffect(() => {
+    completionProgressRef.current = completionProgress;
+    investigationStatusRef.current = investigationStatus;
+    applySceneModeRef.current?.();
+    applyRouteProgressRef.current?.();
+  }, [completionProgress, investigationStatus]);
 
   useEffect(() => {
     sceneModeRef.current = sceneMode;
@@ -339,6 +407,12 @@ export function WebGLSignalField({
     }
 
     const motionQuery = motionMediaQuery();
+    const rendererContext = getSupportedWebGLContext(canvas);
+
+    if (!rendererContext) {
+      host.dataset.webglReady = "false";
+      return;
+    }
 
     let renderer: THREE.WebGLRenderer;
 
@@ -347,6 +421,7 @@ export function WebGLSignalField({
         alpha: true,
         antialias: true,
         canvas,
+        context: rendererContext as WebGLRenderingContext,
         powerPreference: "low-power",
       });
     } catch {
@@ -402,6 +477,13 @@ export function WebGLSignalField({
       opacity: 0.18,
       transparent: true,
     });
+    const inspectedRouteMaterial = new THREE.LineBasicMaterial({
+      color: 0x0076d6,
+      depthTest: false,
+      depthWrite: false,
+      opacity: 0.08,
+      transparent: true,
+    });
     const signalHeadPositions = new Float32Array([4, 4, 0]);
     const signalHeadGeometry = new THREE.BufferGeometry().setAttribute(
       "position",
@@ -422,6 +504,7 @@ export function WebGLSignalField({
     const signalHead = new THREE.Points(signalHeadGeometry, signalHeadMaterial);
 
     let activeRoute: THREE.LineSegments | null = null;
+    let inspectedRoutes: THREE.LineSegments | null = null;
     let animationFrame = 0;
     let animateUntil = 0;
     let isDocumentVisible = document.visibilityState === "visible";
@@ -496,18 +579,55 @@ export function WebGLSignalField({
       const profile = SCENE_PROFILES[sceneModeRef.current];
 
       hostElement.dataset.sceneMode = sceneModeRef.current;
+      hostElement.dataset.investigationStatus = investigationStatusRef.current;
+      hostElement.dataset.activeAction = activeActionIdRef.current;
+      hostElement.dataset.caseComplete = caseCompleteRef.current ? "true" : "false";
+      hostElement.dataset.interactionMode = interactionModeRef.current;
       const velocityLift = Math.min(Math.abs(traceVelocityRef.current) * 0.12, 0.28);
+      const completionLift = completionProgressRef.current * 0.18;
+      const completionBoost = caseCompleteRef.current ? 0.34 : 0;
+      const interactionLift =
+        interactionModeRef.current === "scrubbing"
+          ? 0.28
+          : interactionModeRef.current === "receipt"
+            ? 0.18
+            : interactionModeRef.current === "proof"
+              ? 0.12
+              : 0;
+      const statusLift =
+        investigationStatusRef.current === "tracing"
+          ? 0.22
+          : investigationStatusRef.current === "inspecting"
+            ? 0.14
+            : investigationStatusRef.current === "synthesizing"
+              ? 0.24
+              : investigationStatusRef.current === "shipped"
+                ? 0.1
+                : 0;
       sceneEnergyUniform.value =
-        profile.energy * (isTracingRef.current ? 1.16 : 1) + velocityLift;
+        profile.energy * (isTracingRef.current ? 1.16 : 1) +
+        velocityLift +
+        completionLift +
+        completionBoost +
+        interactionLift +
+        statusLift;
       inkColor.setHex(ink);
       accentColor.setStyle(accent || (dark ? "#66d9ff" : "#0057ff"));
       routeMaterial.color.setHex(ink);
       routeMaterial.opacity = (dark ? 0.055 : 0.06) * profile.routeOpacity;
       activeRouteMaterial.color.copy(accentColor);
       activeRouteMaterial.opacity =
-        (dark ? 0.2 : 0.14) * profile.activeRouteOpacity;
+        (dark ? 0.2 : 0.14) *
+        profile.activeRouteOpacity *
+        (1 + completionProgressRef.current * 0.32);
+      inspectedRouteMaterial.color.copy(accentColor);
+      inspectedRouteMaterial.opacity =
+        (dark ? 0.16 : 0.12) *
+        profile.activeRouteOpacity *
+        (0.35 + completionProgressRef.current * 0.82);
       signalHeadMaterial.color.copy(accentColor);
       signalHeadMaterial.opacity = (dark ? 0.74 : 0.62) * profile.activeRouteOpacity;
+      signalHeadMaterial.size = caseCompleteRef.current ? 34 : isTracingRef.current ? 26 : 20;
       renderNow();
       renderBurst(isTracingRef.current ? 900 : 520);
     }
@@ -573,6 +693,7 @@ export function WebGLSignalField({
       hostElement.dataset.webglReady = "true";
       resize();
       applySceneStyle();
+      refreshInspectedRoute();
       refreshActiveRoute();
       renderNow();
     }
@@ -642,8 +763,35 @@ export function WebGLSignalField({
       applyActiveRouteProgress();
     }
 
+    function refreshInspectedRoute() {
+      const previewNodeIds = previewNodeIdRef.current
+        ? [previewNodeIdRef.current]
+        : [];
+      const targetNodeIds = Array.from(
+        new Set([...inspectedNodeIdsRef.current, ...previewNodeIds]),
+      );
+      const nextGeometry = createRouteGeometry(
+        nodes,
+        originNodeId,
+        undefined,
+        targetNodeIds,
+      );
+
+      if (inspectedRoutes) {
+        scene.remove(inspectedRoutes);
+        inspectedRoutes.geometry.dispose();
+      }
+
+      inspectedRoutes = new THREE.LineSegments(nextGeometry, inspectedRouteMaterial);
+      inspectedRoutes.renderOrder = 1;
+      scene.add(inspectedRoutes);
+      renderNow();
+      renderBurst(caseCompleteRef.current ? 980 : 360);
+    }
+
     applyRouteProgressRef.current = applyActiveRouteProgress;
     refreshActiveRouteRef.current = refreshActiveRoute;
+    refreshInspectedRouteRef.current = refreshInspectedRoute;
     applySceneModeRef.current = applySceneStyle;
     applyTraceStateRef.current = applySceneStyle;
 
@@ -673,12 +821,14 @@ export function WebGLSignalField({
 
     resize();
     applySceneStyle();
+    refreshInspectedRoute();
     refreshActiveRoute();
     renderBurst(1100);
 
     return () => {
       applyRouteProgressRef.current = null;
       refreshActiveRouteRef.current = null;
+      refreshInspectedRouteRef.current = null;
       applySceneModeRef.current = null;
       applyTraceStateRef.current = null;
       cancelAnimation();
@@ -699,6 +849,7 @@ export function WebGLSignalField({
       signalHead.geometry.dispose();
       routeMaterial.dispose();
       activeRouteMaterial.dispose();
+      inspectedRouteMaterial.dispose();
       signalHeadMaterial.dispose();
       fieldMaterial.dispose();
 
@@ -707,9 +858,18 @@ export function WebGLSignalField({
         activeRoute.geometry.dispose();
       }
 
+      if (inspectedRoutes) {
+        scene.remove(inspectedRoutes);
+        inspectedRoutes.geometry.dispose();
+      }
+
       renderer.dispose();
       delete hostElement.dataset.webglReady;
       delete hostElement.dataset.sceneMode;
+      delete hostElement.dataset.investigationStatus;
+      delete hostElement.dataset.activeAction;
+      delete hostElement.dataset.caseComplete;
+      delete hostElement.dataset.interactionMode;
     };
   }, [nodes, originNodeId]);
 

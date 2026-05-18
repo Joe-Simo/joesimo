@@ -4,13 +4,13 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 import {
-  featuredWork,
   heroCopy,
   profileFacts,
+  projectCaseStudies,
   siteDescription,
 } from "@/lib/site-data";
 
-const artifact = featuredWork;
+const primaryWork = projectCaseStudies[0];
 const locationFact = profileFacts.find((fact) => fact.label === "Location");
 
 async function publicAssetDataUrl(path: string, contentType: string) {
@@ -22,7 +22,7 @@ async function publicAssetDataUrl(path: string, contentType: string) {
 
 export async function createSocialImage(label: string) {
   const portraitImage = await publicAssetDataUrl(
-    "/media/joe-simo-x-avatar.jpg",
+    "/media/joe-simo-headshot.jpg",
     "image/jpeg",
   );
   const geistSans = await readFile(
@@ -182,7 +182,7 @@ export async function createSocialImage(label: string) {
               color: "#606069",
             }}
           >
-            Current work
+            Method World
           </div>
           <div
             style={{
@@ -193,7 +193,7 @@ export async function createSocialImage(label: string) {
               color: "#09090b",
             }}
           >
-            {artifact.title}
+            {primaryWork?.title ?? "Joe Simo"}
           </div>
           <div
             style={{
@@ -204,7 +204,7 @@ export async function createSocialImage(label: string) {
               color: "#606069",
             }}
           >
-            {artifact.actionLabel}
+            Breakage to signals to surface.
           </div>
         </div>
         <div

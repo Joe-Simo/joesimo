@@ -5,7 +5,12 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { ThemeMeta } from "@/components/site/theme-meta";
 import { ThemeProvider } from "@/components/site/theme-provider";
-import { siteDescription, socialChannels } from "@/lib/site-data";
+import {
+  joeProfile,
+  projectCaseStudies,
+  siteDescription,
+  socialChannels,
+} from "@/lib/site-data";
 import "./globals.css";
 
 const geistPixelSquare = localFont({
@@ -25,7 +30,7 @@ const geistPixelSquare = localFont({
 
 const siteUrl = "https://joesimo.com";
 const siteName = "joesimo.com";
-const personName = "Joe Simo";
+const personName = joeProfile.name;
 const siteTitle = `${personName} / ${siteName}`;
 
 export const metadata: Metadata = {
@@ -86,7 +91,7 @@ const personJsonLd = {
   url: siteUrl,
   email: "mailto:hello@joesimo.com",
   description: siteDescription,
-  image: `${siteUrl}/media/joe-simo-x-avatar.webp`,
+  image: `${siteUrl}/media/joe-simo-headshot.webp`,
   jobTitle: "Devsigner",
   mainEntityOfPage: siteUrl,
   knowsLanguage: ["English", "Spanish"],
@@ -117,7 +122,26 @@ const websiteJsonLd = {
   description: siteDescription,
 };
 
-const jsonLd = [personJsonLd, websiteJsonLd];
+const creativeWorkJsonLd = projectCaseStudies.map((project) => ({
+  "@context": "https://schema.org",
+  "@type": project.schemaType,
+  "@id": `${siteUrl}/work/${project.slug}#work`,
+  name: project.title,
+  url: `${siteUrl}/work/${project.slug}`,
+  description: project.summary,
+  applicationCategory: project.applicationCategory,
+  image: project.assets[0]?.media.src
+    ? `${siteUrl}${project.assets[0].media.src}`
+    : undefined,
+  author: {
+    "@id": `${siteUrl}/#person`,
+  },
+  creator: {
+    "@id": `${siteUrl}/#person`,
+  },
+}));
+
+const jsonLd = [personJsonLd, websiteJsonLd, ...creativeWorkJsonLd];
 
 export const viewport: Viewport = {
   themeColor: [

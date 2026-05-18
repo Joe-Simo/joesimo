@@ -12,7 +12,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { navItems, type NavHref } from "@/lib/site-data";
@@ -163,18 +162,6 @@ export function MobileNav({
                 </DropdownMenuItem>
               );
             })}
-          </DropdownMenuGroup>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              render={<a href="mailto:hello@joesimo.com" />}
-              className="min-h-11 px-2"
-            >
-              <SiteIcon iconKey="mail" aria-hidden />
-              <span>Email</span>
-            </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

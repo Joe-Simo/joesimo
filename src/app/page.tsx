@@ -1,15 +1,12 @@
-import { MethodStudioStage } from "@/components/site/method-studio-stage";
+import { JoeHomeStage } from "@/components/site/joe-home-stage";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
-  githubRepositories,
-  methodStudioMoments,
-  methodStudioScenes,
-  methodStudioSpecimens,
-  ownedArtifacts,
-  projectSignals,
-  sim0ProofPoints,
-  socialChannels,
+  fieldNotes,
+  joeProfile,
+  profileMedia,
+  projectCaseStudiesPublic,
+  writingFragments,
 } from "@/lib/site-data";
 
 export default function Home() {
@@ -25,18 +22,19 @@ export default function Home() {
         Skip to content
       </a>
 
-      <SiteHeader />
+      <SiteHeader surface="home" />
 
-      <main id="main-content" tabIndex={-1} className="outline-none">
-        <MethodStudioStage
-          githubRepositories={githubRepositories}
-          moments={methodStudioMoments}
-          ownedArtifacts={ownedArtifacts}
-          projectSignals={projectSignals}
-          proofPoints={sim0ProofPoints}
-          scenes={methodStudioScenes}
-          socialChannels={socialChannels}
-          specimens={methodStudioSpecimens}
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
+      >
+        <JoeHomeStage
+          fieldNotes={fieldNotes}
+          joeProfile={joeProfile}
+          profileMedia={profileMedia}
+          projects={projectCaseStudiesPublic}
+          writingFragments={writingFragments}
         />
       </main>
 
