@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { type KeyboardEvent, useEffect, useState } from "react";
 
 import { SimoIndexRitual } from "@/components/site/simo-index-ritual";
 import type {
@@ -57,10 +57,8 @@ function resolveViewFromHash(hash: string): ActiveView {
 
 function WorkMedia({
   media,
-  priority = false,
 }: {
   media?: SiteMedia;
-  priority?: boolean;
 }) {
   if (!media) {
     return (
@@ -78,7 +76,6 @@ function WorkMedia({
         width={media.width}
         height={media.height}
         sizes="(min-width: 1024px) 34vw, 92vw"
-        priority={priority}
       />
     </div>
   );
@@ -140,7 +137,7 @@ function WorkPanel({ projects }: { projects: PublicProjectCaseStudy[] }) {
                   ))}
                 </div>
               </div>
-              <WorkMedia media={media} priority={index === 0} />
+              <WorkMedia media={media} />
             </article>
           );
         })}
@@ -235,19 +232,46 @@ export function JoeHomeApp({
     };
   }, []);
 
-  function commitView(view: ActiveView) {
+  function commitView(view: ActiveView, options: { scroll?: boolean } = {}) {
     const hash = view === "blog" ? "#blog" : "#work";
     const target = document.getElementById("simo-view-deck");
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const shouldScroll = options.scroll ?? true;
 
     setActiveView(view);
     window.history.pushState(null, "", hash);
     window.dispatchEvent(new Event("hashchange"));
-    target?.scrollIntoView({
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-      block: "start",
+
+    if (shouldScroll) {
+      target?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }
+  }
+
+  function handleViewControlKey(event: KeyboardEvent<HTMLDivElement>) {
+    if (
+      event.key !== "ArrowLeft" &&
+      event.key !== "ArrowRight" &&
+      event.key !== "Home" &&
+      event.key !== "End"
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextView =
+      event.key === "ArrowLeft" || event.key === "Home" ? "portfolio" : "blog";
+    const control = event.currentTarget;
+
+    commitView(nextView, { scroll: false });
+    window.requestAnimationFrame(() => {
+      control
+        .querySelector<HTMLButtonElement>(`[data-view-tab="${nextView}"]`)
+        ?.focus();
     });
   }
 
@@ -260,9 +284,19 @@ export function JoeHomeApp({
             <h1 id="joe-title">{joeProfile.name}</h1>
             <p className="simo-index-headline">{joeProfile.headline}</p>
             <p className="simo-index-detail">{joeProfile.detail}</p>
-            <p className="simo-index-prompt">
-              Hold. Trace. Release into Portfolio or Blog.
-            </p>
+            <figure className="simo-index-portrait">
+              <Image
+                src={profileMedia.src}
+                alt={profileMedia.alt}
+                width={profileMedia.width}
+                height={profileMedia.height}
+                sizes="(min-width: 1024px) 11rem, 7.5rem"
+              />
+              <figcaption>
+                <span>Personal artifact</span>
+                <strong>Joe Simo</strong>
+              </figcaption>
+            </figure>
           </div>
 
           <div
@@ -273,7 +307,6 @@ export function JoeHomeApp({
             <SimoIndexRitual
               activeDestinationId={activeView}
               onDestinationCommit={commitView}
-              profileMedia={profileMedia}
             />
           </div>
         </div>
@@ -292,21 +325,32 @@ export function JoeHomeApp({
               <p className="simo-index-kicker">Single page</p>
               <h2 id="simo-view-title">Joe Simo index</h2>
             </div>
-            <div className="simo-view-control" role="tablist" aria-label="Joe Simo content">
+            <div
+              className="simo-view-control"
+              role="tablist"
+              aria-label="Joe Simo content"
+              onKeyDown={handleViewControlKey}
+            >
               <button
+                id="simo-portfolio-tab"
                 type="button"
+                data-view-tab="portfolio"
                 role="tab"
                 aria-selected={activeView === "portfolio"}
                 aria-controls="simo-portfolio-panel"
+                tabIndex={activeView === "portfolio" ? 0 : -1}
                 onClick={() => commitView("portfolio")}
               >
                 Portfolio
               </button>
               <button
+                id="simo-blog-tab"
                 type="button"
+                data-view-tab="blog"
                 role="tab"
                 aria-selected={activeView === "blog"}
                 aria-controls="simo-blog-panel"
+                tabIndex={activeView === "blog" ? 0 : -1}
                 onClick={() => commitView("blog")}
               >
                 Blog
@@ -318,11 +362,17 @@ export function JoeHomeApp({
             <div
               id="simo-portfolio-panel"
               role="tabpanel"
+              aria-labelledby="simo-portfolio-tab"
               hidden={activeView !== "portfolio"}
             >
               <WorkPanel projects={projects} />
             </div>
-            <div id="simo-blog-panel" role="tabpanel" hidden={activeView !== "blog"}>
+            <div
+              id="simo-blog-panel"
+              role="tabpanel"
+              aria-labelledby="simo-blog-tab"
+              hidden={activeView !== "blog"}
+            >
               <BlogPanel
                 fieldNotes={fieldNotes}
                 writingFragments={writingFragments}

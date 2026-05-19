@@ -50,7 +50,7 @@ test.describe("desktop accessibility quality gates", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByLabel("Tune the route"),
+      page.getByLabel("Hold, trace, and release Joe Simo's primary navigation"),
     ).toBeVisible();
   });
 });

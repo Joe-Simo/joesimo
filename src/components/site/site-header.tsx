@@ -45,6 +45,7 @@ export function SiteHeader({
   activeHref?: NavHref;
   surface?: "default" | "home";
 }) {
+  const showPrimaryNavigation = surface !== "home";
   const surfaceClassName =
     surface === "home"
       ? "site-header site-header-home sticky top-0 z-40 border-b border-border/70 bg-background/88 pt-[env(safe-area-inset-top)] backdrop-blur-xl"
@@ -55,11 +56,15 @@ export function SiteHeader({
       <div className="site-header-shell flex min-h-16 items-center justify-between gap-3 sm:gap-4">
         <BrandMark homeHref={homeHref} />
 
-        <PrimaryNav activeHref={activeHref} sectionPrefix={sectionPrefix} />
+        {showPrimaryNavigation ? (
+          <PrimaryNav activeHref={activeHref} sectionPrefix={sectionPrefix} />
+        ) : null}
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <MobileNav sectionPrefix={sectionPrefix} />
+          {showPrimaryNavigation ? (
+            <MobileNav sectionPrefix={sectionPrefix} />
+          ) : null}
         </div>
       </div>
     </header>

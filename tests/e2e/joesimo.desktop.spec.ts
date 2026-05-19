@@ -24,15 +24,15 @@ test.describe("Joe Simo desktop Simo Index", () => {
 
     await page.getByRole("link", { name: /02 blog/i }).focus();
     await expect(ritual).toHaveAttribute("data-active-intent", "blog");
-    await expect(page.getByText("Read the notes.")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Short notes from the way Joe thinks." }),
+    ).toBeVisible();
 
-    await page.locator("#simo-index-range").evaluate((node) => {
-      const input = node as HTMLInputElement;
-
-      input.value = "1";
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+    await page
+      .getByLabel("Hold, trace, and release Joe Simo's primary navigation")
+      .focus();
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
     await expect(ritual).toHaveAttribute("data-active-intent", "blog");
     await expect(page.getByText("Blog route armed")).toBeVisible();
 

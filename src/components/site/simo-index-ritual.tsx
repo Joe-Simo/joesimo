@@ -1,16 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   type CSSProperties,
   type KeyboardEvent,
   type PointerEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";
-
-import type { SiteMedia } from "@/lib/site-data";
 
 type NavigationDestinationId = "portfolio" | "blog";
 
@@ -53,21 +51,17 @@ const navigationDestinations: NavigationDestination[] = [
 type SimoIndexRitualProps = {
   activeDestinationId?: NavigationDestinationId;
   onDestinationCommit?: (destination: NavigationDestinationId) => void;
-  profileMedia: SiteMedia;
 };
 
 export function SimoIndexRitual({
   activeDestinationId = "portfolio",
   onDestinationCommit,
-  profileMedia,
 }: SimoIndexRitualProps) {
   const [previewDestinationId, setPreviewDestinationId] =
     useState<NavigationDestinationId | null>(null);
   const [isTracing, setIsTracing] = useState(false);
   const [pointer, setPointer] = useState({ x: 50, y: 50 });
-  const [receipt, setReceipt] = useState(
-    "Hold the signal. Release into Portfolio or Blog.",
-  );
+  const [receipt, setReceipt] = useState("Portfolio route is ready.");
   const tracingRef = useRef(false);
 
   const resolvedDestinationId = previewDestinationId ?? activeDestinationId;
@@ -81,6 +75,19 @@ export function SimoIndexRitual({
     navigationDestinations[activeIndex] ?? navigationDestinations[0];
   const progressRatio = activeIndex / (navigationDestinations.length - 1);
   const progress = `${20 + progressRatio * 60}%`;
+
+  useEffect(() => {
+    if (tracingRef.current || previewDestinationId) {
+      return;
+    }
+
+    const destination =
+      navigationDestinations.find(
+        (candidate) => candidate.id === activeDestinationId,
+      ) ?? navigationDestinations[0];
+
+    setReceipt(`${destination.label} route is ready.`);
+  }, [activeDestinationId, previewDestinationId]);
 
   function setIntentFromPointer(event: PointerEvent<HTMLElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -221,15 +228,9 @@ export function SimoIndexRitual({
         aria-describedby="simo-index-receipt"
       >
         <div className="simo-console-topbar">
-          <div className="simo-console-avatar" aria-hidden>
-            <Image
-              src={profileMedia.src}
-              alt=""
-              width={profileMedia.width}
-              height={profileMedia.height}
-              sizes="56px"
-              priority
-            />
+          <div className="simo-console-mark" aria-hidden>
+            <span />
+            <span />
           </div>
           <div>
             <span>Joe Simo</span>
@@ -270,12 +271,15 @@ export function SimoIndexRitual({
               data-route={destination.id}
               onPointerEnter={() => setPreviewDestinationId(destination.id)}
               onFocus={() => handleKeyboardDestination(index)}
+              onBlur={() => setPreviewDestinationId(null)}
             >
               <span>{destination.code}</span>
               <strong>{destination.label}</strong>
               <em>
                 {destination.id === activeDestination.id
-                  ? `Release to ${destination.label}`
+                  ? isTracing
+                    ? `Release to ${destination.label}`
+                    : "Current route"
                   : destination.receipt}
               </em>
             </Link>
