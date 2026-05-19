@@ -11,11 +11,11 @@ function createContentSecurityPolicy(nonce: string) {
     "form-action 'self'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' ${isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`}`,
     "style-src-attr 'unsafe-inline'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
-    "upgrade-insecure-requests",
+    ...(isDev ? [] : ["upgrade-insecure-requests"]),
   ];
 
   return directives.join("; ");

@@ -72,6 +72,7 @@ export function ThemeToggle() {
             variant="outline"
             size="icon-lg"
             className="size-11"
+            disabled={!mounted}
             aria-label={`Theme: ${currentOption.label}`}
           />
         }

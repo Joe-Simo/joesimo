@@ -1,8 +1,10 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 import {
   blockHeavyMedia,
   collectConsoleProblems,
+  expectHomeDestinationLink,
+  expectHomeDestinationSection,
   expectInteractiveTextFits,
   expectNoHorizontalOverflow,
   expectPageHealthy,
@@ -19,6 +21,15 @@ const responsiveViewports = [
   { width: 1920, height: 1080 },
 ] as const;
 
+async function chooseTheme(page: Page, theme: string) {
+  await page.getByRole("button", { name: /theme:/i }).click();
+
+  const menu = page.locator('[data-slot="dropdown-menu-content"]');
+
+  await expect(menu).toBeVisible();
+  await menu.getByRole("menuitemradio", { name: theme }).click();
+}
+
 test.describe("responsive, theme, and fallback gates", () => {
   for (const viewport of responsiveViewports) {
     test(`home and work have no overflow or clipped controls at ${viewport.width}x${viewport.height}`, async ({
@@ -31,12 +42,17 @@ test.describe("responsive, theme, and fallback gates", () => {
       await page.goto("/", { waitUntil: "domcontentloaded" });
 
       await expect(
-        page.getByRole("heading", { level: 1, name: "Joe Simo" }),
+        page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
       ).toBeVisible();
+      await expectHomeDestinationLink(page, "work");
+      await expectHomeDestinationLink(page, "blog");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
 
-      await page.goto("/#work", { waitUntil: "domcontentloaded" });
+      const workLink = await expectHomeDestinationLink(page, "work");
+
+      await workLink.click();
+      await expectHomeDestinationSection(page, "work");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
       await expectPageHealthy(page, problems);
@@ -52,16 +68,13 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    await page.getByRole("button", { name: /theme:/i }).click();
-    await page.getByRole("menuitemradio", { name: "Dark" }).click();
+    await chooseTheme(page, "Dark");
     await expect(page.locator("html")).toHaveClass(/dark/);
 
-    await page.getByRole("button", { name: /theme:/i }).click();
-    await page.getByRole("menuitemradio", { name: "Light" }).click();
+    await chooseTheme(page, "Light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
 
-    await page.getByRole("button", { name: /theme:/i }).click();
-    await page.getByRole("menuitemradio", { name: "System" }).click();
+    await chooseTheme(page, "System");
     await expect(page.getByRole("button", { name: /theme: system/i })).toBeVisible();
     await expectPageHealthy(page, problems);
   });
@@ -95,13 +108,16 @@ test.describe("responsive, theme, and fallback gates", () => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
-    await page.goto("/#work", { waitUntil: "domcontentloaded" });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("heading", { level: 1, name: "Joe Simo" }),
+      page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator("canvas")).toHaveCount(0);
-    await expect(page.locator(".simo-index-ritual")).toBeVisible();
-    await expect(page.getByRole("link", { name: /open case/i }).first()).toBeVisible();
+    const workLink = await expectHomeDestinationLink(page, "work");
+
+    await workLink.click();
+    const workSection = await expectHomeDestinationSection(page, "work");
+
+    await expect(workSection.locator('a[href^="/work/"]').first()).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 
@@ -115,11 +131,10 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(
-      page.getByRole("heading", { level: 1, name: "Joe Simo" }),
+      page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator("canvas")).toHaveCount(0);
-    await expect(page.locator(".simo-index-ritual")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Portfolio" }).first()).toBeVisible();
+    await expectHomeDestinationLink(page, "work");
+    await expectHomeDestinationLink(page, "blog");
     await expectPageHealthy(page, problems);
   });
 });

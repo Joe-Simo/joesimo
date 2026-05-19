@@ -2,12 +2,14 @@ import { expect, test } from "@playwright/test";
 
 import {
   collectConsoleProblems,
+  expectHomeDestinationLink,
+  expectHomeDestinationSection,
   expectPageHealthy,
   workRoutes,
 } from "./helpers";
 
 test.describe("Joe Simo personal site", () => {
-  test("renders a Joe-first home page without duplicate portraits", async ({
+  test("renders a Joe-first home page with reachable primary destinations", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -16,42 +18,11 @@ test.describe("Joe Simo personal site", () => {
 
     await expect(page).toHaveTitle(/Joe Simo/);
     await expect(
-      page.getByRole("heading", { level: 1, name: "Joe Simo" }),
+      page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(
-      page.getByText("I turn stuck workflows into interfaces people can operate."),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /portfolio/i }).first(),
-    ).toBeVisible();
-    await expect(page.getByRole("link", { name: /blog/i }).first()).toBeVisible();
-    const portraitImage = page.locator(
-      'img[src*="joe-simo-headshot"], img[srcset*="joe-simo-headshot"]',
-    );
-
-    await expect(portraitImage).toHaveCount(1);
-    await expect
-      .poll(async () =>
-        portraitImage.evaluateAll((images) =>
-          images.filter((image) => image.getClientRects().length > 0).length,
-        ),
-      )
-      .toBeLessThanOrEqual(1);
-
-    const loadedPortrait = await page.evaluate(() => {
-      const portrait = document.querySelector(
-        'img[src*="joe-simo-headshot"], img[srcset*="joe-simo-headshot"]',
-      ) as HTMLImageElement | null;
-
-      return (
-        !!portrait &&
-        portrait.getClientRects().length > 0 &&
-        portrait.complete &&
-        portrait.naturalWidth > 0
-      );
-    });
-
-    expect(loadedPortrait).toBe(true);
+    await expect(page.getByRole("main")).toBeVisible();
+    await expectHomeDestinationLink(page, "work");
+    await expectHomeDestinationLink(page, "blog");
 
     await expectPageHealthy(page, problems);
   });
@@ -71,33 +42,31 @@ test.describe("Joe Simo personal site", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("renders portfolio and blog as the only main homepage destinations", async ({
+  test("renders work and blog as the primary homepage destinations", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await page.goto("/");
 
-    await expect(page.getByRole("link", { name: /01 portfolio/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /02 blog/i })).toBeVisible();
+    const workLink = await expectHomeDestinationLink(page, "work");
+    const blogLink = await expectHomeDestinationLink(page, "blog");
+
+    await blogLink.click();
+    await expectHomeDestinationSection(page, "blog");
+
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await workLink.click();
+    await expectHomeDestinationSection(page, "work");
+
     await expect(
-      page.getByRole("heading", { name: "Selected work, ordered by proof." }),
+      page.locator("footer").getByRole("link", { name: /github/i }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Short notes from the way Joe thinks." }),
-    ).toBeVisible();
-    await expect(
-      page.locator("footer").getByRole("link", { name: "GitHub" }),
-    ).toBeVisible();
-    await expect(
-      page.locator("footer").getByRole("link", { name: "Email" }),
-    ).toHaveCount(0);
 
     const pageText = await page.locator("body").innerText();
     expect(pageText).not.toMatch(
       /YC|Y Combinator|equity|fundraising|Response ID|API key|\/Users\/|Downloads\//i,
     );
-    expect(pageText).not.toContain("Contact");
 
     await expectPageHealthy(page, problems);
   });

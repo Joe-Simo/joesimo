@@ -174,7 +174,6 @@ export default async function RootLayout({
         >
           <script
             type="application/ld+json"
-            nonce={nonce}
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
             }}

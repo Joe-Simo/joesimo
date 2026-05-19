@@ -23,6 +23,24 @@ type JoeHomeAppProps = {
   writingFragments: WritingFragment[];
 };
 
+const heroSignals = [
+  {
+    code: "01",
+    label: "Support",
+    value: "Broken paths made visible",
+  },
+  {
+    code: "02",
+    label: "Systems",
+    value: "Signals turned into surfaces",
+  },
+  {
+    code: "03",
+    label: "Design",
+    value: "What remains is operable",
+  },
+] as const;
+
 function ExternalCue({ show }: { show?: boolean }) {
   return show ? <span className="sr-only">opens in a new tab</span> : null;
 }
@@ -53,6 +71,18 @@ function sortedWork(projects: PublicProjectCaseStudy[]) {
 
 function resolveViewFromHash(hash: string): ActiveView {
   return hash === "#blog" ? "blog" : "portfolio";
+}
+
+function scrollViewDeckIntoView(target: HTMLElement, behavior: ScrollBehavior) {
+  const headerOffset =
+    document.querySelector<HTMLElement>("header")?.getBoundingClientRect().height ?? 64;
+  const targetTop =
+    target.getBoundingClientRect().top + window.scrollY - headerOffset - 12;
+
+  window.scrollTo({
+    behavior,
+    top: Math.max(0, targetTop),
+  });
 }
 
 function WorkMedia({
@@ -217,6 +247,7 @@ export function JoeHomeApp({
   writingFragments,
 }: JoeHomeAppProps) {
   const [activeView, setActiveView] = useState<ActiveView>("portfolio");
+  const activeViewLabel = activeView === "blog" ? "Blog" : "Portfolio";
 
   useEffect(() => {
     const syncFromHash = () => setActiveView(resolveViewFromHash(window.location.hash));
@@ -234,20 +265,25 @@ export function JoeHomeApp({
 
   function commitView(view: ActiveView, options: { scroll?: boolean } = {}) {
     const hash = view === "blog" ? "#blog" : "#work";
-    const target = document.getElementById("simo-view-deck");
+    const target = document.getElementById("work");
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const shouldScroll = options.scroll ?? true;
 
     setActiveView(view);
-    window.history.pushState(null, "", hash);
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, "", hash);
+    } else {
+      window.history.replaceState(null, "", hash);
+    }
     window.dispatchEvent(new Event("hashchange"));
 
     if (shouldScroll) {
-      target?.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "start",
+      window.requestAnimationFrame(() => {
+        if (target) {
+          scrollViewDeckIntoView(target, prefersReducedMotion ? "auto" : "smooth");
+        }
       });
     }
   }
@@ -278,18 +314,36 @@ export function JoeHomeApp({
   return (
     <div className="simo-index-root">
       <section id="joe" className="simo-index-hero" aria-labelledby="joe-title">
+        <div className="simo-index-atmosphere" aria-hidden>
+          <span />
+          <span />
+          <span />
+        </div>
         <div className="site-page-shell simo-index-hero-grid">
           <div className="simo-index-identity">
             <p className="simo-index-kicker">{joeProfile.kicker}</p>
             <h1 id="joe-title">{joeProfile.name}</h1>
             <p className="simo-index-headline">{joeProfile.headline}</p>
             <p className="simo-index-detail">{joeProfile.detail}</p>
+            <div
+              className="simo-index-signal-rail"
+              aria-label="Joe Simo operating signals"
+            >
+              {heroSignals.map((signal) => (
+                <div key={signal.code}>
+                  <span>{signal.code}</span>
+                  <strong>{signal.label}</strong>
+                  <em>{signal.value}</em>
+                </div>
+              ))}
+            </div>
             <figure className="simo-index-portrait">
               <Image
                 src={profileMedia.src}
                 alt={profileMedia.alt}
                 width={profileMedia.width}
                 height={profileMedia.height}
+                preload
                 sizes="(min-width: 1024px) 11rem, 7.5rem"
               />
               <figcaption>
@@ -324,6 +378,9 @@ export function JoeHomeApp({
             <div>
               <p className="simo-index-kicker">Single page</p>
               <h2 id="simo-view-title">Joe Simo index</h2>
+              <p className="simo-view-status" aria-live="polite">
+                Showing {activeViewLabel}
+              </p>
             </div>
             <div
               className="simo-view-control"

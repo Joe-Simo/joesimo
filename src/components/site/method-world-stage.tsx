@@ -667,7 +667,7 @@ function JoeEditorialArtifact({
           width={profileMedia.width}
           height={profileMedia.height}
           sizes="(max-width: 1023px) 92vw, 34vw"
-          priority
+          preload
         />
         <span className="method-world-editorial-scan" aria-hidden />
       </figure>

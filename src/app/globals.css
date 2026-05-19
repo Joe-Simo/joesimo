@@ -4253,9 +4253,14 @@ header nav a[aria-current="location"]::after {
 /* Joe-first homepage: The Simo Index */
 
 .simo-index-root {
-  --simo-line: color-mix(in oklab, var(--foreground) 13%, transparent);
-  --simo-line-soft: color-mix(in oklab, var(--foreground) 8%, transparent);
-  --simo-surface: color-mix(in oklab, var(--background) 94%, var(--foreground) 6%);
+  --simo-line: color-mix(in oklab, var(--foreground) 14%, transparent);
+  --simo-line-soft: color-mix(in oklab, var(--foreground) 7%, transparent);
+  --simo-material-border: color-mix(in oklab, var(--foreground) 12%, transparent);
+  --simo-material-border-strong: color-mix(in oklab, var(--foreground) 22%, transparent);
+  --simo-material-shadow: 0 18px 60px color-mix(in oklab, var(--foreground) 8%, transparent);
+  --simo-radius-base: 6px;
+  --simo-radius-raised: 12px;
+  --simo-surface: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
   --simo-surface-strong: color-mix(
     in oklab,
     var(--background) 88%,
@@ -4267,7 +4272,7 @@ header nav a[aria-current="location"]::after {
 
 .simo-index-hero {
   position: relative;
-  min-height: calc(100svh - 4rem);
+  min-height: clamp(38rem, calc(100svh - 8rem), 50rem);
   margin-top: -4rem;
   padding-top: 4rem;
   display: grid;
@@ -4275,7 +4280,17 @@ header nav a[aria-current="location"]::after {
   border-bottom: 1px solid var(--border);
   overflow: hidden;
   color: var(--foreground);
-  background: var(--background);
+  background:
+    linear-gradient(90deg, var(--simo-line-soft) 1px, transparent 1px),
+    linear-gradient(180deg, var(--simo-line-soft) 1px, transparent 1px),
+    linear-gradient(
+      118deg,
+      transparent 0 58%,
+      color-mix(in oklab, var(--foreground) 4%, transparent) 58% 58.25%,
+      transparent 58.25% 100%
+    ),
+    var(--background);
+  background-size: 5.5rem 5.5rem, 5.5rem 5.5rem, auto, auto;
 }
 
 .simo-index-hero::before {
@@ -4286,26 +4301,84 @@ header nav a[aria-current="location"]::after {
   background:
     linear-gradient(
       180deg,
-      color-mix(in oklab, var(--foreground) 3%, transparent),
-      transparent 24rem
+      color-mix(in oklab, var(--background) 98%, transparent),
+      transparent 16rem
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--background) 96%, transparent),
+      transparent 18%,
+      transparent 82%,
+      color-mix(in oklab, var(--background) 96%, transparent)
     );
 }
 
 .simo-index-hero::after {
-  display: none;
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--foreground) 42%, transparent),
+    transparent
+  );
+}
+
+.simo-index-atmosphere {
+  position: absolute;
+  inset: 4rem 0 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.simo-index-atmosphere span {
+  position: absolute;
+  border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+  opacity: 0.58;
+}
+
+.simo-index-atmosphere span:nth-child(1) {
+  right: clamp(2rem, 8vw, 8rem);
+  top: clamp(2rem, 9vw, 8rem);
+  width: clamp(15rem, 26vw, 30rem);
+  aspect-ratio: 4 / 3;
+  border-radius: 0;
+}
+
+.simo-index-atmosphere span:nth-child(2) {
+  right: clamp(8rem, 23vw, 28rem);
+  bottom: clamp(3rem, 8vw, 7rem);
+  width: clamp(7rem, 12vw, 14rem);
+  height: 1px;
+  border: 0;
+  background: color-mix(in oklab, var(--foreground) 16%, transparent);
+  transform: rotate(90deg);
+}
+
+.simo-index-atmosphere span:nth-child(3) {
+  right: clamp(1rem, 4vw, 4rem);
+  bottom: clamp(4rem, 9vw, 8rem);
+  width: clamp(10rem, 18vw, 20rem);
+  height: 1px;
+  border: 0;
+  background: color-mix(in oklab, var(--foreground) 18%, transparent);
+  transform: rotate(-18deg);
 }
 
 .simo-index-hero-grid {
   display: grid;
-  gap: clamp(1.5rem, 4vw, 4rem);
+  gap: clamp(1.5rem, 5vw, 6rem);
   align-items: center;
-  padding-block: clamp(2.5rem, 6vw, 5rem);
+  padding-block: clamp(1.5rem, 3vw, 2.6rem);
 }
 
 .simo-index-identity {
   position: relative;
   z-index: 2;
-  max-width: 48rem;
+  max-width: 52rem;
 }
 
 .simo-index-kicker,
@@ -4330,12 +4403,12 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-index-identity h1 {
-  margin: 0.35rem 0 0;
-  max-width: 11ch;
-  font-size: clamp(4rem, 10.5vw, 9.2rem);
+  margin: clamp(0.5rem, 1.2vw, 0.9rem) 0 0;
+  max-width: 9ch;
+  font-size: clamp(5rem, 9vw, 8.25rem);
   font-weight: 560;
   letter-spacing: 0;
-  line-height: 0.88;
+  line-height: 0.82;
 }
 
 .simo-index-hero .simo-index-kicker {
@@ -4343,18 +4416,18 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-index-headline {
-  margin: clamp(1rem, 2.4vw, 1.8rem) 0 0;
-  max-width: 16ch;
-  font-size: clamp(1.7rem, 3vw, 3.35rem);
+  margin: clamp(1.1rem, 2.5vw, 2.2rem) 0 0;
+  max-width: 18ch;
+  font-size: clamp(1.65rem, 2.35vw, 2.55rem);
   font-weight: 520;
   letter-spacing: 0;
   line-height: 1.02;
 }
 
 .simo-index-detail {
-  margin: 1rem 0 0;
-  max-width: 36rem;
-  font-size: clamp(0.98rem, 1.1vw, 1.08rem);
+  margin: clamp(1rem, 1.4vw, 1.25rem) 0 0;
+  max-width: 18rem;
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
   line-height: 1.58;
   color: var(--muted-foreground);
 }
@@ -4363,24 +4436,69 @@ header nav a[aria-current="location"]::after {
   color: var(--muted-foreground);
 }
 
+.simo-index-signal-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  width: min(100%, 38rem);
+  margin-top: clamp(1.25rem, 2.8vw, 2.25rem);
+  overflow: hidden;
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
+  background: var(--simo-material-border);
+  box-shadow: var(--simo-material-shadow);
+}
+
+.simo-index-signal-rail div {
+  display: grid;
+  gap: 0.34rem;
+  min-width: 0;
+  padding: 0.9rem;
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.simo-index-signal-rail span,
+.simo-index-signal-rail em {
+  font-family: var(--font-geist-mono);
+  font-size: 0.63rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.simo-index-signal-rail strong {
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
+  font-weight: 560;
+  line-height: 1.05;
+}
+
 .simo-index-portrait {
+  position: absolute;
+  top: clamp(8rem, 16vw, 12rem);
+  right: 0;
   display: grid;
   grid-template-columns: clamp(5.5rem, 8vw, 7.5rem) minmax(0, 1fr);
   gap: 0.85rem;
   align-items: end;
   width: fit-content;
-  margin: clamp(1.25rem, 2.8vw, 2rem) 0 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  margin: clamp(1rem, 2.5vw, 1.75rem) 0 0;
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   padding: 0.45rem 0.8rem 0.45rem 0.45rem;
-  background: color-mix(in oklab, var(--background) 92%, transparent);
+  background: color-mix(in oklab, var(--background) 90%, transparent);
+  box-shadow: 0 14px 44px color-mix(in oklab, var(--foreground) 7%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 .simo-index-portrait img {
   width: 100%;
   aspect-ratio: 1;
   height: auto;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: var(--simo-radius-base);
   object-fit: cover;
   filter: grayscale(1) contrast(1.04);
 }
@@ -4425,8 +4543,8 @@ header nav a[aria-current="location"]::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   padding: 0.78rem 1rem;
   font-family: var(--font-geist-mono);
   font-size: 0.72rem;
@@ -4478,7 +4596,7 @@ header nav a[aria-current="location"]::after {
   z-index: 2;
   display: grid;
   min-width: 0;
-  width: min(100%, 52rem);
+  width: min(100%, 56rem);
   justify-self: end;
 }
 
@@ -4490,30 +4608,29 @@ header nav a[aria-current="location"]::after {
 
 .simo-index-console {
   position: relative;
-  min-height: clamp(27rem, 42vw, 36rem);
+  min-height: clamp(29rem, 39vw, 33rem);
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: clamp(1rem, 2vw, 1.35rem);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
+  padding: clamp(1rem, 2vw, 1.5rem);
   color: var(--foreground);
   background:
+    radial-gradient(
+      circle at var(--simo-index-pointer-x) var(--simo-index-pointer-y),
+      color-mix(in oklab, var(--signal-accent) 7%, transparent),
+      transparent 18rem
+    ),
     linear-gradient(var(--simo-line-soft) 1px, transparent 1px),
     linear-gradient(90deg, var(--simo-line-soft) 1px, transparent 1px),
-    linear-gradient(180deg, var(--background), var(--simo-surface));
-  background-size: 4rem 4rem, 4rem 4rem, auto;
-  cursor: grab;
+    linear-gradient(180deg, color-mix(in oklab, var(--background) 96%, transparent), var(--simo-surface));
+  background-size: auto, 4rem 4rem, 4rem 4rem, auto;
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--background) 88%, transparent) inset,
+    0 32px 110px color-mix(in oklab, var(--foreground) 12%, transparent);
+  cursor: default;
   isolation: isolate;
-  outline: none;
   touch-action: pan-y;
-}
-
-.simo-index-ritual[data-tracing="true"] .simo-index-console {
-  cursor: grabbing;
-}
-
-.simo-index-console:focus-visible {
-  outline: 2px solid var(--signal-accent);
-  outline-offset: 4px;
+  backdrop-filter: blur(18px);
 }
 
 .simo-index-console::before {
@@ -4522,19 +4639,19 @@ header nav a[aria-current="location"]::after {
   z-index: 0;
   pointer-events: none;
   content: "";
-  background:
-    radial-gradient(
-      circle at var(--simo-index-pointer-x) var(--simo-index-pointer-y),
-      color-mix(in oklab, var(--signal-accent) 10%, transparent),
-      transparent 16rem
-    );
-  opacity: 0.8;
+  background: linear-gradient(
+    120deg,
+    transparent 0 42%,
+    color-mix(in oklab, var(--foreground) 5%, transparent) 42% 42.4%,
+    transparent 42.4% 100%
+  );
+  opacity: 0.95;
 }
 
 .simo-index-console::after {
   position: absolute;
   left: var(--simo-index-progress);
-  top: 50%;
+  top: 48%;
   z-index: 0;
   width: clamp(8rem, 16vw, 11rem);
   height: clamp(8rem, 16vw, 11rem);
@@ -4553,17 +4670,12 @@ header nav a[aria-current="location"]::after {
       color-mix(in oklab, var(--foreground) 22%, transparent) 0deg 1deg,
       transparent 1deg 14deg
     );
-  opacity: 0.72;
+  opacity: 0.68;
   transform: translate(-50%, -50%);
   transition:
     left 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 160ms ease,
     transform 160ms ease;
-}
-
-.simo-index-ritual[data-tracing="true"] .simo-index-console::after {
-  opacity: 0.9;
-  transform: translate(-50%, -50%) scale(1.04);
 }
 
 .simo-console-topbar,
@@ -4585,8 +4697,8 @@ header nav a[aria-current="location"]::after {
   place-items: center;
   width: 3rem;
   height: 3rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   background: var(--foreground);
 }
 
@@ -4633,10 +4745,10 @@ header nav a[aria-current="location"]::after {
 
 .simo-console-topbar em {
   margin-left: auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--simo-material-border);
   border-radius: 999px;
   padding: 0.45rem 0.6rem;
-  background: var(--background);
+  background: color-mix(in oklab, var(--background) 82%, transparent);
 }
 
 .simo-console-map {
@@ -4671,7 +4783,7 @@ header nav a[aria-current="location"]::after {
   position: absolute;
   z-index: 2;
   left: var(--simo-index-progress);
-  top: 50%;
+  top: 48%;
   display: grid;
   place-items: center;
   width: 1.35rem;
@@ -4685,8 +4797,38 @@ header nav a[aria-current="location"]::after {
     transform 160ms ease;
 }
 
-.simo-index-ritual[data-tracing="true"] .simo-console-head {
-  transform: translate(-50%, -50%) scale(1.16);
+.simo-console-readout {
+  position: absolute;
+  top: clamp(6rem, 9vw, 7.4rem);
+  right: clamp(1rem, 2vw, 1.5rem);
+  z-index: 2;
+  display: grid;
+  gap: 0.34rem;
+  width: min(38%, 13rem);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
+  padding: 0.82rem;
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  box-shadow: 0 14px 40px color-mix(in oklab, var(--foreground) 7%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.simo-console-readout span,
+.simo-console-readout em {
+  font-family: var(--font-geist-mono);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.simo-console-readout strong {
+  font-size: clamp(1.15rem, 2vw, 1.75rem);
+  font-weight: 560;
+  line-height: 0.98;
 }
 
 .simo-console-head span {
@@ -4710,11 +4852,12 @@ header nav a[aria-current="location"]::after {
   display: grid;
   gap: 0.42rem;
   min-height: 8rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   padding: 1rem;
   color: var(--foreground);
-  background: color-mix(in oklab, var(--background) 92%, transparent);
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  cursor: pointer;
   text-decoration: none;
   outline: none;
   transition:
@@ -4737,6 +4880,10 @@ header nav a[aria-current="location"]::after {
   transform: translateY(-1px);
 }
 
+.simo-console-route[data-current="true"] {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--signal-accent) 42%, transparent);
+}
+
 .simo-console-route[data-active="true"] span,
 .simo-console-route[data-active="true"] em {
   color: color-mix(in oklab, var(--background) 72%, var(--foreground) 28%);
@@ -4745,6 +4892,7 @@ header nav a[aria-current="location"]::after {
 .simo-console-route:hover,
 .simo-console-route:focus-visible {
   border-color: var(--foreground);
+  box-shadow: 0 12px 34px color-mix(in oklab, var(--foreground) 8%, transparent);
 }
 
 .simo-console-receipt {
@@ -4755,10 +4903,11 @@ header nav a[aria-current="location"]::after {
   display: grid;
   gap: 0.35rem;
   max-width: 26rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   padding: 0.95rem;
-  background: color-mix(in oklab, var(--background) 94%, transparent);
+  background: color-mix(in oklab, var(--background) 90%, transparent);
+  box-shadow: 0 16px 48px color-mix(in oklab, var(--foreground) 8%, transparent);
   transform: translateY(-50%);
   backdrop-filter: blur(14px);
 }
@@ -4785,10 +4934,14 @@ header nav a[aria-current="location"]::after {
 
 .simo-view-deck {
   position: relative;
-  scroll-margin-top: 0;
+  scroll-margin-top: 4.75rem;
   border-bottom: 1px solid var(--border);
-  padding-block: clamp(2rem, 5vw, 4rem);
-  background: color-mix(in oklab, var(--background) 98%, var(--foreground) 2%);
+  padding-block: clamp(2.5rem, 6vw, 5rem);
+  background:
+    linear-gradient(var(--simo-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--simo-line-soft) 1px, transparent 1px),
+    color-mix(in oklab, var(--background) 98%, var(--foreground) 2%);
+  background-size: 6rem 6rem, 6rem 6rem, auto;
 }
 
 .simo-view-anchor {
@@ -4802,7 +4955,7 @@ header nav a[aria-current="location"]::after {
 
 .simo-view-shell {
   display: grid;
-  gap: 0;
+  gap: clamp(1.1rem, 2vw, 1.5rem);
 }
 
 .simo-view-topbar {
@@ -4810,11 +4963,12 @@ header nav a[aria-current="location"]::after {
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
-  border: 1px solid var(--border);
-  border-bottom: 0;
-  border-radius: var(--radius) var(--radius) 0 0;
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   padding: clamp(1rem, 2vw, 1.35rem);
-  background: var(--background);
+  background: color-mix(in oklab, var(--background) 91%, transparent);
+  box-shadow: var(--simo-material-shadow);
+  backdrop-filter: blur(16px);
 }
 
 .simo-view-topbar h2 {
@@ -4824,11 +4978,27 @@ header nav a[aria-current="location"]::after {
   line-height: 1;
 }
 
+.simo-view-status {
+  width: fit-content;
+  margin: 0.65rem 0 0;
+  border: 1px solid var(--simo-material-border);
+  border-radius: 999px;
+  padding: 0.38rem 0.55rem;
+  background: var(--simo-surface);
+  color: var(--foreground);
+  font-family: var(--font-geist-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 .simo-view-control {
   display: inline-flex;
   gap: 0.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   padding: 0.25rem;
   background: var(--simo-surface);
 }
@@ -4836,7 +5006,7 @@ header nav a[aria-current="location"]::after {
 .simo-view-control button {
   min-height: 2.75rem;
   border: 0;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: calc(var(--simo-radius-base) - 2px);
   padding: 0.68rem 0.84rem;
   color: var(--muted-foreground);
   background: transparent;
@@ -4860,14 +5030,20 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-view-panels {
-  border: 1px solid var(--border);
-  border-radius: 0 0 var(--radius) var(--radius);
-  padding: clamp(1rem, 2.5vw, 2rem);
-  background: var(--background);
+  padding: clamp(0.25rem, 1vw, 0.75rem) 0 0;
+  background: transparent;
 }
 
 .simo-view-panel {
   animation: simo-view-enter 220ms ease both;
+}
+
+.simo-index-identity h1,
+.simo-index-headline,
+.simo-section-heading h2,
+.simo-view-topbar h2,
+.simo-work-copy h3 {
+  text-wrap: balance;
 }
 
 @keyframes simo-view-enter {
@@ -4904,10 +5080,10 @@ header nav a[aria-current="location"]::after {
 .simo-method-notes {
   display: grid;
   gap: 1px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   overflow: hidden;
-  background: var(--border);
+  background: var(--simo-material-border);
 }
 
 .simo-method-note {
@@ -4974,7 +5150,7 @@ header nav a[aria-current="location"]::after {
   display: grid;
   gap: 0.65rem;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--simo-radius-raised);
   padding: clamp(1rem, 2vw, 1.25rem);
   background: var(--simo-surface);
 }
@@ -5014,10 +5190,11 @@ header nav a[aria-current="location"]::after {
 .simo-work-feature-list {
   display: grid;
   gap: 1px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   overflow: hidden;
-  background: var(--border);
+  background: var(--simo-material-border);
+  box-shadow: var(--simo-material-shadow);
 }
 
 .simo-work-feature {
@@ -5026,14 +5203,21 @@ header nav a[aria-current="location"]::after {
   gap: clamp(1rem, 3vw, 2.2rem);
   align-items: center;
   padding: clamp(1rem, 2.6vw, 2rem);
-  background: var(--background);
+  background: color-mix(in oklab, var(--background) 96%, transparent);
 }
 
 .simo-work-feature[data-featured="true"] {
   grid-template-columns: 4.75rem minmax(0, 0.72fr) minmax(28rem, 1.08fr);
   min-height: clamp(31rem, 48vw, 38rem);
   color: var(--foreground);
-  background: var(--background);
+  background:
+    linear-gradient(
+      116deg,
+      transparent 0 62%,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 62% 62.3%,
+      transparent 62.3% 100%
+    ),
+    var(--background);
 }
 
 .simo-work-feature[data-featured="true"] .simo-work-tier,
@@ -5104,8 +5288,8 @@ header nav a[aria-current="location"]::after {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   background: var(--simo-surface-strong);
   aspect-ratio: 16 / 10;
 }
@@ -5143,11 +5327,11 @@ header nav a[aria-current="location"]::after {
   display: grid;
   gap: 0.45rem;
   min-height: 7.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   padding: 1rem;
   color: var(--foreground);
-  background: var(--simo-surface);
+  background: color-mix(in oklab, var(--background) 94%, transparent);
   outline: none;
 }
 
@@ -5204,10 +5388,10 @@ header nav a[aria-current="location"]::after {
 .simo-proof-list {
   display: grid;
   gap: 1px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
   overflow: hidden;
-  background: var(--border);
+  background: var(--simo-material-border);
 }
 
 .simo-proof-list article {
@@ -5244,8 +5428,8 @@ header nav a[aria-current="location"]::after {
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   background: var(--background);
 }
 
@@ -5276,8 +5460,8 @@ header nav a[aria-current="location"]::after {
   display: grid;
   place-items: center;
   min-height: 8rem;
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) * 0.8);
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
   background: var(--simo-surface);
 }
 
@@ -5341,6 +5525,11 @@ header nav a[aria-current="location"]::after {
 @media (max-width: 767px) {
   .simo-index-hero {
     min-height: auto;
+    background-size: 3rem 3rem, 3rem 3rem, auto, auto;
+  }
+
+  .simo-index-atmosphere {
+    opacity: 0.55;
   }
 
   .simo-index-hero-grid {
@@ -5359,12 +5548,31 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-index-detail {
+    max-width: none;
     margin-top: 0.85rem;
     font-size: 0.95rem;
     line-height: 1.52;
   }
 
+  .simo-index-signal-rail {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 1rem;
+  }
+
+  .simo-index-signal-rail div {
+    grid-template-columns: 2.5rem minmax(0, 0.45fr) minmax(0, 1fr);
+    align-items: center;
+    padding: 0.72rem;
+  }
+
+  .simo-index-signal-rail strong {
+    font-size: 0.9rem;
+  }
+
   .simo-index-portrait {
+    position: relative;
+    top: auto;
+    right: auto;
     grid-template-columns: 4.75rem minmax(0, 1fr);
     gap: 0.65rem;
     margin-top: 1rem;
@@ -5390,7 +5598,7 @@ header nav a[aria-current="location"]::after {
     gap: 0.72rem;
     min-height: auto;
     padding: 1rem;
-    background-size: 3rem 3rem, 3rem 3rem, auto;
+    background-size: auto, 3rem 3rem, 3rem 3rem, auto;
   }
 
   .simo-console-map {
@@ -5401,6 +5609,15 @@ header nav a[aria-current="location"]::after {
 
   .simo-console-head {
     top: 45%;
+  }
+
+  .simo-console-readout {
+    position: relative;
+    top: auto;
+    right: auto;
+    z-index: 3;
+    width: 100%;
+    padding: 0.72rem;
   }
 
   .simo-index-console::after {
@@ -5420,7 +5637,7 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-console-route {
-    min-height: 5rem;
+    min-height: 5.45rem;
     padding: 0.72rem;
   }
 
@@ -5452,6 +5669,7 @@ header nav a[aria-current="location"]::after {
 
   .simo-view-deck {
     padding-block: 1rem 2rem;
+    background-size: 3rem 3rem, 3rem 3rem, auto;
   }
 
   .simo-view-topbar {
@@ -5496,14 +5714,24 @@ header nav a[aria-current="location"]::after {
   .simo-primary-link,
   .simo-secondary-link,
   .simo-work-actions a,
-  .simo-social-row a {
+  .simo-social-row a,
+  .simo-console-route,
+  .simo-index-console::after,
+  .simo-console-path.is-active,
+  .simo-console-head,
+  .simo-view-control button {
     transition: none;
   }
 
   .simo-primary-link:hover,
   .simo-secondary-link:hover,
   .simo-work-actions a:hover,
-  .simo-social-row a:hover {
+  .simo-social-row a:hover,
+  .simo-console-route:hover {
     transform: none;
+  }
+
+  .simo-view-panel {
+    animation: none;
   }
 }

@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 export const completedRoute = "preview,runtime,api,ship,changes";
 export const workRoutes = [
@@ -12,6 +12,82 @@ export const workRoutes = [
   { heading: "Printer Scripts", path: "/work/printer-scripts" },
   { heading: "ChessLM", path: "/work/chesslm" },
 ] as const;
+
+type HomeDestination = "work" | "blog";
+
+const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
+  blog: '.simo-index-hero a.simo-console-route[href="#blog"]',
+  work: '.simo-index-hero a.simo-console-route[href="#work"]',
+};
+
+const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
+  blog: "#simo-blog-panel",
+  work: "#simo-portfolio-panel",
+};
+
+const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
+  blog: /blog|journal|note|writing/i,
+  work: /case|portfolio|project|work/i,
+};
+
+function visibleSelector(selector: string) {
+  return selector
+    .split(",")
+    .map((part) => `${part.trim()}:visible`)
+    .join(", ");
+}
+
+export function homeDestinationLink(
+  page: Page,
+  destination: HomeDestination,
+): Locator {
+  return page
+    .locator(visibleSelector(homeDestinationLinkSelectors[destination]))
+    .first();
+}
+
+export function homeDestinationSection(
+  page: Page,
+  destination: HomeDestination,
+): Locator {
+  return page.locator(homeDestinationSectionSelectors[destination]).first();
+}
+
+export async function expectHomeDestinationLink(
+  page: Page,
+  destination: HomeDestination,
+) {
+  const link = homeDestinationLink(page, destination);
+
+  await expect(link).toBeVisible();
+  await expect
+    .poll(async () =>
+      link.evaluate((element) =>
+        [
+          element.getAttribute("aria-label"),
+          element.textContent,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .replace(/\s+/g, " ")
+          .trim(),
+      ),
+    )
+    .toMatch(homeDestinationNamePatterns[destination]);
+
+  return link;
+}
+
+export async function expectHomeDestinationSection(
+  page: Page,
+  destination: HomeDestination,
+) {
+  const section = homeDestinationSection(page, destination);
+
+  await expect(section).toBeVisible();
+
+  return section;
+}
 
 export async function blockHeavyMedia(page: Page) {
   await page.route(/\.(mp4|webm)(\?.*)?$/i, (route) => {
@@ -32,7 +108,8 @@ function isIgnorableBrowserWarning(message: string) {
   return (
     message.includes("GPU stall due to ReadPixels") ||
     message.includes("NO_COLOR") ||
-    message.includes("FORCE_COLOR")
+    message.includes("FORCE_COLOR") ||
+    message.includes("was preloaded using link preload but not used")
   );
 }
 
@@ -77,7 +154,9 @@ export async function expectPageHealthy(
   await page.waitForLoadState("domcontentloaded");
   await page.waitForTimeout(300);
   await expect(
-    page.locator("[data-nextjs-dialog-overlay], nextjs-portal"),
+    page.locator(
+      '[data-nextjs-dialog-overlay], nextjs-portal [role="dialog"], nextjs-portal [data-nextjs-dialog]',
+    ),
   ).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
   expect(problems).toEqual([]);

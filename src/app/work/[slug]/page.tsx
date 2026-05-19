@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { SiteFooter } from "@/components/site/site-footer";
@@ -155,7 +154,7 @@ function WorkEvidenceSpecimen({ project }: { project: ProjectCaseStudy }) {
           alt={heroAsset.media.alt}
           width={heroAsset.media.width}
           height={heroAsset.media.height}
-          preload={false}
+          loading="eager"
           sizes="(min-width: 1024px) 78vw, 94vw"
           className={`size-full ${imageFit}`}
         />
@@ -168,13 +167,7 @@ function WorkEvidenceSpecimen({ project }: { project: ProjectCaseStudy }) {
   );
 }
 
-function WorkJsonLd({
-  nonce,
-  project,
-}: {
-  nonce?: string;
-  project: ProjectCaseStudy;
-}) {
+function WorkJsonLd({ project }: { project: ProjectCaseStudy }) {
   const image = project.assets[0]?.media.src;
   const jsonLd = {
     "@context": "https://schema.org",
@@ -200,7 +193,6 @@ function WorkJsonLd({
   return (
     <script
       type="application/ld+json"
-      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
       }}
@@ -382,7 +374,6 @@ export async function generateMetadata({
 
 export default async function WorkCasePage({ params }: WorkPageProps) {
   const { slug } = await params;
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const project = getProjectCaseStudy(slug);
 
   if (!project) {
@@ -396,7 +387,7 @@ export default async function WorkCasePage({ params }: WorkPageProps) {
 
   return (
     <div id="top" className="min-h-screen overflow-x-clip bg-background text-foreground">
-      <WorkJsonLd nonce={nonce} project={project} />
+      <WorkJsonLd project={project} />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-background focus:px-4 focus:py-3 focus:font-mono focus:text-xs focus:uppercase focus:tracking-[0.16em] focus:text-foreground focus:shadow-lg"
