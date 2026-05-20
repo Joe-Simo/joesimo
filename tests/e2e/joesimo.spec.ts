@@ -87,6 +87,24 @@ test.describe("Joe Simo personal site", () => {
     await expect(
       page.locator("footer").getByRole("link", { name: /github/i }),
     ).toBeVisible();
+    const footerContactLink = page
+      .locator("footer")
+      .getByRole("link", { name: "Contact" });
+
+    await expect(footerContactLink).toHaveAttribute("href", "/#contact");
+    await footerContactLink.scrollIntoViewIfNeeded();
+    await footerContactLink.click();
+    await expect(page).toHaveURL(/#contact$/);
+    await expect(
+      page.getByRole("heading", { name: "Bring the stuck workflow." }),
+    ).toBeVisible();
+    await expect
+      .poll(async () =>
+        page
+          .locator("#contact")
+          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
+      )
+      .toBeLessThanOrEqual(120);
 
     const pageText = await page.locator("body").innerText();
     expect(pageText).not.toMatch(

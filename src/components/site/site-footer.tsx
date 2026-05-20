@@ -1,10 +1,18 @@
 import Link from "next/link";
 
-import { socialChannels } from "@/lib/site-data";
+import { navItems, socialChannels } from "@/lib/site-data";
 
 function ExternalCue({ show }: { show: boolean }) {
   return show ? <span className="sr-only">opens in a new tab</span> : null;
 }
+
+const footerLinks = [
+  { href: "/#joe", label: "Joe" },
+  ...navItems.map((item) => ({
+    href: `/${item.href}`,
+    label: item.label,
+  })),
+];
 
 export function SiteFooter() {
   const footerSocialChannels = socialChannels.filter((channel) =>
@@ -24,9 +32,22 @@ export function SiteFooter() {
           Fort Myers. Devsigner. Support, systems, web consulting,
           Telematics Engineering.
         </p>
-        <span className="pt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          {"Joe / Method / Work / People / Notes / Contact"}
-        </span>
+        <nav
+          aria-label="Footer navigation"
+          className="flex flex-wrap gap-x-1.5 gap-y-1 pt-2 text-xs text-muted-foreground"
+        >
+          {footerLinks.map((link, index) => (
+            <span className="inline-flex items-center gap-x-1.5" key={link.href}>
+              {index > 0 ? <span aria-hidden>/</span> : null}
+              <Link
+                href={link.href}
+                className="rounded-sm outline-none hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
+              >
+                {link.label}
+              </Link>
+            </span>
+          ))}
+        </nav>
       </div>
       <div className="flex flex-wrap gap-x-2 gap-y-2 sm:justify-end">
         {footerSocialChannels.map((channel) => (
