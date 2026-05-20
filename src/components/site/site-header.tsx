@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { MobileNav } from "@/components/site/mobile-nav";
 import { PrimaryNav } from "@/components/site/primary-nav";
+import { SiteCommandNav } from "@/components/site/site-command-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { type NavHref } from "@/lib/site-data";
 
@@ -61,10 +61,10 @@ export function SiteHeader({
         ) : null}
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           {showPrimaryNavigation ? (
-            <MobileNav sectionPrefix={sectionPrefix} />
+            <SiteCommandNav sectionPrefix={sectionPrefix} />
           ) : null}
+          <ThemeToggle />
         </div>
       </div>
     </header>

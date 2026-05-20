@@ -33,6 +33,8 @@ function targetsForHash(hash: string) {
 
 export function HashFocus() {
   useEffect(() => {
+    const retryTimers = new Set<number>();
+
     function focusHashTarget() {
       window.requestAnimationFrame(() => {
         const targets = targetsForHash(window.location.hash);
@@ -55,22 +57,35 @@ export function HashFocus() {
       });
     }
 
-    const retryTimers = [
-      window.setTimeout(focusHashTarget, 120),
-      window.setTimeout(focusHashTarget, 600),
-    ];
+    function scheduleHashFocus() {
+      for (const timer of retryTimers) {
+        window.clearTimeout(timer);
+      }
 
-    window.addEventListener("hashchange", focusHashTarget);
-    window.addEventListener("load", focusHashTarget);
-    focusHashTarget();
+      retryTimers.clear();
+      focusHashTarget();
+
+      for (const delay of [120, 600, 1200, 2200]) {
+        const timer = window.setTimeout(() => {
+          retryTimers.delete(timer);
+          focusHashTarget();
+        }, delay);
+
+        retryTimers.add(timer);
+      }
+    }
+
+    window.addEventListener("hashchange", scheduleHashFocus);
+    window.addEventListener("load", scheduleHashFocus);
+    scheduleHashFocus();
 
     return () => {
       for (const timer of retryTimers) {
         window.clearTimeout(timer);
       }
 
-      window.removeEventListener("hashchange", focusHashTarget);
-      window.removeEventListener("load", focusHashTarget);
+      window.removeEventListener("hashchange", scheduleHashFocus);
+      window.removeEventListener("load", scheduleHashFocus);
     };
   }, []);
 

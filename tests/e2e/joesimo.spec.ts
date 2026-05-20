@@ -130,7 +130,7 @@ test.describe("Joe Simo personal site", () => {
       .locator("footer")
       .getByRole("link", { name: "Contact" });
 
-    await expect(footerContactLink).toHaveAttribute("href", "/#contact");
+    await expect(footerContactLink).toHaveAttribute("href", "#contact");
     await footerContactLink.scrollIntoViewIfNeeded();
     await footerContactLink.click();
     await expect(page).toHaveURL(/#contact$/);
@@ -156,6 +156,71 @@ test.describe("Joe Simo personal site", () => {
     expect(pageText).not.toMatch(
       /YC|Y Combinator|equity|fundraising|Response ID|API key|\/Users\/|Downloads\//i,
     );
+
+    await expectPageHealthy(page, problems);
+  });
+
+  test("supports command-style jump navigation", async ({ page }, testInfo) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.goto("/");
+
+    if (testInfo.project.name.includes("mobile")) {
+      await page.getByRole("button", { name: "Open jump menu" }).click();
+    } else {
+      await page.keyboard.press("Control+K");
+    }
+
+    const dialog = page.getByRole("dialog");
+
+    await expect(dialog).toBeVisible();
+    const searchInput = dialog.getByLabel("Filter jump destinations");
+
+    await expect(searchInput).toBeVisible();
+    await expect(dialog.getByRole("link", { name: /Method.*Section/i })).toBeVisible();
+
+    await searchInput.fill("Astro");
+    await expect(dialog.getByRole("link", { name: /Astrosimo/i })).toBeVisible();
+    await expect(dialog.getByRole("link", { name: /sim0/i })).toHaveCount(0);
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Open jump menu" }).click();
+    const reopenedDialog = page.getByRole("dialog");
+
+    await expect(reopenedDialog).toBeVisible();
+    await reopenedDialog.getByRole("link", { name: /People.*Section/i }).click();
+    await expect(page).toHaveURL(/#people$/);
+    await expect(page.locator("#people")).toBeVisible();
+
+    await expectPageHealthy(page, problems);
+  });
+
+  test("keeps method modules visible while interaction changes emphasis", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.goto("/#method", { waitUntil: "domcontentloaded" });
+
+    const methodSection = page.locator("#method");
+
+    await expect(methodSection.getByText("Start where it breaks.")).toBeVisible();
+    await expect(methodSection.getByText("Trace the state.")).toBeVisible();
+    await expect(
+      methodSection.getByText("Make the next action obvious."),
+    ).toBeVisible();
+
+    await methodSection.getByRole("button", { name: /Signals/i }).focus();
+    await expect(methodSection.getByRole("button", { name: /Signals/i })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(methodSection.getByText("Start where it breaks.")).toBeVisible();
+    await expect(
+      methodSection.getByText("Make the next action obvious."),
+    ).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });

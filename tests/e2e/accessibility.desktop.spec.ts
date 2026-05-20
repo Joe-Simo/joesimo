@@ -38,11 +38,8 @@ test.describe("desktop accessibility quality gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    await tabUntilFocused(page, page.getByText("Skip to content"), 1);
-    await tabUntilFocused(
-      page,
-      page.getByRole("link", { name: /joe simo|home/i }).first(),
-    );
+    await tabUntilFocused(page, page.getByText("Skip to content"), 3);
+    await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }));
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }));
     await tabUntilFocused(page, homeDestinationLink(page, "method"));
     await tabUntilFocused(page, homeDestinationLink(page, "work"));
@@ -61,19 +58,24 @@ test.describe("desktop accessibility quality gates", () => {
     await expectHomeDestinationLink(page, "work");
   });
 
-  test("method route tabs move focus with arrow keys", async ({ page }) => {
+  test("method modules are keyboard reachable and update emphasis", async ({
+    page,
+  }) => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
     await page.goto("/#method", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    const supportTab = page.getByRole("tab", { name: /support/i });
-    const signalsTab = page.getByRole("tab", { name: /signals/i });
+    const supportButton = page.getByRole("button", { name: /support/i });
+    const signalsButton = page.getByRole("button", { name: /signals/i });
 
-    await supportTab.focus();
-    await page.keyboard.press("ArrowRight");
-    await expect(signalsTab).toBeFocused();
-    await expect(signalsTab).toHaveAttribute("aria-selected", "true");
+    await supportButton.focus();
+    await expect(supportButton).toHaveAttribute("aria-pressed", "true");
+    await signalsButton.focus();
+    await expect(signalsButton).toBeFocused();
+    await expect(signalsButton).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#method")).toContainText("Start where it breaks.");
+    await expect(page.locator("#method")).toContainText("Trace the state.");
   });
 });

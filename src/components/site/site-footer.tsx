@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { navItems, socialChannels } from "@/lib/site-data";
 
 function ExternalCue({ show }: { show: boolean }) {
@@ -7,9 +5,9 @@ function ExternalCue({ show }: { show: boolean }) {
 }
 
 const footerLinks = [
-  { href: "/#joe", label: "Joe" },
+  { href: "#joe", label: "Joe" },
   ...navItems.map((item) => ({
-    href: `/${item.href}`,
+    href: item.href,
     label: item.label,
   })),
 ];
@@ -22,12 +20,12 @@ export function SiteFooter() {
   return (
     <footer className="site-footer-shell grid gap-5 border-t border-border py-8 text-sm text-muted-foreground lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
       <div className="grid gap-1">
-        <Link
-          href="/#joe"
+        <a
+          href="#joe"
           className="inline-flex min-h-11 w-fit items-center rounded-md text-sm font-medium text-foreground outline-none transition hover:text-muted-foreground focus-visible:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
         >
           Joe Simo
-        </Link>
+        </a>
         <p>
           Fort Myers. Devsigner. Support, systems, web consulting,
           Telematics Engineering.
@@ -39,12 +37,12 @@ export function SiteFooter() {
           {footerLinks.map((link, index) => (
             <span className="inline-flex items-center gap-x-1.5" key={link.href}>
               {index > 0 ? <span aria-hidden>/</span> : null}
-              <Link
+              <a
                 href={link.href}
                 className="rounded-sm outline-none hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
               >
                 {link.label}
-              </Link>
+              </a>
             </span>
           ))}
         </nav>

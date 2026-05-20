@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { HashFocus } from "@/components/site/hash-focus";
 import { MethodWorld } from "@/components/site/method-world";
+import { SiteSectionRail } from "@/components/site/site-section-rail";
 import type {
   CommunityArtifact,
   FieldNote,
@@ -210,82 +211,101 @@ function WorkSection({ projects }: { projects: readonly PublicProjectCaseStudy[]
           </p>
         </div>
 
-        <nav className="simo-work-index" aria-label="Work case index">
-          {featuredProjects.map((project) => (
-            <a href={`#work-${project.slug}`} key={project.slug}>
-              <span>{project.code}</span>
-              <strong>{project.title}</strong>
-              <em>{project.proofMode}</em>
-            </a>
-          ))}
-        </nav>
+        <div className="simo-work-cases">
+          <nav className="simo-work-index" aria-label="Work case index">
+            {featuredProjects.map((project) => (
+              <a href={`#work-${project.slug}`} key={project.slug}>
+                <span>{project.code}</span>
+                <strong>{project.title}</strong>
+                <em>{project.proofMode}</em>
+              </a>
+            ))}
+          </nav>
 
-        <div className="simo-work-feature-list">
-          {featuredProjects.map((project, index) => {
-            const assets = getPreferredAssets(project);
-            const primaryAction = project.links[0];
-            const panels = project.miniWorld?.panels ?? project.storyboard ?? [];
-            const treatment =
-              project.homepageFeature?.treatment ?? "operated-surface";
+          <div className="simo-work-feature-list">
+            {featuredProjects.map((project, index) => {
+              const assets = getPreferredAssets(project);
+              const primaryAction = project.links[0];
+              const panels = project.miniWorld?.panels ?? project.storyboard ?? [];
+              const treatment =
+                project.homepageFeature?.treatment ?? "operated-surface";
 
-            return (
-              <article
-                className="simo-work-feature"
-                data-featured={project.homepageFeature?.rank === 1}
-                data-treatment={treatment}
-                id={`work-${project.slug}`}
-                key={project.slug}
-              >
-                <div className="simo-work-number">
-                  <span>{project.code}</span>
-                </div>
-
-                <div className="simo-work-copy">
-                  <div>
-                    <p className="simo-work-tier">
-                      {project.role} / {project.status}
-                    </p>
-                    <h3>{project.title}</h3>
-                  </div>
-                  <p>{project.summary}</p>
-
-                  {project.humanStake ? (
-                    <p className="simo-work-stake">
-                      {project.humanStake.madeVisible}
-                    </p>
-                  ) : null}
-
-                  <div className="simo-work-proofline">
-                    <span>{project.proofMode}</span>
-                    <p>{project.proofSummary}</p>
+              return (
+                <article
+                  className="simo-work-feature"
+                  data-featured={project.homepageFeature?.rank === 1}
+                  data-treatment={treatment}
+                  id={`work-${project.slug}`}
+                  key={project.slug}
+                >
+                  <div className="simo-work-number">
+                    <span>{project.code}</span>
                   </div>
 
-                  <ProjectProofRail panels={panels} project={project} />
-
-                  {primaryAction ? (
-                    <div className="simo-work-actions">
-                      <a
-                        href={primaryAction.href}
-                        target={primaryAction.external ? "_blank" : undefined}
-                        rel={primaryAction.external ? "noreferrer" : undefined}
-                        aria-label={primaryAction.ariaLabel}
-                      >
-                        {primaryAction.label}
-                        <ExternalCue show={primaryAction.external} />
-                      </a>
+                  <div className="simo-work-copy">
+                    <div>
+                      <p className="simo-work-tier">
+                        {project.role} / {project.status}
+                      </p>
+                      <h3>{project.title}</h3>
                     </div>
-                  ) : null}
-                </div>
+                    <dl
+                      className="simo-work-meta"
+                      aria-label={`${project.title} metadata`}
+                    >
+                      <div>
+                        <dt>Mode</dt>
+                        <dd>{project.proofMode}</dd>
+                      </div>
+                      <div>
+                        <dt>Stage</dt>
+                        <dd>{project.methodStage}</dd>
+                      </div>
+                      <div>
+                        <dt>Status</dt>
+                        <dd>{project.status}</dd>
+                      </div>
+                    </dl>
+                    <p>{project.summary}</p>
 
-                <ProjectProofMedia
-                  assets={assets}
-                  eager={index === 0}
-                  project={project}
-                  treatment={treatment}
-                />
-              </article>
-            );
-          })}
+                    {project.humanStake ? (
+                      <p className="simo-work-stake">
+                        {project.humanStake.madeVisible}
+                      </p>
+                    ) : null}
+
+                    <div className="simo-work-proofline">
+                      <span>{project.proofMode}</span>
+                      <p>{project.proofSummary}</p>
+                    </div>
+
+                    <ProjectProofRail panels={panels} project={project} />
+
+                    {primaryAction ? (
+                      <div className="simo-work-actions">
+                        <a
+                          href={primaryAction.href}
+                          target={primaryAction.external ? "_blank" : undefined}
+                          rel={primaryAction.external ? "noreferrer" : undefined}
+                          aria-label={primaryAction.ariaLabel}
+                        >
+                          {primaryAction.label}
+                          <ExternalCue show={primaryAction.external} />
+                        </a>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <ProjectProofMedia
+                    assets={assets}
+                    eager={index === 0}
+                    project={project}
+                    treatment={treatment}
+                  />
+                </article>
+              );
+            })}
+          </div>
         </div>
 
         {supportingProjects.length > 0 ? (
@@ -323,7 +343,7 @@ function PeopleSection({
             Builder rooms, not badges.
           </h2>
           <p>
-            Real photos from the rooms where the work gets sharper: community,
+            Real frames from the rooms where the work gets sharper: community,
             conferences, and useful conversations around builders.
           </p>
         </div>
@@ -385,8 +405,8 @@ function NotesSection({
             Notes from the method.
           </h2>
           <p>
-            Short records about breakage, signal, interface state, and public
-            proof from the work.
+            Compact records about breakage, signal, interface state, and public
+            proof.
           </p>
         </div>
 
@@ -442,7 +462,7 @@ function ContactSection({
           </h2>
           <p>
             Public profiles are the route for introductions, product context,
-            consulting, and follow-up around useful interface work.
+            consulting, and follow-up.
           </p>
         </div>
 
@@ -504,6 +524,7 @@ export function JoeHomeApp({
   return (
     <div className="simo-index-root">
       <HashFocus />
+      <SiteSectionRail />
       <section
         id="joe"
         className="simo-index-hero"
@@ -517,7 +538,6 @@ export function JoeHomeApp({
             </h1>
             <p className="simo-index-headline">{joeProfile.headline}</p>
             <p className="simo-index-detail">{joeProfile.detail}</p>
-            <p className="simo-hero-route">Support → Signals → Surface</p>
 
             <div className="simo-hero-actions" aria-label="Primary actions">
               <a className="simo-primary-link" href="#method">
@@ -539,8 +559,8 @@ export function JoeHomeApp({
               sizes="(max-width: 768px) 100vw, 28rem"
             />
             <figcaption>
-              <span>Personal site</span>
-              <strong>Support → Signals → Surface</strong>
+              <span>Portrait</span>
+              <strong>Fort Myers / interface systems</strong>
             </figcaption>
           </figure>
         </div>

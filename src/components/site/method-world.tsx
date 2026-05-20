@@ -1,12 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type {
   WebGLSignalFieldProps,
@@ -103,9 +98,6 @@ function StaticSignalRoute({
 
 export function MethodWorld() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const stepButtonRefs = useRef<
-    Partial<Record<(typeof methodSteps)[number]["id"], HTMLButtonElement>>
-  >({});
   const [sectionActive, setSectionActive] = useState(false);
   const [activeStepId, setActiveStepId] =
     useState<(typeof methodSteps)[number]["id"]>("support");
@@ -173,54 +165,12 @@ export function MethodWorld() {
 
   const shouldRenderWebgl = webglEnabled && sectionActive;
 
-  function selectStep(stepId: MethodStep["id"], moveFocus = false) {
+  function selectStep(stepId: MethodStep["id"]) {
     setActiveStepId(stepId);
 
     if (window.location.hash !== methodHashes[stepId]) {
       window.history.pushState(null, "", methodHashes[stepId]);
       window.dispatchEvent(new HashChangeEvent("hashchange"));
-    }
-
-    if (moveFocus) {
-      window.requestAnimationFrame(() => {
-        stepButtonRefs.current[stepId]?.focus();
-      });
-    }
-  }
-
-  function focusStep(index: number, moveFocus = false) {
-    const nextStep = methodSteps[index];
-
-    if (nextStep) {
-      selectStep(nextStep.id, moveFocus);
-    }
-  }
-
-  function handleStepKeyDown(
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      event.preventDefault();
-      focusStep((index + 1) % methodSteps.length, true);
-      return;
-    }
-
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      event.preventDefault();
-      focusStep((index - 1 + methodSteps.length) % methodSteps.length, true);
-      return;
-    }
-
-    if (event.key === "Home") {
-      event.preventDefault();
-      focusStep(0, true);
-      return;
-    }
-
-    if (event.key === "End") {
-      event.preventDefault();
-      focusStep(methodSteps.length - 1, true);
     }
   }
 
@@ -269,53 +219,33 @@ export function MethodWorld() {
           </p>
         </div>
 
-        <div
-          className="simo-method-route"
-          role="tablist"
-          aria-label="Support Signals Surface route"
-        >
-          {methodSteps.map((step, index) => {
+        <div className="simo-method-route" aria-label="Support Signals Surface route">
+          {methodSteps.map((step) => {
             const active = step.id === activeStep.id;
 
             return (
-              <button
-                aria-controls="method-step-panel"
-                aria-selected={active}
+              <article
                 className="simo-method-step"
                 data-active={active}
                 id={`method-${step.id}`}
                 key={step.id}
-                onClick={() => selectStep(step.id)}
-                onKeyDown={(event) => handleStepKeyDown(event, index)}
-                ref={(element) => {
-                  if (element) {
-                    stepButtonRefs.current[step.id] = element;
-                  } else {
-                    delete stepButtonRefs.current[step.id];
-                  }
-                }}
-                role="tab"
-                tabIndex={active ? 0 : -1}
-                type="button"
+                onMouseEnter={() => setActiveStepId(step.id)}
               >
-                <span>{step.code}</span>
-                <strong>{step.label}</strong>
-                <em>{step.title}</em>
-              </button>
+                <button
+                  aria-pressed={active}
+                  onClick={() => selectStep(step.id)}
+                  onFocus={() => setActiveStepId(step.id)}
+                  type="button"
+                >
+                  <span>{step.code}</span>
+                  <strong>{step.label}</strong>
+                </button>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
             );
           })}
         </div>
-
-        <article
-          aria-labelledby={`method-${activeStep.id}`}
-          className="simo-method-active"
-          id="method-step-panel"
-          role="tabpanel"
-        >
-          <span>{activeStep.code}</span>
-          <h3>{activeStep.title}</h3>
-          <p>{activeStep.body}</p>
-        </article>
       </div>
     </section>
   );
