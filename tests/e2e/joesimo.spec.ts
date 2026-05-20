@@ -5,6 +5,7 @@ import {
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectPageHealthy,
+  expectRenderedImagesHealthy,
   workRoutes,
 } from "./helpers";
 
@@ -23,6 +24,9 @@ test.describe("Joe Simo personal site", () => {
     await expect(page.getByRole("main")).toBeVisible();
     await expectHomeDestinationLink(page, "work");
     await expectHomeDestinationLink(page, "blog");
+    await expect(page.locator("#method")).toBeVisible();
+    await expect(page.locator("#people")).toBeVisible();
+    await expect(page.locator("#contact")).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });
@@ -42,7 +46,7 @@ test.describe("Joe Simo personal site", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("renders work and blog as the primary homepage destinations", async ({
+  test("renders visible one-page chapters and anchor destinations", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -54,6 +58,9 @@ test.describe("Joe Simo personal site", () => {
 
     await blogLink.click();
     await expectHomeDestinationSection(page, "blog");
+    await expect(
+      page.getByRole("heading", { name: "Notes from the method." }),
+    ).toBeVisible();
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await workLink.click();
@@ -68,10 +75,14 @@ test.describe("Joe Simo personal site", () => {
       }),
     ).toBeVisible();
     await expect(
+      page.getByRole("heading", { name: "Bring the stuck workflow." }),
+    ).toBeVisible();
+    await expect(
       page.getByRole("img", {
         name: "Joe Simo with ThePrimeagen at React Miami 2026",
       }),
     ).toBeVisible();
+    await expectRenderedImagesHealthy(page);
 
     await expect(
       page.locator("footer").getByRole("link", { name: /github/i }),

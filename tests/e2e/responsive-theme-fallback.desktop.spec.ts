@@ -124,6 +124,21 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
+  test("desktop Signal World mounts WebGL when the method chapter is active", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await blockHeavyMedia(page);
+    await page.goto("/#method", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#method")).toBeInViewport();
+    await expect(page.locator(".simo-signal-webgl canvas")).toHaveCount(1);
+    await expect(
+      page.locator('.simo-signal-webgl[data-webgl-ready="true"] canvas'),
+    ).toBeVisible();
+    await expectPageHealthy(page, problems);
+  });
+
   test("reduced motion preserves the index without motion-only content", async ({
     page,
   }) => {

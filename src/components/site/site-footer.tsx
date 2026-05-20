@@ -16,7 +16,7 @@ export function SiteFooter() {
       <div className="grid gap-1">
         <Link
           href="/#joe"
-          className="inline-flex min-h-11 w-fit items-center rounded-md font-mono text-[10px] uppercase tracking-[0.2em] text-foreground outline-none transition hover:text-muted-foreground focus-visible:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
+          className="inline-flex min-h-11 w-fit items-center rounded-md text-sm font-medium text-foreground outline-none transition hover:text-muted-foreground focus-visible:text-muted-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
         >
           Joe Simo
         </Link>
@@ -25,7 +25,7 @@ export function SiteFooter() {
           Telematics Engineering.
         </p>
         <span className="pt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          {"Joe -> Portfolio -> Blog -> Socials"}
+          {"Joe / Method / Work / People / Notes / Contact"}
         </span>
       </div>
       <div className="flex flex-wrap gap-x-2 gap-y-2 sm:justify-end">

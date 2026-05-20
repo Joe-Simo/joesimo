@@ -5,6 +5,7 @@ import type {
   JoeProfile,
   PublicProjectCaseStudy,
   SiteMedia,
+  SocialChannel,
   WritingFragment,
 } from "@/lib/site-data";
 
@@ -14,6 +15,7 @@ type JoeHomeStageProps = {
   joeProfile: JoeProfile;
   profileMedia: SiteMedia;
   projects: PublicProjectCaseStudy[];
+  socialChannels: SocialChannel[];
   writingFragments: WritingFragment[];
 };
 

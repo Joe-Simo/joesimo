@@ -11,7 +11,7 @@ function isInternalRouteHref(href: string) {
 
 function BrandMark({ homeHref }: { homeHref: string }) {
   const content = (
-    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground">
+    <span className="text-sm font-medium text-foreground">
       Joe Simo
     </span>
   );
@@ -45,7 +45,7 @@ export function SiteHeader({
   activeHref?: NavHref;
   surface?: "default" | "home";
 }) {
-  const showPrimaryNavigation = surface !== "home";
+  const showPrimaryNavigation = true;
   const surfaceClassName =
     surface === "home"
       ? "site-header site-header-home sticky top-0 z-40 border-b border-border/70 bg-background/88 pt-[env(safe-area-inset-top)] backdrop-blur-xl"

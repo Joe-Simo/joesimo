@@ -3394,16 +3394,34 @@ export const siteRecords: SiteRecord[] = [
 
 export const navItems = [
   {
-    label: "Portfolio",
+    label: "Method",
+    href: "#method",
+    iconKey: "briefcase",
+    recordId: "method",
+  },
+  {
+    label: "Work",
     href: "#work",
     iconKey: "appWindow",
     recordId: "work",
   },
   {
-    label: "Blog",
+    label: "People",
+    href: "#people",
+    iconKey: "camera",
+    recordId: "trail",
+  },
+  {
+    label: "Notes",
     href: "#blog",
     iconKey: "bookOpen",
     recordId: "trail",
+  },
+  {
+    label: "Contact",
+    href: "#contact",
+    iconKey: "mail",
+    recordId: "contact",
   },
 ] as const satisfies readonly {
   label: string;

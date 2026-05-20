@@ -16,18 +16,18 @@ export const workRoutes = [
 type HomeDestination = "work" | "blog";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
-  blog: '.simo-index-hero a.simo-console-route[href="#blog"]',
-  work: '.simo-index-hero a.simo-console-route[href="#work"]',
+  blog: '.simo-index-hero .simo-hero-actions a[href="#blog"]',
+  work: '.simo-index-hero .simo-hero-actions a[href="#work"]',
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
-  blog: "#simo-blog-panel",
-  work: "#simo-portfolio-panel",
+  blog: "#blog",
+  work: "#work",
 };
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
-  blog: /blog|journal|note|writing/i,
-  work: /case|portfolio|project|work/i,
+  blog: /notes|read|writing/i,
+  work: /work/i,
 };
 
 function visibleSelector(selector: string) {
@@ -205,9 +205,7 @@ export async function expectRenderedImagesHealthy(page: Page) {
 
 export async function expectProjectMediaFramesContained(page: Page) {
   const overflowingFrames = await page
-    .locator(
-      ".work-case-artifact-frame, .work-case-storyboard-media > div, .work-case-strip figure > div",
-    )
+    .locator(".simo-work-media")
     .evaluateAll((frames) =>
       frames
         .map((frame) => {
@@ -281,7 +279,7 @@ export async function installStableVisualStyles(page: Page) {
         transition-duration: 0s !important;
       }
 
-      .method-world-webgl canvas {
+      .simo-signal-webgl canvas {
         opacity: 0 !important;
       }
 

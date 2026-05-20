@@ -90,13 +90,7 @@ export function PrimaryNav({
         return active;
       }
 
-      const visibleTarget = targets.find(({ target }) => {
-        const rect = target.getBoundingClientRect();
-
-        return rect.bottom > 72 && rect.top < window.innerHeight;
-      });
-
-      return visibleTarget?.href ?? null;
+      return null;
     }
 
     let preferHashOnNextFrame = true;

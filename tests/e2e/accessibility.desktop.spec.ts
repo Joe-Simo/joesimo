@@ -60,4 +60,20 @@ test.describe("desktop accessibility quality gates", () => {
     await expectHomeDestinationLink(page, "work");
     await expectHomeDestinationLink(page, "blog");
   });
+
+  test("method route tabs move focus with arrow keys", async ({ page }) => {
+    const problems = collectConsoleProblems(page);
+
+    await blockHeavyMedia(page);
+    await page.goto("/#method", { waitUntil: "domcontentloaded" });
+    await expectPageHealthy(page, problems);
+
+    const supportTab = page.getByRole("tab", { name: /support/i });
+    const signalsTab = page.getByRole("tab", { name: /signals/i });
+
+    await supportTab.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(signalsTab).toBeFocused();
+    await expect(signalsTab).toHaveAttribute("aria-selected", "true");
+  });
 });

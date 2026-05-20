@@ -7,6 +7,7 @@ import {
   joeProfile,
   profileMedia,
   projectCaseStudiesPublic,
+  socialChannels,
   writingFragments,
 } from "@/lib/site-data";
 
@@ -36,6 +37,7 @@ export default function Home() {
           joeProfile={joeProfile}
           profileMedia={profileMedia}
           projects={projectCaseStudiesPublic}
+          socialChannels={socialChannels}
           writingFragments={writingFragments}
         />
       </main>

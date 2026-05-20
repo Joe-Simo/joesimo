@@ -117,10 +117,19 @@ describe("Joe Simo site data", () => {
     const recordIds = new Set(siteRecords.map((record) => record.id));
 
     expect(navItems.map((item) => item.href)).toEqual([
+      "#method",
       "#work",
+      "#people",
       "#blog",
+      "#contact",
     ]);
-    expect(navItems.map((item) => item.label)).toEqual(["Portfolio", "Blog"]);
+    expect(navItems.map((item) => item.label)).toEqual([
+      "Method",
+      "Work",
+      "People",
+      "Notes",
+      "Contact",
+    ]);
 
     for (const item of navItems) {
       expect(recordIds.has(item.recordId)).toBe(true);
