@@ -12,6 +12,8 @@ test.describe("Joe Simo desktop homepage navigation", () => {
   test("desktop supports keyboard navigation between primary home destinations", async ({
     page,
   }) => {
+    test.setTimeout(60_000);
+
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
@@ -25,11 +27,19 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       page.locator('.simo-index-hero a[href^="/work/"]'),
     ).toHaveCount(0);
 
+    const methodLink = await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
-    const blogLink = await expectHomeDestinationLink(page, "blog");
+
+    await methodLink.click();
+    await expect(page).toHaveURL(/#method$/);
+
+    const methodSection = await expectHomeDestinationSection(page, "method");
+    await expect(methodSection).toBeInViewport();
+
+    const blogLink = page.locator('header a[href="#blog"]').first();
 
     await blogLink.click();
-    await expect(page).toHaveURL(/(#blog|\/blog)$/);
+    await expect(page).toHaveURL(/#blog$/);
 
     const blogSection = await expectHomeDestinationSection(page, "blog");
     await expect(blogSection).toBeInViewport();

@@ -44,8 +44,8 @@ test.describe("responsive, theme, and fallback gates", () => {
       await expect(
         page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
       ).toBeVisible();
+      await expectHomeDestinationLink(page, "method");
       await expectHomeDestinationLink(page, "work");
-      await expectHomeDestinationLink(page, "blog");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
 
@@ -146,13 +146,16 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await blockHeavyMedia(page);
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/#method", { waitUntil: "domcontentloaded" });
 
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
+    await expect(page.locator("#method")).toBeInViewport();
+    await expect(page.locator(".simo-signal-webgl canvas")).toHaveCount(0);
+    await expect(page.locator(".simo-signal-static-route")).toBeVisible();
+    await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "blog");
     await expectPageHealthy(page, problems);
   });
 });

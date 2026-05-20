@@ -157,7 +157,7 @@
     @apply font-sans;
     overflow-x: clip;
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 4rem;
   }
   body {
     overflow-x: clip;
@@ -235,7 +235,8 @@ header nav a[aria-current="location"]::after {
   --simo-material-border: color-mix(in oklab, var(--foreground) 13%, transparent);
   --simo-material-border-strong: color-mix(in oklab, var(--foreground) 24%, transparent);
   --simo-radius-base: 6px;
-  --simo-radius-raised: 8px;
+  --simo-radius-raised: 12px;
+  --simo-project-accent: var(--signal-accent);
   --simo-surface: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
   --simo-surface-strong: color-mix(in oklab, var(--background) 90%, var(--foreground) 10%);
   background: var(--background);
@@ -246,9 +247,15 @@ header nav a[aria-current="location"]::after {
   letter-spacing: 0;
 }
 
+.simo-index-root h1:focus,
+.simo-index-root h2:focus,
+.simo-index-root h3:focus {
+  outline: none;
+}
+
 .simo-index-hero {
   display: grid;
-  min-height: calc(82svh - 4rem);
+  min-height: calc(70svh - 4rem);
   margin-top: 0;
   padding-top: 0;
   overflow: hidden;
@@ -267,10 +274,10 @@ header nav a[aria-current="location"]::after {
 
 .simo-index-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 27rem);
-  gap: 4rem;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+  gap: 5rem;
   align-items: center;
-  padding-block: 4rem 3rem;
+  padding-block: 4.5rem 5.5rem;
 }
 
 .simo-index-identity {
@@ -298,7 +305,8 @@ header nav a[aria-current="location"]::after {
 .simo-work-number span,
 .simo-method-step span,
 .simo-method-active span,
-.simo-proof-details span,
+.simo-proof-rail span,
+.simo-work-index span,
 .simo-writing-card span,
 .simo-community-frame span,
 .simo-specimen-card span {
@@ -315,7 +323,7 @@ header nav a[aria-current="location"]::after {
 .simo-index-identity h1 {
   max-width: none;
   margin: 0.75rem 0 0;
-  font-size: 5.25rem;
+  font-size: 5rem;
   font-weight: 560;
   line-height: 0.92;
   text-wrap: balance;
@@ -336,6 +344,18 @@ header nav a[aria-current="location"]::after {
   color: var(--muted-foreground);
   font-size: 1.08rem;
   line-height: 1.65;
+}
+
+.simo-hero-route {
+  display: inline-flex;
+  margin: 1.2rem 0 0;
+  border: 1px solid var(--simo-material-border);
+  border-radius: 999px;
+  padding: 0.42rem 0.7rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono);
+  font-size: 0.72rem;
+  line-height: 1.3;
 }
 
 .simo-hero-actions,
@@ -399,8 +419,7 @@ header nav a[aria-current="location"]::after {
 .simo-secondary-link:focus-visible,
 .simo-work-actions a:focus-visible,
 .simo-social-row a:focus-visible,
-.simo-method-step:focus-visible,
-.simo-proof-details summary:focus-visible {
+.simo-method-step:focus-visible {
   outline: 2px solid var(--signal-accent);
   outline-offset: 3px;
 }
@@ -408,7 +427,7 @@ header nav a[aria-current="location"]::after {
 .simo-index-portrait {
   position: static;
   display: grid;
-  width: min(100%, 27rem);
+  width: min(100%, 24rem);
   margin: 0;
   justify-self: end;
   overflow: hidden;
@@ -453,16 +472,10 @@ header nav a[aria-current="location"]::after {
 
 .simo-signal-world {
   position: relative;
-  min-height: 92svh;
+  min-height: auto;
   overflow: hidden;
   border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(
-      circle at 52% 42%,
-      color-mix(in oklab, var(--signal-accent) 8%, transparent),
-      transparent 26rem
-    ),
-    var(--background);
+  background: var(--background);
   scroll-margin-top: 0;
 }
 
@@ -476,10 +489,10 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-signal-webgl {
-  opacity: 0.85;
+  opacity: 0.34;
 }
 
-.simo-signal-static-only {
+.simo-signal-static-route {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -487,26 +500,48 @@ header nav a[aria-current="location"]::after {
   pointer-events: none;
 }
 
-.simo-signal-webgl .site-webgl-static-field {
-  background:
-    linear-gradient(90deg, var(--simo-line-soft) 1px, transparent 1px),
-    linear-gradient(180deg, var(--simo-line-soft) 1px, transparent 1px);
-  background-size: 5rem 5rem;
+.simo-signal-static-route svg {
+  position: absolute;
+  inset: 5.25rem 2rem auto auto;
+  width: min(45rem, 52%);
+  height: 18rem;
+  color: var(--foreground);
+  opacity: 0.18;
 }
 
-.simo-signal-webgl[data-webgl-ready="true"] .site-webgl-static-field {
-  opacity: 0.2;
+.simo-signal-static-route path {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 0.22;
+}
+
+.simo-signal-static-route circle {
+  fill: var(--background);
+  stroke: currentcolor;
+  stroke-width: 0.22;
+}
+
+.simo-signal-static-route g[data-active="true"] circle {
+  fill: currentcolor;
+}
+
+.simo-signal-static-route text {
+  display: none;
+  fill: currentcolor;
+  font-family: var(--font-geist-mono);
+  font-size: 2px;
+  text-anchor: middle;
 }
 
 .simo-signal-shell {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.52fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.72fr);
   gap: 3rem;
   min-height: inherit;
   align-items: center;
-  padding-block: 5rem;
+  padding-block: 6rem;
 }
 
 .simo-signal-copy {
@@ -526,7 +561,7 @@ header nav a[aria-current="location"]::after {
 .simo-signal-copy h2 {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.18em;
+  gap: 0.22em;
 }
 
 .simo-signal-copy h2 span {
@@ -545,6 +580,7 @@ header nav a[aria-current="location"]::after {
 
 .simo-method-route {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
 
@@ -590,7 +626,7 @@ header nav a[aria-current="location"]::after {
   grid-column: 1 / -1;
   display: grid;
   gap: 0.5rem;
-  max-width: 44rem;
+  max-width: 48rem;
   border-top: 1px solid var(--simo-material-border);
   padding-top: 1.25rem;
 }
@@ -610,13 +646,13 @@ header nav a[aria-current="location"]::after {
 
 .simo-story-section {
   border-bottom: 1px solid var(--border);
-  padding-block: 5rem;
+  padding-block: 4.25rem;
   scroll-margin-top: 0;
 }
 
 .simo-section-heading {
   max-width: 58rem;
-  margin-bottom: 2.75rem;
+  margin-bottom: 2.25rem;
 }
 
 .simo-work-feature-list {
@@ -629,14 +665,61 @@ header nav a[aria-current="location"]::after {
   box-shadow: none;
 }
 
+.simo-work-index {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-raised);
+  margin: 0 0 1rem;
+  background: var(--simo-material-border);
+}
+
+.simo-work-index a {
+  display: grid;
+  gap: 0.25rem;
+  min-height: 5.5rem;
+  align-content: center;
+  padding: 0.9rem;
+  color: var(--foreground);
+  background: var(--background);
+  text-decoration: none;
+  outline: none;
+}
+
+.simo-work-index a:hover {
+  background: var(--simo-surface);
+}
+
+.simo-work-index a:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--signal-accent);
+  outline-offset: -2px;
+}
+
+.simo-work-index strong {
+  font-size: 0.98rem;
+  font-weight: 560;
+  line-height: 1.2;
+}
+
+.simo-work-index em {
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  font-style: normal;
+  line-height: 1.35;
+}
+
 .simo-work-feature,
 .simo-work-feature[data-featured="true"] {
   display: grid;
-  grid-template-columns: 4rem minmax(0, 0.95fr) minmax(19rem, 0.9fr);
-  gap: 1.5rem;
+  grid-template-columns: 3.25rem minmax(0, 0.78fr) minmax(22rem, 1fr);
+  gap: 1.75rem;
   min-height: 0;
   align-items: start;
-  padding: 1.35rem;
+  padding: 1.5rem;
   background: var(--background);
 }
 
@@ -644,10 +727,22 @@ header nav a[aria-current="location"]::after {
   background:
     linear-gradient(
       135deg,
-      color-mix(in oklab, var(--signal-accent) 5%, transparent),
+      color-mix(in oklab, var(--simo-project-accent) 5%, transparent),
       transparent 42%
     ),
     var(--background);
+}
+
+.simo-work-feature[data-treatment="mobile-strip"] {
+  --simo-project-accent: #0070f3;
+}
+
+.simo-work-feature[data-treatment="progression-strip"] {
+  --simo-project-accent: #0f7a4d;
+}
+
+.simo-work-feature[data-treatment="training-strip"] {
+  --simo-project-accent: #9a6a18;
 }
 
 .simo-work-copy {
@@ -677,44 +772,35 @@ header nav a[aria-current="location"]::after {
 .simo-work-proofline {
   display: grid;
   gap: 0.35rem;
-  border-left: 1px solid var(--simo-material-border);
+  border-left: 1px solid color-mix(in oklab, var(--simo-project-accent) 36%, var(--simo-material-border));
   padding-left: 0.8rem;
 }
 
-.simo-proof-details {
+.simo-proof-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
   border: 1px solid var(--simo-material-border);
   border-radius: var(--simo-radius-base);
-  background: var(--simo-surface);
-}
-
-.simo-proof-details summary {
-  min-height: 2.75rem;
-  padding: 0.75rem 0.85rem;
-  cursor: pointer;
-  font-weight: 520;
-  outline: none;
-}
-
-.simo-proof-details div {
-  display: grid;
-  gap: 1px;
-  border-top: 1px solid var(--simo-material-border);
   background: var(--simo-material-border);
 }
 
-.simo-proof-details article {
+.simo-proof-rail article {
   display: grid;
-  gap: 0.3rem;
+  gap: 0.35rem;
+  align-content: start;
   padding: 0.85rem;
   background: var(--background);
 }
 
-.simo-proof-details strong {
+.simo-proof-rail strong {
   font-weight: 560;
   line-height: 1.25;
 }
 
-.simo-proof-details p {
+.simo-proof-rail p {
+  margin: 0;
   font-size: 0.92rem;
 }
 
@@ -734,6 +820,18 @@ header nav a[aria-current="location"]::after {
   min-width: 0;
 }
 
+.simo-work-media-grid[data-treatment="mobile-strip"],
+.simo-work-media-grid[data-treatment="progression-strip"],
+.simo-work-media-grid[data-treatment="training-strip"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.simo-work-media-grid[data-treatment="mobile-strip"] .simo-work-media-video,
+.simo-work-media-grid[data-treatment="progression-strip"] .simo-work-media-video,
+.simo-work-media-grid[data-treatment="training-strip"] .simo-work-media-video {
+  grid-column: 1 / -1;
+}
+
 .simo-work-media {
   display: grid;
   min-width: 0;
@@ -751,11 +849,18 @@ header nav a[aria-current="location"]::after {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 0.75rem;
 }
 
-.simo-work-feature[data-featured="true"] .simo-work-media img {
-  padding: 0.75rem;
+.simo-work-media video {
+  padding: 0;
+  background: #000000;
+}
+
+.simo-work-media[data-media-fit="phone"] img {
+  aspect-ratio: 9 / 16;
+  max-height: 32rem;
   object-fit: contain;
 }
 
@@ -840,7 +945,7 @@ header nav a[aria-current="location"]::after {
 
 .simo-community-strip {
   display: grid;
-  grid-template-columns: minmax(18rem, 1.15fr) repeat(5, minmax(8rem, 1fr));
+  grid-template-columns: minmax(20rem, 1.15fr) repeat(3, minmax(10rem, 0.85fr));
   gap: 0.75rem;
 }
 
@@ -852,6 +957,14 @@ header nav a[aria-current="location"]::after {
   border: 1px solid var(--simo-material-border);
   border-radius: var(--simo-radius-base);
   background: var(--background);
+}
+
+.simo-community-frame[data-featured="true"] {
+  grid-column: span 2;
+}
+
+.simo-community-frame[data-highlighted="true"] {
+  border-color: var(--simo-material-border-strong);
 }
 
 .simo-community-media {
@@ -866,6 +979,10 @@ header nav a[aria-current="location"]::after {
   height: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+}
+
+.simo-community-frame[data-featured="true"] .simo-community-media img {
+  aspect-ratio: 16 / 10;
 }
 
 .simo-community-frame figcaption {
@@ -896,7 +1013,7 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-contact-section {
-  min-height: calc(90svh - 5rem);
+  min-height: auto;
   border-bottom: 0;
   background: var(--background);
 }
@@ -905,33 +1022,84 @@ header nav a[aria-current="location"]::after {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
   gap: 3rem;
-  align-items: center;
+  min-height: inherit;
+  align-items: start;
 }
 
 .simo-contact-actions {
+  align-self: start;
   justify-content: flex-start;
   margin-top: 0;
+  padding-top: 5.25rem;
+}
+
+.simo-contact-meta {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--simo-material-border);
+  border-radius: var(--simo-radius-base);
+  margin: 0;
+  background: var(--simo-material-border);
+}
+
+.simo-contact-meta div {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  background: var(--background);
+}
+
+.simo-contact-meta dt {
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.simo-contact-meta dd {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.98rem;
+  font-weight: 520;
+  line-height: 1.35;
 }
 
 @media (min-width: 768px) {
+  .simo-contact-section {
+    min-height: calc(84svh - 4rem);
+  }
+
+  .simo-contact-grid {
+    grid-template-rows: auto minmax(10rem, 1fr);
+  }
+
+  .simo-contact-meta {
+    align-self: end;
+  }
+
   .simo-index-identity h1 {
-    font-size: 7rem;
+    font-size: 6.5rem;
   }
 
   .simo-index-headline {
-    font-size: 2.45rem;
+    font-size: 2.25rem;
   }
 
   .simo-signal-copy h2,
   .simo-section-heading h2,
   .simo-contact-grid h2 {
-    font-size: 3.45rem;
+    font-size: 3.1rem;
   }
 }
 
 @media (min-width: 1280px) {
   .simo-index-identity h1 {
-    font-size: 8.5rem;
+    font-size: 7.25rem;
   }
 }
 
@@ -941,8 +1109,16 @@ header nav a[aria-current="location"]::after {
     grid-template-columns: 3rem minmax(0, 1fr);
   }
 
+  .simo-work-index {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .simo-work-media-grid {
     grid-column: 2;
+  }
+
+  .simo-proof-rail {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .simo-community-strip,
@@ -972,6 +1148,21 @@ header nav a[aria-current="location"]::after {
   .simo-signal-shell {
     padding-block: 4rem;
   }
+
+  .simo-signal-static-route svg {
+    inset: 2.5rem 1rem auto;
+    width: calc(100% - 2rem);
+    height: 12rem;
+    opacity: 0.1;
+  }
+
+  .simo-method-route {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .simo-contact-actions {
+    padding-top: 0;
+  }
 }
 
 @media (max-width: 640px) {
@@ -986,21 +1177,27 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-index-hero-grid {
-    gap: 2rem;
-    padding-block: 2.25rem;
+    gap: 1rem;
+    padding-block: 1.45rem 1.1rem;
+  }
+
+  .simo-signal-static-route {
+    display: none;
   }
 
   .simo-index-identity h1 {
-    font-size: 3.7rem;
+    margin-top: 0.55rem;
+    font-size: 3.05rem;
   }
 
   .simo-index-headline {
-    max-width: none;
-    font-size: 1.55rem;
+    max-width: 20ch;
+    margin-top: 0.75rem;
+    font-size: 1.27rem;
   }
 
   .simo-index-portrait {
-    width: min(100%, 22rem);
+    width: min(100%, 17.25rem);
   }
 
   .simo-index-portrait img {
@@ -1015,6 +1212,42 @@ header nav a[aria-current="location"]::after {
     font-size: 0.98rem;
   }
 
+  .simo-index-detail {
+    margin-top: 0.7rem;
+    line-height: 1.5;
+  }
+
+  .simo-hero-route {
+    margin-top: 0.75rem;
+    padding: 0.34rem 0.55rem;
+    font-size: 0.67rem;
+  }
+
+  .simo-hero-actions {
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .simo-hero-actions .simo-primary-link,
+  .simo-hero-actions .simo-secondary-link {
+    min-height: 2.45rem;
+    padding: 0.58rem 0.78rem;
+    font-size: 0.9rem;
+  }
+
+  .simo-index-portrait figcaption {
+    gap: 0.15rem;
+    padding: 0.62rem 0.7rem;
+  }
+
+  .simo-index-portrait span {
+    font-size: 0.76rem;
+  }
+
+  .simo-index-portrait strong {
+    font-size: 0.9rem;
+  }
+
   .simo-signal-copy h2,
   .simo-section-heading h2,
   .simo-contact-grid h2 {
@@ -1022,12 +1255,15 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-story-section {
-    padding-block: 3.5rem;
+    padding-block: 3rem;
   }
 
   .simo-work-feature,
   .simo-work-feature[data-featured="true"],
   .simo-community-strip,
+  .simo-work-media-grid[data-treatment],
+  .simo-work-index,
+  .simo-contact-meta,
   .simo-specimen-strip,
   .simo-notes-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1037,12 +1273,21 @@ header nav a[aria-current="location"]::after {
     grid-column: auto;
   }
 
+  .simo-community-frame[data-featured="true"] {
+    grid-column: span 1;
+  }
+
   .simo-work-copy h3 {
     font-size: 1.8rem;
   }
 
+  .simo-community-frame[data-featured="true"] .simo-community-media img,
   .simo-community-media img {
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 4 / 3;
+  }
+
+  .simo-community-frame[data-highlighted="true"] .simo-community-media img {
+    aspect-ratio: 4 / 5;
   }
 }
 
@@ -1053,10 +1298,6 @@ header nav a[aria-current="location"]::after {
 
   .simo-signal-webgl canvas {
     display: none !important;
-  }
-
-  .simo-signal-webgl .site-webgl-static-field {
-    opacity: 1;
   }
 
   .simo-primary-link,

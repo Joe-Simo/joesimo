@@ -13,20 +13,23 @@ export const workRoutes = [
   { heading: "ChessLM", path: "/work/chesslm" },
 ] as const;
 
-type HomeDestination = "work" | "blog";
+type HomeDestination = "method" | "work" | "blog";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
-  blog: '.simo-index-hero .simo-hero-actions a[href="#blog"]',
+  blog: 'a[href="#blog"], a[href="/#blog"]',
+  method: '.simo-index-hero .simo-hero-actions a[href="#method"]',
   work: '.simo-index-hero .simo-hero-actions a[href="#work"]',
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
   blog: "#blog",
+  method: "#method",
   work: "#work",
 };
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
   blog: /notes|read|writing/i,
+  method: /method|trace/i,
   work: /work/i,
 };
 

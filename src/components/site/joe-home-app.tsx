@@ -1,24 +1,13 @@
-"use client";
-
 import Image from "next/image";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type MouseEvent,
-} from "react";
 
-import {
-  WebGLSignalField,
-  type WebGLSignalNode,
-} from "@/components/site/webgl-signal-field";
+import { HashFocus } from "@/components/site/hash-focus";
+import { MethodWorld } from "@/components/site/method-world";
 import type {
   CommunityArtifact,
   FieldNote,
   JoeProfile,
   ProofMedia,
+  ProjectStoryboardPanel,
   PublicEvidenceAsset,
   PublicProjectCaseStudy,
   SiteMedia,
@@ -36,56 +25,14 @@ type JoeHomeAppProps = {
   writingFragments: WritingFragment[];
 };
 
-type MethodStep = {
-  body: string;
-  code: string;
-  id: "support" | "signals" | "surface";
-  label: string;
-  node: WebGLSignalNode;
-  title: string;
-};
+type FeaturedProjectTreatment = NonNullable<
+  PublicProjectCaseStudy["homepageFeature"]
+>["treatment"];
 
-const methodSteps = [
-  {
-    id: "support",
-    code: "01",
-    label: "Support",
-    title: "Start where it breaks.",
-    body:
-      "The brief starts with the path a person can describe when the workflow fails.",
-    node: { id: "support", x: 18, y: 58, tension: 0.2, depth: 0.42 },
-  },
-  {
-    id: "signals",
-    code: "02",
-    label: "Signals",
-    title: "Trace the state.",
-    body:
-      "Routes, timing, handoff, and system state become visible before the interface asks for confidence.",
-    node: { id: "signals", x: 50, y: 34, tension: 0.7, depth: 0.68 },
-  },
-  {
-    id: "surface",
-    code: "03",
-    label: "Surface",
-    title: "Make the next action obvious.",
-    body:
-      "The final surface removes guesswork and keeps consequence close to the control.",
-    node: { id: "surface", x: 82, y: 58, tension: 0.55, depth: 0.5 },
-  },
-] as const satisfies readonly MethodStep[];
-
-const methodNodes = methodSteps.map((step) => step.node);
+type MediaFit = "contain" | "cover" | "phone";
 
 function ExternalCue({ show }: { show?: boolean }) {
   return show ? <span className="sr-only">opens in a new tab</span> : null;
-}
-
-function getEmailHref(socialChannels: readonly SocialChannel[]) {
-  return (
-    socialChannels.find((channel) => channel.label === "Email")?.href ??
-    "mailto:hello@joesimo.com"
-  );
 }
 
 function getPreferredAssets(project: PublicProjectCaseStudy) {
@@ -105,12 +52,30 @@ function getVideoType(src: string) {
   return src.endsWith(".mp4") ? "video/mp4" : "video/webm";
 }
 
+function getAssetFit(
+  asset: PublicEvidenceAsset,
+  treatment: FeaturedProjectTreatment,
+): MediaFit {
+  if (
+    treatment === "mobile-strip" ||
+    asset.media.height > asset.media.width * 1.25
+  ) {
+    return "phone";
+  }
+
+  return "contain";
+}
+
 function ProjectProofMedia({
   assets,
+  eager,
   project,
+  treatment,
 }: {
   assets: readonly PublicEvidenceAsset[];
+  eager?: boolean;
   project: PublicProjectCaseStudy;
+  treatment: FeaturedProjectTreatment;
 }) {
   const proofVideo = getProofVideo(project);
 
@@ -123,30 +88,56 @@ function ProjectProofMedia({
   }
 
   return (
-    <div className="simo-work-media-grid">
-      {proofVideo ? <ProofVideo media={proofVideo} /> : null}
-      {assets.slice(0, proofVideo ? 1 : 2).map((asset) => (
-        <figure className="simo-work-media" key={asset.id}>
-          <Image
-            src={asset.media.src}
-            alt={asset.media.alt}
-            width={asset.media.width}
-            height={asset.media.height}
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 46vw, 34vw"
-          />
-          <figcaption>
-            <span>{asset.label}</span>
-            <strong>{asset.sourceLabel}</strong>
-          </figcaption>
-        </figure>
-      ))}
+    <div className="simo-work-media-grid" data-treatment={treatment}>
+      {assets.map((asset, index) => {
+        const priority = Boolean(eager && index === 0);
+        const fit = getAssetFit(asset, treatment);
+
+        return (
+          <figure
+            className="simo-work-media"
+            data-media-fit={fit}
+            data-media-kind="image"
+            data-media-treatment={treatment}
+            key={asset.id}
+          >
+            <Image
+              src={asset.media.src}
+              alt={asset.media.alt}
+              width={asset.media.width}
+              height={asset.media.height}
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 46vw, 34vw"
+            />
+            <figcaption>
+              <span>{asset.label}</span>
+              <strong>{asset.sourceLabel}</strong>
+            </figcaption>
+          </figure>
+        );
+      })}
+      {proofVideo ? (
+        <ProofVideo media={proofVideo} treatment={treatment} />
+      ) : null}
     </div>
   );
 }
 
-function ProofVideo({ media }: { media: ProofMedia }) {
+function ProofVideo({
+  media,
+  treatment,
+}: {
+  media: ProofMedia;
+  treatment: FeaturedProjectTreatment;
+}) {
   return (
-    <figure className="simo-work-media simo-work-media-video">
+    <figure
+      className="simo-work-media simo-work-media-video"
+      data-media-fit="contain"
+      data-media-kind="video"
+      data-media-treatment={treatment}
+    >
       <video
         aria-label={media.alt}
         controls
@@ -163,244 +154,40 @@ function ProofVideo({ media }: { media: ProofMedia }) {
   );
 }
 
-function MethodWorld() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const stepButtonRefs = useRef<
-    Partial<Record<(typeof methodSteps)[number]["id"], HTMLButtonElement>>
-  >({});
-  const [sectionActive, setSectionActive] = useState(false);
-  const [activeStepId, setActiveStepId] =
-    useState<(typeof methodSteps)[number]["id"]>("support");
-  const [webglEnabled, setWebglEnabled] = useState(false);
-
-  const activeIndex = methodSteps.findIndex((step) => step.id === activeStepId);
-  const activeStep = methodSteps[activeIndex] ?? methodSteps[0];
-  const inspectedNodeIds = methodSteps
-    .slice(0, activeIndex + 1)
-    .map((step) => step.id);
-
-  useEffect(() => {
-    const viewportQuery = window.matchMedia("(min-width: 768px)");
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateWebglState = () => {
-      setWebglEnabled(viewportQuery.matches && !motionQuery.matches);
-    };
-
-    updateWebglState();
-    viewportQuery.addEventListener("change", updateWebglState);
-    motionQuery.addEventListener("change", updateWebglState);
-
-    return () => {
-      viewportQuery.removeEventListener("change", updateWebglState);
-      motionQuery.removeEventListener("change", updateWebglState);
-    };
-  }, []);
-
-  useEffect(() => {
-    const sectionElement = sectionRef.current;
-
-    if (!sectionElement) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setSectionActive(entry.isIntersecting && entry.intersectionRatio > 0.16);
-      },
-      {
-        rootMargin: "0px",
-        threshold: [0, 0.16, 0.32],
-      },
-    );
-
-    observer.observe(sectionElement);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const shouldRenderWebgl = webglEnabled && sectionActive;
-
-  function focusStep(index: number, moveFocus = false) {
-    const nextStep = methodSteps[index];
-
-    if (nextStep) {
-      setActiveStepId(nextStep.id);
-
-      if (moveFocus) {
-        requestAnimationFrame(() => {
-          stepButtonRefs.current[nextStep.id]?.focus();
-        });
-      }
-    }
-  }
-
-  function handleStepKeyDown(
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      focusStep((index + 1) % methodSteps.length, true);
-      return;
-    }
-
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      focusStep((index - 1 + methodSteps.length) % methodSteps.length, true);
-      return;
-    }
-
-    if (event.key === "Home") {
-      event.preventDefault();
-      focusStep(0, true);
-      return;
-    }
-
-    if (event.key === "End") {
-      event.preventDefault();
-      focusStep(methodSteps.length - 1, true);
-    }
+function ProjectProofRail({
+  panels,
+  project,
+}: {
+  panels: readonly ProjectStoryboardPanel[];
+  project: PublicProjectCaseStudy;
+}) {
+  if (panels.length === 0) {
+    return null;
   }
 
   return (
-    <section
-      id="method"
-      ref={sectionRef}
-      className="simo-signal-world"
-      aria-labelledby="method-title"
+    <div
+      className="simo-proof-rail"
+      aria-label={`${project.title} proof path`}
     >
-      {shouldRenderWebgl ? (
-        <WebGLSignalField
-          activeNodeId={activeStep.id}
-          activeRouteProgress={1}
-          caseComplete={activeStep.id === "surface"}
-          className="simo-signal-webgl"
-          inspectedNodeIds={inspectedNodeIds}
-          interactionMode={activeStep.id === "surface" ? "receipt" : "proof"}
-          investigationStatus={
-            activeStep.id === "support"
-              ? "briefing"
-              : activeStep.id === "signals"
-                ? "tracing"
-                : "synthesizing"
-          }
-          isTracing={activeStep.id === "signals"}
-          nodes={methodNodes}
-          originNodeId="support"
-          sceneMode="method"
-        />
-      ) : (
-        <div className="simo-signal-webgl simo-signal-static-only" aria-hidden>
-          <div className="site-webgl-static-field" />
-        </div>
-      )}
-
-      <div className="site-shell simo-signal-shell">
-        <div className="simo-signal-copy">
-          <p className="simo-index-kicker">Signal World</p>
-          <h2 id="method-title">
-            <span>Support</span>
-            <span aria-hidden>-&gt;</span>
-            <span>Signals</span>
-            <span aria-hidden>-&gt;</span>
-            <span>Surface</span>
-          </h2>
-          <p>
-            A route through the way Joe turns ambiguous support pressure into an
-            interface a person can operate.
-          </p>
-        </div>
-
-        <div
-          className="simo-method-route"
-          role="tablist"
-          aria-label="Support Signals Surface route"
-        >
-          {methodSteps.map((step, index) => {
-            const active = step.id === activeStep.id;
-
-            return (
-              <button
-                aria-controls="method-step-panel"
-                aria-selected={active}
-                className="simo-method-step"
-                data-active={active}
-                id={`method-step-${step.id}`}
-                key={step.id}
-                onClick={() => setActiveStepId(step.id)}
-                onKeyDown={(event) => handleStepKeyDown(event, index)}
-                ref={(element) => {
-                  if (element) {
-                    stepButtonRefs.current[step.id] = element;
-                  } else {
-                    delete stepButtonRefs.current[step.id];
-                  }
-                }}
-                role="tab"
-                tabIndex={active ? 0 : -1}
-                type="button"
-              >
-                <span>{step.code}</span>
-                <strong>{step.label}</strong>
-                <em>{step.title}</em>
-              </button>
-            );
-          })}
-        </div>
-
-        <article
-          aria-labelledby={`method-step-${activeStep.id}`}
-          className="simo-method-active"
-          id="method-step-panel"
-          role="tabpanel"
-        >
-          <span>{activeStep.code}</span>
-          <h3>{activeStep.title}</h3>
-          <p>{activeStep.body}</p>
+      {panels.slice(0, 3).map((panel, index) => (
+        <article key={panel.id}>
+          <span>{String(index + 1).padStart(2, "0")} / {panel.label}</span>
+          <strong>{panel.title}</strong>
+          <p>{panel.body}</p>
         </article>
-      </div>
-    </section>
+      ))}
+    </div>
   );
-}
-
-function handleHeroAnchorClick(
-  event: MouseEvent<HTMLAnchorElement>,
-  hash: "#work" | "#blog",
-) {
-  if (event.defaultPrevented) {
-    return;
-  }
-
-  const target = document.querySelector<HTMLElement>(hash);
-
-  if (!target) {
-    return;
-  }
-
-  event.preventDefault();
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-
-  window.history.pushState(null, "", hash);
-  target.scrollIntoView({
-    block: "start",
-    behavior: prefersReducedMotion ? "auto" : "smooth",
-  });
-  window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
 function WorkSection({ projects }: { projects: readonly PublicProjectCaseStudy[] }) {
-  const orderedProjects = useMemo(
-    () =>
-      [...projects].sort((left, right) => {
-        const leftRank = left.homepageFeature?.rank ?? 99;
-        const rightRank = right.homepageFeature?.rank ?? 99;
+  const orderedProjects = [...projects].sort((left, right) => {
+    const leftRank = left.homepageFeature?.rank ?? 99;
+    const rightRank = right.homepageFeature?.rank ?? 99;
 
-        return leftRank - rightRank || left.title.localeCompare(right.title);
-      }),
-    [projects],
-  );
+    return leftRank - rightRank || left.title.localeCompare(right.title);
+  });
   const featuredProjects = orderedProjects.slice(0, 4);
   const supportingProjects = orderedProjects.slice(4);
 
@@ -413,23 +200,39 @@ function WorkSection({ projects }: { projects: readonly PublicProjectCaseStudy[]
       <div className="site-shell">
         <div className="simo-section-heading">
           <p className="simo-index-kicker">Work</p>
-          <h2 id="work-title">Work that proves the method.</h2>
+          <h2 id="work-title" tabIndex={-1}>
+            Work that proves the method.
+          </h2>
           <p>
             Projects are evidence for how the method behaves in real product
-            surfaces. sim0 leads here because it is the clearest current proof.
+            surfaces. The first cases stay visible, addressable, and grounded
+            in owned media.
           </p>
         </div>
 
+        <nav className="simo-work-index" aria-label="Work case index">
+          {featuredProjects.map((project) => (
+            <a href={`#work-${project.slug}`} key={project.slug}>
+              <span>{project.code}</span>
+              <strong>{project.title}</strong>
+              <em>{project.proofMode}</em>
+            </a>
+          ))}
+        </nav>
+
         <div className="simo-work-feature-list">
-          {featuredProjects.map((project) => {
+          {featuredProjects.map((project, index) => {
             const assets = getPreferredAssets(project);
             const primaryAction = project.links[0];
             const panels = project.miniWorld?.panels ?? project.storyboard ?? [];
+            const treatment =
+              project.homepageFeature?.treatment ?? "operated-surface";
 
             return (
               <article
                 className="simo-work-feature"
                 data-featured={project.homepageFeature?.rank === 1}
+                data-treatment={treatment}
                 id={`work-${project.slug}`}
                 key={project.slug}
               >
@@ -457,18 +260,7 @@ function WorkSection({ projects }: { projects: readonly PublicProjectCaseStudy[]
                     <p>{project.proofSummary}</p>
                   </div>
 
-                  <details className="simo-proof-details">
-                    <summary>Inside look</summary>
-                    <div>
-                      {panels.slice(0, 3).map((panel) => (
-                        <article key={panel.id}>
-                          <span>{panel.label}</span>
-                          <strong>{panel.title}</strong>
-                          <p>{panel.body}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </details>
+                  <ProjectProofRail panels={panels} project={project} />
 
                   {primaryAction ? (
                     <div className="simo-work-actions">
@@ -485,7 +277,12 @@ function WorkSection({ projects }: { projects: readonly PublicProjectCaseStudy[]
                   ) : null}
                 </div>
 
-                <ProjectProofMedia assets={assets} project={project} />
+                <ProjectProofMedia
+                  assets={assets}
+                  eager={index === 0}
+                  project={project}
+                  treatment={treatment}
+                />
               </article>
             );
           })}
@@ -522,7 +319,9 @@ function PeopleSection({
       <div className="site-shell">
         <div className="simo-section-heading simo-community-heading">
           <p className="simo-index-kicker">People</p>
-          <h2 id="people-title">People Joe met in the builder room.</h2>
+          <h2 id="people-title" tabIndex={-1}>
+            Builder rooms, not badges.
+          </h2>
           <p>
             Real photos from the rooms where the work gets sharper: community,
             conferences, and useful conversations around builders.
@@ -534,6 +333,7 @@ function PeopleSection({
             <figure
               className="simo-community-frame"
               data-featured={index === 0}
+              data-highlighted={artifact.title === "ThePrimeagen"}
               key={`${artifact.code}-${artifact.media.src}`}
             >
               <div className="simo-community-media">
@@ -542,10 +342,12 @@ function PeopleSection({
                   alt={artifact.media.alt}
                   width={artifact.media.width}
                   height={artifact.media.height}
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
                   sizes={
                     index === 0
-                      ? "(max-width: 768px) 100vw, 38vw"
-                      : "(max-width: 768px) 100vw, 18vw"
+                      ? "(max-width: 768px) 100vw, 50vw"
+                      : "(max-width: 768px) 100vw, 24vw"
                   }
                 />
               </div>
@@ -579,7 +381,9 @@ function NotesSection({
       <div className="site-shell">
         <div className="simo-section-heading">
           <p className="simo-index-kicker">Notes</p>
-          <h2 id="notes-title">Notes from the method.</h2>
+          <h2 id="notes-title" tabIndex={-1}>
+            Notes from the method.
+          </h2>
           <p>
             Short records about breakage, signal, interface state, and public
             proof from the work.
@@ -614,9 +418,14 @@ function ContactSection({
 }: {
   socialChannels: readonly SocialChannel[];
 }) {
-  const emailHref = getEmailHref(socialChannels);
   const publicChannels = socialChannels.filter((channel) =>
     channel.href.startsWith("http"),
+  );
+  const primaryChannel =
+    publicChannels.find((channel) => channel.label === "LinkedIn") ??
+    publicChannels[0];
+  const secondaryChannels = publicChannels.filter(
+    (channel) => channel !== primaryChannel,
   );
 
   return (
@@ -628,19 +437,29 @@ function ContactSection({
       <div className="site-shell simo-contact-grid">
         <div>
           <p className="simo-index-kicker">Contact</p>
-          <h2 id="contact-title">Bring the stuck workflow.</h2>
+          <h2 id="contact-title" tabIndex={-1}>
+            Bring the stuck workflow.
+          </h2>
           <p>
-            Useful email is best for support systems, interface work, product
-            surfaces, consulting, or a direct introduction.
+            Public profiles are the route for introductions, product context,
+            consulting, and follow-up around useful interface work.
           </p>
         </div>
 
         <div className="simo-contact-actions">
-          <a className="simo-primary-link" href={emailHref}>
-            Email Joe
-          </a>
+          {primaryChannel ? (
+            <a
+              className="simo-primary-link"
+              href={primaryChannel.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {primaryChannel.label}
+              <ExternalCue show />
+            </a>
+          ) : null}
           <div className="simo-social-row">
-            {publicChannels.map((channel) => (
+            {secondaryChannels.map((channel) => (
               <a
                 href={channel.href}
                 key={channel.label}
@@ -653,6 +472,21 @@ function ContactSection({
             ))}
           </div>
         </div>
+
+        <dl className="simo-contact-meta" aria-label="Contact context">
+          <div>
+            <dt>Base</dt>
+            <dd>Fort Myers</dd>
+          </div>
+          <div>
+            <dt>Route</dt>
+            <dd>Public profiles</dd>
+          </div>
+          <div>
+            <dt>Method</dt>
+            <dd>Support → Signals → Surface</dd>
+          </div>
+        </dl>
       </div>
     </section>
   );
@@ -667,10 +501,9 @@ export function JoeHomeApp({
   socialChannels,
   writingFragments,
 }: JoeHomeAppProps) {
-  const emailHref = getEmailHref(socialChannels);
-
   return (
     <div className="simo-index-root">
+      <HashFocus />
       <section
         id="joe"
         className="simo-index-hero"
@@ -679,27 +512,19 @@ export function JoeHomeApp({
         <div className="site-shell simo-index-hero-grid">
           <div className="simo-index-identity">
             <p className="simo-index-kicker">{joeProfile.kicker}</p>
-            <h1 id="joe-title">Joe Simo</h1>
+            <h1 id="joe-title" tabIndex={-1}>
+              Joe Simo
+            </h1>
             <p className="simo-index-headline">{joeProfile.headline}</p>
             <p className="simo-index-detail">{joeProfile.detail}</p>
+            <p className="simo-hero-route">Support → Signals → Surface</p>
 
             <div className="simo-hero-actions" aria-label="Primary actions">
-              <a
-                className="simo-primary-link"
-                href="#work"
-                onClick={(event) => handleHeroAnchorClick(event, "#work")}
-              >
+              <a className="simo-primary-link" href="#method">
+                Trace Method
+              </a>
+              <a className="simo-secondary-link" href="#work">
                 View Work
-              </a>
-              <a
-                className="simo-secondary-link"
-                href="#blog"
-                onClick={(event) => handleHeroAnchorClick(event, "#blog")}
-              >
-                Read Notes
-              </a>
-              <a className="simo-secondary-link" href={emailHref}>
-                Email Joe
               </a>
             </div>
           </div>
@@ -715,7 +540,7 @@ export function JoeHomeApp({
             />
             <figcaption>
               <span>Personal site</span>
-              <strong>Support -&gt; Signals -&gt; Surface</strong>
+              <strong>Support → Signals → Surface</strong>
             </figcaption>
           </figure>
         </div>

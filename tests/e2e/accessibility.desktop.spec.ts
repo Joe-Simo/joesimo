@@ -44,8 +44,8 @@ test.describe("desktop accessibility quality gates", () => {
       page.getByRole("link", { name: /joe simo|home/i }).first(),
     );
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }));
+    await tabUntilFocused(page, homeDestinationLink(page, "method"));
     await tabUntilFocused(page, homeDestinationLink(page, "work"));
-    await tabUntilFocused(page, homeDestinationLink(page, "blog"));
   });
 
   test("homepage destination controls expose usable accessible names", async ({
@@ -57,8 +57,8 @@ test.describe("desktop accessibility quality gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
+    await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "blog");
   });
 
   test("method route tabs move focus with arrow keys", async ({ page }) => {

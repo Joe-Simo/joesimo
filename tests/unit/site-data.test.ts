@@ -43,10 +43,6 @@ const requiredWorkSlugs = [
 ] as const;
 const requiredStepIds = ["preview", "runtime", "api", "ship", "changes"] as const;
 const requiredSocials = {
-  Email: {
-    handle: "hello@joesimo.com",
-    href: "mailto:hello@joesimo.com",
-  },
   GitHub: {
     handle: "@joe-simo",
     href: "https://github.com/joe-simo",
@@ -92,11 +88,11 @@ describe("Joe Simo site data", () => {
     expect(heroCopy.title).toBe("Joe Simo");
     expect(heroCopy.intro).toContain("interfaces people can operate");
     expect(heroCopy.detail).toBe(
-      "Support taught me where software breaks. Telematics taught me how signals move. Design taught me what to remove.",
+      "I start with the complaint, trace the system state behind it, and ship the smallest interface that makes the next action obvious.",
     );
     expect(joeProfile.kicker).toContain("Fort Myers");
     expect(joeProfile.kicker).toContain("Devsigner");
-    expect(joeProfile.routeLabel).toBe("Support -> Signals -> Surface.");
+    expect(joeProfile.routeLabel).toBe("Support → Signals → Surface.");
     expect(routeNodeIds).not.toContain("joe");
 
     const publicHeroCopy = [
@@ -146,6 +142,14 @@ describe("Joe Simo site data", () => {
       expect(channel?.handle).toBe(expected.handle);
       expect(channel?.href).toBe(expected.href);
     }
+
+    const privateMessageScheme = ["mail", "to:"].join("");
+
+    expect(
+      socialChannels.some((channel) =>
+        channel.href.startsWith(privateMessageScheme),
+      ),
+    ).toBe(false);
   });
 
   test("keeps personal curiosity claims modest", () => {
@@ -237,8 +241,9 @@ describe("Joe Simo site data", () => {
     expect(communityArtifacts).toHaveLength(19);
     expect(communityArtifacts[0]?.title).toBe("Hallway signal");
     expect(communityHighlights).toHaveLength(6);
-    expect(communityHighlights[0]?.title).toBe("ThePrimeagen");
-    expect(communityHighlights[0]?.media.src).toBe(
+    expect(communityHighlights[0]?.title).toBe("React Miami room");
+    expect(communityHighlights[1]?.title).toBe("ThePrimeagen");
+    expect(communityHighlights[1]?.media.src).toBe(
       "/media/community/react-miami-primeagen.webp",
     );
 

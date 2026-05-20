@@ -5,6 +5,7 @@ import {
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectPageHealthy,
+  expectProjectMediaFramesContained,
   expectRenderedImagesHealthy,
   workRoutes,
 } from "./helpers";
@@ -22,8 +23,8 @@ test.describe("Joe Simo personal site", () => {
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
+    await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "blog");
     await expect(page.locator("#method")).toBeVisible();
     await expect(page.locator("#people")).toBeVisible();
     await expect(page.locator("#contact")).toBeVisible();
@@ -41,22 +42,45 @@ test.describe("Joe Simo personal site", () => {
     expect(pageText).not.toMatch(
       /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year/i,
     );
+    const privateMessageAction = ["Email", "Joe"].join(" ");
+    const privateMessageHandlePrefix = ["hello", "@"].join("");
+
+    expect(pageText).not.toContain(privateMessageAction);
+    expect(pageText).not.toContain(privateMessageHandlePrefix);
     expect(pageText).not.toContain("/Users/");
     expect(pageText).not.toContain("Downloads/");
+    const privateMessageScheme = ["mail", "to:"].join("");
+    const privateMessageLinks = await page.locator("a").evaluateAll(
+      (links, scheme) =>
+        links.filter((link) =>
+          link.getAttribute("href")?.startsWith(scheme),
+        ).length,
+      privateMessageScheme,
+    );
+
+    expect(privateMessageLinks).toBe(0);
     await expectPageHealthy(page, problems);
   });
 
   test("renders visible one-page chapters and anchor destinations", async ({
     page,
   }) => {
+    test.setTimeout(60_000);
+
     const problems = collectConsoleProblems(page);
 
     await page.goto("/");
 
+    const methodLink = await expectHomeDestinationLink(page, "method");
     const workLink = await expectHomeDestinationLink(page, "work");
-    const blogLink = await expectHomeDestinationLink(page, "blog");
 
-    await blogLink.click();
+    await methodLink.click();
+    await expectHomeDestinationSection(page, "method");
+    await expect(page.locator("#method-title")).toContainText("Support");
+    await expect(page.locator("#method-title")).toContainText("Signals");
+    await expect(page.locator("#method-title")).toContainText("Surface");
+
+    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "blog");
     await expect(
       page.getByRole("heading", { name: "Notes from the method." }),
@@ -70,8 +94,22 @@ test.describe("Joe Simo personal site", () => {
       workSection.getByRole("heading", { name: "sim0" }),
     ).toBeVisible();
     await expect(
+      workSection.getByRole("navigation", { name: "Work case index" }),
+    ).toBeVisible();
+    await workSection
+      .getByRole("link", { name: /Astrosimo/i })
+      .click();
+    await expect(page).toHaveURL(/#work-astrosimo$/);
+    await expect
+      .poll(async () =>
+        page
+          .locator("#work-astrosimo")
+          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
+      )
+      .toBeLessThanOrEqual(120);
+    await expect(
       page.getByRole("heading", {
-        name: "People Joe met in the builder room.",
+        name: "Builder rooms, not badges.",
       }),
     ).toBeVisible();
     await expect(
@@ -83,6 +121,7 @@ test.describe("Joe Simo personal site", () => {
       }),
     ).toBeVisible();
     await expectRenderedImagesHealthy(page);
+    await expectProjectMediaFramesContained(page);
 
     await expect(
       page.locator("footer").getByRole("link", { name: /github/i }),
@@ -105,6 +144,13 @@ test.describe("Joe Simo personal site", () => {
           .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
       )
       .toBeLessThanOrEqual(120);
+    await expect
+      .poll(async () =>
+        page
+          .locator("#contact-title")
+          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
+      )
+      .toBeLessThanOrEqual(260);
 
     const pageText = await page.locator("body").innerText();
     expect(pageText).not.toMatch(

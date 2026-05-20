@@ -607,9 +607,9 @@ export const legacyHashMap = {
 
 export const heroCopy = {
   title: "Joe Simo",
-  intro: "I turn stuck workflows into interfaces people can operate.",
+  intro: "I turn support pain into interfaces people can operate.",
   detail:
-    "Support taught me where software breaks. Telematics taught me how signals move. Design taught me what to remove.",
+    "I start with the complaint, trace the system state behind it, and ship the smallest interface that makes the next action obvious.",
 };
 
 export const siteDescription =
@@ -620,8 +620,8 @@ export const joeProfile: JoeProfile = {
   kicker: "Fort Myers / Devsigner / interface systems",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Support -> Signals -> Surface.",
-  receiptTitle: "Support -> Signals -> Surface",
+  routeLabel: "Support → Signals → Surface.",
+  receiptTitle: "Support → Signals → Surface",
   receiptDetail:
     "Trace the method, then choose the work that proves the route.",
   contactPrompt:
@@ -915,20 +915,12 @@ export const socialChannels: SocialChannel[] = [
     iconKey: "video",
     description: "YouTube profile.",
   },
-  {
-    label: "Email",
-    handle: "hello@joesimo.com",
-    href: "mailto:hello@joesimo.com",
-    iconKey: "mail",
-    description: "Direct email.",
-  },
 ];
 
 const githubChannel = socialChannels[0];
 const xChannel = socialChannels[1];
 const instagramChannel = socialChannels[2];
 const linkedinChannel = socialChannels[3];
-const emailChannel = socialChannels[5];
 
 export const profileFacts: ProfileFact[] = [
   {
@@ -1592,7 +1584,7 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     id: "method",
     code: "01",
     label: "Method",
-    title: "Support -> Signals -> Surface.",
+    title: "Support → Signals → Surface.",
     body:
       "The method starts with what a person can describe, traces timing, route, state, and handoff, then removes what does not help the next action.",
     anchor: "#method",
@@ -1628,9 +1620,9 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     id: "contact",
     code: "04",
     label: "Contact",
-    title: "Email is the direct route.",
+    title: "Public profiles are the route.",
     body:
-      "Bring a stuck workflow, product surface, or useful introduction.",
+      "Bring a stuck workflow, product surface, or useful introduction through the public trail.",
     anchor: "#contact",
     progress: 0.88,
     sceneMode: "contact",
@@ -1697,7 +1689,7 @@ export const methodWorldMoments: MethodWorldMoment[] = [
     progress: 0.88,
     code: "04",
     label: "Contact",
-    readout: "Email is the direct route.",
+    readout: "Public profiles are the route.",
   },
 ];
 
@@ -2996,6 +2988,21 @@ export const communityArtifacts: CommunityArtifact[] =
 export const communityHighlights: CommunityArtifact[] = [
   {
     code: "R00",
+    title: "React Miami room",
+    body:
+      "Owned React Miami 2026 room frame: the broader builder context before any individual receipt.",
+    sourceLabel: "Owned event photo",
+    media: {
+      kind: "artifact",
+      src: "/media/community/react-miami-room.webp",
+      alt: "React Miami 2026 builder room with Joe Simo community context",
+      width: 1199,
+      height: 800,
+      tone: "desaturated",
+    },
+  },
+  {
+    code: "R01",
     title: "ThePrimeagen",
     body:
       "Owned React Miami 2026 photo with ThePrimeagen, kept as a people-and-community receipt.",
@@ -3009,7 +3016,37 @@ export const communityHighlights: CommunityArtifact[] = [
       tone: "desaturated",
     },
   },
-  ...communityArtifacts.slice(0, 5),
+  {
+    code: "R02",
+    title: "Builder table",
+    body:
+      "Owned React Miami 2026 table frame from the same builder trail.",
+    sourceLabel: "Owned event photo",
+    media: {
+      kind: "artifact",
+      src: "/media/community/react-miami-table.webp",
+      alt: "React Miami 2026 builder table community frame",
+      width: 1199,
+      height: 800,
+      tone: "desaturated",
+    },
+  },
+  {
+    code: "R03",
+    title: "Audience signal",
+    body:
+      "Owned React Miami 2026 audience frame showing the room around the work.",
+    sourceLabel: "Owned event photo",
+    media: {
+      kind: "artifact",
+      src: "/media/community/react-miami-audience.webp",
+      alt: "React Miami 2026 audience community frame",
+      width: 900,
+      height: 993,
+      tone: "desaturated",
+    },
+  },
+  ...communityArtifacts.slice(0, 2),
 ];
 
 export const productReportArtifacts: ProductReportArtifact[] = [
@@ -3085,13 +3122,13 @@ export const worldArtifacts: WorldArtifact[] = [
     id: "contact",
     code: "W5",
     label: "Contact",
-    source: "Email",
-    title: "The exit is direct.",
+    source: "LinkedIn",
+    title: "The exit stays public.",
     detail:
-      "For support, systems, web consulting, sim0, or interface work, email is the working route.",
+      "For support, systems, web consulting, sim0, or interface work, use the public profile trail.",
     stage: "contact",
-    href: emailChannel.href,
-    actionLabel: "Email Joe",
+    href: linkedinChannel.href,
+    actionLabel: "Open LinkedIn",
   },
 ];
 
@@ -3171,9 +3208,9 @@ export const siteRecords: SiteRecord[] = [
       "Fort Myers devsigner working from support failures, systems work, telematics, and interface clarity.",
     proof: "Joe Simo / Devsigner / Fort Myers",
     primaryAction: {
-      id: "email-joe",
-      label: "Email Joe",
-      href: emailChannel.href,
+      id: "trace-method",
+      label: "Trace Method",
+      href: "#method",
       kind: "primary",
     },
     secondaryActions: [
@@ -3266,9 +3303,11 @@ export const siteRecords: SiteRecord[] = [
     primaryAction: sim0Link,
     secondaryActions: [
       {
-        id: "email-work",
-        label: "Email Joe",
-        href: emailChannel.href,
+        id: "open-linkedin-work",
+        label: "LinkedIn",
+        href: linkedinChannel.href,
+        external: true,
+        ariaLabel: "Open Joe Simo on LinkedIn in a new tab",
         kind: "secondary",
       },
     ],
@@ -3300,10 +3339,10 @@ export const siteRecords: SiteRecord[] = [
     label: "Trail",
     shortLabel: "trail",
     kind: "trail",
-    status: "GitHub, X, Instagram, LinkedIn, YouTube, and email.",
+    status: "GitHub, X, Instagram, LinkedIn, and YouTube.",
     detail:
-      "The public trail keeps the real exits close: code, public profiles, professional context, video, and direct email.",
-    proof: "GitHub / X / Instagram / LinkedIn / YouTube / Email",
+      "The public trail keeps the real exits close: code, public profiles, professional context, and video.",
+    proof: "GitHub / X / Instagram / LinkedIn / YouTube",
     primaryAction: {
       id: "open-github",
       label: "GitHub",
@@ -3357,24 +3396,36 @@ export const siteRecords: SiteRecord[] = [
     label: "Contact",
     shortLabel: "contact",
     kind: "contact",
-    status: "Useful email is best.",
+    status: "Public profiles are best.",
     detail:
-      "Reach out about support, systems, web consulting, sim0, interface work, or a useful introduction.",
-    proof: "hello@joesimo.com",
+      "Reach out through public profiles about support, systems, web consulting, sim0, interface work, or a useful introduction.",
+    proof: "LinkedIn / X / GitHub",
     primaryAction: {
-      id: "email-contact",
-      label: "Email",
-      href: emailChannel.href,
+      id: "open-linkedin-contact",
+      label: "LinkedIn",
+      href: linkedinChannel.href,
+      external: true,
+      ariaLabel: "Open Joe Simo on LinkedIn in a new tab",
       kind: "primary",
     },
-    secondaryActions: [sim0Link],
-    iconKey: "mail",
+    secondaryActions: [
+      {
+        id: "open-x-contact",
+        label: "X",
+        href: xChannel.href,
+        external: true,
+        ariaLabel: "Open Joe Simo on X in a new tab",
+        kind: "secondary",
+      },
+      sim0Link,
+    ],
+    iconKey: "arrowUpRight",
     accent: "live",
     sceneMode: "contact",
     scene: {
       code: "04",
       eyebrow: "Contact",
-      coordinate: "hello@joesimo.com",
+      coordinate: "public profiles",
       tone: "contact",
       scrollRange: [0.78, 1],
     },
@@ -3384,7 +3435,7 @@ export const siteRecords: SiteRecord[] = [
       depth: 0.18,
     },
     sectionAnchor: "#contact",
-    readActionLabel: "Contact Joe",
+    readActionLabel: "Open Public Profiles",
     map: {
       desktopPoint: { x: 76, y: 78 },
       mobilePoint: { x: 50, y: 84 },
@@ -3420,7 +3471,7 @@ export const navItems = [
   {
     label: "Contact",
     href: "#contact",
-    iconKey: "mail",
+    iconKey: "arrowUpRight",
     recordId: "contact",
   },
 ] as const satisfies readonly {

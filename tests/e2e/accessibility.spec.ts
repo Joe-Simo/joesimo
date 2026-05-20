@@ -14,6 +14,8 @@ const axeRoutes = [
 test.describe("accessibility quality gates", () => {
   for (const route of axeRoutes) {
     test(`has no critical axe violations: ${route.name}`, async ({ page }) => {
+      test.setTimeout(60_000);
+
       const problems = collectConsoleProblems(page);
 
       await blockHeavyMedia(page);

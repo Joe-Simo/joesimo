@@ -89,7 +89,6 @@ const personJsonLd = {
   "@id": `${siteUrl}/#person`,
   name: personName,
   url: siteUrl,
-  email: "mailto:hello@joesimo.com",
   description: siteDescription,
   image: `${siteUrl}/media/joe-simo-headshot.webp`,
   jobTitle: "Devsigner",
