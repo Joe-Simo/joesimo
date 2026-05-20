@@ -25,12 +25,12 @@ test.describe("performance budgets", () => {
     expect(snapshot.totalDecodedResourceBytes).toBeLessThan(8_000_000);
   });
 
-  test("work page media keeps controls explicit and avoids autoplay", async ({
+  test("one-page portfolio media avoids autoplay", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
-    await page.goto("/work/astrosimo");
+    await page.goto("/#work");
     await expectPageHealthy(page, problems);
 
     const mediaPolicy = await page.locator("video").evaluateAll((videos) =>

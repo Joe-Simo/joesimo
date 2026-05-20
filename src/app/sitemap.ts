@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
 
-import { projectCaseStudies } from "@/lib/site-data";
-
 const siteUrl = "https://joesimo.com";
 type SitemapEntry = {
   path: string;
@@ -18,11 +16,6 @@ const canonicalRoutes = [
     changeFrequency: monthly,
     priority: 1,
   },
-  ...projectCaseStudies.map((project) => ({
-    path: `/work/${project.slug}`,
-    changeFrequency: monthly,
-    priority: 0.74,
-  })),
 ] satisfies SitemapEntry[];
 const lastModified = new Date("2026-05-13T00:00:00.000Z");
 

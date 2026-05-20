@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   archiveArtifacts,
   communityArtifacts,
+  communityHighlights,
   defaultActiveNodeId,
   educationRecords,
   getProjectCaseStudy,
@@ -226,12 +227,25 @@ describe("Joe Simo site data", () => {
   test("keeps React Miami and product report artifacts local and modest", () => {
     expect(communityArtifacts).toHaveLength(19);
     expect(communityArtifacts[0]?.title).toBe("Hallway signal");
+    expect(communityHighlights).toHaveLength(6);
+    expect(communityHighlights[0]?.title).toBe("ThePrimeagen");
+    expect(communityHighlights[0]?.media.src).toBe(
+      "/media/community/react-miami-primeagen.webp",
+    );
 
     for (const artifact of communityArtifacts) {
       expect(artifact.sourceLabel).toBe("Owned event photo");
       expect(artifact.media.src).toMatch(
         /^\/media\/community\/react-miami-developer-\d{2}\.webp$/,
       );
+      expect(artifact.body).not.toMatch(privatePathTerms);
+      expect(artifact.body).not.toMatch(forbiddenPublicTerms);
+      expect(artifact.body).not.toMatch(/famous|celebrity/i);
+    }
+
+    for (const artifact of communityHighlights) {
+      expect(artifact.sourceLabel).toBe("Owned event photo");
+      expect(artifact.media.src).toMatch(/^\/media\/community\/.+\.webp$/);
       expect(artifact.body).not.toMatch(privatePathTerms);
       expect(artifact.body).not.toMatch(forbiddenPublicTerms);
       expect(artifact.body).not.toMatch(/famous|celebrity/i);
@@ -380,13 +394,13 @@ describe("Joe Simo site data", () => {
     }
   });
 
-  test("sitemap includes home and every public work page", () => {
+  test("sitemap keeps the public surface one-page", () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    expect(urls).toContain("https://joesimo.com/");
+    expect(urls).toEqual(["https://joesimo.com/"]);
 
     for (const project of projectCaseStudies) {
-      expect(urls).toContain(`https://joesimo.com/work/${project.slug}`);
+      expect(urls).not.toContain(`https://joesimo.com/work/${project.slug}`);
     }
   });
 

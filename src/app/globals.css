@@ -2886,6 +2886,48 @@
   background: var(--muted);
 }
 
+.work-case-artifact-frame[data-media-fit="contain"],
+.work-case-storyboard-media > div[data-media-fit="contain"],
+.work-case-strip figure > div[data-media-fit="contain"] {
+  --work-media-contain-pad: clamp(1.2rem, 4vw, 3.5rem);
+  position: relative;
+  padding: 0;
+  background:
+    linear-gradient(
+      color-mix(in oklab, var(--foreground) 5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 1px,
+      transparent 1px
+    ),
+    color-mix(in oklab, var(--background) 96%, var(--muted) 4%);
+  background-size: 3rem 3rem, 3rem 3rem, auto;
+}
+
+.work-case-artifact-frame[data-media-fit="contain"] img,
+.work-case-storyboard-media > div[data-media-fit="contain"] img,
+.work-case-strip figure > div[data-media-fit="contain"] img {
+  position: absolute;
+  inset: var(--work-media-contain-pad);
+  width: calc(100% - (var(--work-media-contain-pad) * 2)) !important;
+  height: calc(100% - (var(--work-media-contain-pad) * 2)) !important;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.work-case-artifact-frame[data-media-scale="native"] img,
+.work-case-storyboard-media > div[data-media-scale="native"] img,
+.work-case-strip figure > div[data-media-scale="native"] img {
+  inset: 50% auto auto 50%;
+  width: min(52%, 22rem) !important;
+  height: auto !important;
+  max-height: calc(100% - (var(--work-media-contain-pad) * 2));
+  transform: translate(-50%, -50%);
+}
+
 .work-case-artifact figcaption,
 .work-case-strip figcaption {
   display: flex;
@@ -2909,7 +2951,7 @@
 .work-case-process {
   display: grid;
   min-height: min(32rem, 70svh);
-  align-content: end;
+  align-content: center;
   gap: 0.9rem;
   border: 1px solid color-mix(in oklab, var(--foreground) 14%, var(--border));
   border-radius: 7px;
@@ -2921,15 +2963,18 @@
 }
 
 .work-case-process strong {
-  font-size: clamp(2.6rem, 7vw, 6.5rem);
+  max-width: 10ch;
+  font-size: clamp(2.2rem, 5.6vw, 5rem);
   font-weight: 620;
   letter-spacing: 0;
-  line-height: 0.86;
+  line-height: 0.9;
 }
 
 .work-case-process em {
   display: block;
   max-width: 38rem;
+  border-top: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent);
+  padding-top: 0.62rem;
   font-style: normal;
   line-height: 1.55;
   color: var(--muted-foreground);
@@ -2940,6 +2985,12 @@
   font-size: 1rem;
   line-height: 1.6;
   color: var(--muted-foreground);
+}
+
+.work-case-process-list {
+  display: grid;
+  gap: 0.62rem;
+  margin-top: 0.35rem;
 }
 
 .work-case-story {
@@ -4386,11 +4437,12 @@ header nav a[aria-current="location"]::after {
 .simo-work-number,
 .simo-proof-list span,
 .simo-writing-card span,
-.simo-report-card span,
-.simo-archive-card span,
-.simo-community-frame span,
-.simo-specimen-link span,
-.simo-specimen-link em {
+  .simo-report-card span,
+  .simo-archive-card span,
+  .simo-community-frame span,
+  .simo-specimen-card span,
+  .simo-specimen-card em,
+  .simo-work-proofline span {
   margin: 0;
   font-family: var(--font-geist-mono);
   font-size: 0.68rem;
@@ -4583,10 +4635,9 @@ header nav a[aria-current="location"]::after {
 .simo-primary-link:focus-visible,
 .simo-secondary-link:focus-visible,
 .simo-work-actions a:focus-visible,
-.simo-social-row a:focus-visible,
-.simo-index-intent:focus-visible,
-.simo-console-route:focus-visible,
-.simo-specimen-link:focus-visible {
+  .simo-social-row a:focus-visible,
+  .simo-index-intent:focus-visible,
+  .simo-console-route:focus-visible {
   outline: 2px solid var(--signal-accent);
   outline-offset: 3px;
 }
@@ -5109,10 +5160,12 @@ header nav a[aria-current="location"]::after {
 .simo-proof-list em,
 .simo-writing-card p,
 .simo-report-card p,
-.simo-archive-card p,
-.simo-community-frame figcaption,
-.simo-specimen-link strong,
-.simo-specimen-link em {
+  .simo-archive-card p,
+  .simo-community-frame figcaption,
+  .simo-specimen-card strong,
+  .simo-specimen-card em,
+  .simo-specimen-card p,
+  .simo-work-proofline p {
   margin: 0;
 }
 
@@ -5181,8 +5234,10 @@ header nav a[aria-current="location"]::after {
 .simo-fact-pill p,
 .simo-writing-card p,
 .simo-report-card p,
-.simo-archive-card p,
-.simo-proof-list em {
+  .simo-archive-card p,
+  .simo-proof-list em,
+  .simo-specimen-card p,
+  .simo-work-proofline p {
   color: var(--muted-foreground);
   line-height: 1.55;
 }
@@ -5280,6 +5335,14 @@ header nav a[aria-current="location"]::after {
   color: var(--foreground) !important;
 }
 
+.simo-work-proofline {
+  display: grid;
+  gap: 0.42rem;
+  max-width: 42rem;
+  border-left: 1px solid var(--simo-material-border);
+  padding-left: 0.8rem;
+}
+
 .simo-work-actions {
   margin-top: 0;
 }
@@ -5323,20 +5386,24 @@ header nav a[aria-current="location"]::after {
   margin-top: 1rem;
 }
 
-.simo-specimen-link {
+.simo-specimen-card {
   display: grid;
   gap: 0.45rem;
-  min-height: 7.5rem;
+  align-content: start;
+  min-height: 9rem;
   border: 1px solid var(--simo-material-border);
   border-radius: var(--simo-radius-base);
   padding: 1rem;
   color: var(--foreground);
   background: color-mix(in oklab, var(--background) 94%, transparent);
-  outline: none;
 }
 
-.simo-specimen-link strong {
+.simo-specimen-card strong {
   font-weight: 560;
+}
+
+.simo-specimen-card p {
+  font-size: 0.9rem;
 }
 
 .simo-notes-section {
@@ -5416,10 +5483,22 @@ header nav a[aria-current="location"]::after {
   max-width: 54rem;
 }
 
+.simo-community-panel {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-top: clamp(1.5rem, 4vw, 3rem);
+  padding-top: clamp(1.5rem, 3.5vw, 2.75rem);
+  border-top: 1px solid var(--simo-material-border);
+}
+
+.simo-community-heading {
+  margin-bottom: 0;
+}
+
 .simo-community-strip,
 .simo-archive-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: minmax(16rem, 1.35fr) repeat(5, minmax(8rem, 1fr));
   gap: 0.75rem;
 }
 
@@ -5433,17 +5512,73 @@ header nav a[aria-current="location"]::after {
   background: var(--background);
 }
 
-.simo-community-frame img {
+.simo-community-frame {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--foreground) 4%, transparent),
+      transparent 42%
+    ),
+    var(--background);
+}
+
+.simo-community-frame[data-featured="true"] {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--signal-accent) 11%, transparent),
+      transparent 44%
+    ),
+    var(--background);
+}
+
+.simo-community-media {
+  overflow: hidden;
+  border-bottom: 1px solid var(--simo-material-border);
+  background: var(--simo-surface-strong);
+}
+
+.simo-community-media img {
+  display: block;
   width: 100%;
+  height: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
 }
 
 .simo-community-frame figcaption {
   display: grid;
-  gap: 0.25rem;
+  align-content: start;
+  gap: 0.4rem;
   padding: 0.75rem;
   font-size: 0.85rem;
+}
+
+.simo-community-frame[data-featured="true"] figcaption {
+  padding: 1rem;
+}
+
+.simo-community-frame span {
+  color: var(--muted-foreground);
+}
+
+.simo-community-frame strong {
+  font-size: 0.98rem;
+  font-weight: 560;
+  line-height: 1.1;
+}
+
+.simo-community-frame p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.simo-community-frame:not([data-featured="true"]) p {
+  display: none;
 }
 
 .simo-archive-grid {
@@ -5533,8 +5668,8 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-index-hero-grid {
-    gap: 1.35rem;
-    padding-block: 1.8rem 2.25rem;
+    gap: 1rem;
+    padding-block: 1.55rem 1.75rem;
   }
 
   .simo-index-identity h1 {
@@ -5555,18 +5690,7 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-index-signal-rail {
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 1rem;
-  }
-
-  .simo-index-signal-rail div {
-    grid-template-columns: 2.5rem minmax(0, 0.45fr) minmax(0, 1fr);
-    align-items: center;
-    padding: 0.72rem;
-  }
-
-  .simo-index-signal-rail strong {
-    font-size: 0.9rem;
+    display: none;
   }
 
   .simo-index-portrait {
@@ -5575,7 +5699,7 @@ header nav a[aria-current="location"]::after {
     right: auto;
     grid-template-columns: 4.75rem minmax(0, 1fr);
     gap: 0.65rem;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
     padding: 0.38rem 0.65rem 0.38rem 0.38rem;
   }
 
@@ -5595,7 +5719,7 @@ header nav a[aria-current="location"]::after {
 
   .simo-index-console {
     display: grid;
-    gap: 0.72rem;
+    gap: 0.58rem;
     min-height: auto;
     padding: 1rem;
     background-size: auto, 3rem 3rem, 3rem 3rem, auto;
@@ -5651,14 +5775,7 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-console-receipt {
-    position: relative;
-    top: auto;
-    right: auto;
-    left: auto;
-    z-index: 3;
-    max-width: none;
-    padding: 0.82rem;
-    transform: none;
+    display: none;
   }
 
   .simo-contact-grid {
@@ -5705,7 +5822,7 @@ header nav a[aria-current="location"]::after {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .simo-community-frame img {
+  .simo-community-media img {
     aspect-ratio: 16 / 11;
   }
 }

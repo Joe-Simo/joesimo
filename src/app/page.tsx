@@ -2,6 +2,7 @@ import { JoeHomeStage } from "@/components/site/joe-home-stage";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
+  communityHighlights,
   fieldNotes,
   joeProfile,
   profileMedia,
@@ -30,6 +31,7 @@ export default function Home() {
         className="outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
       >
         <JoeHomeStage
+          communityArtifacts={communityHighlights}
           fieldNotes={fieldNotes}
           joeProfile={joeProfile}
           profileMedia={profileMedia}

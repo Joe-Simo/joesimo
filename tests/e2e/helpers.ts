@@ -162,6 +162,93 @@ export async function expectPageHealthy(
   expect(problems).toEqual([]);
 }
 
+export async function loadLazyImages(page: Page) {
+  const scrollHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight,
+  );
+  const scrollStep = 700;
+
+  for (let scrollY = 0; scrollY <= scrollHeight; scrollY += scrollStep) {
+    await page.evaluate(
+      (nextScrollY) => window.scrollTo(0, nextScrollY),
+      scrollY,
+    );
+    await page.waitForTimeout(80);
+  }
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(250);
+}
+
+export async function expectRenderedImagesHealthy(page: Page) {
+  await loadLazyImages(page);
+
+  const brokenImages = await page.locator("img").evaluateAll((images) =>
+    images
+      .filter((image) => {
+        const img = image as HTMLImageElement;
+
+        return img.complete && img.naturalWidth === 0;
+      })
+      .map((image) => {
+        const img = image as HTMLImageElement;
+
+        return {
+          alt: img.alt,
+          src: img.currentSrc || img.src,
+        };
+      }),
+  );
+
+  expect(brokenImages).toEqual([]);
+}
+
+export async function expectProjectMediaFramesContained(page: Page) {
+  const overflowingFrames = await page
+    .locator(
+      ".work-case-artifact-frame, .work-case-storyboard-media > div, .work-case-strip figure > div",
+    )
+    .evaluateAll((frames) =>
+      frames
+        .map((frame) => {
+          const frameElement = frame as HTMLElement;
+          const image = frameElement.querySelector("img");
+
+          if (!image) {
+            return null;
+          }
+
+          const frameRect = frameElement.getBoundingClientRect();
+          const imageRect = image.getBoundingClientRect();
+          const overflow =
+            imageRect.left < frameRect.left - 1 ||
+            imageRect.right > frameRect.right + 1 ||
+            imageRect.top < frameRect.top - 1 ||
+            imageRect.bottom > frameRect.bottom + 1;
+
+          if (!overflow) {
+            return null;
+          }
+
+          return {
+            fit: frameElement.getAttribute("data-media-fit"),
+            frame: {
+              height: Math.round(frameRect.height),
+              width: Math.round(frameRect.width),
+            },
+            image: {
+              height: Math.round(imageRect.height),
+              width: Math.round(imageRect.width),
+            },
+            scale: frameElement.getAttribute("data-media-scale"),
+          };
+        })
+        .filter((frame) => frame !== null),
+    );
+
+  expect(overflowingFrames).toEqual([]);
+}
+
 export async function installStableVisualStyles(page: Page) {
   await page.evaluate((css) => {
     const nonce =

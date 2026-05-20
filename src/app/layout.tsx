@@ -125,9 +125,9 @@ const websiteJsonLd = {
 const creativeWorkJsonLd = projectCaseStudies.map((project) => ({
   "@context": "https://schema.org",
   "@type": project.schemaType,
-  "@id": `${siteUrl}/work/${project.slug}#work`,
+  "@id": `${siteUrl}/#work-${project.slug}`,
   name: project.title,
-  url: `${siteUrl}/work/${project.slug}`,
+  url: `${siteUrl}/#work-${project.slug}`,
   description: project.summary,
   applicationCategory: project.applicationCategory,
   image: project.assets[0]?.media.src

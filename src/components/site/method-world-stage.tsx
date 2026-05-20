@@ -636,8 +636,8 @@ function ProjectChamber({
 
 function ProjectDeepLink({ project }: { project: PublicProjectCaseStudy }) {
   return (
-    <Link href={`/work/${project.slug}`} className="method-world-deep-link">
-      Open case
+    <Link href={`/#work-${project.slug}`} className="method-world-deep-link">
+      View inline proof
       <SiteIcon iconKey="arrowUpRight" aria-hidden />
     </Link>
   );

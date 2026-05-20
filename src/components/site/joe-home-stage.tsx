@@ -1,5 +1,6 @@
 import { JoeHomeApp } from "@/components/site/joe-home-app";
 import type {
+  CommunityArtifact,
   FieldNote,
   JoeProfile,
   PublicProjectCaseStudy,
@@ -8,6 +9,7 @@ import type {
 } from "@/lib/site-data";
 
 type JoeHomeStageProps = {
+  communityArtifacts: CommunityArtifact[];
   fieldNotes: FieldNote[];
   joeProfile: JoeProfile;
   profileMedia: SiteMedia;

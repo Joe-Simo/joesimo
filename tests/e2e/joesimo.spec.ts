@@ -57,7 +57,21 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await workLink.click();
-    await expectHomeDestinationSection(page, "work");
+    const workSection = await expectHomeDestinationSection(page, "work");
+    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
+    await expect(
+      workSection.getByRole("heading", { name: "sim0" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: "People Joe met in the builder room.",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("img", {
+        name: "Joe Simo with ThePrimeagen at React Miami 2026",
+      }),
+    ).toBeVisible();
 
     await expect(
       page.locator("footer").getByRole("link", { name: /github/i }),
@@ -74,7 +88,6 @@ test.describe("Joe Simo personal site", () => {
   test("serves the public route surface", async ({ request }) => {
     const okRoutes = [
       "/",
-      ...workRoutes.map((route) => route.path),
       "/robots.txt",
       "/sitemap.xml",
       "/manifest.webmanifest",
@@ -90,43 +103,14 @@ test.describe("Joe Simo personal site", () => {
     const blogResponse = await request.get("/blog", { maxRedirects: 0 });
     expect([307, 308]).toContain(blogResponse.status());
 
+    for (const route of workRoutes) {
+      const response = await request.get(route.path, { maxRedirects: 0 });
+
+      expect(response.status(), route.path).toBe(308);
+      expect(response.headers().location).toContain("/#work");
+    }
+
     const missingResponse = await request.get("/missing-route");
     expect(missingResponse.status()).toBe(404);
   });
-
-  for (const route of workRoutes) {
-    test(`work case renders cleanly: ${route.heading}`, async ({ page }) => {
-      const problems = collectConsoleProblems(page);
-
-      await page.goto(route.path);
-
-      await expect(
-        page.getByRole("heading", { level: 1, name: route.heading }),
-      ).toBeVisible();
-      await expect(page.locator("footer a").first()).toHaveAttribute(
-        "href",
-        "/#joe",
-      );
-
-      const videos = await page.locator("video").evaluateAll((items) =>
-        items.map((item) => {
-          const video = item as HTMLVideoElement;
-
-          return {
-            autoplay: video.autoplay,
-            controls: video.controls,
-            loop: video.loop,
-          };
-        }),
-      );
-
-      for (const video of videos) {
-        expect(video.autoplay).toBe(false);
-        expect(video.loop).toBe(false);
-        expect(video.controls).toBe(true);
-      }
-
-      await expectPageHealthy(page, problems);
-    });
-  }
 });

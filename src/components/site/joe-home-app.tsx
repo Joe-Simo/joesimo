@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { type KeyboardEvent, useEffect, useState } from "react";
 
 import { SimoIndexRitual } from "@/components/site/simo-index-ritual";
 import type {
+  CommunityArtifact,
   FieldNote,
   JoeProfile,
   PublicProjectCaseStudy,
@@ -16,6 +16,7 @@ import type {
 type ActiveView = "portfolio" | "blog";
 
 type JoeHomeAppProps = {
+  communityArtifacts: CommunityArtifact[];
   fieldNotes: FieldNote[];
   joeProfile: JoeProfile;
   profileMedia: SiteMedia;
@@ -71,6 +72,10 @@ function sortedWork(projects: PublicProjectCaseStudy[]) {
 
 function resolveViewFromHash(hash: string): ActiveView {
   return hash === "#blog" ? "blog" : "portfolio";
+}
+
+function workProjectId(project: Pick<PublicProjectCaseStudy, "slug">) {
+  return `work-${project.slug}`;
 }
 
 function scrollViewDeckIntoView(target: HTMLElement, behavior: ScrollBehavior) {
@@ -134,6 +139,7 @@ function WorkPanel({ projects }: { projects: PublicProjectCaseStudy[] }) {
 
           return (
             <article
+              id={workProjectId(project)}
               key={project.slug}
               className="simo-work-feature"
               data-featured={index === 0 ? "true" : "false"}
@@ -152,20 +158,25 @@ function WorkPanel({ projects }: { projects: PublicProjectCaseStudy[] }) {
                     {project.humanStake.madeVisible}
                   </p>
                 ) : null}
-                <div className="simo-work-actions">
-                  <Link href={`/work/${project.slug}`}>Open case</Link>
-                  {project.links.slice(0, 1).map((action) => (
-                    <a
-                      key={action.href}
-                      href={action.href}
-                      target={action.external ? "_blank" : undefined}
-                      rel={action.external ? "noreferrer" : undefined}
-                    >
-                      {action.label}
-                      <ExternalCue show={action.external} />
-                    </a>
-                  ))}
+                <div className="simo-work-proofline">
+                  <span>{project.status}</span>
+                  <p>{project.proofSummary}</p>
                 </div>
+                {project.links.length > 0 ? (
+                  <div className="simo-work-actions">
+                    {project.links.slice(0, 1).map((action) => (
+                      <a
+                        key={action.href}
+                        href={action.href}
+                        target={action.external ? "_blank" : undefined}
+                        rel={action.external ? "noreferrer" : undefined}
+                      >
+                        {action.label}
+                        <ExternalCue show={action.external} />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <WorkMedia media={media} />
             </article>
@@ -179,18 +190,82 @@ function WorkPanel({ projects }: { projects: PublicProjectCaseStudy[] }) {
         aria-label="Additional work specimens"
       >
         {supporting.map((project) => (
-          <Link
+          <article
+            id={workProjectId(project)}
             key={project.slug}
-            href={`/work/${project.slug}`}
-            className="simo-specimen-link"
+            className="simo-specimen-card"
           >
             <span>{project.code}</span>
             <strong>{project.title}</strong>
             <em>{project.status}</em>
-          </Link>
+            <p>{project.proofSummary}</p>
+          </article>
         ))}
       </div>
     </div>
+  );
+}
+
+function CommunityPanel({
+  artifacts,
+}: {
+  artifacts: CommunityArtifact[];
+}) {
+  const visibleArtifacts = artifacts.slice(0, 6);
+
+  if (visibleArtifacts.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      className="simo-community-panel"
+      aria-labelledby="community-title"
+    >
+      <div className="simo-section-heading simo-community-heading">
+        <p className="simo-index-kicker">People</p>
+        <h2 id="community-title">People Joe met in the builder room.</h2>
+        <p>
+          A small React Miami photo layer: real meetings, real rooms, and the
+          people around the work without turning the portfolio into a social
+          feed.
+        </p>
+      </div>
+
+      <div
+        className="simo-community-strip"
+        role="list"
+        aria-label="React Miami people Joe met"
+      >
+        {visibleArtifacts.map((artifact, index) => (
+          <figure
+            key={artifact.code}
+            className="simo-community-frame"
+            data-featured={index === 0 ? "true" : "false"}
+            role="listitem"
+          >
+            <div className="simo-community-media">
+              <Image
+                src={artifact.media.src}
+                alt={artifact.media.alt}
+                width={artifact.media.width}
+                height={artifact.media.height}
+                sizes={
+                  index === 0
+                    ? "(min-width: 1024px) 24vw, 92vw"
+                    : "(min-width: 1024px) 13vw, 46vw"
+                }
+              />
+            </div>
+            <figcaption>
+              <span>{artifact.code} / {artifact.sourceLabel}</span>
+              <strong>{artifact.title}</strong>
+              <p>{artifact.body}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -240,6 +315,7 @@ function BlogPanel({
 }
 
 export function JoeHomeApp({
+  communityArtifacts,
   fieldNotes,
   joeProfile,
   profileMedia,
@@ -422,8 +498,9 @@ export function JoeHomeApp({
               aria-labelledby="simo-portfolio-tab"
               hidden={activeView !== "portfolio"}
             >
-              <WorkPanel projects={projects} />
-            </div>
+          <WorkPanel projects={projects} />
+          <CommunityPanel artifacts={communityArtifacts} />
+        </div>
             <div
               id="simo-blog-panel"
               role="tabpanel"

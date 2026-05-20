@@ -117,7 +117,10 @@ test.describe("responsive, theme, and fallback gates", () => {
     await workLink.click();
     const workSection = await expectHomeDestinationSection(page, "work");
 
-    await expect(workSection.locator('a[href^="/work/"]').first()).toBeVisible();
+    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
+    await expect(
+      workSection.getByRole("heading", { name: "sim0" }),
+    ).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 

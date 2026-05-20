@@ -2993,6 +2993,25 @@ export const communityArtifacts: CommunityArtifact[] =
     };
   });
 
+export const communityHighlights: CommunityArtifact[] = [
+  {
+    code: "R00",
+    title: "ThePrimeagen",
+    body:
+      "Owned React Miami 2026 photo with ThePrimeagen, kept as a people-and-community receipt.",
+    sourceLabel: "Owned event photo",
+    media: {
+      kind: "artifact",
+      src: "/media/community/react-miami-primeagen.webp",
+      alt: "Joe Simo with ThePrimeagen at React Miami 2026",
+      width: 960,
+      height: 1186,
+      tone: "desaturated",
+    },
+  },
+  ...communityArtifacts.slice(0, 5),
+];
+
 export const productReportArtifacts: ProductReportArtifact[] = [
   {
     code: "P1",
