@@ -252,7 +252,7 @@ function PublicTrailCanvas({
       opacity: 0.18,
       transparent: true,
     });
-    const nodeGeometry = new THREE.SphereGeometry(0.045, 14, 8);
+    const nodeGeometry = new THREE.SphereGeometry(0.032, 14, 8);
     const nodeMaterial = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
@@ -293,7 +293,7 @@ function PublicTrailCanvas({
       routeMaterial.color.copy(accent);
       particleBaseOpacity = isDark ? 0.46 : 0.22;
       routeBaseOpacity = isDark ? 0.16 : 0.07;
-      nodeBaseOpacity = isDark ? 0.95 : 0.78;
+      nodeBaseOpacity = isDark ? 0.88 : 0.64;
       particleMaterial.opacity = particleBaseOpacity;
       routeMaterial.opacity = routeBaseOpacity;
       nodes.forEach((node) => {
@@ -404,7 +404,7 @@ function PublicTrailCanvas({
       nodes.forEach((node, index) => {
         const material = node.material as THREE.MeshBasicMaterial;
         const active = index === activeIndex;
-        const scale = active ? 1.75 : 1;
+        const scale = active ? 1.42 : 1;
 
         node.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.16);
         material.opacity +=
@@ -916,12 +916,12 @@ export function PublicTrailRuntime({
         .map((element) =>
           gsap.fromTo(
             element,
-            { autoAlpha: 0, y: 34 },
+            { opacity: 0, y: 34 },
             {
-              autoAlpha: 1,
               duration: 0.95,
               ease: "power4.out",
               immediateRender: false,
+              opacity: 1,
               scrollTrigger: {
                 start: "top 82%",
                 trigger: element,

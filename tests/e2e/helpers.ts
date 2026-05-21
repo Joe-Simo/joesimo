@@ -173,17 +173,34 @@ export async function loadLazyImages(page: Page) {
     () => document.documentElement.scrollHeight,
   );
   const scrollStep = 700;
+  const previousScrollBehavior = await page.evaluate(() => {
+    const currentScrollBehavior =
+      document.documentElement.style.scrollBehavior;
 
-  for (let scrollY = 0; scrollY <= scrollHeight; scrollY += scrollStep) {
-    await page.evaluate(
-      (nextScrollY) => window.scrollTo(0, nextScrollY),
-      scrollY,
-    );
-    await page.waitForTimeout(80);
+    document.documentElement.style.scrollBehavior = "auto";
+
+    return currentScrollBehavior;
+  });
+
+  try {
+    for (let scrollY = 0; scrollY <= scrollHeight; scrollY += scrollStep) {
+      await page.evaluate(
+        (nextScrollY) =>
+          window.scrollTo({ behavior: "instant", left: 0, top: nextScrollY }),
+        scrollY,
+      );
+      await page.waitForTimeout(20);
+    }
+
+    await page.evaluate(() => {
+      window.scrollTo({ behavior: "instant", left: 0, top: 0 });
+    });
+  } finally {
+    await page.evaluate((scrollBehavior) => {
+      document.documentElement.style.scrollBehavior = scrollBehavior;
+    }, previousScrollBehavior);
   }
-
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(250);
+  await page.waitForTimeout(120);
 }
 
 export async function expectRenderedImagesHealthy(page: Page) {

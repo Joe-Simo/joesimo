@@ -72,9 +72,11 @@ test.describe("desktop accessibility quality gates", () => {
       .locator("#social")
       .getByRole("link", { name: /LinkedIn/i });
 
-    await githubLink.evaluate((element) => element.focus());
+    await expect(githubLink).toBeVisible();
+    await expect(linkedinLink).toBeVisible();
+    await githubLink.focus();
     await expect(githubLink).toBeFocused();
-    await linkedinLink.evaluate((element) => element.focus());
+    await linkedinLink.focus();
     await expect(linkedinLink).toBeFocused();
   });
 });

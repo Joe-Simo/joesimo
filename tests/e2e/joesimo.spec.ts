@@ -106,8 +106,8 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/");
 
-    const workLink = await expectHomeDestinationLink(page, "work");
-    const photosLink = await expectHomeDestinationLink(page, "photos");
+    await expectHomeDestinationLink(page, "work");
+    await expectHomeDestinationLink(page, "photos");
 
     await page.goto("/#blog", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "blog");
@@ -116,14 +116,18 @@ test.describe("Joe Simo personal site", () => {
     ).toBeVisible();
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await workLink.click();
+    const currentWorkLink = await expectHomeDestinationLink(page, "work");
+
+    await currentWorkLink.click();
     const workSection = await expectHomeDestinationSection(page, "work");
     await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
     await expect(
       workSection.getByRole("heading", { name: "sim0" }),
     ).toBeVisible();
 
-    await photosLink.click();
+    const currentPhotosLink = await expectHomeDestinationLink(page, "photos");
+
+    await currentPhotosLink.click();
     await expect(page).toHaveURL(/#photos$/);
     await expectHomeDestinationSection(page, "photos");
     await expect(

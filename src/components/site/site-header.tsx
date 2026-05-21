@@ -53,7 +53,7 @@ export function SiteHeader({
 
   return (
     <header className={surfaceClassName}>
-      <div className="site-header-shell flex min-h-16 items-center justify-between gap-3 sm:gap-4">
+      <div className="site-header-shell flex min-h-14 items-center justify-between gap-3 sm:gap-4">
         <BrandMark homeHref={homeHref} />
 
         {showPrimaryNavigation ? (
