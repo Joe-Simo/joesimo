@@ -314,6 +314,10 @@ function PublicTrailCanvas({
       );
 
       scrollProgress = Math.min(1, Math.max(0, window.scrollY / scrollMax));
+      document.documentElement.style.setProperty(
+        "--trail-scroll-progress",
+        scrollProgress.toFixed(4),
+      );
     }
 
     function updatePointer(event: PointerEvent) {
@@ -531,6 +535,7 @@ function ProjectDialog({
         <Dialog.Backdrop className="simo-trail-dialog-backdrop" />
         <Dialog.Viewport className="simo-trail-dialog-layer">
           <Dialog.Popup
+            aria-label={project.title}
             className="simo-trail-project-dialog"
             finalFocus={false}
             initialFocus={closeButtonRef}
@@ -658,6 +663,7 @@ function NoteDialog({
         <Dialog.Backdrop className="simo-trail-dialog-backdrop" />
         <Dialog.Viewport className="simo-trail-dialog-layer simo-trail-note-layer">
           <Dialog.Popup
+            aria-label={note.title}
             className="simo-trail-note-dialog"
             finalFocus={false}
             initialFocus={closeButtonRef}
@@ -828,6 +834,7 @@ export function PublicTrailRuntime({
       const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
 
       gsap.registerPlugin(ScrollTrigger);
+      const matchMedia = gsap.matchMedia();
       const nextLenis = new Lenis({
         lerp: 0.08,
         smoothWheel: true,
@@ -856,18 +863,75 @@ export function PublicTrailRuntime({
             },
           ),
         );
+      const trailTweens = [
+        gsap.to(".simo-trail-orbit-board", {
+          "--trail-board-scale": 1.06,
+          "--trail-board-y": "42px",
+          ease: "none",
+          scrollTrigger: {
+            end: "bottom top",
+            scrub: 0.8,
+            start: "top top",
+            trigger: "#joe",
+          },
+        }),
+        gsap.fromTo(
+          ".simo-trail-work-card",
+          { rotateX: 3.5, y: 64 },
+          {
+            ease: "power3.out",
+            rotateX: 0,
+            scrollTrigger: {
+              end: "bottom 45%",
+              scrub: 0.7,
+              start: "top 78%",
+              trigger: "#work",
+            },
+            stagger: 0.08,
+            transformPerspective: 900,
+            y: 0,
+          },
+        ),
+        gsap.to(".simo-trail-moment", {
+          ease: "none",
+          scrollTrigger: {
+            end: "bottom top",
+            scrub: 0.7,
+            start: "top 75%",
+            trigger: "#photos",
+          },
+          xPercent: -10,
+          stagger: 0.04,
+        }),
+        gsap.to(".simo-trail-social-orbit", {
+          "--trail-orbit-scale": 1.36,
+          ease: "none",
+          scrollTrigger: {
+            end: "bottom 70%",
+            scrub: 0.8,
+            start: "top 70%",
+            trigger: "#contact",
+          },
+        }),
+      ];
 
-      gsap.utils
-        .toArray<HTMLElement>("[data-trail-work-pin]")
-        .forEach((element) => {
-          ScrollTrigger.create({
-            end: "+=70%",
-            pin: true,
-            pinSpacing: false,
-            start: "top 72px",
-            trigger: element,
-          });
-        });
+      matchMedia.add("(min-width: 1081px)", () => {
+        const pinTriggers = gsap.utils
+          .toArray<HTMLElement>("[data-trail-work-pin]")
+          .map((element) =>
+            ScrollTrigger.create({
+              end: "+=70%",
+              pin: true,
+              pinSpacing: false,
+              start: "top 72px",
+              trigger: element,
+            }),
+          );
+
+        return () => {
+          pinTriggers.forEach((trigger) => trigger.kill());
+        };
+      });
 
       const raf = (time: number) => {
         lenis?.raf(time);
@@ -878,6 +942,8 @@ export function PublicTrailRuntime({
 
       cleanupGsap = () => {
         revealTweens.forEach((tween) => tween.kill());
+        trailTweens.forEach((tween) => tween.kill());
+        matchMedia.revert();
         ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       };
     }
@@ -898,24 +964,40 @@ export function PublicTrailRuntime({
         return;
       }
 
+      const root = document.documentElement;
+      const orbitX =
+        ((event.clientX / Math.max(window.innerWidth, 1)) - 0.5) * -18;
+      const orbitY =
+        ((event.clientY / Math.max(window.innerHeight, 1)) - 0.5) * -14;
       const target = event.target;
+      let magnet: HTMLElement | null = null;
+      let magnetX = "0px";
+      let magnetY = "0px";
 
-      if (!(target instanceof Element)) {
-        return;
+      if (target instanceof Element) {
+        const magnetElement = target.closest("[data-magnetic]");
+
+        if (magnetElement instanceof HTMLElement) {
+          magnet = magnetElement;
+
+          const rect = magnet.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 18;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 18;
+
+          magnetX = `${x.toFixed(2)}px`;
+          magnetY = `${y.toFixed(2)}px`;
+        }
       }
 
-      const magnet = target.closest("[data-magnetic]");
+      root.style.setProperty("--trail-pointer-x", `${event.clientX}px`);
+      root.style.setProperty("--trail-pointer-y", `${event.clientY}px`);
+      root.style.setProperty("--trail-orbit-x", `${orbitX.toFixed(2)}px`);
+      root.style.setProperty("--trail-orbit-y", `${orbitY.toFixed(2)}px`);
 
-      if (!(magnet instanceof HTMLElement)) {
-        return;
+      if (magnet) {
+        magnet.style.setProperty("--magnet-x", magnetX);
+        magnet.style.setProperty("--magnet-y", magnetY);
       }
-
-      const rect = magnet.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width - 0.5) * 18;
-      const y = ((event.clientY - rect.top) / rect.height - 0.5) * 18;
-
-      magnet.style.setProperty("--magnet-x", `${x.toFixed(2)}px`);
-      magnet.style.setProperty("--magnet-y", `${y.toFixed(2)}px`);
     }
 
     function handlePointerOut(event: PointerEvent) {

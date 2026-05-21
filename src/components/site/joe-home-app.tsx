@@ -224,6 +224,7 @@ function WorkSection({
             return (
               <article
                 className="simo-trail-work-card"
+                data-artifact={project.code}
                 data-featured={index === 0}
                 data-trail-reveal
                 id={`work-${project.slug}`}
@@ -319,6 +320,7 @@ function MomentsSection({
           <figure
             className="simo-trail-moment"
             data-active={index === 1}
+            data-code={moment.code}
             data-depth={index % 3}
             key={`${moment.code}-${moment.media.src}`}
           >
@@ -409,9 +411,10 @@ function InternetSection({
         </div>
 
         <div className="simo-trail-social-constellation" data-trail-reveal>
-          {publicChannels.map((channel) => (
+          {publicChannels.map((channel, index) => (
             <a
               data-magnetic
+              data-node-index={`N${String(index + 1).padStart(2, "0")}`}
               href={channel.href}
               key={channel.label}
               rel="noreferrer"

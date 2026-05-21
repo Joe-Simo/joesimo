@@ -732,7 +732,7 @@ export const publicTrailSections = [
     point: { x: 3.1, y: -0.05, z: -3.2 },
     copy: {
       title: "Leave a mark",
-      detail: "Public profiles stay closest to the work.",
+      detail: "Public profiles stay closed to the noise. Open to the work.",
     },
   },
 ] as const satisfies readonly PublicTrailSection[];
@@ -994,35 +994,35 @@ export const socialChannels: SocialChannel[] = [
     handle: "@joe-simo",
     href: "https://github.com/joe-simo",
     iconKey: "github",
-    description: "GitHub profile and public code.",
+    description: "Code trail, systems, and experiments.",
   },
   {
     label: "X",
     handle: "@joesimo",
     href: "https://x.com/joesimo",
     iconKey: "x",
-    description: "X profile.",
+    description: "Public notes and short thinking.",
   },
   {
     label: "Instagram",
     handle: "@joesimo_",
     href: "https://www.instagram.com/joesimo_/",
     iconKey: "camera",
-    description: "Instagram profile.",
+    description: "Moments, people, and rooms.",
   },
   {
     label: "LinkedIn",
     handle: "josephsimo",
     href: "https://www.linkedin.com/in/josephsimo/",
     iconKey: "linkedin",
-    description: "LinkedIn profile.",
+    description: "Work graph and public context.",
   },
   {
     label: "YouTube",
     handle: "@jos007",
     href: "https://www.youtube.com/user/jos007",
     iconKey: "video",
-    description: "YouTube profile.",
+    description: "Experiments and video surfaces.",
   },
 ];
 

@@ -3247,6 +3247,14 @@ header nav a[aria-current="location"]::after {
   --trail-panel: color-mix(in oklab, var(--background) 82%, transparent);
   --trail-panel-strong: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
   --trail-accent: var(--signal-accent);
+  --trail-board-scale: 1;
+  --trail-board-y: 0px;
+  --trail-orbit-scale: 1;
+  --trail-orbit-x: 0px;
+  --trail-orbit-y: 0px;
+  --trail-pointer-x: 50vw;
+  --trail-pointer-y: 42vh;
+  --trail-scroll-progress: 0;
   --trail-radius: 8px;
   position: relative;
   isolation: isolate;
@@ -3257,6 +3265,27 @@ header nav a[aria-current="location"]::after {
     radial-gradient(circle at 18% 36%, color-mix(in oklab, var(--foreground) 6%, transparent), transparent 28rem),
     var(--trail-bg);
   color: var(--trail-ink);
+}
+
+.simo-trail-root::before {
+  pointer-events: none;
+  content: "";
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(
+      38rem circle at var(--trail-pointer-x) var(--trail-pointer-y),
+      color-mix(in oklab, var(--trail-accent) 12%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0 42%,
+      color-mix(in oklab, var(--trail-ink) 5%, transparent) 42.08%,
+      transparent 42.3% 100%
+    );
+  opacity: 0.78;
 }
 
 .dark .simo-trail-root {
@@ -3272,10 +3301,18 @@ header nav a[aria-current="location"]::after {
   letter-spacing: 0;
 }
 
-.simo-trail-root h1:focus,
-.simo-trail-root h2:focus,
-.simo-trail-root h3:focus {
+.simo-trail-root h1:focus:not(:focus-visible),
+.simo-trail-root h2:focus:not(:focus-visible),
+.simo-trail-root h3:focus:not(:focus-visible) {
   outline: none;
+}
+
+.simo-trail-root h1:focus-visible,
+.simo-trail-root h2:focus-visible,
+.simo-trail-root h3:focus-visible {
+  border-radius: 0.18em;
+  outline: 2px solid var(--trail-accent);
+  outline-offset: 0.12em;
 }
 
 .simo-public-trail-canvas {
@@ -3308,6 +3345,44 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-trail-root > section {
+  position: relative;
+  z-index: 1;
+}
+
+.simo-trail-root > section::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -1px;
+  bottom: -1px;
+  left: clamp(1rem, 2.6vw, 2.4rem);
+  width: 1px;
+  background: linear-gradient(
+    transparent,
+    color-mix(in oklab, var(--trail-accent) 48%, transparent) 18%,
+    color-mix(in oklab, var(--trail-ink) 18%, transparent) 54%,
+    transparent
+  );
+  opacity: 0.52;
+}
+
+.simo-trail-root > section::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: clamp(5rem, 20vh, 12rem);
+  left: calc(clamp(1rem, 2.6vw, 2.4rem) - 0.25rem);
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid var(--trail-accent);
+  border-radius: 999px;
+  background: var(--trail-bg);
+  box-shadow: 0 0 26px color-mix(in oklab, var(--trail-accent) 42%, transparent);
+}
+
+.simo-trail-root > section > * {
   position: relative;
   z-index: 1;
 }
@@ -3444,6 +3519,7 @@ header nav a[aria-current="location"]::after {
 .simo-trail-orbit-board {
   position: relative;
   min-height: 34rem;
+  overflow: hidden;
   border: 1px solid var(--trail-line);
   border-radius: var(--trail-radius);
   background:
@@ -3452,7 +3528,39 @@ header nav a[aria-current="location"]::after {
     color-mix(in oklab, var(--trail-panel) 72%, transparent);
   background-size: 3rem 3rem;
   box-shadow: 0 24px 90px color-mix(in oklab, #000000 18%, transparent);
+  transform: translate3d(
+      var(--trail-orbit-x),
+      calc(var(--trail-orbit-y) + var(--trail-board-y)),
+      0
+    )
+    scale(var(--trail-board-scale));
+  transform-origin: center;
+  transition:
+    border-color 220ms ease,
+    transform 420ms ease;
   backdrop-filter: blur(20px);
+}
+
+.simo-trail-orbit-board::before {
+  content: "";
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid color-mix(in oklab, var(--trail-accent) 22%, transparent);
+  opacity: 0.3;
+}
+
+.simo-trail-orbit-board::after {
+  content: "";
+  position: absolute;
+  top: clamp(9rem, 45%, 18rem);
+  left: calc(48% + var(--trail-orbit-x));
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 999px;
+  background: var(--trail-ink);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--trail-bg) 70%, transparent),
+    0 0 38px color-mix(in oklab, var(--trail-accent) 62%, transparent);
 }
 
 .simo-trail-orbit-core {
@@ -3517,11 +3625,13 @@ header nav a[aria-current="location"]::after {
     rotate(var(--card-rotate, 0deg));
   transition:
     border-color 180ms ease,
+    filter 220ms ease,
     transform 220ms ease;
 }
 
 .simo-trail-orbit-card:hover {
   border-color: color-mix(in oklab, #ffffff 62%, transparent);
+  filter: brightness(1.08);
 }
 
 .simo-trail-orbit-card img {
@@ -3611,15 +3721,32 @@ header nav a[aria-current="location"]::after {
   gap: 1px;
   border: 1px solid var(--trail-line);
   background: var(--trail-line);
+  perspective: 1200px;
 }
 
 .simo-trail-work-card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   background:
     radial-gradient(circle at 80% 10%, color-mix(in oklab, var(--trail-accent) 9%, transparent), transparent 18rem),
     color-mix(in oklab, var(--trail-panel-strong) 88%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--trail-ink) 8%, transparent);
+  transform-style: preserve-3d;
+}
+
+.simo-trail-work-card::after {
+  content: attr(data-artifact);
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  color: color-mix(in oklab, var(--trail-ink) 32%, transparent);
+  font-family: var(--font-geist-mono);
+  font-size: 0.64rem;
+  font-weight: 560;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .simo-trail-work-card[data-featured="true"] {
@@ -3627,11 +3754,45 @@ header nav a[aria-current="location"]::after {
   grid-template-columns: minmax(0, 1.08fr) minmax(19rem, 0.72fr);
 }
 
+.simo-trail-work-card:not([data-featured="true"]):last-child {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 0.86fr) minmax(21rem, 0.62fr);
+}
+
 .simo-trail-work-media {
+  position: relative;
+  display: grid;
+  min-height: 18rem;
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  background: #080808;
+  padding: clamp(0.55rem, 0.9vw, 0.85rem);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, #ffffff 6%, transparent), transparent 38%),
+    linear-gradient(180deg, #111111, #050505);
+}
+
+.simo-trail-work-media::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: clamp(0.55rem, 0.9vw, 0.85rem);
+  border: 1px solid color-mix(in oklab, #ffffff 12%, transparent);
+  box-shadow: inset 0 0 60px color-mix(in oklab, #000000 32%, transparent);
+}
+
+.simo-trail-work-media::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: clamp(0.55rem, 0.9vw, 0.85rem);
+  background:
+    linear-gradient(120deg, color-mix(in oklab, #ffffff 13%, transparent), transparent 28%),
+    linear-gradient(180deg, transparent 58%, color-mix(in oklab, #000000 28%, transparent));
+  mix-blend-mode: screen;
+  opacity: 0.3;
 }
 
 .simo-trail-work-media img,
@@ -3642,16 +3803,17 @@ header nav a[aria-current="location"]::after {
   min-height: 18rem;
   aspect-ratio: 16 / 10;
   object-fit: cover;
-  filter: grayscale(0.45) contrast(1.05);
+  background: #050505;
+  filter: grayscale(0.4) contrast(1.08) brightness(0.82);
   transition:
-    filter 240ms ease,
-    transform 700ms ease;
+    filter 240ms ease;
 }
 
 .simo-trail-work-card:hover .simo-trail-work-media img {
-  filter: grayscale(0.05) contrast(1.03);
+  filter: grayscale(0.04) contrast(1.04) brightness(0.92);
 }
 
+.simo-trail-work-card[data-featured="true"] .simo-trail-work-media,
 .simo-trail-work-card[data-featured="true"] .simo-trail-work-media img {
   min-height: 31rem;
 }
@@ -3728,12 +3890,17 @@ header nav a[aria-current="location"]::after {
 
 .simo-trail-moment-rail {
   display: grid;
-  grid-auto-columns: minmax(16rem, 29vw);
+  grid-auto-columns: minmax(17rem, 30vw);
   grid-auto-flow: column;
-  gap: 1px;
+  gap: 0.85rem;
   overflow-x: auto;
+  padding: 0.85rem 0.85rem 1.2rem;
   border-block: 1px solid var(--trail-line);
-  background: var(--trail-line);
+  background:
+    linear-gradient(var(--trail-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--trail-line) 1px, transparent 1px),
+    color-mix(in oklab, var(--trail-panel) 72%, transparent);
+  background-size: 3rem 3rem;
   perspective: 900px;
   scrollbar-width: none;
 }
@@ -3752,9 +3919,36 @@ header nav a[aria-current="location"]::after {
   min-width: 0;
   margin: 0;
   overflow: hidden;
+  border: 1px solid var(--trail-line);
+  border-radius: var(--trail-radius);
   background: #070707;
+  box-shadow: inset 0 1px 0 color-mix(in oklab, #ffffff 9%, transparent);
   transform: rotateY(-8deg);
   transform-origin: center;
+}
+
+.simo-trail-moment::before {
+  content: attr(data-code);
+  position: absolute;
+  z-index: 0;
+  right: 0.8rem;
+  top: 0.78rem;
+  color: color-mix(in oklab, #ffffff 14%, transparent);
+  font-family: var(--font-geist-mono);
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-weight: 620;
+  line-height: 0.8;
+}
+
+.simo-trail-moment::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, #000000 4%, transparent), color-mix(in oklab, #000000 54%, transparent)),
+    radial-gradient(circle at 12% 12%, color-mix(in oklab, var(--trail-accent) 13%, transparent), transparent 10rem);
 }
 
 .simo-trail-moment[data-active="true"] {
@@ -3770,20 +3964,22 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-trail-moment img {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 29rem;
+  height: 100%;
+  min-height: 31rem;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  filter: grayscale(0.72) contrast(1.06);
+  filter: grayscale(0.68) contrast(1.08) brightness(0.78);
   transition:
     filter 220ms ease,
     transform 900ms ease;
 }
 
 .simo-trail-moment:hover img {
-  filter: grayscale(0.05) contrast(1.02);
+  filter: grayscale(0.05) contrast(1.02) brightness(0.94);
   transform: scale(1.035);
 }
 
@@ -3792,6 +3988,7 @@ header nav a[aria-current="location"]::after {
   right: 0.8rem;
   bottom: 0.8rem;
   left: 0.8rem;
+  z-index: 3;
   display: grid;
   gap: 0.16rem;
   border-left: 1px solid color-mix(in oklab, #ffffff 72%, transparent);
@@ -3828,6 +4025,7 @@ header nav a[aria-current="location"]::after {
 .simo-trail-note-row {
   --magnet-x: 0px;
   --magnet-y: 0px;
+  position: relative;
   display: grid;
   grid-template-columns: 4rem minmax(12rem, 0.45fr) 7rem minmax(0, 1fr);
   gap: 1rem;
@@ -3848,8 +4046,49 @@ header nav a[aria-current="location"]::after {
     transform 180ms ease;
 }
 
+.simo-trail-note-row::before {
+  content: "";
+  position: absolute;
+  top: 0.65rem;
+  bottom: 0.65rem;
+  left: 0;
+  width: 1px;
+  background: var(--trail-accent);
+  opacity: 0;
+  transform: scaleY(0.35);
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+.simo-trail-note-row::after {
+  content: "->";
+  position: absolute;
+  right: 0;
+  color: var(--trail-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 0.72rem;
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
 .simo-trail-note-row:hover {
   background: color-mix(in oklab, var(--trail-accent) 7%, transparent);
+}
+
+.simo-trail-note-row:hover::before,
+.simo-trail-note-row:focus-visible::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.simo-trail-note-row:hover::after,
+.simo-trail-note-row:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .simo-trail-note-row span,
@@ -3882,7 +4121,37 @@ header nav a[aria-current="location"]::after {
   max-height: 6rem;
 }
 
+.simo-trail-internet-section {
+  overflow: hidden;
+}
+
+.simo-trail-internet-section .simo-trail-section-shell {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.simo-trail-internet-section .simo-trail-section-head {
+  min-height: clamp(10rem, 16vw, 14rem);
+}
+
+.simo-trail-internet-section .simo-trail-section-head h2 {
+  max-width: none;
+  color: color-mix(in oklab, var(--trail-ink) 16%, transparent);
+  font-size: clamp(5rem, 13vw, 12rem);
+  line-height: 0.78;
+}
+
+.simo-trail-internet-section .simo-trail-section-head p {
+  position: relative;
+  z-index: 1;
+  max-width: 32rem;
+  margin-top: -0.4rem;
+}
+
 .simo-trail-social-constellation {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
@@ -3913,18 +4182,64 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-trail-social-constellation a::before {
-  content: "";
+  content: attr(data-node-index);
+  display: grid;
+  place-items: center;
   width: 0.72rem;
   height: 0.72rem;
   border-radius: 999px;
   background: currentcolor;
   box-shadow: 0 0 30px color-mix(in oklab, var(--trail-accent) 58%, transparent);
+  color: var(--trail-bg);
+  font-family: var(--font-geist-mono);
+  font-size: 0.01rem;
+  overflow: hidden;
+  transition:
+    border-radius 180ms ease,
+    color 180ms ease,
+    font-size 180ms ease,
+    height 180ms ease,
+    width 180ms ease;
+}
+
+.simo-trail-social-constellation a::after {
+  content: "";
+  position: absolute;
+  top: 2.08rem;
+  left: 1rem;
+  width: calc(100% - 2rem);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    currentcolor,
+    color-mix(in oklab, var(--trail-accent) 54%, transparent),
+    transparent
+  );
+  opacity: 0.42;
+  transform: scaleX(0.18);
+  transform-origin: left;
+  transition:
+    opacity 180ms ease,
+    transform 260ms ease;
 }
 
 .simo-trail-social-constellation a:hover {
   background:
     radial-gradient(circle at 50% 22%, color-mix(in oklab, var(--trail-accent) 18%, transparent), transparent 8rem),
     color-mix(in oklab, var(--trail-panel-strong) 90%, transparent);
+}
+
+.simo-trail-social-constellation a:hover::before {
+  width: 2rem;
+  height: 1.2rem;
+  border-radius: 999px;
+  color: var(--trail-bg);
+  font-size: 0.58rem;
+}
+
+.simo-trail-social-constellation a:hover::after {
+  opacity: 0.72;
+  transform: scaleX(1);
 }
 
 .simo-trail-social-constellation svg {
@@ -3969,19 +4284,47 @@ header nav a[aria-current="location"]::after {
 }
 
 .simo-trail-contact-shell {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2rem;
   align-items: end;
   min-height: 42svh;
+  overflow: hidden;
+  padding-block: 2rem;
+}
+
+.simo-trail-contact-shell::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  right: clamp(1rem, 6vw, 6rem);
+  bottom: clamp(3rem, 10vh, 7rem);
+  width: min(34rem, 54vw);
+  height: min(34rem, 54vw);
+  border: 1px solid color-mix(in oklab, var(--trail-accent) 28%, transparent);
+  border-radius: 999px;
+  background:
+    repeating-conic-gradient(
+      from 90deg,
+      color-mix(in oklab, var(--trail-ink) 12%, transparent) 0 2deg,
+      transparent 2deg 12deg
+    );
+  opacity: 0.16;
+  transform: translate3d(18%, 20%, 0) scale(var(--trail-orbit-scale));
+  transform-origin: center;
 }
 
 .simo-trail-contact-shell > div:first-child {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 0.9rem;
 }
 
 .simo-trail-contact-actions {
+  position: relative;
+  z-index: 1;
   justify-content: end;
 }
 
@@ -4018,6 +4361,9 @@ header nav a[aria-current="location"]::after {
   width: 18rem;
   height: 18rem;
   opacity: 0.26;
+  transform: scale(var(--trail-orbit-scale));
+  transform-origin: center;
+  transition: transform 420ms ease;
 }
 
 .simo-trail-social-orbit span {
@@ -4059,6 +4405,7 @@ header nav a[aria-current="location"]::after {
   inset: 0;
   display: grid;
   place-items: center;
+  overscroll-behavior: contain;
   padding: max(4.5rem, env(safe-area-inset-top)) 1rem 1rem;
 }
 
@@ -4076,6 +4423,7 @@ header nav a[aria-current="location"]::after {
   width: min(100%, 76rem);
   max-height: min(44rem, calc(100svh - 6rem));
   overflow: auto;
+  overscroll-behavior: contain;
   border: 1px solid color-mix(in oklab, #ffffff 20%, transparent);
   border-radius: var(--trail-radius);
   background: #080808;
@@ -4229,6 +4577,7 @@ header nav a[aria-current="location"]::after {
   }
 
   .simo-trail-work-card[data-featured="true"],
+  .simo-trail-work-card:not([data-featured="true"]):last-child,
   .simo-trail-project-dialog {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -4293,6 +4642,7 @@ header nav a[aria-current="location"]::after {
 
   .simo-trail-work-grid,
   .simo-trail-work-card[data-featured="true"],
+  .simo-trail-work-card:not([data-featured="true"]):last-child,
   .simo-trail-work-copy dl,
   .simo-trail-dialog-meta,
   .simo-trail-social-constellation,
@@ -4308,6 +4658,8 @@ header nav a[aria-current="location"]::after {
 
   .simo-trail-moment-rail {
     grid-auto-columns: minmax(14rem, 72vw);
+    gap: 0.6rem;
+    padding: 0.6rem;
   }
 
   .simo-trail-moment img {
@@ -4333,6 +4685,10 @@ header nav a[aria-current="location"]::after {
     display: none;
   }
 
+  .simo-trail-internet-section .simo-trail-section-head {
+    min-height: auto;
+  }
+
   .simo-trail-dialog-copy h2,
   .simo-trail-note-dialog h2 {
     font-size: 2rem;
@@ -4352,7 +4708,9 @@ header nav a[aria-current="location"]::after {
   .simo-trail-contact-actions a,
   .simo-trail-dialog-actions a,
   .simo-trail-dialog-actions button,
+  .simo-trail-orbit-board,
   .simo-trail-orbit-card,
+  .simo-trail-work-card,
   .simo-trail-work-media img,
   .simo-trail-moment img,
   .simo-trail-note-row,
@@ -4366,7 +4724,9 @@ header nav a[aria-current="location"]::after {
   .simo-trail-contact-actions a,
   .simo-trail-dialog-actions a,
   .simo-trail-dialog-actions button,
+  .simo-trail-orbit-board,
   .simo-trail-orbit-card,
+  .simo-trail-work-card,
   .simo-trail-note-row,
   .simo-trail-social-constellation a {
     transform: none !important;
