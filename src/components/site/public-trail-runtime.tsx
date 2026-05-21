@@ -959,17 +959,6 @@ export function PublicTrailRuntime({
             y: 0,
           },
         ),
-        gsap.to(".simo-trail-moment", {
-          ease: "none",
-          scrollTrigger: {
-            end: "bottom top",
-            scrub: 0.7,
-            start: "top 75%",
-            trigger: "#photos",
-          },
-          xPercent: -18,
-          stagger: 0.04,
-        }),
         gsap.to(".simo-trail-social-orbit, .simo-trail-contact-signal", {
           "--trail-orbit-scale": 1.36,
           ease: "none",
@@ -994,9 +983,39 @@ export function PublicTrailRuntime({
               trigger: element,
             }),
           );
+        const momentsTrail = gsap.to(".simo-trail-moment-rail", {
+          ease: "none",
+          scrollTrigger: {
+            end: "bottom top",
+            invalidateOnRefresh: true,
+            scrub: 0.8,
+            start: "top 76%",
+            trigger: "#photos",
+          },
+          xPercent: -24,
+        });
 
         return () => {
           pinTriggers.forEach((trigger) => trigger.kill());
+          momentsTrail.kill();
+        };
+      });
+
+      matchMedia.add("(max-width: 1080px)", () => {
+        const momentsTrail = gsap.to(".simo-trail-moment", {
+          ease: "none",
+          scrollTrigger: {
+            end: "bottom top",
+            scrub: 0.7,
+            start: "top 75%",
+            trigger: "#photos",
+          },
+          stagger: 0.04,
+          xPercent: -18,
+        });
+
+        return () => {
+          momentsTrail.kill();
         };
       });
 

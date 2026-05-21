@@ -4242,6 +4242,7 @@ html[data-theme-transition="active"] .simo-trail-root::after {
 
 .simo-trail-moments-section {
   overflow: hidden;
+  isolation: isolate;
 }
 
 .simo-trail-moment-rail {
@@ -4268,6 +4269,13 @@ html[data-theme-transition="active"] .simo-trail-root::after {
 
 .simo-trail-moment-rail::-webkit-scrollbar {
   display: none;
+}
+
+@media (min-width: 1081px) and (prefers-reduced-motion: no-preference) {
+  .simo-trail-moment-rail {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
 }
 
 .simo-trail-moment {
@@ -4791,36 +4799,55 @@ html[data-theme-transition="active"] .simo-trail-root::after {
   border-radius: 999px;
   background: var(--trail-accent);
   box-shadow: 0 0 28px color-mix(in oklab, var(--trail-accent) 60%, transparent);
+  animation: simo-contact-node-pulse 4.8s ease-in-out infinite;
 }
 
 .simo-trail-contact-signal span:nth-child(1) {
   top: 10%;
   left: 48%;
+  animation-delay: -0.8s;
 }
 
 .simo-trail-contact-signal span:nth-child(2) {
   top: 34%;
   right: 12%;
+  animation-delay: -1.7s;
 }
 
 .simo-trail-contact-signal span:nth-child(3) {
   right: 27%;
   bottom: 10%;
+  animation-delay: -2.5s;
 }
 
 .simo-trail-contact-signal span:nth-child(4) {
   bottom: 21%;
   left: 16%;
+  animation-delay: -3.2s;
 }
 
 .simo-trail-contact-signal span:nth-child(5) {
   top: 31%;
   left: 9%;
+  animation-delay: -4s;
 }
 
 @keyframes simo-contact-signal-spin {
   to {
     rotate: 360deg;
+  }
+}
+
+@keyframes simo-contact-node-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateZ(0) scale(0.82);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateZ(0) scale(1.18);
   }
 }
 
@@ -5392,6 +5419,7 @@ html[data-theme-transition="active"] .simo-trail-root::after {
   .simo-trail-social-constellation a,
   .simo-trail-root::after,
   .simo-trail-contact-signal,
+  .simo-trail-contact-signal span,
   .simo-trail-contact-shell::before {
     transition: none;
     animation: none;
