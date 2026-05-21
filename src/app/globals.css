@@ -5180,6 +5180,413 @@ html[data-theme-transition="active"] .simo-trail-root::after {
   margin-right: max(1rem, env(safe-area-inset-right));
 }
 
+/* Dark cinematic public trail */
+
+.dark .site-header-home {
+  border-color: color-mix(in oklab, #ffffff 10%, transparent);
+  background: color-mix(in oklab, #050505 78%, transparent);
+}
+
+.dark .simo-trail-root {
+  --trail-bg: #050505;
+  --trail-ink: #f5f5f5;
+  --trail-muted: color-mix(in oklab, #ffffff 58%, transparent);
+  --trail-line: color-mix(in oklab, #ffffff 12%, transparent);
+  --trail-line-strong: color-mix(in oklab, #ffffff 28%, transparent);
+  --trail-panel: color-mix(in oklab, #0b0b0b 82%, transparent);
+  --trail-panel-strong: color-mix(in oklab, #111111 90%, transparent);
+  --trail-accent: #7da2ff;
+  background:
+    radial-gradient(circle at 68% 18%, color-mix(in oklab, var(--trail-accent) 18%, transparent), transparent 35rem),
+    radial-gradient(circle at 18% 22%, color-mix(in oklab, #ffffff 7%, transparent), transparent 34rem),
+    linear-gradient(180deg, #020202, #070707 28%, #050505);
+}
+
+.dark .simo-trail-root::before {
+  background:
+    radial-gradient(
+      42rem circle at var(--trail-pointer-x) var(--trail-pointer-y),
+      color-mix(in oklab, var(--trail-accent) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(circle at 60% 19%, color-mix(in oklab, #ffffff 22%, transparent) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 76% 48%, color-mix(in oklab, #ffffff 13%, transparent) 0 1px, transparent 1.8px),
+    linear-gradient(
+      115deg,
+      transparent 0 42%,
+      color-mix(in oklab, #ffffff 8%, transparent) 42.08%,
+      transparent 42.3% 100%
+    );
+  background-size: auto, 5.4rem 5.4rem, 7.2rem 7.2rem, auto;
+  opacity: 0.88;
+}
+
+.dark .simo-public-trail-canvas canvas {
+  opacity: 0.92;
+}
+
+.dark .simo-public-trail-canvas[data-active-section="work"] canvas {
+  opacity: 0.5;
+}
+
+.dark .simo-trail-hero {
+  min-height: calc(100svh - 3.5rem);
+  overflow: hidden;
+  border-bottom-color: color-mix(in oklab, #ffffff 10%, transparent);
+  background:
+    radial-gradient(ellipse at 63% 34%, color-mix(in oklab, #ffffff 11%, transparent), transparent 31rem),
+    radial-gradient(ellipse at 72% 36%, color-mix(in oklab, var(--trail-accent) 15%, transparent), transparent 40rem),
+    linear-gradient(180deg, color-mix(in oklab, #000000 92%, transparent), color-mix(in oklab, #070707 96%, transparent));
+}
+
+.dark .simo-trail-hero-shell {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: calc(100svh - 3.5rem);
+  align-items: center;
+  padding-block: clamp(5.5rem, 9vh, 8rem) clamp(3rem, 8vh, 5rem);
+}
+
+.dark .simo-trail-hero-copy {
+  position: relative;
+  z-index: 4;
+  max-width: min(50rem, 62vw);
+}
+
+.dark .simo-trail-hero h1 {
+  max-width: 7.4ch;
+  color: #ffffff;
+  font-size: clamp(5.6rem, 12vw, 13.8rem);
+  line-height: 0.76;
+  text-shadow: 0 0 52px color-mix(in oklab, #ffffff 20%, transparent);
+}
+
+.dark .simo-trail-hero-line {
+  max-width: 18ch;
+  color: color-mix(in oklab, #ffffff 91%, transparent);
+  font-size: clamp(1.55rem, 3vw, 3.25rem);
+  line-height: 1.02;
+}
+
+.dark .simo-trail-hero-detail {
+  max-width: 38rem;
+  color: color-mix(in oklab, #ffffff 66%, transparent);
+}
+
+.dark .simo-trail-orbit-board {
+  position: absolute;
+  z-index: 1;
+  top: clamp(4rem, 10vh, 7rem);
+  right: max(-5vw, -4rem);
+  width: min(66rem, 62vw);
+  height: min(48rem, 70svh);
+  min-height: 32rem;
+  border-color: color-mix(in oklab, #ffffff 8%, transparent);
+  background:
+    radial-gradient(ellipse at 48% 42%, color-mix(in oklab, #ffffff 20%, transparent), transparent 6rem),
+    radial-gradient(ellipse at 52% 42%, color-mix(in oklab, #ffffff 10%, transparent), transparent 18rem),
+    repeating-radial-gradient(ellipse at 52% 42%, transparent 0 4.4rem, color-mix(in oklab, #ffffff 10%, transparent) 4.48rem 4.52rem),
+    linear-gradient(color-mix(in oklab, #ffffff 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, #ffffff 6%, transparent) 1px, transparent 1px);
+  background-size: auto, auto, auto, 3rem 3rem, 3rem 3rem;
+  box-shadow: none;
+  opacity: 0.94;
+  backdrop-filter: none;
+}
+
+.dark .simo-trail-orbit-board::before {
+  inset: 0;
+  border-color: color-mix(in oklab, #ffffff 8%, transparent);
+  background:
+    radial-gradient(circle at 52% 42%, transparent 0 4rem, color-mix(in oklab, #ffffff 16%, transparent) 4.08rem 4.12rem, transparent 4.2rem),
+    conic-gradient(from 110deg at 52% 42%, transparent, color-mix(in oklab, var(--trail-accent) 16%, transparent), transparent 42%);
+  opacity: 0.64;
+}
+
+.dark .simo-trail-orbit-board::after {
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, #000000 70%, transparent),
+    0 0 54px color-mix(in oklab, var(--trail-accent) 82%, transparent);
+}
+
+.dark .simo-trail-orbit-core {
+  border-color: color-mix(in oklab, #ffffff 12%, transparent);
+  color: color-mix(in oklab, #ffffff 62%, transparent);
+  transform: translate(-50%, -50%) scale(1.35);
+}
+
+.dark .simo-trail-orbit-card {
+  border-color: color-mix(in oklab, #ffffff 18%, transparent);
+  background: color-mix(in oklab, #050505 84%, transparent);
+  box-shadow: 0 24px 80px color-mix(in oklab, #000000 54%, transparent);
+}
+
+.dark .simo-trail-orbit-card img {
+  filter: grayscale(0.88) contrast(1.12) brightness(0.76);
+}
+
+.dark .simo-trail-orbit-card-work {
+  left: 23%;
+  top: 15%;
+  width: 17rem;
+}
+
+.dark .simo-trail-orbit-card-moment {
+  right: 5%;
+  bottom: 10%;
+}
+
+.dark .simo-trail-orbit-readout {
+  border-color: color-mix(in oklab, #ffffff 12%, transparent);
+  color: color-mix(in oklab, #ffffff 62%, transparent);
+}
+
+.dark .simo-trail-section {
+  border-bottom-color: color-mix(in oklab, #ffffff 10%, transparent);
+  background:
+    radial-gradient(circle at 76% 0%, color-mix(in oklab, var(--trail-accent) 8%, transparent), transparent 31rem),
+    linear-gradient(180deg, color-mix(in oklab, #0a0a0a 92%, transparent), color-mix(in oklab, #050505 96%, transparent));
+}
+
+.dark .simo-trail-work-grid,
+.dark .simo-trail-social-constellation,
+.dark .simo-trail-note-wall,
+.dark .simo-trail-system-grid {
+  box-shadow: 0 38px 120px color-mix(in oklab, #000000 46%, transparent);
+}
+
+.dark .simo-trail-work-card {
+  background:
+    radial-gradient(circle at 76% 10%, color-mix(in oklab, var(--trail-accent) 13%, transparent), transparent 17rem),
+    linear-gradient(180deg, color-mix(in oklab, #151515 92%, transparent), color-mix(in oklab, #080808 96%, transparent));
+}
+
+.dark .simo-trail-notes-section {
+  background:
+    radial-gradient(circle at 17% 24%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 24rem),
+    #050505;
+}
+
+.dark .simo-trail-note-row {
+  background: color-mix(in oklab, #080808 62%, transparent);
+}
+
+.simo-trail-about-section {
+  overflow: hidden;
+}
+
+.simo-trail-about-shell {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.38fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.simo-trail-about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+}
+
+.simo-trail-about-tags span {
+  border: 1px solid var(--trail-line);
+  border-radius: 999px;
+  padding: 0.42rem 0.58rem;
+  color: var(--trail-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 0.62rem;
+  font-weight: 560;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.simo-trail-about-orb {
+  position: relative;
+  min-height: 31rem;
+  overflow: hidden;
+  border: 1px solid var(--trail-line);
+  border-radius: var(--trail-radius);
+  background:
+    linear-gradient(var(--trail-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--trail-line) 1px, transparent 1px),
+    color-mix(in oklab, var(--trail-panel) 80%, transparent);
+  background-size: 3rem 3rem;
+}
+
+.simo-trail-about-sphere {
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  width: min(18rem, 46vw);
+  height: min(18rem, 46vw);
+  border: 1px solid color-mix(in oklab, var(--trail-ink) 18%, transparent);
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 1.55rem, color-mix(in oklab, var(--trail-ink) 10%, transparent) 1.58rem 1.62rem),
+    radial-gradient(circle at 38% 34%, color-mix(in oklab, #ffffff 26%, transparent), transparent 28%),
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--trail-accent) 16%, transparent), transparent 62%);
+  box-shadow:
+    inset -2rem -2rem 5rem color-mix(in oklab, #000000 34%, transparent),
+    0 0 80px color-mix(in oklab, var(--trail-accent) 16%, transparent);
+  transform: translate(-50%, -50%);
+}
+
+.simo-trail-about-sphere::before,
+.simo-trail-about-sphere::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  border: 1px solid color-mix(in oklab, var(--trail-ink) 12%, transparent);
+  border-radius: 999px;
+  transform: rotateX(62deg);
+}
+
+.simo-trail-about-sphere::after {
+  inset: 18%;
+  transform: rotateY(68deg);
+}
+
+.simo-trail-about-signals {
+  position: absolute;
+  inset: 1rem;
+}
+
+.simo-trail-about-signals article {
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  position: absolute;
+  width: min(16rem, 42%);
+  border: 1px solid var(--trail-line);
+  border-radius: var(--trail-radius);
+  padding: 0.72rem;
+  color: var(--trail-ink);
+  background: color-mix(in oklab, var(--trail-panel-strong) 76%, transparent);
+  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
+  backdrop-filter: blur(16px);
+}
+
+.simo-trail-about-signals article:nth-child(1) {
+  top: 8%;
+  left: 7%;
+}
+
+.simo-trail-about-signals article:nth-child(2) {
+  top: 12%;
+  right: 6%;
+}
+
+.simo-trail-about-signals article:nth-child(3) {
+  right: 10%;
+  bottom: 10%;
+}
+
+.simo-trail-about-signals article:nth-child(4) {
+  bottom: 13%;
+  left: 8%;
+}
+
+.simo-trail-about-signals span {
+  display: block;
+  color: var(--trail-ink);
+  font-family: var(--font-geist-mono);
+  font-size: 0.66rem;
+  font-weight: 620;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.simo-trail-about-signals p {
+  margin: 0.5rem 0 0;
+  color: var(--trail-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.simo-trail-system-section {
+  padding-bottom: 5rem;
+}
+
+.simo-trail-system-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--trail-line);
+  margin-top: 2rem;
+  background: var(--trail-line);
+}
+
+.simo-trail-system-grid article {
+  display: grid;
+  gap: 1rem;
+  min-height: 12rem;
+  align-content: start;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 70% 16%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 8rem),
+    color-mix(in oklab, var(--trail-panel) 88%, transparent);
+}
+
+.simo-trail-system-grid article:nth-child(4),
+.simo-trail-system-stack {
+  grid-column: span 2;
+}
+
+.simo-trail-system-grid h3 {
+  margin: 0;
+  color: var(--trail-ink);
+  font-family: var(--font-geist-mono);
+  font-size: 0.74rem;
+  font-weight: 620;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.simo-trail-system-grid ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  color: var(--trail-muted);
+  font-size: 0.92rem;
+  line-height: 1.35;
+  list-style: none;
+}
+
+.simo-trail-system-grid li {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.simo-trail-system-grid li::before {
+  content: "";
+  position: absolute;
+  top: 0.46rem;
+  left: 0;
+  width: 0.35rem;
+  height: 0.35rem;
+  border: 1px solid var(--trail-accent);
+  border-radius: 999px;
+}
+
+.simo-trail-system-stack div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.simo-trail-system-stack span {
+  border: 1px solid var(--trail-line);
+  border-radius: 999px;
+  padding: 0.5rem 0.62rem;
+  color: var(--trail-ink);
+  background: color-mix(in oklab, var(--trail-panel-strong) 76%, transparent);
+  font-size: 0.9rem;
+  font-weight: 560;
+  line-height: 1;
+}
+
 @media (min-width: 1280px) {
   .simo-trail-hero h1 {
     font-size: 9rem;
@@ -5194,12 +5601,26 @@ html[data-theme-transition="active"] .simo-trail-root::after {
 @media (max-width: 1080px) {
   .simo-trail-hero-shell,
   .simo-trail-section-shell,
+  .simo-trail-about-shell,
   .simo-trail-contact-shell {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .simo-trail-work-section .simo-trail-section-head {
     position: static;
+  }
+
+  .dark .simo-trail-hero-copy {
+    max-width: none;
+  }
+
+  .dark .simo-trail-orbit-board {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    height: auto;
+    min-height: 24rem;
   }
 
   .simo-trail-work-card[data-featured="true"],
@@ -5348,6 +5769,36 @@ html[data-theme-transition="active"] .simo-trail-root::after {
     gap: 0.52rem;
     min-height: 9.5rem;
     padding: 0.9rem;
+  }
+
+  .simo-trail-about-orb {
+    min-height: 28rem;
+  }
+
+  .simo-trail-about-signals article {
+    position: relative;
+    inset: auto !important;
+    width: auto;
+  }
+
+  .simo-trail-about-signals {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+    padding: 1rem;
+  }
+
+  .simo-trail-about-sphere {
+    opacity: 0.38;
+  }
+
+  .simo-trail-system-grid,
+  .simo-trail-system-grid article:nth-child(4),
+  .simo-trail-system-stack {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .simo-trail-social-constellation a::after {

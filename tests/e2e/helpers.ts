@@ -16,10 +16,10 @@ export const workRoutes = [
 type HomeDestination = "photos" | "work" | "blog" | "social";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
-  blog: 'a[href="#blog"], a[href="/#blog"]',
-  photos: '.simo-trail-hero a[href="#photos"], a[href="/#photos"]',
-  social: 'a[href="#social"], a[href="/#social"]',
-  work: '.simo-trail-hero a[href="#work"], a[href="/#work"]',
+  blog: 'header a[href="#blog"], a[href="#blog"], a[href="/#blog"]',
+  photos: 'header a[href="#photos"], a[href="#photos"], a[href="/#photos"]',
+  social: 'header a[href="#social"], a[href="#social"], a[href="/#social"]',
+  work: 'header a[href="#work"], a[href="#work"], a[href="/#work"]',
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {

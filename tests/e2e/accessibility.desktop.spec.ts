@@ -5,7 +5,6 @@ import {
   collectConsoleProblems,
   expectHomeDestinationLink,
   expectPageHealthy,
-  homeDestinationLink,
 } from "./helpers";
 
 async function tabUntilFocused(
@@ -41,8 +40,14 @@ test.describe("desktop accessibility quality gates", () => {
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
     await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }));
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }));
-    await tabUntilFocused(page, homeDestinationLink(page, "work"));
-    await tabUntilFocused(page, homeDestinationLink(page, "photos"));
+    await tabUntilFocused(
+      page,
+      page.locator('.simo-trail-hero a[href="#work"]').first(),
+    );
+    await tabUntilFocused(
+      page,
+      page.locator('.simo-trail-hero a[href="#photos"]').first(),
+    );
   });
 
   test("homepage destination controls expose usable accessible names", async ({

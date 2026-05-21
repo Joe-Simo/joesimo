@@ -45,13 +45,35 @@ export function HashFocus() {
 
         const { focusTarget, scrollTarget } = targets;
 
-        scrollTarget.scrollIntoView({ block: "start" });
+        const rootScrollBehavior = document.documentElement.style.scrollBehavior;
+        const bodyScrollBehavior = document.body.style.scrollBehavior;
+
+        document.documentElement.style.scrollBehavior = "auto";
+        document.body.style.scrollBehavior = "auto";
+        scrollTarget.scrollIntoView({ behavior: "auto", block: "start" });
+        window.requestAnimationFrame(() => {
+          document.documentElement.style.scrollBehavior = rootScrollBehavior;
+          document.body.style.scrollBehavior = bodyScrollBehavior;
+        });
 
         if (!focusTarget.hasAttribute("tabindex")) {
           focusTarget.tabIndex = -1;
         }
 
         window.requestAnimationFrame(() => {
+          const activeElement = document.activeElement;
+          const hasInteractiveFocus =
+            activeElement instanceof HTMLElement &&
+            activeElement !== document.body &&
+            activeElement !== document.documentElement &&
+            activeElement.matches(
+              "a, button, input, textarea, select, [tabindex]:not([tabindex='-1'])",
+            );
+
+          if (hasInteractiveFocus) {
+            return;
+          }
+
           focusTarget.focus({ preventScroll: true });
         });
       });

@@ -107,13 +107,66 @@ function useDialogFocusGuard(
       window.requestAnimationFrame(moveFocusIntoDialog);
     }
 
+    function handleTabKey(event: KeyboardEvent) {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const dialog = dialogRef.current;
+
+      if (!dialog) {
+        return;
+      }
+
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          [
+            "a[href]",
+            "button:not([disabled])",
+            "textarea:not([disabled])",
+            "input:not([disabled])",
+            "select:not([disabled])",
+            "[tabindex]:not([tabindex='-1'])",
+          ].join(","),
+        ),
+      ).filter(
+        (element) =>
+          !element.hasAttribute("disabled") &&
+          element.getAttribute("aria-hidden") !== "true" &&
+          element.offsetParent !== null,
+      );
+
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialog.focus({ preventScroll: true });
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeElement = document.activeElement;
+
+      if (event.shiftKey && activeElement === first) {
+        event.preventDefault();
+        last?.focus({ preventScroll: true });
+        return;
+      }
+
+      if (!event.shiftKey && activeElement === last) {
+        event.preventDefault();
+        first?.focus({ preventScroll: true });
+      }
+    }
+
     document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("keydown", handleTabKey, true);
 
     return () => {
       disposed = true;
       window.cancelAnimationFrame(animationFrame);
       window.clearTimeout(timeout);
       document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("keydown", handleTabKey, true);
     };
   }, [identity, initialFocusRef, open]);
 
@@ -470,7 +523,7 @@ function PublicTrailCanvas({
     }
 
     themeObserver.observe(document.documentElement, {
-      attributeFilter: ["class", "style"],
+      attributeFilter: ["class"],
       attributes: true,
     });
     window.addEventListener("resize", resize);
@@ -969,6 +1022,31 @@ export function PublicTrailRuntime({
             trigger: "#contact",
           },
         }),
+        gsap.to(".simo-trail-about-sphere", {
+          ease: "none",
+          rotate: 16,
+          scrollTrigger: {
+            end: "bottom top",
+            scrub: 0.9,
+            start: "top 80%",
+            trigger: "#about",
+          },
+        }),
+        gsap.fromTo(
+          ".simo-trail-system-grid article",
+          { y: 18 },
+          {
+            ease: "power3.out",
+            scrollTrigger: {
+              end: "bottom 58%",
+              scrub: 0.7,
+              start: "top 82%",
+              trigger: "#system",
+            },
+            stagger: 0.05,
+            y: 0,
+          },
+        ),
       ];
 
       matchMedia.add("(min-width: 1081px)", () => {

@@ -32,10 +32,12 @@ export type SceneMode =
 export type PublicTrailSectionId =
   | "joe"
   | "work"
+  | "about"
   | "photos"
   | "blog"
   | "social"
-  | "contact";
+  | "contact"
+  | "system";
 
 export type PublicTrailSection = {
   id: PublicTrailSectionId;
@@ -684,8 +686,22 @@ export const publicTrailSections = [
     },
   },
   {
-    id: "photos",
+    id: "about",
     code: "02",
+    label: "About",
+    navLabel: "About",
+    anchor: "#about",
+    sceneMode: "method",
+    point: { x: -0.05, y: 0.22, z: 0.68 },
+    copy: {
+      title: "System profile",
+      detail:
+        "Designer and developer building browser-first tools, interfaces, and systems.",
+    },
+  },
+  {
+    id: "photos",
+    code: "03",
     label: "Moments",
     navLabel: "Moments",
     anchor: "#photos",
@@ -698,7 +714,7 @@ export const publicTrailSections = [
   },
   {
     id: "blog",
-    code: "03",
+    code: "04",
     label: "Notes",
     navLabel: "Notes",
     anchor: "#blog",
@@ -711,7 +727,7 @@ export const publicTrailSections = [
   },
   {
     id: "social",
-    code: "04",
+    code: "05",
     label: "Internet",
     navLabel: "Internet",
     anchor: "#social",
@@ -724,7 +740,7 @@ export const publicTrailSections = [
   },
   {
     id: "contact",
-    code: "05",
+    code: "06",
     label: "Contact",
     navLabel: "Contact",
     anchor: "#contact",
@@ -733,6 +749,20 @@ export const publicTrailSections = [
     copy: {
       title: "Leave a mark",
       detail: "Public profiles stay closed to the noise. Open to the work.",
+    },
+  },
+  {
+    id: "system",
+    code: "07",
+    label: "Trail Engine",
+    navLabel: "System",
+    anchor: "#system",
+    sceneMode: "method",
+    point: { x: 3.58, y: 0.42, z: -3.82 },
+    copy: {
+      title: "Interaction system",
+      detail:
+        "The visible mechanics behind the public trail experience.",
     },
   },
 ] as const satisfies readonly PublicTrailSection[];

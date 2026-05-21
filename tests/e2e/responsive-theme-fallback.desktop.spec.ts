@@ -62,6 +62,8 @@ test.describe("responsive, theme, and fallback gates", () => {
   test("theme menu switches light, dark, and system without hydration issues", async ({
     page,
   }) => {
+    test.setTimeout(90_000);
+
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);

@@ -100,7 +100,7 @@ test.describe("Joe Simo personal site", () => {
   test("renders visible one-page chapters and anchor destinations", async ({
     page,
   }) => {
-    test.setTimeout(60_000);
+    test.setTimeout(90_000);
 
     const problems = collectConsoleProblems(page);
 

@@ -363,6 +363,66 @@ function WorkMedia({
   );
 }
 
+const aboutSignals = [
+  {
+    label: "Interface",
+    detail: "Readable product surfaces for workflows that can otherwise feel opaque.",
+  },
+  {
+    label: "Systems",
+    detail: "Support, routing, state, and execution habits carried into web work.",
+  },
+  {
+    label: "Code",
+    detail: "Browser-first experiments and real project surfaces with public proof.",
+  },
+  {
+    label: "Design",
+    detail: "Minimal layouts, strong hierarchy, and motion only where it clarifies.",
+  },
+] as const;
+
+function AboutSection() {
+  const section = trailSection("about");
+
+  return (
+    <section
+      aria-labelledby="about-title"
+      className="simo-trail-section simo-trail-about-section"
+      data-trail-section="about"
+      id="about"
+    >
+      <div className="site-shell simo-trail-about-shell">
+        <div className="simo-trail-section-head">
+          <SectionMarker section={section} />
+          <h2 data-trail-reveal id="about-title" tabIndex={-1}>
+            About
+          </h2>
+          <p data-trail-reveal>{section.copy.detail}</p>
+          <div className="simo-trail-about-tags" data-trail-reveal>
+            <span>design</span>
+            <span>development</span>
+            <span>systems</span>
+            <span>execution</span>
+          </div>
+        </div>
+
+        <div className="simo-trail-about-orb" data-trail-reveal>
+          <div aria-hidden className="simo-trail-about-sphere" />
+          <div className="simo-trail-about-signals">
+            {aboutSignals.map((signal) => (
+              <article data-magnetic key={signal.label}>
+                <span>{signal.label}</span>
+                <p>{signal.detail}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function MomentsSection({
   moments,
 }: {
@@ -564,6 +624,79 @@ function ContactSection({
   );
 }
 
+const trailEnginePanels = [
+  {
+    title: "Interaction Flow",
+    lines: ["Enter", "Camera drift", "Section signal", "Magnetic hover", "Exit"],
+  },
+  {
+    title: "Page Transitions",
+    lines: ["Blur to sharp", "Masked reveals", "Scroll-linked depth"],
+  },
+  {
+    title: "Cursor Effect",
+    lines: ["Pointer field", "Magnetic buttons", "Node response"],
+  },
+  {
+    title: "3D Background",
+    lines: ["Three.js", "Instanced particles", "CatmullRom trail"],
+  },
+  {
+    title: "Visual Style",
+    lines: ["Dark cinematic default", "Archive light mode", "Blue signal accent"],
+  },
+  {
+    title: "Animation Feel",
+    lines: ["GSAP", "Lenis", "Power and expo eases"],
+  },
+] as const;
+
+function SystemSection() {
+  const section = trailSection("system");
+
+  return (
+    <section
+      aria-labelledby="system-title"
+      className="simo-trail-section simo-trail-system-section"
+      data-trail-section="system"
+      id="system"
+    >
+      <div className="site-shell">
+        <div className="simo-trail-section-head simo-trail-wide-head">
+          <SectionMarker section={section} />
+          <h2 data-trail-reveal id="system-title" tabIndex={-1}>
+            Trail Engine
+          </h2>
+          <p data-trail-reveal>{section.copy.detail}</p>
+        </div>
+
+        <div className="simo-trail-system-grid" data-trail-reveal>
+          {trailEnginePanels.map((panel) => (
+            <article key={panel.title}>
+              <h3>{panel.title}</h3>
+              <ul>
+                {panel.lines.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+          <article className="simo-trail-system-stack">
+            <h3>Tech Stack</h3>
+            <div>
+              <span>Next.js</span>
+              <span>GSAP</span>
+              <span>Three.js</span>
+              <span>Lenis</span>
+              <span>WebGL</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function JoeHomeApp({
   communityArtifacts,
   fieldNotes,
@@ -579,22 +712,24 @@ export function JoeHomeApp({
   return (
     <div className="simo-trail-root">
       <HashFocus />
-      <PublicTrailRuntime
-        notes={notes}
-        projects={featuredProjects}
-        sections={publicTrailSections}
-        socialChannels={socialChannels}
-      />
       <HeroSection
         joeProfile={joeProfile}
         moments={communityArtifacts}
         projects={featuredProjects}
       />
       <WorkSection projects={featuredProjects} />
+      <AboutSection />
       <MomentsSection moments={communityArtifacts} />
       <NotesSection notes={notes} />
       <InternetSection socialChannels={socialChannels} />
       <ContactSection socialChannels={socialChannels} />
+      <SystemSection />
+      <PublicTrailRuntime
+        notes={notes}
+        projects={featuredProjects}
+        sections={publicTrailSections}
+        socialChannels={socialChannels}
+      />
     </div>
   );
 }
