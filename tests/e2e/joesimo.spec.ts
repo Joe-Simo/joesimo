@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 import {
   collectConsoleProblems,
@@ -7,8 +7,40 @@ import {
   expectPageHealthy,
   expectProjectMediaFramesContained,
   expectRenderedImagesHealthy,
+  expectTrailCanvasNonBlank,
   workRoutes,
 } from "./helpers";
+
+async function expectFocusTrappedInDialog(page: Page, dialog: Locator) {
+  const backgroundFocus = page.locator("header :focus, main :focus, footer :focus");
+
+  for (const key of ["Tab", "Tab", "Shift+Tab"]) {
+    await page.keyboard.press(key);
+    await expect(dialog).toBeVisible();
+    await expect
+      .poll(() =>
+        dialog.evaluate((dialogElement) => {
+          const activeElement = document.activeElement;
+
+          if (!(activeElement instanceof HTMLElement)) {
+            return "contained";
+          }
+
+          if (dialogElement.contains(activeElement)) {
+            return "contained";
+          }
+
+          return activeElement.closest("header, main, footer")
+            ? "escaped"
+            : "contained";
+        }),
+      )
+      .toBe("contained");
+    await expect(backgroundFocus).toHaveCount(0);
+  }
+
+  await expect(dialog.locator(":focus")).toHaveCount(1);
+}
 
 test.describe("Joe Simo personal site", () => {
   test("renders a Joe-first home page with reachable primary destinations", async ({
@@ -23,10 +55,13 @@ test.describe("Joe Simo personal site", () => {
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
-    await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
-    await expect(page.locator("#method")).toBeVisible();
-    await expect(page.locator("#people")).toBeVisible();
+    await expectHomeDestinationLink(page, "photos");
+    await expectTrailCanvasNonBlank(page);
+    await expect(page.locator("#work")).toBeVisible();
+    await expect(page.locator("#photos")).toBeVisible();
+    await expect(page.locator("#blog")).toBeVisible();
+    await expect(page.locator("#social")).toBeVisible();
     await expect(page.locator("#contact")).toBeVisible();
 
     await expectPageHealthy(page, problems);
@@ -71,19 +106,13 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/");
 
-    const methodLink = await expectHomeDestinationLink(page, "method");
     const workLink = await expectHomeDestinationLink(page, "work");
-
-    await methodLink.click();
-    await expectHomeDestinationSection(page, "method");
-    await expect(page.locator("#method-title")).toContainText("Support");
-    await expect(page.locator("#method-title")).toContainText("Signals");
-    await expect(page.locator("#method-title")).toContainText("Surface");
+    const photosLink = await expectHomeDestinationLink(page, "photos");
 
     await page.goto("/#blog", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "blog");
     await expect(
-      page.getByRole("heading", { name: "Notes from the method." }),
+      page.getByRole("heading", { exact: true, name: "Notes" }),
     ).toBeVisible();
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -93,30 +122,20 @@ test.describe("Joe Simo personal site", () => {
     await expect(
       workSection.getByRole("heading", { name: "sim0" }),
     ).toBeVisible();
-    await expect(
-      workSection.getByRole("navigation", { name: "Work case index" }),
-    ).toBeVisible();
-    await workSection
-      .getByRole("link", { name: /Astrosimo/i })
-      .click();
-    await expect(page).toHaveURL(/#work-astrosimo$/);
-    await expect
-      .poll(async () =>
-        page
-          .locator("#work-astrosimo")
-          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
-      )
-      .toBeLessThanOrEqual(120);
+
+    await photosLink.click();
+    await expect(page).toHaveURL(/#photos$/);
+    await expectHomeDestinationSection(page, "photos");
     await expect(
       page.getByRole("heading", {
-        name: "Builder rooms, not badges.",
+        name: "Moments",
       }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Bring the stuck workflow." }),
+      page.getByRole("heading", { name: "Say hi through the public trail." }),
     ).toBeVisible();
     await expect(
-      page.getByRole("img", {
+      page.locator("#photos").getByRole("img", {
         name: "Joe Simo with ThePrimeagen at React Miami 2026",
       }),
     ).toBeVisible();
@@ -135,22 +154,10 @@ test.describe("Joe Simo personal site", () => {
     await footerContactLink.click();
     await expect(page).toHaveURL(/#contact$/);
     await expect(
-      page.getByRole("heading", { name: "Bring the stuck workflow." }),
+      page.getByRole("heading", { name: "Say hi through the public trail." }),
     ).toBeVisible();
-    await expect
-      .poll(async () =>
-        page
-          .locator("#contact")
-          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
-      )
-      .toBeLessThanOrEqual(120);
-    await expect
-      .poll(async () =>
-        page
-          .locator("#contact-title")
-          .evaluate((element) => Math.round(element.getBoundingClientRect().top)),
-      )
-      .toBeLessThanOrEqual(260);
+    await expect(page.locator("#contact")).toBeInViewport();
+    await expect(page.locator("#contact-title")).toBeInViewport();
 
     const pageText = await page.locator("body").innerText();
     expect(pageText).not.toMatch(
@@ -168,7 +175,12 @@ test.describe("Joe Simo personal site", () => {
     if (testInfo.project.name.includes("mobile")) {
       await page.getByRole("button", { name: "Open jump menu" }).click();
     } else {
-      await page.keyboard.press("Control+K");
+      await expect
+        .poll(async () => {
+          await page.keyboard.press("Control+K");
+          return page.getByRole("dialog").count();
+        })
+        .toBe(1);
     }
 
     const dialog = page.getByRole("dialog");
@@ -177,7 +189,7 @@ test.describe("Joe Simo personal site", () => {
     const searchInput = dialog.getByLabel("Filter jump destinations");
 
     await expect(searchInput).toBeVisible();
-    await expect(dialog.getByRole("link", { name: /Method.*Section/i })).toBeVisible();
+    await expect(dialog.getByRole("link", { name: /Work.*Section/i })).toBeVisible();
 
     await searchInput.fill("Astro");
     await expect(dialog.getByRole("link", { name: /Astrosimo/i })).toBeVisible();
@@ -190,37 +202,54 @@ test.describe("Joe Simo personal site", () => {
     const reopenedDialog = page.getByRole("dialog");
 
     await expect(reopenedDialog).toBeVisible();
-    await reopenedDialog.getByRole("link", { name: /People.*Section/i }).click();
-    await expect(page).toHaveURL(/#people$/);
-    await expect(page.locator("#people")).toBeVisible();
+    await reopenedDialog.getByRole("link", { name: /Moments.*Section/i }).click();
+    await expect(page).toHaveURL(/#photos$/);
+    await expect(page.locator("#photos")).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });
 
-  test("keeps method modules visible while interaction changes emphasis", async ({
+  test("opens project artifacts and note panels without leaving the page", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
-    await page.goto("/#method", { waitUntil: "domcontentloaded" });
-
-    const methodSection = page.locator("#method");
-
-    await expect(methodSection.getByText("Start where it breaks.")).toBeVisible();
-    await expect(methodSection.getByText("Trace the state.")).toBeVisible();
-    await expect(
-      methodSection.getByText("Make the next action obvious."),
-    ).toBeVisible();
-
-    await methodSection.getByRole("button", { name: /Signals/i }).focus();
-    await expect(methodSection.getByRole("button", { name: /Signals/i })).toHaveAttribute(
-      "aria-pressed",
-      "true",
+    await page.goto("/#work", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-trail-runtime",
+      "ready",
     );
-    await expect(methodSection.getByText("Start where it breaks.")).toBeVisible();
+
+    const sim0Card = page.locator("#work-sim0");
+
+    await expect(sim0Card.getByRole("heading", { name: "sim0" })).toBeVisible();
+    await sim0Card.getByRole("button", { name: /open artifact/i }).click();
+
+    const projectDialog = page.getByRole("dialog", { name: /sim0/i });
+
+    await expect(projectDialog).toBeVisible();
+    await expect(projectDialog.getByText(/Role/i)).toBeVisible();
+    await expectFocusTrappedInDialog(page, projectDialog);
+    await page.keyboard.press("Escape");
+    await expect(projectDialog).toHaveCount(0);
+    await expect(sim0Card.getByRole("button", { name: /open artifact/i })).toBeFocused();
+
+    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
+    await page
+      .locator("#blog")
+      .getByRole("button", { name: /N1/i })
+      .click();
+
+    const noteDialog = page.getByRole("dialog");
+
+    await expect(noteDialog).toBeVisible();
+    await expect(noteDialog).toContainText(/N1/i);
+    await expectFocusTrappedInDialog(page, noteDialog);
+    await page.keyboard.press("Escape");
+    await expect(noteDialog).toHaveCount(0);
     await expect(
-      methodSection.getByText("Make the next action obvious."),
-    ).toBeVisible();
+      page.locator("#blog").getByRole("button", { name: /N1/i }),
+    ).toBeFocused();
 
     await expectPageHealthy(page, problems);
   });

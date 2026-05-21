@@ -90,7 +90,6 @@ const personJsonLd = {
   name: personName,
   url: siteUrl,
   description: siteDescription,
-  image: `${siteUrl}/media/joe-simo-headshot.webp`,
   jobTitle: "Devsigner",
   mainEntityOfPage: siteUrl,
   knowsLanguage: ["English", "Spanish"],

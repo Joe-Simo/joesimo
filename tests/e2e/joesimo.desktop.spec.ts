@@ -22,19 +22,19 @@ test.describe("Joe Simo desktop homepage navigation", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator(".simo-index-hero")).not.toContainText("sim0");
+    await expect(page.locator(".simo-trail-hero")).toBeVisible();
     await expect(
-      page.locator('.simo-index-hero a[href^="/work/"]'),
+      page.locator('.simo-trail-hero a[href^="/work/"]'),
     ).toHaveCount(0);
 
-    const methodLink = await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
+    const photosLink = await expectHomeDestinationLink(page, "photos");
 
-    await methodLink.click();
-    await expect(page).toHaveURL(/#method$/);
+    await photosLink.click();
+    await expect(page).toHaveURL(/#photos$/);
 
-    const methodSection = await expectHomeDestinationSection(page, "method");
-    await expect(methodSection).toBeInViewport();
+    const photosSection = await expectHomeDestinationSection(page, "photos");
+    await expect(photosSection).toBeInViewport();
 
     const blogLink = page.locator('header a[href="#blog"]').first();
 

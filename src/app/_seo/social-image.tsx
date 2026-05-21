@@ -3,28 +3,11 @@ import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
 
-import {
-  heroCopy,
-  profileFacts,
-  projectCaseStudies,
-  siteDescription,
-} from "@/lib/site-data";
+import { heroCopy, projectCaseStudies, siteDescription } from "@/lib/site-data";
 
 const primaryWork = projectCaseStudies[0];
-const locationFact = profileFacts.find((fact) => fact.label === "Location");
-
-async function publicAssetDataUrl(path: string, contentType: string) {
-  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
-  const asset = await readFile(join(process.cwd(), "public", normalizedPath));
-
-  return `data:${contentType};base64,${Buffer.from(asset).toString("base64")}`;
-}
 
 export async function createSocialImage(label: string) {
-  const portraitImage = await publicAssetDataUrl(
-    "/media/joe-simo-headshot.jpg",
-    "image/jpeg",
-  );
   const geistSans = await readFile(
     join(
       process.cwd(),
@@ -40,8 +23,8 @@ export async function createSocialImage(label: string) {
 
   const facts = [
     "Joe Simo",
-    locationFact?.value ?? "Fort Myers, Florida",
-    "support / systems / web consulting",
+    "Fort Myers, Florida",
+    "portfolio / photos / blog / social",
   ];
 
   return new ImageResponse(
@@ -149,63 +132,55 @@ export async function createSocialImage(label: string) {
           style={{
             position: "absolute",
             right: 76,
-            top: 74,
-            width: 318,
-            height: 318,
-            display: "flex",
-            overflow: "hidden",
-            border: "1px solid rgba(9, 9, 11, 0.16)",
-            borderRadius: 18,
-            backgroundImage: `url(${portraitImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "50% 42%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 76,
-            bottom: 106,
-            width: 318,
+            top: 76,
+            width: 360,
             display: "flex",
             flexDirection: "column",
-            borderTop: "1px solid rgba(0, 87, 255, 0.54)",
-            paddingTop: 18,
+            border: "1px solid rgba(9, 9, 11, 0.16)",
+            borderRadius: 18,
+            overflow: "hidden",
+            background: "#ffffff",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              fontSize: 18,
-              letterSpacing: 2.4,
-              textTransform: "uppercase",
-              color: "#606069",
-            }}
-          >
-            Method World
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 10,
-              fontSize: 34,
-              fontWeight: 700,
-              color: "#09090b",
-            }}
-          >
-            {primaryWork?.title ?? "Joe Simo"}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 8,
-              fontSize: 20,
-              lineHeight: 1.3,
-              color: "#606069",
-            }}
-          >
-            Breakage to signals to surface.
-          </div>
+          {[
+            ["Portfolio", primaryWork?.title ?? "Selected work"],
+            ["Moments", "public archive"],
+            ["Notes", "field notes"],
+            ["Internet", "public profiles"],
+          ].map(([title, detail]) => (
+            <div
+              key={title}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                borderBottom: "1px solid rgba(9, 9, 11, 0.12)",
+                padding: 22,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 18,
+                  letterSpacing: 2,
+                  textTransform: "uppercase",
+                  color: "#606069",
+                }}
+              >
+                {title}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  marginTop: 8,
+                  fontSize: 34,
+                  fontWeight: 700,
+                  color: "#09090b",
+                }}
+              >
+                {detail}
+              </div>
+            </div>
+          ))}
         </div>
         <div
           style={{

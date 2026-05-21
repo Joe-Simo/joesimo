@@ -20,7 +20,7 @@ test.describe("Joe Simo mobile homepage navigation", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const methodLink = await expectHomeDestinationLink(page, "method");
+    const photosLink = await expectHomeDestinationLink(page, "photos");
     const workLink = await expectHomeDestinationLink(page, "work");
 
     await expectNoHorizontalOverflow(page);
@@ -33,11 +33,11 @@ test.describe("Joe Simo mobile homepage navigation", () => {
       .poll(() => page.evaluate((start) => window.scrollY > start, startingScrollY))
       .toBe(true);
 
-    await methodLink.click();
-    await expect(page).toHaveURL(/#method$/);
+    await photosLink.click();
+    await expect(page).toHaveURL(/#photos$/);
 
-    const methodSection = await expectHomeDestinationSection(page, "method");
-    await expect(methodSection).toBeInViewport();
+    const photosSection = await expectHomeDestinationSection(page, "photos");
+    await expect(photosSection).toBeInViewport();
     await expectNoHorizontalOverflow(page);
 
     await page.goto("/#blog", { waitUntil: "domcontentloaded" });

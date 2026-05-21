@@ -27,7 +27,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     images:
       route.path === "/"
         ? [
-            new URL("/media/joe-simo-headshot.webp", siteUrl).toString(),
             new URL("/media/work/sim0-current-editor.webp", siteUrl).toString(),
           ]
         : undefined,

@@ -13,23 +13,26 @@ export const workRoutes = [
   { heading: "ChessLM", path: "/work/chesslm" },
 ] as const;
 
-type HomeDestination = "method" | "work" | "blog";
+type HomeDestination = "photos" | "work" | "blog" | "social";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
   blog: 'a[href="#blog"], a[href="/#blog"]',
-  method: '.simo-index-hero .simo-hero-actions a[href="#method"]',
-  work: '.simo-index-hero .simo-hero-actions a[href="#work"]',
+  photos: '.simo-trail-hero a[href="#photos"], a[href="/#photos"]',
+  social: 'a[href="#social"], a[href="/#social"]',
+  work: '.simo-trail-hero a[href="#work"], a[href="/#work"]',
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
   blog: "#blog",
-  method: "#method",
+  photos: "#photos",
+  social: "#social",
   work: "#work",
 };
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
-  blog: /notes|read|writing/i,
-  method: /method|trace/i,
+  blog: /blog|notes|read|writing/i,
+  photos: /moments|photos|photo/i,
+  social: /internet|social|links/i,
   work: /work/i,
 };
 
@@ -208,7 +211,7 @@ export async function expectRenderedImagesHealthy(page: Page) {
 
 export async function expectProjectMediaFramesContained(page: Page) {
   const overflowingFrames = await page
-    .locator(".simo-work-media")
+    .locator(".simo-work-media, .simo-os-media")
     .evaluateAll((frames) =>
       frames
         .map((frame) => {
@@ -286,10 +289,66 @@ export async function installStableVisualStyles(page: Page) {
         opacity: 0 !important;
       }
 
+      .simo-public-trail-canvas canvas {
+        opacity: 0 !important;
+      }
+
       video {
         visibility: hidden !important;
       }
     `);
+}
+
+export async function expectTrailCanvasNonBlank(page: Page) {
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-trail-runtime",
+    "ready",
+  );
+
+  const canvas = page.locator(".simo-public-trail-canvas canvas").first();
+
+  await expect(canvas).toBeVisible();
+  await expect
+    .poll(async () =>
+      canvas.evaluate(async (node) => {
+        await new Promise<void>((resolve) => {
+          window.requestAnimationFrame(() => resolve());
+        });
+
+        const canvasElement = node as HTMLCanvasElement;
+        const gl =
+          canvasElement.getContext("webgl2") ??
+          canvasElement.getContext("webgl");
+
+        if (!gl || canvasElement.width === 0 || canvasElement.height === 0) {
+          return 0;
+        }
+
+        const width = Math.min(canvasElement.width, 128);
+        const height = Math.min(canvasElement.height, 128);
+        const x = Math.max(0, Math.floor(canvasElement.width / 2 - width / 2));
+        const y = Math.max(0, Math.floor(canvasElement.height / 2 - height / 2));
+        const pixels = new Uint8Array(width * height * 4);
+
+        gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+        let litPixels = 0;
+
+        for (let index = 0; index < pixels.length; index += 4) {
+          if (
+            pixels[index] > 4 ||
+            pixels[index + 1] > 4 ||
+            pixels[index + 2] > 4 ||
+            pixels[index + 3] > 4
+          ) {
+            litPixels += 1;
+          }
+        }
+
+        return litPixels;
+      }),
+    )
+    .toBeGreaterThan(4);
 }
 
 export async function setTheme(page: Page, theme: "dark" | "light") {

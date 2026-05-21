@@ -17,6 +17,7 @@ import {
   profileFacts,
   projectCaseStudies,
   projectCaseStudiesPublic,
+  publicTrailSections,
   publicSourceLabel,
   routeNodeIds,
   sim0InvestigationCase,
@@ -86,13 +87,15 @@ describe("Joe Simo site data", () => {
     expect(originNodeId).toBe("joe");
     expect(defaultActiveNodeId).toBe("joe");
     expect(heroCopy.title).toBe("Joe Simo");
-    expect(heroCopy.intro).toContain("interfaces people can operate");
+    expect(heroCopy.intro).toBe(
+      "A public trail of work, systems, notes, and moments.",
+    );
     expect(heroCopy.detail).toBe(
-      "I start with the complaint, trace the system state behind it, and ship the smallest interface that makes the next action obvious.",
+      "I build interfaces, tools, and experiments that move between code and design.",
     );
     expect(joeProfile.kicker).toContain("Fort Myers");
     expect(joeProfile.kicker).toContain("Devsigner");
-    expect(joeProfile.routeLabel).toBe("Support → Signals → Surface.");
+    expect(joeProfile.routeLabel).toBe("Work / Moments / Notes / Internet.");
     expect(routeNodeIds).not.toContain("joe");
 
     const publicHeroCopy = [
@@ -113,22 +116,45 @@ describe("Joe Simo site data", () => {
     const recordIds = new Set(siteRecords.map((record) => record.id));
 
     expect(navItems.map((item) => item.href)).toEqual([
-      "#method",
       "#work",
-      "#people",
+      "#photos",
       "#blog",
+      "#social",
       "#contact",
     ]);
     expect(navItems.map((item) => item.label)).toEqual([
-      "Method",
       "Work",
-      "People",
+      "Moments",
       "Notes",
+      "Internet",
       "Contact",
     ]);
 
     for (const item of navItems) {
       expect(recordIds.has(item.recordId)).toBe(true);
+    }
+
+    const currentHomepageAnchors = new Set(
+      publicTrailSections.map((section) => section.anchor),
+    );
+    const retiredAnchors = new Set(["#method", "#people", "#trail", "#notes"]);
+
+    for (const item of navItems) {
+      expect(currentHomepageAnchors.has(item.href)).toBe(true);
+      expect(retiredAnchors.has(item.href)).toBe(false);
+    }
+
+    for (const record of siteRecords) {
+      expect(retiredAnchors.has(record.sectionAnchor)).toBe(false);
+
+      for (const action of [
+        record.primaryAction,
+        ...record.secondaryActions,
+      ]) {
+        if (action.href.startsWith("#")) {
+          expect(retiredAnchors.has(action.href)).toBe(false);
+        }
+      }
     }
   });
 

@@ -44,8 +44,8 @@ test.describe("responsive, theme, and fallback gates", () => {
       await expect(
         page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
       ).toBeVisible();
-      await expectHomeDestinationLink(page, "method");
       await expectHomeDestinationLink(page, "work");
+      await expectHomeDestinationLink(page, "photos");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
 
@@ -124,18 +124,18 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("desktop Signal World mounts WebGL when the method chapter is active", async ({
+  test("photos and blog remain reachable without motion-only content", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
-    await page.goto("/#method", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("#method")).toBeInViewport();
-    await expect(page.locator(".simo-signal-webgl canvas")).toHaveCount(1);
-    await expect(
-      page.locator('.simo-signal-webgl[data-webgl-ready="true"] canvas'),
-    ).toBeVisible();
+    await page.goto("/#photos", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#photos")).toBeInViewport();
+    await expect(page.getByRole("heading", { name: "Moments" })).toBeVisible();
+    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#blog")).toBeInViewport();
+    await expect(page.getByRole("heading", { exact: true, name: "Notes" })).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 
@@ -146,16 +146,14 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await blockHeavyMedia(page);
-    await page.goto("/#method", { waitUntil: "domcontentloaded" });
+    await page.goto("/#photos", { waitUntil: "domcontentloaded" });
 
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator("#method")).toBeInViewport();
-    await expect(page.locator(".simo-signal-webgl canvas")).toHaveCount(0);
-    await expect(page.locator(".simo-signal-static-route")).toBeVisible();
-    await expectHomeDestinationLink(page, "method");
+    await expect(page.locator("#photos")).toBeInViewport();
     await expectHomeDestinationLink(page, "work");
+    await expectHomeDestinationLink(page, "photos");
     await expectPageHealthy(page, problems);
   });
 });

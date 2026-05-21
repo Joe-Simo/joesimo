@@ -5,7 +5,6 @@ import {
   communityHighlights,
   fieldNotes,
   joeProfile,
-  profileMedia,
   projectCaseStudiesPublic,
   socialChannels,
   writingFragments,
@@ -35,7 +34,6 @@ export default function Home() {
           communityArtifacts={communityHighlights}
           fieldNotes={fieldNotes}
           joeProfile={joeProfile}
-          profileMedia={profileMedia}
           projects={projectCaseStudiesPublic}
           socialChannels={socialChannels}
           writingFragments={writingFragments}

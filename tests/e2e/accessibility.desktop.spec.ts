@@ -41,8 +41,8 @@ test.describe("desktop accessibility quality gates", () => {
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
     await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }));
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }));
-    await tabUntilFocused(page, homeDestinationLink(page, "method"));
     await tabUntilFocused(page, homeDestinationLink(page, "work"));
+    await tabUntilFocused(page, homeDestinationLink(page, "photos"));
   });
 
   test("homepage destination controls expose usable accessible names", async ({
@@ -54,28 +54,27 @@ test.describe("desktop accessibility quality gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    await expectHomeDestinationLink(page, "method");
     await expectHomeDestinationLink(page, "work");
+    await expectHomeDestinationLink(page, "photos");
   });
 
-  test("method modules are keyboard reachable and update emphasis", async ({
+  test("social profile cards are keyboard reachable", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
-    await page.goto("/#method", { waitUntil: "domcontentloaded" });
+    await page.goto("/#social", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    const supportButton = page.getByRole("button", { name: /support/i });
-    const signalsButton = page.getByRole("button", { name: /signals/i });
+    const githubLink = page.locator("#social").getByRole("link", { name: /GitHub/i });
+    const linkedinLink = page
+      .locator("#social")
+      .getByRole("link", { name: /LinkedIn/i });
 
-    await supportButton.focus();
-    await expect(supportButton).toHaveAttribute("aria-pressed", "true");
-    await signalsButton.focus();
-    await expect(signalsButton).toBeFocused();
-    await expect(signalsButton).toHaveAttribute("aria-pressed", "true");
-    await expect(page.locator("#method")).toContainText("Start where it breaks.");
-    await expect(page.locator("#method")).toContainText("Trace the state.");
+    await githubLink.evaluate((element) => element.focus());
+    await expect(githubLink).toBeFocused();
+    await linkedinLink.evaluate((element) => element.focus());
+    await expect(linkedinLink).toBeFocused();
   });
 });

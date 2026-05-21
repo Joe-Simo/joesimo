@@ -86,9 +86,9 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
       meta: project.code,
     }));
 
-  const peopleItems = communityHighlights.slice(0, 4).map((artifact) => ({
+  const momentItems = communityHighlights.slice(0, 4).map((artifact) => ({
     description: artifact.body,
-    href: resolveNavHref("#people", sectionPrefix),
+    href: resolveNavHref("#photos", sectionPrefix),
     iconKey: "camera" as const,
     label: artifact.title,
     meta: artifact.code,
@@ -108,7 +108,7 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
   return [
     { label: "Sections", items: sectionItems },
     { label: "Work", items: workItems },
-    { label: "People", items: peopleItems },
+    { label: "Moments", items: momentItems },
     { label: "Profiles", items: profileItems },
   ];
 }

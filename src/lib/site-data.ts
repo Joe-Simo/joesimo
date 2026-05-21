@@ -29,6 +29,32 @@ export type SceneMode =
   | "trail"
   | "contact";
 
+export type PublicTrailSectionId =
+  | "joe"
+  | "work"
+  | "photos"
+  | "blog"
+  | "social"
+  | "contact";
+
+export type PublicTrailSection = {
+  id: PublicTrailSectionId;
+  code: string;
+  label: string;
+  navLabel: string;
+  anchor: `#${string}`;
+  sceneMode: SceneMode;
+  point: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  copy: {
+    title: string;
+    detail: string;
+  };
+};
+
 export type SiteRecordKind =
   | "origin"
   | "method"
@@ -596,6 +622,8 @@ export const legacyNodeIdMap = {
 export const legacyHashMap = {
   "#top": "joe",
   "#now": "joe",
+  "#photos": "trail",
+  "#social": "contact",
   "#sim0": "work",
   "#blog": "trail",
   "#background": "method",
@@ -607,26 +635,107 @@ export const legacyHashMap = {
 
 export const heroCopy = {
   title: "Joe Simo",
-  intro: "I turn support pain into interfaces people can operate.",
+  intro: "A public trail of work, systems, notes, and moments.",
   detail:
-    "I start with the complaint, trace the system state behind it, and ship the smallest interface that makes the next action obvious.",
+    "I build interfaces, tools, and experiments that move between code and design.",
 };
 
 export const siteDescription =
-  "Joe Simo is a Fort Myers devsigner building product interfaces from support, systems, telematics, developer tools, mobile apps, games, and utility surfaces.";
+  "Joe Simo is a Fort Myers devsigner sharing a public trail of work, systems, notes, moments, and public profile links.";
 
 export const joeProfile: JoeProfile = {
   name: heroCopy.title,
-  kicker: "Fort Myers / Devsigner / interface systems",
+  kicker: "Fort Myers / Devsigner / public trail",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Support → Signals → Surface.",
+  routeLabel: "Work / Moments / Notes / Internet.",
   receiptTitle: "Support → Signals → Surface",
   receiptDetail:
     "Trace the method, then choose the work that proves the route.",
   contactPrompt:
     "Bring a stuck workflow, product surface, or useful introduction.",
 };
+
+export const publicTrailSections = [
+  {
+    id: "joe",
+    code: "00",
+    label: "Hero",
+    navLabel: "Joe",
+    anchor: "#joe",
+    sceneMode: "origin",
+    point: { x: -2.8, y: 0.3, z: 2.8 },
+    copy: {
+      title: "Joe Simo",
+      detail: "The first mark on the public trail.",
+    },
+  },
+  {
+    id: "work",
+    code: "01",
+    label: "Work",
+    navLabel: "Work",
+    anchor: "#work",
+    sceneMode: "work",
+    point: { x: -1.2, y: -0.4, z: 1.3 },
+    copy: {
+      title: "Trail artifacts",
+      detail: "Real project surfaces, treated like spatial proof objects.",
+    },
+  },
+  {
+    id: "photos",
+    code: "02",
+    label: "Moments",
+    navLabel: "Moments",
+    anchor: "#photos",
+    sceneMode: "trail",
+    point: { x: 0.5, y: 0.45, z: 0.2 },
+    copy: {
+      title: "Moments on the trail",
+      detail: "People, rooms, and builder context from the public archive.",
+    },
+  },
+  {
+    id: "blog",
+    code: "03",
+    label: "Notes",
+    navLabel: "Notes",
+    anchor: "#blog",
+    sceneMode: "trail",
+    point: { x: 1.5, y: -0.35, z: -1.1 },
+    copy: {
+      title: "Trail markers",
+      detail: "Short authored fragments about systems and interface work.",
+    },
+  },
+  {
+    id: "social",
+    code: "04",
+    label: "Internet",
+    navLabel: "Internet",
+    anchor: "#social",
+    sceneMode: "contact",
+    point: { x: 2.45, y: 0.35, z: -2.2 },
+    copy: {
+      title: "Public exits",
+      detail: "The real profiles connected to the same path.",
+    },
+  },
+  {
+    id: "contact",
+    code: "05",
+    label: "Contact",
+    navLabel: "Contact",
+    anchor: "#contact",
+    sceneMode: "contact",
+    point: { x: 3.1, y: -0.05, z: -3.2 },
+    copy: {
+      title: "Leave a mark",
+      detail: "Public profiles stay closest to the work.",
+    },
+  },
+] as const satisfies readonly PublicTrailSection[];
 
 export const sim0Link: SiteAction = {
   id: "open-sim0",
@@ -964,9 +1073,9 @@ export const profileFacts: ProfileFact[] = [
   },
   {
     label: "Professional track",
-    value: "Support, systems, and web consulting",
+    value: "Support, systems, and web projects",
     detail:
-      "The interface work sits on support, systems, and web consulting.",
+      "The interface work sits on support, systems, and web projects.",
     source: "Method",
   },
   {
@@ -1006,9 +1115,9 @@ export const profileFacts: ProfileFact[] = [
   },
   {
     label: "Work scope",
-    value: "Support / systems / web consulting",
+    value: "Support / systems / web projects",
     detail:
-      "The public contact lanes are support, systems, web consulting, and interface work.",
+      "The public contact lanes are support, systems, web projects, and interface work.",
     source: "Method",
   },
   {
@@ -1587,7 +1696,7 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     title: "Support → Signals → Surface.",
     body:
       "The method starts with what a person can describe, traces timing, route, state, and handoff, then removes what does not help the next action.",
-    anchor: "#method",
+    anchor: "#work",
     progress: 0.22,
     sceneMode: "method",
     point: { x: 43, y: 28 },
@@ -1611,7 +1720,7 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     title: "Short notes from the method.",
     body:
       "Small authored fragments hold the site together until there is a larger writing archive.",
-    anchor: "#notes",
+    anchor: "#blog",
     progress: 0.66,
     sceneMode: "trail",
     point: { x: 56, y: 76 },
@@ -3125,7 +3234,7 @@ export const worldArtifacts: WorldArtifact[] = [
     source: "LinkedIn",
     title: "The exit stays public.",
     detail:
-      "For support, systems, web consulting, sim0, or interface work, use the public profile trail.",
+      "For support, systems, web projects, sim0, or interface work, use the public profile trail.",
     stage: "contact",
     href: linkedinChannel.href,
     actionLabel: "Open LinkedIn",
@@ -3208,9 +3317,9 @@ export const siteRecords: SiteRecord[] = [
       "Fort Myers devsigner working from support failures, systems work, telematics, and interface clarity.",
     proof: "Joe Simo / Devsigner / Fort Myers",
     primaryAction: {
-      id: "trace-method",
-      label: "Trace Method",
-      href: "#method",
+      id: "view-public-trail-work",
+      label: "View Work",
+      href: "#work",
       kind: "primary",
     },
     secondaryActions: [
@@ -3284,7 +3393,7 @@ export const siteRecords: SiteRecord[] = [
       tension: 0.66,
       depth: 0.58,
     },
-    sectionAnchor: "#method",
+    sectionAnchor: "#work",
     readActionLabel: "Read Method",
     map: {
       desktopPoint: { x: 69, y: 23 },
@@ -3384,7 +3493,7 @@ export const siteRecords: SiteRecord[] = [
       tension: 0.36,
       depth: 0.32,
     },
-    sectionAnchor: "#trail",
+    sectionAnchor: "#social",
     readActionLabel: "Read Trail",
     map: {
       desktopPoint: { x: 62, y: 74 },
@@ -3398,7 +3507,7 @@ export const siteRecords: SiteRecord[] = [
     kind: "contact",
     status: "Public profiles are best.",
     detail:
-      "Reach out through public profiles about support, systems, web consulting, sim0, interface work, or a useful introduction.",
+      "Reach out through public profiles about support, systems, web projects, sim0, interface work, or a useful introduction.",
     proof: "LinkedIn / X / GitHub",
     primaryAction: {
       id: "open-linkedin-contact",
@@ -3445,20 +3554,14 @@ export const siteRecords: SiteRecord[] = [
 
 export const navItems = [
   {
-    label: "Method",
-    href: "#method",
-    iconKey: "briefcase",
-    recordId: "method",
-  },
-  {
     label: "Work",
     href: "#work",
     iconKey: "appWindow",
     recordId: "work",
   },
   {
-    label: "People",
-    href: "#people",
+    label: "Moments",
+    href: "#photos",
     iconKey: "camera",
     recordId: "trail",
   },
@@ -3467,6 +3570,12 @@ export const navItems = [
     href: "#blog",
     iconKey: "bookOpen",
     recordId: "trail",
+  },
+  {
+    label: "Internet",
+    href: "#social",
+    iconKey: "code",
+    recordId: "contact",
   },
   {
     label: "Contact",
