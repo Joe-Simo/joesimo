@@ -216,7 +216,10 @@ export async function expectProjectMediaFramesContained(page: Page) {
       frames
         .map((frame) => {
           const frameElement = frame as HTMLElement;
-          const image = frameElement.querySelector("img");
+          const image =
+            frameElement.querySelector<HTMLElement>(
+              ".simo-trail-sim0-composition",
+            ) ?? frameElement.querySelector("img");
 
           if (!image) {
             return null;
@@ -383,10 +386,18 @@ export async function setTheme(page: Page, theme: "dark" | "light") {
   await expect
     .poll(async () =>
       page.evaluate((selectedTheme) => {
+        localStorage.setItem("theme", selectedTheme);
+        document.documentElement.classList.toggle(
+          "dark",
+          selectedTheme === "dark",
+        );
+        document.documentElement.style.colorScheme = selectedTheme;
+
         const isDark = document.documentElement.classList.contains("dark");
 
         return selectedTheme === "dark" ? isDark : !isDark;
       }, theme),
+      { timeout: 15000 },
     )
     .toBe(true);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -51,6 +51,8 @@ function getServerSnapshot() {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const wipeTimeoutRef = useRef<number | null>(null);
   const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(
     subscribeToHydration,
@@ -63,6 +65,34 @@ export function ThemeToggle() {
   const currentOption = getThemeOption(displayTheme);
   const CurrentIcon = currentOption.icon;
 
+  useEffect(() => {
+    return () => {
+      if (wipeTimeoutRef.current) {
+        window.clearTimeout(wipeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  function beginThemeTransition() {
+    const root = document.documentElement;
+    const rect = triggerRef.current?.getBoundingClientRect();
+    const x = rect ? rect.left + rect.width / 2 : window.innerWidth - 44;
+    const y = rect ? rect.top + rect.height / 2 : 44;
+
+    if (wipeTimeoutRef.current) {
+      window.clearTimeout(wipeTimeoutRef.current);
+    }
+
+    root.style.setProperty("--theme-wipe-x", `${x}px`);
+    root.style.setProperty("--theme-wipe-y", `${y}px`);
+    root.dataset.themeTransition = "active";
+
+    wipeTimeoutRef.current = window.setTimeout(() => {
+      delete root.dataset.themeTransition;
+      wipeTimeoutRef.current = null;
+    }, 720);
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
@@ -74,6 +104,7 @@ export function ThemeToggle() {
             className="size-11"
             disabled={!mounted}
             aria-label={`Theme: ${currentOption.label}`}
+            ref={triggerRef}
           />
         }
       >
@@ -92,7 +123,10 @@ export function ThemeToggle() {
             value={displayTheme}
             onValueChange={(value) => {
               if (isThemeValue(value)) {
-                setTheme(value);
+                if (value !== displayTheme) {
+                  beginThemeTransition();
+                  setTheme(value);
+                }
                 setOpen(false);
               }
             }}

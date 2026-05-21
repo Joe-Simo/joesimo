@@ -773,6 +773,15 @@ export const sim0CurrentEditorMedia: SiteMedia = {
   tone: "desaturated",
 };
 
+export const sim0ShipSurfaceMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/sim0-machine-ship.webp",
+  alt: "sim0 preview, local API, shipping, and staged changes surface",
+  width: 1600,
+  height: 900,
+  tone: "desaturated",
+};
+
 export const astrosimoSignalStripMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/astrosimo-signal-strip.webp",
@@ -1820,6 +1829,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     assets: [
       {
+        id: "sim0-ship-surface",
+        captionId: "sim0-working-surface",
+        label: "Shipping surface capture",
+        claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
+        media: sim0ShipSurfaceMedia,
+        sourcePath: "Downloads/final/sim0",
+        treatment: "hero",
+      },
+      {
         id: "sim0-current-editor",
         captionId: "sim0-working-surface",
         label: "Working surface capture",
@@ -1940,7 +1958,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "Operated proof case: inspect real interface hotspots across preview, runtime, local context, shipping, and changes.",
     homepageFeature: {
       rank: 1,
-      mediaAssetIds: ["sim0-current-editor"],
+      mediaAssetIds: ["sim0-ship-surface", "sim0-current-editor"],
       treatment: "operated-surface",
     },
   },

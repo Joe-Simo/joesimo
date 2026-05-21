@@ -272,6 +272,9 @@ function PublicTrailCanvas({
     let reducedMotion = reducedMotionQuery.matches;
     let scrollProgress = 0;
     let themeFrame = 0;
+    let particleBaseOpacity = 0.32;
+    let routeBaseOpacity = 0.14;
+    let nodeBaseOpacity = 0.78;
 
     hostElement.dataset.webglReady = "true";
     renderer.setClearColor(0x000000, 0);
@@ -288,12 +291,15 @@ function PublicTrailCanvas({
 
       particleMaterial.color.copy(foreground);
       routeMaterial.color.copy(accent);
-      particleMaterial.opacity = isDark ? 0.52 : 0.32;
-      routeMaterial.opacity = isDark ? 0.22 : 0.14;
+      particleBaseOpacity = isDark ? 0.46 : 0.22;
+      routeBaseOpacity = isDark ? 0.16 : 0.07;
+      nodeBaseOpacity = isDark ? 0.95 : 0.78;
+      particleMaterial.opacity = particleBaseOpacity;
+      routeMaterial.opacity = routeBaseOpacity;
       nodes.forEach((node) => {
         const material = node.material as THREE.MeshBasicMaterial;
         material.color.copy(accent);
-        material.opacity = isDark ? 0.95 : 0.78;
+        material.opacity = nodeBaseOpacity;
       });
     }
 
@@ -343,9 +349,12 @@ function PublicTrailCanvas({
         0,
         sections.findIndex((section) => section.id === activeSectionIdRef.current),
       );
+      const activeSection = activeSectionIdRef.current;
+      const sectionIntensity =
+        activeSection === "work" ? 0.28 : activeSection === "joe" ? 1 : 0.56;
       const cameraPoint = curve.getPoint(scrollProgress);
       const target = curve.getPoint(Math.min(1, scrollProgress + 0.08));
-      const cameraDepth = 5.5 - scrollProgress * 1.55;
+      const cameraDepth = 6.05 - scrollProgress * 1.28;
 
       camera.position.lerp(
         new THREE.Vector3(
@@ -384,6 +393,13 @@ function PublicTrailCanvas({
       }
 
       positionAttribute.needsUpdate = true;
+      particleMaterial.opacity +=
+        (particleBaseOpacity * sectionIntensity - particleMaterial.opacity) *
+        0.1;
+      routeMaterial.opacity +=
+        (routeBaseOpacity * (activeSection === "work" ? 0.22 : sectionIntensity) -
+          routeMaterial.opacity) *
+        0.12;
 
       nodes.forEach((node, index) => {
         const material = node.material as THREE.MeshBasicMaterial;
@@ -391,7 +407,10 @@ function PublicTrailCanvas({
         const scale = active ? 1.75 : 1;
 
         node.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.16);
-        material.opacity += ((active ? 1 : 0.42) - material.opacity) * 0.14;
+        material.opacity +=
+          ((active ? nodeBaseOpacity : nodeBaseOpacity * 0.42) -
+            material.opacity) *
+          0.14;
       });
 
       route.rotation.z = reducedMotion ? 0 : Math.sin(time * 0.00008) * 0.025;
@@ -505,6 +524,29 @@ function PublicTrailCanvas({
   );
 }
 
+function TrailProgressNav({
+  activeSectionId,
+  sections,
+}: {
+  activeSectionId: PublicTrailSectionId;
+  sections: readonly PublicTrailSection[];
+}) {
+  return (
+    <nav aria-label="Public trail progress" className="simo-trail-progress-nav">
+      {sections.map((section) => (
+        <a
+          aria-current={section.id === activeSectionId ? "location" : undefined}
+          href={section.anchor}
+          key={section.id}
+        >
+          <span>{section.code}</span>
+          <strong>{section.label}</strong>
+        </a>
+      ))}
+    </nav>
+  );
+}
+
 function ProjectDialog({
   onClose,
   project,
@@ -547,7 +589,7 @@ function ProjectDialog({
               ref={closeButtonRef}
               type="button"
             >
-              X
+              <SiteIcon aria-hidden iconKey="x" />
             </Dialog.Close>
 
             <div className="simo-trail-dialog-media">
@@ -675,7 +717,7 @@ function NoteDialog({
               ref={closeButtonRef}
               type="button"
             >
-              X
+              <SiteIcon aria-hidden iconKey="x" />
             </Dialog.Close>
             <p>{note.code} / {note.source}</p>
             <Dialog.Title>{note.title}</Dialog.Title>
@@ -723,12 +765,26 @@ export function PublicTrailRuntime({
   }, []);
 
   const closeOverlay = useCallback(() => {
+    const focusTarget = previousFocusRef.current;
+
     setSelectedProjectSlug(null);
     setSelectedNoteCode(null);
 
+    const restoreFocus = () => {
+      if (focusTarget?.isConnected) {
+        focusTarget.focus({ preventScroll: true });
+      }
+    };
+
     window.requestAnimationFrame(() => {
-      previousFocusRef.current?.focus();
-      previousFocusRef.current = null;
+      restoreFocus();
+      window.setTimeout(restoreFocus, 40);
+      window.setTimeout(() => {
+        restoreFocus();
+        if (previousFocusRef.current === focusTarget) {
+          previousFocusRef.current = null;
+        }
+      }, 120);
     });
   }, []);
 
@@ -777,17 +833,29 @@ export function PublicTrailRuntime({
       }
 
       const projectTrigger = target.closest("[data-project-open]");
+      const projectOpenArea = target.closest("[data-project-open-area]");
       const noteTrigger = target.closest("[data-note-open]");
+      const projectButton =
+        projectTrigger instanceof HTMLElement ? projectTrigger : null;
+      const projectArea =
+        projectOpenArea instanceof HTMLElement ? projectOpenArea : null;
 
-      if (projectTrigger instanceof HTMLElement) {
-        previousFocusRef.current = document.activeElement as HTMLElement | null;
+      if (projectButton || projectArea) {
+        const projectSlug =
+          projectButton?.dataset.projectOpen ??
+          projectArea?.dataset.projectOpenArea;
+        const focusTarget =
+          projectButton ??
+          projectArea?.querySelector<HTMLElement>("[data-project-open]");
+
+        previousFocusRef.current = focusTarget ?? null;
         setSelectedNoteCode(null);
-        setSelectedProjectSlug(projectTrigger.dataset.projectOpen ?? null);
+        setSelectedProjectSlug(projectSlug ?? null);
         return;
       }
 
       if (noteTrigger instanceof HTMLElement) {
-        previousFocusRef.current = document.activeElement as HTMLElement | null;
+        previousFocusRef.current = noteTrigger;
         setSelectedProjectSlug(null);
         setSelectedNoteCode(noteTrigger.dataset.noteOpen ?? null);
       }
@@ -848,12 +916,11 @@ export function PublicTrailRuntime({
         .map((element) =>
           gsap.fromTo(
             element,
-            { autoAlpha: 0, filter: "blur(10px)", y: 34 },
+            { autoAlpha: 0, y: 34 },
             {
               autoAlpha: 1,
               duration: 0.95,
               ease: "power4.out",
-              filter: "blur(0px)",
               immediateRender: false,
               scrollTrigger: {
                 start: "top 82%",
@@ -877,7 +944,7 @@ export function PublicTrailRuntime({
         }),
         gsap.fromTo(
           ".simo-trail-work-card",
-          { rotateX: 3.5, y: 64 },
+          { rotateX: 0.6, y: 24 },
           {
             ease: "power3.out",
             rotateX: 0,
@@ -888,7 +955,7 @@ export function PublicTrailRuntime({
               trigger: "#work",
             },
             stagger: 0.08,
-            transformPerspective: 900,
+            transformPerspective: 1800,
             y: 0,
           },
         ),
@@ -900,10 +967,10 @@ export function PublicTrailRuntime({
             start: "top 75%",
             trigger: "#photos",
           },
-          xPercent: -10,
+          xPercent: -18,
           stagger: 0.04,
         }),
-        gsap.to(".simo-trail-social-orbit", {
+        gsap.to(".simo-trail-social-orbit, .simo-trail-contact-signal", {
           "--trail-orbit-scale": 1.36,
           ease: "none",
           scrollTrigger: {
@@ -1031,6 +1098,10 @@ export function PublicTrailRuntime({
   return (
     <>
       <PublicTrailCanvas activeSectionId={activeSectionId} sections={sections} />
+      <TrailProgressNav
+        activeSectionId={activeSectionId}
+        sections={sections}
+      />
       <div aria-hidden="true" className="simo-trail-status">
         <span>{sections.find((section) => section.id === activeSectionId)?.code}</span>
         <strong>

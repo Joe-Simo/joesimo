@@ -208,6 +208,7 @@ function WorkSection({
       data-trail-section="work"
       id="work"
     >
+      <div aria-hidden="true" className="simo-trail-work-veil" />
       <div className="site-shell simo-trail-section-shell">
         <div className="simo-trail-section-head" data-trail-work-pin>
           <SectionMarker section={section} />
@@ -220,35 +221,22 @@ function WorkSection({
         <div className="simo-trail-work-grid">
           {projects.map((project, index) => {
             const asset = getPreferredImageAsset(project);
+            const featured = index === 0;
 
             return (
               <article
                 className="simo-trail-work-card"
                 data-artifact={project.code}
-                data-featured={index === 0}
+                data-featured={featured}
                 data-trail-reveal
                 id={`work-${project.slug}`}
                 key={project.slug}
               >
-                <figure className="simo-trail-work-media simo-os-media">
-                  {asset ? (
-                    <Image
-                      alt={asset.media.alt}
-                      height={asset.media.height}
-                      loading="lazy"
-                      sizes={
-                        index === 0
-                          ? "(max-width: 900px) 100vw, 48vw"
-                          : "(max-width: 900px) 100vw, 30vw"
-                      }
-                      src={asset.media.src}
-                      width={asset.media.width}
-                    />
-                  ) : (
-                    <span aria-hidden />
-                  )}
-                </figure>
-                <div className="simo-trail-work-copy">
+                <WorkMedia asset={asset} featured={featured} project={project} />
+                <div
+                  className="simo-trail-work-copy"
+                  data-project-open-area={project.slug}
+                >
                   <span>{project.code} / {project.proofMode}</span>
                   <h3>{project.title}</h3>
                   <p>{project.summary}</p>
@@ -282,6 +270,96 @@ function WorkSection({
         </div>
       </div>
     </section>
+  );
+}
+
+function WorkMedia({
+  asset,
+  featured,
+  project,
+}: {
+  asset: PublicEvidenceAsset | undefined;
+  featured: boolean;
+  project: PublicProjectCaseStudy;
+}) {
+  const proofImages =
+    project.miniWorld?.media.filter((media) => media.kind === "image") ?? [];
+  const primaryProof =
+    proofImages.find((media) => media.id === "sim0-machine-ship") ??
+    proofImages.find((media) => media.id === "sim0-machine-surface");
+  const secondaryProof =
+    proofImages.find((media) => media.id === "sim0-machine-trace") ??
+    proofImages.find((media) => media.id === "sim0-machine-find");
+  const showSim0Composition = featured && project.slug === "sim0" && asset;
+
+  return (
+    <figure
+      className="simo-trail-work-media simo-os-media"
+      data-treatment={project.homepageFeature?.treatment}
+    >
+      {showSim0Composition ? (
+        <div className="simo-trail-sim0-composition">
+          <Image
+            alt={asset.media.alt}
+            className="simo-trail-sim0-primary"
+            height={asset.media.height}
+            sizes="(max-width: 900px) 100vw, 48vw"
+            src={asset.media.src}
+            width={asset.media.width}
+          />
+          {secondaryProof ? (
+            <Image
+              alt={secondaryProof.alt}
+              className="simo-trail-sim0-inset"
+              height={secondaryProof.height}
+              sizes="(max-width: 900px) 44vw, 18vw"
+              src={secondaryProof.src}
+              width={secondaryProof.width}
+            />
+          ) : null}
+          {primaryProof ? (
+            <Image
+              alt={primaryProof.alt}
+              className="simo-trail-sim0-ghost"
+              height={primaryProof.height}
+              sizes="(max-width: 900px) 42vw, 16vw"
+              src={primaryProof.src}
+              width={primaryProof.width}
+            />
+          ) : null}
+          <ol aria-label="sim0 proof route">
+            <li>import</li>
+            <li>inspect</li>
+            <li>export</li>
+          </ol>
+          <div className="simo-trail-sim0-route">
+            <span>real repo</span>
+            <span>visual route</span>
+            <span>ship state</span>
+          </div>
+          <div className="simo-trail-sim0-map" aria-hidden="true">
+            <span>preview</span>
+            <span>runtime</span>
+            <span>changes</span>
+          </div>
+        </div>
+      ) : asset ? (
+        <Image
+          alt={asset.media.alt}
+          height={asset.media.height}
+          loading={featured ? "eager" : "lazy"}
+          sizes={
+            featured
+              ? "(max-width: 900px) 100vw, 48vw"
+              : "(max-width: 900px) 100vw, 30vw"
+          }
+          src={asset.media.src}
+          width={asset.media.width}
+        />
+      ) : (
+        <span aria-hidden />
+      )}
+    </figure>
   );
 }
 
@@ -327,7 +405,7 @@ function MomentsSection({
             <Image
               alt={moment.media.alt}
               height={moment.media.height}
-              loading="lazy"
+              loading={index < 4 ? "eager" : "lazy"}
               sizes="(max-width: 760px) 72vw, 28vw"
               src={moment.media.src}
               width={moment.media.width}
@@ -410,7 +488,7 @@ function InternetSection({
           <p data-trail-reveal>{section.copy.detail}</p>
         </div>
 
-        <div className="simo-trail-social-constellation" data-trail-reveal>
+        <div className="simo-trail-social-constellation">
           {publicChannels.map((channel, index) => (
             <a
               data-magnetic
@@ -475,6 +553,11 @@ function ContactSection({
               <ExternalCue show />
             </a>
           ) : null}
+        </div>
+        <div aria-hidden="true" className="simo-trail-contact-signal">
+          {socialChannels.slice(0, 5).map((channel) => (
+            <span data-channel={channel.label.toLowerCase()} key={channel.label} />
+          ))}
         </div>
       </div>
     </section>

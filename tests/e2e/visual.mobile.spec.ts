@@ -38,6 +38,7 @@ test.describe("mobile visual regression", () => {
     await setTheme(page, "dark");
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
     await prepareVisualPage(page, "dark");
+    await page.locator("#work").scrollIntoViewIfNeeded();
     await expectPageHealthy(page, problems);
     await expect(page.getByRole("heading", { name: "sim0" })).toBeVisible();
 

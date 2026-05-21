@@ -58,6 +58,7 @@ test.describe("desktop visual regression", () => {
     await setTheme(page, "light");
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
     await prepareVisualPage(page, "light");
+    await page.locator("#work").scrollIntoViewIfNeeded();
     await expectPageHealthy(page, problems);
     await expect(page.getByRole("heading", { name: "sim0" })).toBeVisible();
 
