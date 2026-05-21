@@ -31,7 +31,7 @@ const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
   blog: /blog|notes|read|writing/i,
-  photos: /moments|photos|photo/i,
+  photos: /journal|moments|photos|photo/i,
   social: /internet|social|links/i,
   work: /work/i,
 };

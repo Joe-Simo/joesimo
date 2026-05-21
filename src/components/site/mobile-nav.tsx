@@ -52,10 +52,21 @@ export function MobileNav({
       );
 
     function updateActiveHref() {
+      const hashTarget = targets.find(({ href }) => href === window.location.hash);
+
+      if (hashTarget) {
+        const rect = hashTarget.target.getBoundingClientRect();
+
+        if (rect.top < window.innerHeight - 72 && rect.bottom > 72) {
+          setActiveHref(hashTarget.href);
+          return;
+        }
+      }
+
       const nextHref = navItems.find((item) => item.href === window.location.hash)
         ?.href;
 
-      if (nextHref) {
+      if (nextHref && !hashTarget) {
         setActiveHref(nextHref);
         return;
       }

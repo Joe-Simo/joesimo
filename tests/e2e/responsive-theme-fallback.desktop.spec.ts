@@ -134,7 +134,7 @@ test.describe("responsive, theme, and fallback gates", () => {
     await blockHeavyMedia(page);
     await page.goto("/#photos", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#photos")).toBeInViewport();
-    await expect(page.getByRole("heading", { name: "Moments" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Journal" })).toBeVisible();
     await page.goto("/#blog", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#blog")).toBeInViewport();
     await expect(page.getByRole("heading", { exact: true, name: "Notes" })).toBeVisible();

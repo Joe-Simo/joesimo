@@ -40,6 +40,17 @@ export function SiteSectionRail() {
     function updateActiveHref() {
       frame = 0;
       const probeY = Math.min(window.innerHeight * 0.42, 340);
+      const hashTarget = targets.find(({ href }) => href === window.location.hash);
+
+      if (hashTarget) {
+        const rect = hashTarget.target.getBoundingClientRect();
+
+        if (rect.top < window.innerHeight - 72 && rect.bottom > 72) {
+          setActiveHref(hashTarget.href);
+          return;
+        }
+      }
+
       let nextHref: RailItem["href"] = "#joe";
 
       for (const { href, target } of targets) {

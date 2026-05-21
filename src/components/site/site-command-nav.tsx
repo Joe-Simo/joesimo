@@ -108,7 +108,7 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
   return [
     { label: "Sections", items: sectionItems },
     { label: "Work", items: workItems },
-    { label: "Moments", items: momentItems },
+    { label: "Journal", items: momentItems },
     { label: "Profiles", items: profileItems },
   ];
 }

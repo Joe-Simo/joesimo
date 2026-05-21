@@ -35,6 +35,10 @@ test.describe("Joe Simo desktop homepage navigation", () => {
 
     const photosSection = await expectHomeDestinationSection(page, "photos");
     await expect(photosSection).toBeInViewport();
+    await expect(page.locator('header a[href="#photos"]').first()).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
 
     const blogLink = page.locator('header a[href="#blog"]').first();
 
@@ -43,6 +47,7 @@ test.describe("Joe Simo desktop homepage navigation", () => {
 
     const blogSection = await expectHomeDestinationSection(page, "blog");
     await expect(blogSection).toBeInViewport();
+    await expect(blogLink).toHaveAttribute("aria-current", "location");
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const workLink = await expectHomeDestinationLink(page, "work");

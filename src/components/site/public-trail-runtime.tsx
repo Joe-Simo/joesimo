@@ -197,21 +197,35 @@ function buildCurve(sections: readonly PublicTrailSection[]) {
 function createParticleField(curve: THREE.CatmullRomCurve3, count: number) {
   const positions = new Float32Array(count * 3);
   const basePositions = new Float32Array(count * 3);
+  const vortexCount = Math.floor(count * 0.56);
 
   for (let index = 0; index < count; index += 1) {
-    const trailBias = index / count;
-    const sample = curve.getPoint((index * 0.61803398875) % 1);
     const shell = ((index * 37) % 101) / 100;
     const phase = ((index * 53) % 97) / 97;
-    const spread = 0.2 + shell * 1.15;
-    const angle = phase * Math.PI * 2;
     const offset = index * 3;
 
-    basePositions[offset] = sample.x + Math.cos(angle) * spread;
-    basePositions[offset + 1] =
-      sample.y + Math.sin(angle) * spread * 0.46 + Math.sin(index) * 0.08;
-    basePositions[offset + 2] =
-      sample.z + (shell - 0.5) * 1.4 + (trailBias - 0.5) * 0.8;
+    if (index < vortexCount) {
+      const orbit = index / Math.max(vortexCount - 1, 1);
+      const angle = phase * Math.PI * 2 + orbit * Math.PI * 5.4;
+      const radius = 0.28 + orbit * 2.35 + shell * 0.32;
+      const compression = 0.46 + Math.sin(orbit * Math.PI) * 0.12;
+
+      basePositions[offset] = 0.78 + Math.cos(angle) * radius;
+      basePositions[offset + 1] =
+        0.18 + Math.sin(angle) * radius * compression + Math.sin(index) * 0.035;
+      basePositions[offset + 2] = 1.25 - orbit * 1.9 + (shell - 0.5) * 0.8;
+    } else {
+      const trailBias = index / count;
+      const sample = curve.getPoint((index * 0.61803398875) % 1);
+      const spread = 0.2 + shell * 1.15;
+      const angle = phase * Math.PI * 2;
+
+      basePositions[offset] = sample.x + Math.cos(angle) * spread;
+      basePositions[offset + 1] =
+        sample.y + Math.sin(angle) * spread * 0.46 + Math.sin(index) * 0.08;
+      basePositions[offset + 2] =
+        sample.z + (shell - 0.5) * 1.4 + (trailBias - 0.5) * 0.8;
+    }
 
     positions[offset] = basePositions[offset];
     positions[offset + 1] = basePositions[offset + 1];
@@ -253,7 +267,7 @@ function PublicTrailCanvas({
       alpha: true,
       antialias: true,
       powerPreference: "low-power",
-      preserveDrawingBuffer: false,
+      preserveDrawingBuffer: true,
     };
     const rendererContext =
       canvas.getContext("webgl2", contextAttributes) ??
@@ -272,7 +286,7 @@ function PublicTrailCanvas({
         canvas,
         context: rendererContext,
         powerPreference: "low-power",
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
       });
     } catch {
       hostElement.dataset.webglReady = "false";
@@ -997,10 +1011,10 @@ export function PublicTrailRuntime({
         }),
         gsap.fromTo(
           ".simo-trail-work-card",
-          { rotateX: 0.6, y: 24 },
+          { opacity: 0.72 },
           {
             ease: "power3.out",
-            rotateX: 0,
+            opacity: 1,
             scrollTrigger: {
               end: "bottom 45%",
               scrub: 0.7,
@@ -1008,8 +1022,20 @@ export function PublicTrailRuntime({
               trigger: "#work",
             },
             stagger: 0.08,
-            transformPerspective: 1800,
-            y: 0,
+          },
+        ),
+        gsap.fromTo(
+          ".simo-trail-menu-preview",
+          { opacity: 0.62 },
+          {
+            ease: "none",
+            opacity: 1,
+            scrollTrigger: {
+              end: "bottom 60%",
+              scrub: 0.8,
+              start: "top 78%",
+              trigger: "#social",
+            },
           },
         ),
         gsap.to(".simo-trail-social-orbit, .simo-trail-contact-signal", {

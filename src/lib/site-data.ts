@@ -44,6 +44,15 @@ export type PublicTrailSection = {
   code: string;
   label: string;
   navLabel: string;
+  panelKind:
+    | "hero"
+    | "work"
+    | "about"
+    | "journal"
+    | "notes"
+    | "contact"
+    | "menu"
+    | "engine";
   anchor: `#${string}`;
   sceneMode: SceneMode;
   point: {
@@ -650,7 +659,7 @@ export const joeProfile: JoeProfile = {
   kicker: "Fort Myers / Devsigner / public trail",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Work / Moments / Notes / Internet.",
+  routeLabel: "Work / Journal / Notes / Internet.",
   receiptTitle: "Support → Signals → Surface",
   receiptDetail:
     "Trace the method, then choose the work that proves the route.",
@@ -664,6 +673,7 @@ export const publicTrailSections = [
     code: "00",
     label: "Hero",
     navLabel: "Joe",
+    panelKind: "hero",
     anchor: "#joe",
     sceneMode: "origin",
     point: { x: -2.8, y: 0.3, z: 2.8 },
@@ -677,6 +687,7 @@ export const publicTrailSections = [
     code: "01",
     label: "Work",
     navLabel: "Work",
+    panelKind: "work",
     anchor: "#work",
     sceneMode: "work",
     point: { x: -1.2, y: -0.4, z: 1.3 },
@@ -690,6 +701,7 @@ export const publicTrailSections = [
     code: "02",
     label: "About",
     navLabel: "About",
+    panelKind: "about",
     anchor: "#about",
     sceneMode: "method",
     point: { x: -0.05, y: 0.22, z: 0.68 },
@@ -702,14 +714,15 @@ export const publicTrailSections = [
   {
     id: "photos",
     code: "03",
-    label: "Moments",
-    navLabel: "Moments",
+    label: "Journal",
+    navLabel: "Journal",
+    panelKind: "journal",
     anchor: "#photos",
     sceneMode: "trail",
     point: { x: 0.5, y: 0.45, z: 0.2 },
     copy: {
-      title: "Moments on the trail",
-      detail: "People, rooms, and builder context from the public archive.",
+      title: "Journal",
+      detail: "Moments, rooms, and builder context from the public archive.",
     },
   },
   {
@@ -717,6 +730,7 @@ export const publicTrailSections = [
     code: "04",
     label: "Notes",
     navLabel: "Notes",
+    panelKind: "notes",
     anchor: "#blog",
     sceneMode: "trail",
     point: { x: 1.5, y: -0.35, z: -1.1 },
@@ -726,29 +740,31 @@ export const publicTrailSections = [
     },
   },
   {
-    id: "social",
-    code: "05",
-    label: "Internet",
-    navLabel: "Internet",
-    anchor: "#social",
-    sceneMode: "contact",
-    point: { x: 2.45, y: 0.35, z: -2.2 },
-    copy: {
-      title: "Public exits",
-      detail: "The real profiles connected to the same path.",
-    },
-  },
-  {
     id: "contact",
-    code: "06",
+    code: "05",
     label: "Contact",
     navLabel: "Contact",
+    panelKind: "contact",
     anchor: "#contact",
     sceneMode: "contact",
-    point: { x: 3.1, y: -0.05, z: -3.2 },
+    point: { x: 2.45, y: -0.05, z: -2.2 },
     copy: {
       title: "Leave a mark",
       detail: "Public profiles stay closed to the noise. Open to the work.",
+    },
+  },
+  {
+    id: "social",
+    code: "06",
+    label: "Menu",
+    navLabel: "Internet",
+    panelKind: "menu",
+    anchor: "#social",
+    sceneMode: "contact",
+    point: { x: 3.1, y: 0.35, z: -3.2 },
+    copy: {
+      title: "Menu / Internet",
+      detail: "Public exits connected to the same trail.",
     },
   },
   {
@@ -756,6 +772,7 @@ export const publicTrailSections = [
     code: "07",
     label: "Trail Engine",
     navLabel: "System",
+    panelKind: "engine",
     anchor: "#system",
     sceneMode: "method",
     point: { x: 3.58, y: 0.42, z: -3.82 },
@@ -3608,7 +3625,7 @@ export const navItems = [
     recordId: "work",
   },
   {
-    label: "Moments",
+    label: "Journal",
     href: "#photos",
     iconKey: "camera",
     recordId: "trail",

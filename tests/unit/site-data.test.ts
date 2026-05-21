@@ -95,7 +95,7 @@ describe("Joe Simo site data", () => {
     );
     expect(joeProfile.kicker).toContain("Fort Myers");
     expect(joeProfile.kicker).toContain("Devsigner");
-    expect(joeProfile.routeLabel).toBe("Work / Moments / Notes / Internet.");
+    expect(joeProfile.routeLabel).toBe("Work / Journal / Notes / Internet.");
     expect(routeNodeIds).not.toContain("joe");
 
     const publicHeroCopy = [
@@ -124,7 +124,7 @@ describe("Joe Simo site data", () => {
     ]);
     expect(navItems.map((item) => item.label)).toEqual([
       "Work",
-      "Moments",
+      "Journal",
       "Notes",
       "Internet",
       "Contact",

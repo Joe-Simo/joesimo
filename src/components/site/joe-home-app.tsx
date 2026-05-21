@@ -111,15 +111,18 @@ function HeroSection({
   return (
     <section
       aria-labelledby="joe-title"
-      className="simo-trail-hero"
+      className="simo-trail-hero simo-trail-cinematic-hero"
       data-trail-section="joe"
       id="joe"
     >
       <div className="site-shell simo-trail-hero-shell">
         <div className="simo-trail-hero-copy">
           <SectionMarker section={section} />
+          <p className="simo-trail-hero-kicker" data-trail-reveal>
+            Hello, I&apos;m
+          </p>
           <h1 data-trail-reveal id="joe-title" tabIndex={-1}>
-            Joe Simo
+            Joe Simo.
           </h1>
           <p className="simo-trail-hero-line" data-trail-reveal>
             {joeProfile.headline}
@@ -133,7 +136,7 @@ function HeroSection({
             data-trail-reveal
           >
             <a data-magnetic href="#work">Work</a>
-            <a data-magnetic href="#photos">Moments</a>
+            <a data-magnetic href="#photos">Journal</a>
             <a data-magnetic href="#blog">Notes</a>
             <a data-magnetic href="#social">Internet</a>
           </nav>
@@ -141,7 +144,7 @@ function HeroSection({
 
         <div
           aria-label="Public trail preview"
-          className="simo-trail-orbit-board"
+          className="simo-trail-orbit-board simo-trail-hero-world"
           data-trail-reveal
         >
           <div className="simo-trail-orbit-core">
@@ -168,7 +171,7 @@ function HeroSection({
           ) : null}
           {heroMoment ? (
             <a
-              aria-label={`Moments: ${heroMoment.title}`}
+              aria-label={`Journal: ${heroMoment.title}`}
               className="simo-trail-orbit-card simo-trail-orbit-card-moment"
               data-magnetic
               href="#photos"
@@ -189,6 +192,14 @@ function HeroSection({
             <strong>Scroll to travel the trail.</strong>
           </div>
         </div>
+        <div aria-hidden="true" className="simo-trail-hero-scroll-cue">
+          <span>Scroll to explore</span>
+          <i />
+        </div>
+        <div aria-hidden="true" className="simo-trail-hero-orbit-label">
+          Orbit
+          <i />
+        </div>
       </div>
     </section>
   );
@@ -204,7 +215,7 @@ function WorkSection({
   return (
     <section
       aria-labelledby="work-title"
-      className="simo-trail-section simo-trail-work-section"
+      className="simo-trail-section simo-trail-work-section simo-trail-concept-panel"
       data-trail-section="work"
       id="work"
     >
@@ -380,6 +391,14 @@ const aboutSignals = [
     label: "Design",
     detail: "Minimal layouts, strong hierarchy, and motion only where it clarifies.",
   },
+  {
+    label: "Product",
+    detail: "Readable workflows shaped around consequence, state, and speed.",
+  },
+  {
+    label: "Execution",
+    detail: "Public artifacts, shipped surfaces, and proof instead of loose claims.",
+  },
 ] as const;
 
 function AboutSection() {
@@ -388,7 +407,7 @@ function AboutSection() {
   return (
     <section
       aria-labelledby="about-title"
-      className="simo-trail-section simo-trail-about-section"
+      className="simo-trail-section simo-trail-about-section simo-trail-concept-panel"
       data-trail-section="about"
       id="about"
     >
@@ -434,7 +453,7 @@ function MomentsSection({
   return (
     <section
       aria-labelledby="photos-title"
-      className="simo-trail-section simo-trail-moments-section"
+      className="simo-trail-section simo-trail-moments-section simo-trail-journal-section"
       data-trail-section="photos"
       id="photos"
     >
@@ -442,14 +461,14 @@ function MomentsSection({
         <div className="simo-trail-section-head simo-trail-wide-head">
           <SectionMarker section={section} />
           <h2 data-trail-reveal id="photos-title" tabIndex={-1}>
-            Moments
+            Journal
           </h2>
           <p data-trail-reveal>{section.copy.detail}</p>
         </div>
       </div>
 
       <div
-        aria-label="Scrollable trail moments"
+        aria-label="Scrollable trail journal"
         className="simo-trail-moment-rail"
         data-trail-reveal
         tabIndex={0}
@@ -488,7 +507,7 @@ function NotesSection({ notes }: { notes: readonly PublicTrailNote[] }) {
   return (
     <section
       aria-labelledby="blog-title"
-      className="simo-trail-section simo-trail-notes-section"
+      className="simo-trail-section simo-trail-notes-section simo-trail-concept-panel"
       data-trail-section="blog"
       id="blog"
     >
@@ -503,18 +522,21 @@ function NotesSection({ notes }: { notes: readonly PublicTrailNote[] }) {
 
         <div className="simo-trail-note-wall" data-trail-reveal>
           {notes.map((note) => (
-            <button
-              className="simo-trail-note-row"
-              data-magnetic
-              data-note-open={note.code}
-              key={note.code}
-              type="button"
-            >
-              <span>{note.code}</span>
-              <strong>{note.title}</strong>
-              <em>{note.source}</em>
-              <p>{note.body}</p>
-            </button>
+            <div className="simo-trail-note-item" key={note.code}>
+              <button
+                className="simo-trail-note-row"
+                data-magnetic
+                data-note-open={note.code}
+                type="button"
+              >
+                <span>{note.code}</span>
+                <strong>{note.title}</strong>
+                <em>{note.source}</em>
+              </button>
+              <p aria-hidden="true" className="simo-trail-note-preview">
+                {note.body}
+              </p>
+            </div>
           ))}
         </div>
       </div>
@@ -531,24 +553,46 @@ function InternetSection({
   const publicChannels = socialChannels.filter((channel) =>
     channel.href.startsWith("http"),
   );
+  const menuDestinations = [
+    { code: "01", href: "#work", label: "Work" },
+    { code: "02", href: "#photos", label: "Journal" },
+    { code: "03", href: "#about", label: "About" },
+    { code: "04", href: "#blog", label: "Notes" },
+    { code: "05", href: "#contact", label: "Contact" },
+  ] as const;
 
   return (
     <section
       aria-labelledby="social-title"
-      className="simo-trail-section simo-trail-internet-section"
+      className="simo-trail-section simo-trail-internet-section simo-trail-menu-section"
       data-trail-section="social"
       id="social"
     >
-      <div className="site-shell simo-trail-section-shell">
+      <div className="site-shell simo-trail-menu-shell">
         <div className="simo-trail-section-head">
           <SectionMarker section={section} />
           <h2 data-trail-reveal id="social-title" tabIndex={-1}>
-            Internet
+            Menu
           </h2>
           <p data-trail-reveal>{section.copy.detail}</p>
+          <nav aria-label="Trail menu" className="simo-trail-menu-list">
+            {menuDestinations.map((item) => (
+              <a data-magnetic href={item.href} key={item.href}>
+                <span>{item.code}.</span>
+                {item.label}
+              </a>
+            ))}
+          </nav>
         </div>
 
-        <div className="simo-trail-social-constellation">
+        <div aria-hidden="true" className="simo-trail-menu-preview">
+          <span />
+        </div>
+
+        <div
+          aria-label="Public internet profiles"
+          className="simo-trail-social-constellation"
+        >
           {publicChannels.map((channel, index) => (
             <a
               data-magnetic
@@ -586,7 +630,7 @@ function ContactSection({
   return (
     <section
       aria-labelledby="contact-title"
-      className="simo-trail-section simo-trail-contact-section"
+      className="simo-trail-section simo-trail-contact-section simo-trail-concept-panel"
       data-trail-section="contact"
       id="contact"
     >
@@ -649,6 +693,10 @@ const trailEnginePanels = [
     title: "Animation Feel",
     lines: ["GSAP", "Lenis", "Power and expo eases"],
   },
+  {
+    title: "Theme System",
+    lines: ["Trail mode", "Archive mode", "Radial wipe"],
+  },
 ] as const;
 
 function SystemSection() {
@@ -657,7 +705,7 @@ function SystemSection() {
   return (
     <section
       aria-labelledby="system-title"
-      className="simo-trail-section simo-trail-system-section"
+      className="simo-trail-section simo-trail-system-section simo-trail-engine-section"
       data-trail-section="system"
       id="system"
     >
@@ -686,6 +734,7 @@ function SystemSection() {
             <div>
               <span>Next.js</span>
               <span>GSAP</span>
+              <span>ScrollTrigger</span>
               <span>Three.js</span>
               <span>Lenis</span>
               <span>WebGL</span>
@@ -721,8 +770,8 @@ export function JoeHomeApp({
       <AboutSection />
       <MomentsSection moments={communityArtifacts} />
       <NotesSection notes={notes} />
-      <InternetSection socialChannels={socialChannels} />
       <ContactSection socialChannels={socialChannels} />
+      <InternetSection socialChannels={socialChannels} />
       <SystemSection />
       <PublicTrailRuntime
         notes={notes}

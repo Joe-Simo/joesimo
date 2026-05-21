@@ -144,7 +144,7 @@ export async function createSocialImage(label: string) {
         >
           {[
             ["Portfolio", primaryWork?.title ?? "Selected work"],
-            ["Moments", "public archive"],
+            ["Journal", "public archive"],
             ["Notes", "field notes"],
             ["Internet", "public profiles"],
           ].map(([title, detail]) => (

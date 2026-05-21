@@ -67,12 +67,16 @@ export function PrimaryNav({
     let frame = 0;
 
     function resolveActiveHref(preferHash: boolean) {
-      const hashTarget = preferHash
-        ? targets.find(({ href }) => href === window.location.hash)
-        : null;
+      const hashTarget = targets.find(({ href }) => href === window.location.hash);
 
       if (hashTarget) {
-        return hashTarget.href;
+        const rect = hashTarget.target.getBoundingClientRect();
+        const hashTargetVisible =
+          rect.top < window.innerHeight - 72 && rect.bottom > 72;
+
+        if (preferHash || hashTargetVisible) {
+          return hashTarget.href;
+        }
       }
 
       const probeY = Math.min(window.innerHeight * 0.38, 320);

@@ -132,7 +132,7 @@ test.describe("Joe Simo personal site", () => {
     await expectHomeDestinationSection(page, "photos");
     await expect(
       page.getByRole("heading", {
-        name: "Moments",
+        name: "Journal",
       }),
     ).toBeVisible();
     await expect(
@@ -206,7 +206,7 @@ test.describe("Joe Simo personal site", () => {
     const reopenedDialog = page.getByRole("dialog");
 
     await expect(reopenedDialog).toBeVisible();
-    await reopenedDialog.getByRole("link", { name: /Moments.*Section/i }).click();
+    await reopenedDialog.getByRole("link", { name: /Journal.*Section/i }).click();
     await expect(page).toHaveURL(/#photos$/);
     await expect(page.locator("#photos")).toBeVisible();
 
