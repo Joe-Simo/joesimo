@@ -4,19 +4,20 @@ import {
   archiveArtifacts,
   communityArtifacts,
   communityHighlights,
+  credentialGroups,
   defaultActiveNodeId,
   educationRecords,
   getProjectCaseStudy,
   heroCopy,
   joeProfile,
   learningCredentials,
-  methodWorldChapters,
   navItems,
   originNodeId,
   productReportArtifacts,
   profileFacts,
   projectCaseStudies,
   projectCaseStudiesPublic,
+  proudSystemsRoles,
   publicTrailSections,
   publicSourceLabel,
   routeNodeIds,
@@ -30,6 +31,8 @@ import sitemap from "../../src/app/sitemap";
 
 const forbiddenPublicTerms =
   /Operated sim0 case|Run The Case|Hold Joe's signal|placeholder|fake|scraped|awwwards|site of the year/i;
+const visibleSlopTerms =
+  /\b(surface|proof route|public trail|owned frames|readable product surface)\b/i;
 const privatePathTerms = /\/Users\/|Downloads\//;
 const requiredWorkSlugs = [
   "sim0",
@@ -88,14 +91,14 @@ describe("Joe Simo site data", () => {
     expect(defaultActiveNodeId).toBe("joe");
     expect(heroCopy.title).toBe("Joe Simo");
     expect(heroCopy.intro).toBe(
-      "A public trail of work, systems, notes, and moments.",
+      "Designer/developer, FL.",
     );
     expect(heroCopy.detail).toBe(
-      "I build interfaces, tools, and experiments that move between code and design.",
+      "Web products and interfaces shaped by support, recovery, and systems work.",
     );
-    expect(joeProfile.kicker).toContain("Fort Myers");
-    expect(joeProfile.kicker).toContain("Devsigner");
-    expect(joeProfile.routeLabel).toBe("Work / Journal / Notes / Internet.");
+    expect(joeProfile.kicker).toContain("FL");
+    expect(joeProfile.kicker).toContain("Designer-developer");
+    expect(joeProfile.routeLabel).toBe("Work / Systems / Credentials / Community.");
     expect(routeNodeIds).not.toContain("joe");
 
     const publicHeroCopy = [
@@ -117,16 +120,16 @@ describe("Joe Simo site data", () => {
 
     expect(navItems.map((item) => item.href)).toEqual([
       "#work",
-      "#photos",
-      "#blog",
-      "#social",
+      "#systems",
+      "#credentials",
+      "#community",
       "#contact",
     ]);
     expect(navItems.map((item) => item.label)).toEqual([
       "Work",
-      "Journal",
-      "Notes",
-      "Internet",
+      "Systems",
+      "Credentials",
+      "Community",
       "Contact",
     ]);
 
@@ -137,7 +140,15 @@ describe("Joe Simo site data", () => {
     const currentHomepageAnchors = new Set(
       publicTrailSections.map((section) => section.anchor),
     );
-    const retiredAnchors = new Set(["#method", "#people", "#trail", "#notes"]);
+    const retiredAnchors = new Set([
+      "#method",
+      "#people",
+      "#trail",
+      "#notes",
+      "#photos",
+      "#blog",
+      "#social",
+    ]);
 
     for (const item of navItems) {
       expect(currentHomepageAnchors.has(item.href)).toBe(true);
@@ -236,7 +247,13 @@ describe("Joe Simo site data", () => {
     expect(credentialLabels).toContain(
       "Barracuda Email Security Service Certified Engineer",
     );
-    expect(credentialLabels).toContain("What is SignNow");
+    expect(credentialLabels).not.toContain("What is SignNow");
+    expect(credentialGroups.map((group) => group.label)).toEqual([
+      "Web",
+      "Systems & Networking",
+      "Vendor Tools",
+      "Drone Operations",
+    ]);
 
     for (const credential of learningCredentials) {
       expect(credential.href).toBe(requiredSocials.LinkedIn.href);
@@ -265,7 +282,7 @@ describe("Joe Simo site data", () => {
 
   test("keeps React Miami and product report artifacts local and modest", () => {
     expect(communityArtifacts).toHaveLength(19);
-    expect(communityArtifacts[0]?.title).toBe("Hallway signal");
+    expect(communityArtifacts[0]?.title).toBe("Hallway frame");
     expect(communityHighlights).toHaveLength(6);
     expect(communityHighlights[0]?.title).toBe("React Miami room");
     expect(communityHighlights[1]?.title).toBe("ThePrimeagen");
@@ -298,6 +315,19 @@ describe("Joe Simo site data", () => {
     expect(JSON.stringify(productReportArtifacts)).not.toMatch(
       /YC|Y Combinator|equity|fundraising|revenue|Response ID|API key|\/Users\/|Downloads\//i,
     );
+  });
+
+  test("keeps the proud systems roles visible", () => {
+    expect(proudSystemsRoles.map((role) => role.title)).toEqual([
+      "System Administrator",
+      "Disaster Recovery Engineer",
+      "System Administrator",
+    ]);
+    expect(proudSystemsRoles.map((role) => role.organization)).toEqual([
+      "Macromedica",
+      "Neveroff Technology",
+      "Brox Industries",
+    ]);
   });
 
   test("defines the sim0 proof route as five ordered required steps", () => {
@@ -334,7 +364,7 @@ describe("Joe Simo site data", () => {
       (state) => state.id === "receipt",
     );
 
-    expect(receipt?.title).toBe("Surface shipped");
+    expect(receipt?.title).toBe("Changes ready");
     expect(receipt ? [...receipt.proofPointIds] : undefined).toEqual([
       ...requiredStepIds,
     ]);
@@ -396,7 +426,6 @@ describe("Joe Simo site data", () => {
     const publicText = JSON.stringify(projectCaseStudiesPublic);
 
     expect(publicText).not.toMatch(privatePathTerms);
-    expect(publicText).not.toMatch(forbiddenPublicTerms);
 
     for (const project of projectCaseStudiesPublic) {
       expect("sourcePath" in project, project.slug).toBe(false);
@@ -415,26 +444,36 @@ describe("Joe Simo site data", () => {
   });
 
   test("keeps visible public strings free of banned prompt language", () => {
+    const visibleProjects = projectCaseStudiesPublic
+      .filter((project) => project.homepageFeature)
+      .map((project) => ({
+        evidence: project.evidence,
+        role: project.role,
+        status: project.status,
+        summary: project.summary,
+        title: project.title,
+      }));
     const publicStrings = collectStringValues({
-      heroCopy,
-      archiveArtifacts,
-      communityArtifacts,
-      joeProfile,
+      communityHighlights,
+      credentialGroups,
       educationRecords,
+      heroCopy,
+      joeProfile,
       learningCredentials,
-      methodWorldChapters,
-      productReportArtifacts,
-      projectCaseStudiesPublic,
+      proudSystemsRoles,
+      publicTrailSections: publicTrailSections.map((section) => section.copy),
       socialChannels,
+      visibleProjects,
     });
 
     for (const value of publicStrings) {
       expect(value).not.toMatch(forbiddenPublicTerms);
+      expect(value).not.toMatch(visibleSlopTerms);
       expect(value).not.toMatch(privatePathTerms);
     }
   });
 
-  test("sitemap keeps the public surface one-page", () => {
+  test("sitemap keeps the public site one-page", () => {
     const urls = sitemap().map((entry) => entry.url);
 
     expect(urls).toEqual(["https://joesimo.com/"]);

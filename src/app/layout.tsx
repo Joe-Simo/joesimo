@@ -95,7 +95,6 @@ const personJsonLd = {
   knowsLanguage: ["English", "Spanish"],
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Fort Myers",
     addressRegion: "FL",
     addressCountry: "US",
   },
@@ -171,6 +170,7 @@ export default async function RootLayout({
           nonce={nonce}
         >
           <script
+            nonce={nonce}
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),

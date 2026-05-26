@@ -1,30 +1,30 @@
 import Image from "next/image";
 
 import { HashFocus } from "@/components/site/hash-focus";
-import {
-  PublicTrailRuntime,
-  type PublicTrailNote,
-} from "@/components/site/public-trail-runtime";
+import { PublicTrailRuntime } from "@/components/site/public-trail-runtime";
 import { SiteIcon } from "@/components/site/site-icons";
 import {
+  credentialGroups,
+  educationRecords,
   publicTrailSections,
   type CommunityArtifact,
-  type FieldNote,
+  type CredentialGroup,
   type JoeProfile,
+  type LearningCredential,
+  type ProudRole,
   type PublicEvidenceAsset,
   type PublicProjectCaseStudy,
   type PublicTrailSection,
   type SocialChannel,
-  type WritingFragment,
 } from "@/lib/site-data";
 
 type JoeHomeAppProps = {
   communityArtifacts: CommunityArtifact[];
-  fieldNotes: FieldNote[];
   joeProfile: JoeProfile;
+  learningCredentials: LearningCredential[];
   projects: PublicProjectCaseStudy[];
+  proudRoles: ProudRole[];
   socialChannels: SocialChannel[];
-  writingFragments: WritingFragment[];
 };
 
 function ExternalCue({ show }: { show?: boolean }) {
@@ -35,170 +35,171 @@ function isImageAsset(asset: PublicEvidenceAsset | undefined) {
   return Boolean(asset && !asset.media.src.endsWith(".webm"));
 }
 
-function orderedProjects(projects: readonly PublicProjectCaseStudy[]) {
-  return [...projects].sort((left, right) => {
-    const leftRank = left.homepageFeature?.rank ?? 99;
-    const rightRank = right.homepageFeature?.rank ?? 99;
-
-    return leftRank - rightRank || left.title.localeCompare(right.title);
-  });
-}
-
 function getPreferredImageAsset(project: PublicProjectCaseStudy) {
   const requestedIds = project.homepageFeature?.mediaAssetIds ?? [];
   const requestedAssets = requestedIds
     .map((assetId) => project.assets.find((asset) => asset.id === assetId))
     .filter((asset): asset is PublicEvidenceAsset => isImageAsset(asset));
 
-  return (
-    requestedAssets[0] ??
-    project.assets.find((asset) => isImageAsset(asset))
-  );
+  return requestedAssets[0] ?? project.assets.find((asset) => isImageAsset(asset));
 }
 
-function combineNotes(
-  fieldNotes: readonly FieldNote[],
-  writingFragments: readonly WritingFragment[],
-): PublicTrailNote[] {
-  return [
-    ...fieldNotes.map((note) => ({
-      body: note.body,
-      code: note.code,
-      source: note.source,
-      title: note.title,
-    })),
-    ...writingFragments.map((fragment) => ({
-      body: fragment.body,
-      code: fragment.code,
-      source: fragment.source,
-      title: fragment.title,
-    })),
-  ];
+function orderedProjects(projects: readonly PublicProjectCaseStudy[]) {
+  return [...projects]
+    .sort((left, right) => {
+      const leftRank = left.homepageFeature?.rank ?? 99;
+      const rightRank = right.homepageFeature?.rank ?? 99;
+
+      return leftRank - rightRank || left.title.localeCompare(right.title);
+    })
+    .slice(0, 4);
 }
 
 function trailSection(id: PublicTrailSection["id"]) {
   const section = publicTrailSections.find((item) => item.id === id);
 
   if (!section) {
-    throw new Error(`Missing public trail section: ${id}`);
+    throw new Error(`Missing public section: ${id}`);
   }
 
   return section;
 }
 
-function SectionMarker({ section }: { section: PublicTrailSection }) {
+function SectionLabel({ section }: { section: PublicTrailSection }) {
   return (
-    <p className="simo-trail-marker">
-      {section.code} / {section.label}
+    <p className="joe-section-label">
+      <span>{section.code}</span>
+      {section.label}
     </p>
   );
 }
 
+function credentialMap(credentials: readonly LearningCredential[]) {
+  return new Map(credentials.map((credential) => [credential.label, credential]));
+}
+
+function socialChannel(
+  channels: readonly SocialChannel[],
+  label: SocialChannel["label"],
+) {
+  return channels.find((channel) => channel.label === label);
+}
+
 function HeroSection({
   joeProfile,
-  moments,
   projects,
+  proudRoles,
 }: {
   joeProfile: JoeProfile;
-  moments: readonly CommunityArtifact[];
   projects: readonly PublicProjectCaseStudy[];
+  proudRoles: readonly ProudRole[];
 }) {
-  const section = trailSection("joe");
-  const heroProject = projects[0];
-  const heroAsset = heroProject ? getPreferredImageAsset(heroProject) : undefined;
-  const heroMoment = moments[1] ?? moments[0];
+  const currentProject = projects[0];
+  const currentAsset = currentProject
+    ? getPreferredImageAsset(currentProject)
+    : undefined;
+  const currentLink = currentProject?.links[0];
+  const systemsLine = proudRoles.map((role) => role.organization).join(" / ");
 
   return (
     <section
       aria-labelledby="joe-title"
-      className="simo-trail-hero simo-trail-cinematic-hero"
-      data-trail-section="joe"
+      className="joe-hero"
+      data-section-id="joe"
       id="joe"
     >
-      <div className="site-shell simo-trail-hero-shell">
-        <div className="simo-trail-hero-copy">
-          <SectionMarker section={section} />
-          <p className="simo-trail-hero-kicker" data-trail-reveal>
-            Hello, I&apos;m
-          </p>
-          <h1 data-trail-reveal id="joe-title" tabIndex={-1}>
-            Joe Simo.
-          </h1>
-          <p className="simo-trail-hero-line" data-trail-reveal>
-            {joeProfile.headline}
-          </p>
-          <p className="simo-trail-hero-detail" data-trail-reveal>
-            {joeProfile.detail}
-          </p>
-          <nav
-            aria-label="Homepage sections"
-            className="simo-trail-hero-links"
-            data-trail-reveal
-          >
-            <a data-magnetic href="#work">Work</a>
-            <a data-magnetic href="#photos">Journal</a>
-            <a data-magnetic href="#blog">Notes</a>
-            <a data-magnetic href="#social">Internet</a>
-          </nav>
-        </div>
+      <div className="site-shell">
+        <div className="joe-hero-shell" data-joe-reveal>
+          <div className="joe-hero-copy">
+            <h1 id="joe-title" tabIndex={-1}>
+              Joe Simo
+            </h1>
+            <p className="joe-hero-subhead">{joeProfile.headline}</p>
+            <p className="joe-hero-body">{joeProfile.detail}</p>
+            <nav aria-label="Primary homepage actions" className="joe-actions">
+              <a className="joe-action-primary" href="#work">
+                View work
+              </a>
+            </nav>
+          </div>
 
-        <div
-          aria-label="Public trail preview"
-          className="simo-trail-orbit-board simo-trail-hero-world"
-          data-trail-reveal
-        >
-          <div className="simo-trail-orbit-core">
-            <span />
-            <strong>Public trail</strong>
-          </div>
-          {heroAsset && heroProject ? (
-            <a
-              className="simo-trail-orbit-card simo-trail-orbit-card-work"
-              data-magnetic
-              href={`#work-${heroProject.slug}`}
-            >
-              <Image
-                alt={heroAsset.media.alt}
-                fetchPriority="high"
-                height={heroAsset.media.height}
-                loading="eager"
-                sizes="(max-width: 900px) 68vw, 28vw"
-                src={heroAsset.media.src}
-                width={heroAsset.media.width}
-              />
-              <span>{heroProject.title}</span>
-            </a>
+          {currentProject ? (
+            <article className="joe-current-card">
+              <div className="joe-current-heading">
+                <div>
+                  <p>Featured</p>
+                  <h2>{currentProject.title}</h2>
+                  <span>{currentProject.summary}</span>
+                </div>
+                <div className="joe-current-actions">
+                  {currentLink ? (
+                    <a
+                      href={currentLink.href}
+                      rel={currentLink.external ? "noreferrer" : undefined}
+                      target={currentLink.external ? "_blank" : undefined}
+                    >
+                      {currentLink.label}
+                      <ExternalCue show={currentLink.external} />
+                    </a>
+                  ) : null}
+                  <button data-project-open={currentProject.slug} type="button">
+                    Details
+                  </button>
+                </div>
+              </div>
+              {currentAsset ? (
+                <figure className="joe-current-media simo-work-media">
+                  <div className="joe-product-frame">
+                    <div aria-hidden="true" className="joe-product-bar">
+                      <span className="joe-product-dots">
+                        <span />
+                        <span />
+                        <span />
+                      </span>
+                      <span>sim0.com</span>
+                      <span />
+                    </div>
+                    <div className="joe-current-proof-grid">
+                      <div className="joe-current-image-frame joe-current-image-frame-main">
+                        <Image
+                          alt={currentAsset.media.alt}
+                          className="joe-cover-image"
+                          fetchPriority="high"
+                          fill
+                          loading="eager"
+                          sizes="(max-width: 900px) 100vw, 60vw"
+                          src={currentAsset.media.src}
+                        />
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        className="joe-current-image-frame-detail"
+                        style={{ backgroundImage: `url(${currentAsset.media.src})` }}
+                      />
+                    </div>
+                  </div>
+                  <figcaption>
+                    <span>Capture</span>
+                    <strong>Preview, edit, review, ship.</strong>
+                  </figcaption>
+                </figure>
+              ) : null}
+              <dl>
+                <div>
+                  <dt>Role</dt>
+                  <dd>{currentProject.role}</dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd>{currentProject.status}</dd>
+                </div>
+                <div>
+                  <dt>Systems</dt>
+                  <dd>{systemsLine}</dd>
+                </div>
+              </dl>
+            </article>
           ) : null}
-          {heroMoment ? (
-            <a
-              aria-label={`Journal: ${heroMoment.title}`}
-              className="simo-trail-orbit-card simo-trail-orbit-card-moment"
-              data-magnetic
-              href="#photos"
-            >
-              <Image
-                alt={heroMoment.media.alt}
-                height={heroMoment.media.height}
-                loading="eager"
-                sizes="(max-width: 900px) 52vw, 17vw"
-                src={heroMoment.media.src}
-                width={heroMoment.media.width}
-              />
-              <span>{heroMoment.title}</span>
-            </a>
-          ) : null}
-          <div className="simo-trail-orbit-readout">
-            <span>{joeProfile.routeLabel}</span>
-            <strong>Scroll to travel the trail.</strong>
-          </div>
-        </div>
-        <div aria-hidden="true" className="simo-trail-hero-scroll-cue">
-          <span>Scroll to explore</span>
-          <i />
-        </div>
-        <div aria-hidden="true" className="simo-trail-hero-orbit-label">
-          Orbit
-          <i />
         </div>
       </div>
     </section>
@@ -211,70 +212,97 @@ function WorkSection({
   projects: readonly PublicProjectCaseStudy[];
 }) {
   const section = trailSection("work");
+  const [featuredProject, ...supportingProjects] = projects;
+  const featuredAsset = featuredProject
+    ? getPreferredImageAsset(featuredProject)
+    : undefined;
 
   return (
     <section
       aria-labelledby="work-title"
-      className="simo-trail-section simo-trail-work-section simo-trail-concept-panel"
-      data-trail-section="work"
+      className="joe-section joe-work"
+      data-section-id="work"
       id="work"
     >
-      <div aria-hidden="true" className="simo-trail-work-veil" />
-      <div className="site-shell simo-trail-section-shell">
-        <div className="simo-trail-section-head" data-trail-work-pin>
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="work-title" tabIndex={-1}>
+      <div className="site-shell">
+        <div className="joe-section-head" data-joe-reveal>
+          <SectionLabel section={section} />
+          <h2 id="work-title" tabIndex={-1}>
             Work
           </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
+          <p>{section.copy.detail}</p>
         </div>
 
-        <div className="simo-trail-work-grid">
-          {projects.map((project, index) => {
+        {featuredProject ? (
+          <article
+            className="joe-work-feature"
+            data-joe-reveal
+            id={`work-${featuredProject.slug}`}
+          >
+            <div className="joe-work-copy">
+              <p>{featuredProject.code}</p>
+              <h3>{featuredProject.title}</h3>
+              <span>{featuredProject.summary}</span>
+              <ul aria-label={`${featuredProject.title} details`}>
+                <li>{featuredProject.role}</li>
+                <li>{featuredProject.status}</li>
+                {featuredProject.links[0] ? (
+                  <li>
+                    <a
+                      href={featuredProject.links[0].href}
+                      rel={featuredProject.links[0].external ? "noreferrer" : undefined}
+                      target={featuredProject.links[0].external ? "_blank" : undefined}
+                    >
+                      {featuredProject.links[0].label}
+                      <ExternalCue show={featuredProject.links[0].external} />
+                    </a>
+                  </li>
+                ) : null}
+              </ul>
+              <button data-project-open={featuredProject.slug} type="button">
+                View details
+              </button>
+            </div>
+            {featuredAsset ? (
+              <figure className="joe-work-media simo-work-media">
+                <Image
+                  alt={featuredAsset.media.alt}
+                  className="joe-cover-image"
+                  fill
+                  sizes="(max-width: 900px) 100vw, 54vw"
+                  src={featuredAsset.media.src}
+                />
+              </figure>
+            ) : null}
+          </article>
+        ) : null}
+
+        <div className="joe-work-table">
+          {supportingProjects.map((project) => {
             const asset = getPreferredImageAsset(project);
-            const featured = index === 0;
 
             return (
-              <article
-                className="simo-trail-work-card"
-                data-artifact={project.code}
-                data-featured={featured}
-                data-trail-reveal
-                id={`work-${project.slug}`}
-                key={project.slug}
-              >
-                <WorkMedia asset={asset} featured={featured} project={project} />
-                <div
-                  className="simo-trail-work-copy"
-                  data-project-open-area={project.slug}
-                >
-                  <span>{project.code} / {project.proofMode}</span>
+              <article id={`work-${project.slug}`} key={project.slug}>
+                <div>
+                  <span>{project.code}</span>
                   <h3>{project.title}</h3>
-                  <p>{project.summary}</p>
-                  <dl>
-                    <div>
-                      <dt>Role</dt>
-                      <dd>{project.role}</dd>
-                    </div>
-                    <div>
-                      <dt>Status</dt>
-                      <dd>{project.status}</dd>
-                    </div>
-                    <div>
-                      <dt>Proof</dt>
-                      <dd>{project.proofSummary}</dd>
-                    </div>
-                  </dl>
-                  <button
-                    className="simo-trail-open-button"
-                    data-magnetic
-                    data-project-open={project.slug}
-                    type="button"
-                  >
-                    Open artifact
-                    <SiteIcon aria-hidden iconKey="arrowUpRight" />
-                  </button>
                 </div>
+                <p>{project.role}</p>
+                <p>{project.status}</p>
+                {asset ? (
+                  <span className="joe-work-thumb">
+                    <Image
+                      alt={asset.media.alt}
+                      className="joe-cover-image"
+                      fill
+                      sizes="5.5rem"
+                      src={asset.media.src}
+                    />
+                  </span>
+                ) : null}
+                <button data-project-open={project.slug} type="button">
+                  Details
+                </button>
               </article>
             );
           })}
@@ -284,259 +312,34 @@ function WorkSection({
   );
 }
 
-function WorkMedia({
-  asset,
-  featured,
-  project,
-}: {
-  asset: PublicEvidenceAsset | undefined;
-  featured: boolean;
-  project: PublicProjectCaseStudy;
-}) {
-  const proofImages =
-    project.miniWorld?.media.filter((media) => media.kind === "image") ?? [];
-  const primaryProof =
-    proofImages.find((media) => media.id === "sim0-machine-ship") ??
-    proofImages.find((media) => media.id === "sim0-machine-surface");
-  const secondaryProof =
-    proofImages.find((media) => media.id === "sim0-machine-trace") ??
-    proofImages.find((media) => media.id === "sim0-machine-find");
-  const showSim0Composition = featured && project.slug === "sim0" && asset;
-
-  return (
-    <figure
-      className="simo-trail-work-media simo-os-media"
-      data-treatment={project.homepageFeature?.treatment}
-    >
-      {showSim0Composition ? (
-        <div className="simo-trail-sim0-composition">
-          <Image
-            alt={asset.media.alt}
-            className="simo-trail-sim0-primary"
-            height={asset.media.height}
-            sizes="(max-width: 900px) 100vw, 48vw"
-            src={asset.media.src}
-            width={asset.media.width}
-          />
-          {secondaryProof ? (
-            <Image
-              alt={secondaryProof.alt}
-              className="simo-trail-sim0-inset"
-              height={secondaryProof.height}
-              sizes="(max-width: 900px) 44vw, 18vw"
-              src={secondaryProof.src}
-              width={secondaryProof.width}
-            />
-          ) : null}
-          {primaryProof ? (
-            <Image
-              alt={primaryProof.alt}
-              className="simo-trail-sim0-ghost"
-              height={primaryProof.height}
-              sizes="(max-width: 900px) 42vw, 16vw"
-              src={primaryProof.src}
-              width={primaryProof.width}
-            />
-          ) : null}
-          <ol aria-label="sim0 proof route">
-            <li>import</li>
-            <li>inspect</li>
-            <li>export</li>
-          </ol>
-          <div className="simo-trail-sim0-route">
-            <span>real repo</span>
-            <span>visual route</span>
-            <span>ship state</span>
-          </div>
-          <div className="simo-trail-sim0-map" aria-hidden="true">
-            <span>preview</span>
-            <span>runtime</span>
-            <span>changes</span>
-          </div>
-        </div>
-      ) : asset ? (
-        <Image
-          alt={asset.media.alt}
-          height={asset.media.height}
-          loading={featured ? "eager" : "lazy"}
-          sizes={
-            featured
-              ? "(max-width: 900px) 100vw, 48vw"
-              : "(max-width: 900px) 100vw, 30vw"
-          }
-          src={asset.media.src}
-          width={asset.media.width}
-        />
-      ) : (
-        <span aria-hidden />
-      )}
-    </figure>
-  );
-}
-
-const aboutSignals = [
-  {
-    label: "Interface",
-    detail: "Readable product surfaces for workflows that can otherwise feel opaque.",
-  },
-  {
-    label: "Systems",
-    detail: "Support, routing, state, and execution habits carried into web work.",
-  },
-  {
-    label: "Code",
-    detail: "Browser-first experiments and real project surfaces with public proof.",
-  },
-  {
-    label: "Design",
-    detail: "Minimal layouts, strong hierarchy, and motion only where it clarifies.",
-  },
-  {
-    label: "Product",
-    detail: "Readable workflows shaped around consequence, state, and speed.",
-  },
-  {
-    label: "Execution",
-    detail: "Public artifacts, shipped surfaces, and proof instead of loose claims.",
-  },
-] as const;
-
-function AboutSection() {
-  const section = trailSection("about");
+function SystemsSection({ roles }: { roles: readonly ProudRole[] }) {
+  const section = trailSection("systems");
 
   return (
     <section
-      aria-labelledby="about-title"
-      className="simo-trail-section simo-trail-about-section simo-trail-concept-panel"
-      data-trail-section="about"
-      id="about"
-    >
-      <div className="site-shell simo-trail-about-shell">
-        <div className="simo-trail-section-head">
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="about-title" tabIndex={-1}>
-            About
-          </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
-          <div className="simo-trail-about-tags" data-trail-reveal>
-            <span>design</span>
-            <span>development</span>
-            <span>systems</span>
-            <span>execution</span>
-          </div>
-        </div>
-
-        <div className="simo-trail-about-orb" data-trail-reveal>
-          <div aria-hidden className="simo-trail-about-sphere" />
-          <div className="simo-trail-about-signals">
-            {aboutSignals.map((signal) => (
-              <article data-magnetic key={signal.label}>
-                <span>{signal.label}</span>
-                <p>{signal.detail}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function MomentsSection({
-  moments,
-}: {
-  moments: readonly CommunityArtifact[];
-}) {
-  const section = trailSection("photos");
-  const visibleMoments = moments.slice(0, 10);
-
-  return (
-    <section
-      aria-labelledby="photos-title"
-      className="simo-trail-section simo-trail-moments-section simo-trail-journal-section"
-      data-trail-section="photos"
-      id="photos"
+      aria-labelledby="systems-title"
+      className="joe-section joe-systems"
+      data-section-id="systems"
+      id="systems"
     >
       <div className="site-shell">
-        <div className="simo-trail-section-head simo-trail-wide-head">
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="photos-title" tabIndex={-1}>
-            Journal
+        <div className="joe-section-head" data-joe-reveal>
+          <SectionLabel section={section} />
+          <h2 id="systems-title" tabIndex={-1}>
+            Systems
           </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
+          <p>{section.copy.detail}</p>
         </div>
-      </div>
-
-      <div
-        aria-label="Scrollable trail journal"
-        className="simo-trail-moment-rail"
-        data-trail-reveal
-        tabIndex={0}
-      >
-        {visibleMoments.map((moment, index) => (
-          <figure
-            className="simo-trail-moment"
-            data-active={index === 1}
-            data-code={moment.code}
-            data-depth={index % 3}
-            key={`${moment.code}-${moment.media.src}`}
-          >
-            <Image
-              alt={moment.media.alt}
-              height={moment.media.height}
-              loading={index < 4 ? "eager" : "lazy"}
-              sizes="(max-width: 760px) 72vw, 28vw"
-              src={moment.media.src}
-              width={moment.media.width}
-            />
-            <figcaption>
-              <span>{moment.code}</span>
-              <strong>{moment.title}</strong>
-              <em>{moment.sourceLabel}</em>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function NotesSection({ notes }: { notes: readonly PublicTrailNote[] }) {
-  const section = trailSection("blog");
-
-  return (
-    <section
-      aria-labelledby="blog-title"
-      className="simo-trail-section simo-trail-notes-section simo-trail-concept-panel"
-      data-trail-section="blog"
-      id="blog"
-    >
-      <div className="site-shell simo-trail-section-shell">
-        <div className="simo-trail-section-head">
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="blog-title" tabIndex={-1}>
-            Notes
-          </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
-        </div>
-
-        <div className="simo-trail-note-wall" data-trail-reveal>
-          {notes.map((note) => (
-            <div className="simo-trail-note-item" key={note.code}>
-              <button
-                className="simo-trail-note-row"
-                data-magnetic
-                data-note-open={note.code}
-                type="button"
-              >
-                <span>{note.code}</span>
-                <strong>{note.title}</strong>
-                <em>{note.source}</em>
-              </button>
-              <p aria-hidden="true" className="simo-trail-note-preview">
-                {note.body}
-              </p>
-            </div>
+        <div className="joe-timeline">
+          {roles.map((role, index) => (
+            <article key={role.id}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{role.title}</h3>
+                <p>{role.organization}</p>
+              </div>
+              <small>{role.detail}</small>
+            </article>
           ))}
         </div>
       </div>
@@ -544,71 +347,132 @@ function NotesSection({ notes }: { notes: readonly PublicTrailNote[] }) {
   );
 }
 
-function InternetSection({
-  socialChannels,
+function CredentialsSection({
+  credentials,
+  groups,
 }: {
-  socialChannels: readonly SocialChannel[];
+  credentials: readonly LearningCredential[];
+  groups: readonly CredentialGroup[];
 }) {
-  const section = trailSection("social");
-  const publicChannels = socialChannels.filter((channel) =>
-    channel.href.startsWith("http"),
-  );
-  const menuDestinations = [
-    { code: "01", href: "#work", label: "Work" },
-    { code: "02", href: "#photos", label: "Journal" },
-    { code: "03", href: "#about", label: "About" },
-    { code: "04", href: "#blog", label: "Notes" },
-    { code: "05", href: "#contact", label: "Contact" },
-  ] as const;
+  const section = trailSection("credentials");
+  const byLabel = credentialMap(credentials);
+  const education = educationRecords[0];
 
   return (
     <section
-      aria-labelledby="social-title"
-      className="simo-trail-section simo-trail-internet-section simo-trail-menu-section"
-      data-trail-section="social"
-      id="social"
+      aria-labelledby="credentials-title"
+      className="joe-section joe-credentials"
+      data-section-id="credentials"
+      id="credentials"
     >
-      <div className="site-shell simo-trail-menu-shell">
-        <div className="simo-trail-section-head">
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="social-title" tabIndex={-1}>
-            Menu
+      <div className="site-shell">
+        <div className="joe-section-head" data-joe-reveal>
+          <SectionLabel section={section} />
+          <h2 id="credentials-title" tabIndex={-1}>
+            Credentials
           </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
-          <nav aria-label="Trail menu" className="simo-trail-menu-list">
-            {menuDestinations.map((item) => (
-              <a data-magnetic href={item.href} key={item.href}>
-                <span>{item.code}.</span>
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <p>{section.copy.detail}</p>
         </div>
+        {education ? (
+          <article className="joe-education-row">
+            <span>Education</span>
+            <div>
+              <h3>{education.focus}</h3>
+              <p>{education.school}</p>
+            </div>
+            <small>{education.period}</small>
+          </article>
+        ) : null}
+        <div className="joe-credential-list">
+          {groups.map((group) => (
+            <article key={group.id}>
+              <div>
+                <h3>{group.label}</h3>
+                <p>{group.detail}</p>
+              </div>
+              <ul>
+                {group.credentialLabels.map((label) => {
+                  const credential = byLabel.get(label);
 
-        <div aria-hidden="true" className="simo-trail-menu-preview">
-          <span />
+                  if (!credential) {
+                    return null;
+                  }
+
+                  return (
+                    <li key={label}>
+                      <strong>{label}</strong>
+                      <span>
+                        {credential.issuer}
+                        {credential.issued ? ` / ${credential.issued}` : ""}
+                        {credential.period ? ` / ${credential.period}` : ""}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </article>
+          ))}
         </div>
+      </div>
+    </section>
+  );
+}
 
+function CommunitySection({
+  moments,
+}: {
+  moments: readonly CommunityArtifact[];
+}) {
+  const section = trailSection("community");
+  const visibleMoments = moments.slice(0, 5);
+
+  return (
+    <section
+      aria-labelledby="community-title"
+      className="joe-section joe-community"
+      data-section-id="community"
+      id="community"
+    >
+      <div className="site-shell">
+        <div className="joe-section-head" data-joe-reveal>
+          <SectionLabel section={section} />
+          <h2 id="community-title" tabIndex={-1}>
+            Community
+          </h2>
+          <p>{section.copy.detail}</p>
+        </div>
         <div
-          aria-label="Public internet profiles"
-          className="simo-trail-social-constellation"
+          aria-label="React Miami contact sheet"
+          className="joe-photo-sheet"
+          role="list"
+          tabIndex={0}
         >
-          {publicChannels.map((channel, index) => (
-            <a
-              data-magnetic
-              data-node-index={`N${String(index + 1).padStart(2, "0")}`}
-              href={channel.href}
-              key={channel.label}
-              rel="noreferrer"
-              target="_blank"
+          {visibleMoments.map((moment) => (
+            <figure
+              data-featured={moment.title === "ThePrimeagen"}
+              key={`${moment.code}-${moment.media.src}`}
+              role="listitem"
             >
-              <SiteIcon aria-hidden iconKey={channel.iconKey} />
-              <strong>{channel.label}</strong>
-              <span>{channel.description}</span>
-              <em>{channel.handle}</em>
-              <SiteIcon aria-hidden iconKey="arrowUpRight" />
-              <ExternalCue show />
-            </a>
+              <span className="joe-photo-frame">
+                <Image
+                  alt={moment.media.alt}
+                  className="joe-cover-image"
+                  fill
+                  sizes={
+                    moment.title === "ThePrimeagen"
+                      ? "(max-width: 760px) 82vw, 30vw"
+                      : "(max-width: 760px) 70vw, 18vw"
+                  }
+                  src={moment.media.src}
+                />
+              </span>
+              <figcaption>
+                <span>{moment.code}</span>
+                {moment.title === "ThePrimeagen"
+                  ? "With ThePrimeagen at React Miami 2026."
+                  : moment.title}
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
@@ -622,45 +486,46 @@ function ContactSection({
   socialChannels: readonly SocialChannel[];
 }) {
   const section = trailSection("contact");
-  const linkedin =
-    socialChannels.find((channel) => channel.label === "LinkedIn") ??
-    socialChannels.find((channel) => channel.href.startsWith("http"));
-  const github = socialChannels.find((channel) => channel.label === "GitHub");
+  const xChannel = socialChannel(socialChannels, "X");
+  const secondaryChannels = socialChannels.filter((channel) =>
+    ["GitHub", "LinkedIn"].includes(channel.label),
+  );
 
   return (
     <section
       aria-labelledby="contact-title"
-      className="simo-trail-section simo-trail-contact-section simo-trail-concept-panel"
-      data-trail-section="contact"
+      className="joe-section joe-contact"
+      data-section-id="contact"
       id="contact"
     >
-      <div className="site-shell simo-trail-contact-shell">
+      <div className="site-shell joe-contact-shell">
         <div>
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="contact-title" tabIndex={-1}>
-            Say hi through the public trail.
-          </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
+          <div data-joe-reveal>
+            <SectionLabel section={section} />
+            <h2 id="contact-title" tabIndex={-1}>
+              Contact
+            </h2>
+            <p>{section.copy.detail}</p>
+          </div>
         </div>
-        <div className="simo-trail-contact-actions" data-trail-reveal>
-          {linkedin ? (
-            <a data-magnetic href={linkedin.href} rel="noreferrer" target="_blank">
-              LinkedIn
-              <SiteIcon aria-hidden iconKey="arrowUpRight" />
+        <div className="joe-contact-actions" data-joe-reveal>
+          {xChannel ? (
+            <a className="joe-action-primary" href={xChannel.href} rel="noreferrer" target="_blank">
+              X {xChannel.handle}
               <ExternalCue show />
             </a>
           ) : null}
-          {github ? (
-            <a data-magnetic href={github.href} rel="noreferrer" target="_blank">
-              GitHub
-              <SiteIcon aria-hidden iconKey="arrowUpRight" />
+          {secondaryChannels.map((channel) => (
+            <a
+              href={channel.href}
+              key={channel.label}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <SiteIcon aria-hidden iconKey={channel.iconKey} />
+              {channel.label}
               <ExternalCue show />
             </a>
-          ) : null}
-        </div>
-        <div aria-hidden="true" className="simo-trail-contact-signal">
-          {socialChannels.slice(0, 5).map((channel) => (
-            <span data-channel={channel.label.toLowerCase()} key={channel.label} />
           ))}
         </div>
       </div>
@@ -668,117 +533,26 @@ function ContactSection({
   );
 }
 
-const trailEnginePanels = [
-  {
-    title: "Interaction Flow",
-    lines: ["Enter", "Camera drift", "Section signal", "Magnetic hover", "Exit"],
-  },
-  {
-    title: "Page Transitions",
-    lines: ["Blur to sharp", "Masked reveals", "Scroll-linked depth"],
-  },
-  {
-    title: "Cursor Effect",
-    lines: ["Pointer field", "Magnetic buttons", "Node response"],
-  },
-  {
-    title: "3D Background",
-    lines: ["Three.js", "Instanced particles", "CatmullRom trail"],
-  },
-  {
-    title: "Visual Style",
-    lines: ["Dark cinematic default", "Archive light mode", "Blue signal accent"],
-  },
-  {
-    title: "Animation Feel",
-    lines: ["GSAP", "Lenis", "Power and expo eases"],
-  },
-  {
-    title: "Theme System",
-    lines: ["Trail mode", "Archive mode", "Radial wipe"],
-  },
-] as const;
-
-function SystemSection() {
-  const section = trailSection("system");
+export function JoeHomeApp(props: JoeHomeAppProps) {
+  const featuredProjects = orderedProjects(props.projects);
 
   return (
-    <section
-      aria-labelledby="system-title"
-      className="simo-trail-section simo-trail-system-section simo-trail-engine-section"
-      data-trail-section="system"
-      id="system"
-    >
-      <div className="site-shell">
-        <div className="simo-trail-section-head simo-trail-wide-head">
-          <SectionMarker section={section} />
-          <h2 data-trail-reveal id="system-title" tabIndex={-1}>
-            Trail Engine
-          </h2>
-          <p data-trail-reveal>{section.copy.detail}</p>
-        </div>
-
-        <div className="simo-trail-system-grid" data-trail-reveal>
-          {trailEnginePanels.map((panel) => (
-            <article key={panel.title}>
-              <h3>{panel.title}</h3>
-              <ul>
-                {panel.lines.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-          <article className="simo-trail-system-stack">
-            <h3>Tech Stack</h3>
-            <div>
-              <span>Next.js</span>
-              <span>GSAP</span>
-              <span>ScrollTrigger</span>
-              <span>Three.js</span>
-              <span>Lenis</span>
-              <span>WebGL</span>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function JoeHomeApp({
-  communityArtifacts,
-  fieldNotes,
-  joeProfile,
-  projects,
-  socialChannels,
-  writingFragments,
-}: JoeHomeAppProps) {
-  const notes = combineNotes(fieldNotes, writingFragments);
-  const ordered = orderedProjects(projects);
-  const featuredProjects = ordered.slice(0, 4);
-
-  return (
-    <div className="simo-trail-root">
+    <div className="joe-site">
       <HashFocus />
       <HeroSection
-        joeProfile={joeProfile}
-        moments={communityArtifacts}
+        joeProfile={props.joeProfile}
         projects={featuredProjects}
+        proudRoles={props.proudRoles}
       />
       <WorkSection projects={featuredProjects} />
-      <AboutSection />
-      <MomentsSection moments={communityArtifacts} />
-      <NotesSection notes={notes} />
-      <ContactSection socialChannels={socialChannels} />
-      <InternetSection socialChannels={socialChannels} />
-      <SystemSection />
-      <PublicTrailRuntime
-        notes={notes}
-        projects={featuredProjects}
-        sections={publicTrailSections}
-        socialChannels={socialChannels}
+      <SystemsSection roles={props.proudRoles} />
+      <CredentialsSection
+        credentials={props.learningCredentials}
+        groups={credentialGroups}
       />
+      <CommunitySection moments={props.communityArtifacts} />
+      <ContactSection socialChannels={props.socialChannels} />
+      <PublicTrailRuntime projects={featuredProjects} sections={publicTrailSections} />
     </div>
   );
 }

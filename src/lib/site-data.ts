@@ -32,12 +32,10 @@ export type SceneMode =
 export type PublicTrailSectionId =
   | "joe"
   | "work"
-  | "about"
-  | "photos"
-  | "blog"
-  | "social"
-  | "contact"
-  | "system";
+  | "systems"
+  | "credentials"
+  | "community"
+  | "contact";
 
 export type PublicTrailSection = {
   id: PublicTrailSectionId;
@@ -47,12 +45,10 @@ export type PublicTrailSection = {
   panelKind:
     | "hero"
     | "work"
-    | "about"
-    | "journal"
-    | "notes"
-    | "contact"
-    | "menu"
-    | "engine";
+    | "systems"
+    | "credentials"
+    | "community"
+    | "contact";
   anchor: `#${string}`;
   sceneMode: SceneMode;
   point: {
@@ -179,6 +175,20 @@ export type LearningCredential = {
   period?: string;
   sourceLabel: string;
   href?: string;
+};
+
+export type CredentialGroup = {
+  id: "web" | "systems-networking" | "vendor-tools" | "drone-operations";
+  label: string;
+  detail: string;
+  credentialLabels: readonly string[];
+};
+
+export type ProudRole = {
+  id: string;
+  title: string;
+  organization: string;
+  detail: string;
 };
 
 export type JoeProfile = {
@@ -493,7 +503,7 @@ export function publicSourceLabel(sourcePath: string) {
   }
 
   if (sourcePath.includes("steve")) {
-    return "Signature surface";
+    return "Signature utility";
   }
 
   if (sourcePath.includes("Printers")) {
@@ -633,45 +643,39 @@ export const legacyNodeIdMap = {
 export const legacyHashMap = {
   "#top": "joe",
   "#now": "joe",
-  "#photos": "trail",
-  "#social": "contact",
   "#sim0": "work",
-  "#blog": "trail",
   "#background": "method",
   "#systems": "method",
-  "#code": "trail",
-  "#notes": "trail",
-  "#writing": "trail",
 } as const satisfies Partial<Record<string, SiteNodeId>>;
 
 export const heroCopy = {
   title: "Joe Simo",
-  intro: "A public trail of work, systems, notes, and moments.",
+  intro: "Designer/developer, FL.",
   detail:
-    "I build interfaces, tools, and experiments that move between code and design.",
+    "Web products and interfaces shaped by support, recovery, and systems work.",
 };
 
 export const siteDescription =
-  "Joe Simo is a Fort Myers devsigner sharing a public trail of work, systems, notes, moments, and public profile links.";
+  "Joe Simo is a Florida designer/developer building web products and interfaces shaped by support, recovery, and systems work.";
 
 export const joeProfile: JoeProfile = {
   name: heroCopy.title,
-  kicker: "Fort Myers / Devsigner / public trail",
+  kicker: "FL / Designer-developer / systems background",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Work / Journal / Notes / Internet.",
-  receiptTitle: "Support → Signals → Surface",
+  routeLabel: "Work / Systems / Credentials / Community.",
+  receiptTitle: "Support -> Recovery -> Interfaces",
   receiptDetail:
-    "Trace the method, then choose the work that proves the route.",
+    "Practical work shaped by support rooms, disaster recovery, and product interfaces.",
   contactPrompt:
-    "Bring a stuck workflow, product surface, or useful introduction.",
+    "Web projects, interface work, systems questions, or useful introductions.",
 };
 
 export const publicTrailSections = [
   {
     id: "joe",
     code: "00",
-    label: "Hero",
+    label: "Profile",
     navLabel: "Joe",
     panelKind: "hero",
     anchor: "#joe",
@@ -679,7 +683,7 @@ export const publicTrailSections = [
     point: { x: -2.8, y: 0.3, z: 2.8 },
     copy: {
       title: "Joe Simo",
-      detail: "The first mark on the public trail.",
+      detail: "Designer/developer, FL.",
     },
   },
   {
@@ -692,51 +696,51 @@ export const publicTrailSections = [
     sceneMode: "work",
     point: { x: -1.2, y: -0.4, z: 1.3 },
     copy: {
-      title: "Trail artifacts",
-      detail: "Real project surfaces, treated like spatial proof objects.",
+      title: "Work",
+      detail: "Selected products and utilities.",
     },
   },
   {
-    id: "about",
+    id: "systems",
     code: "02",
-    label: "About",
-    navLabel: "About",
-    panelKind: "about",
-    anchor: "#about",
+    label: "Systems",
+    navLabel: "Systems",
+    panelKind: "systems",
+    anchor: "#systems",
     sceneMode: "method",
     point: { x: -0.05, y: 0.22, z: 0.68 },
     copy: {
-      title: "System profile",
+      title: "Systems",
       detail:
-        "Designer and developer building browser-first tools, interfaces, and systems.",
+        "System administration and disaster recovery roles that shaped the work.",
     },
   },
   {
-    id: "photos",
+    id: "credentials",
     code: "03",
-    label: "Journal",
-    navLabel: "Journal",
-    panelKind: "journal",
-    anchor: "#photos",
+    label: "Credentials",
+    navLabel: "Credentials",
+    panelKind: "credentials",
+    anchor: "#credentials",
     sceneMode: "trail",
     point: { x: 0.5, y: 0.45, z: 0.2 },
     copy: {
-      title: "Journal",
-      detail: "Moments, rooms, and builder context from the public archive.",
+      title: "Credentials",
+      detail: "Training across web, networking, vendor tools, and drone operations.",
     },
   },
   {
-    id: "blog",
+    id: "community",
     code: "04",
-    label: "Notes",
-    navLabel: "Notes",
-    panelKind: "notes",
-    anchor: "#blog",
+    label: "Community",
+    navLabel: "Community",
+    panelKind: "community",
+    anchor: "#community",
     sceneMode: "trail",
     point: { x: 1.5, y: -0.35, z: -1.1 },
     copy: {
-      title: "Trail markers",
-      detail: "Short authored fragments about systems and interface work.",
+      title: "Community",
+      detail: "Owned photos from React Miami 2026.",
     },
   },
   {
@@ -749,37 +753,8 @@ export const publicTrailSections = [
     sceneMode: "contact",
     point: { x: 2.45, y: -0.05, z: -2.2 },
     copy: {
-      title: "Leave a mark",
-      detail: "Public profiles stay closed to the noise. Open to the work.",
-    },
-  },
-  {
-    id: "social",
-    code: "06",
-    label: "Menu",
-    navLabel: "Internet",
-    panelKind: "menu",
-    anchor: "#social",
-    sceneMode: "contact",
-    point: { x: 3.1, y: 0.35, z: -3.2 },
-    copy: {
-      title: "Menu / Internet",
-      detail: "Public exits connected to the same trail.",
-    },
-  },
-  {
-    id: "system",
-    code: "07",
-    label: "Trail Engine",
-    navLabel: "System",
-    panelKind: "engine",
-    anchor: "#system",
-    sceneMode: "method",
-    point: { x: 3.58, y: 0.42, z: -3.82 },
-    copy: {
-      title: "Interaction system",
-      detail:
-        "The visible mechanics behind the public trail experience.",
+      title: "Contact",
+      detail: "Message me on X. GitHub and LinkedIn are secondary.",
     },
   },
 ] as const satisfies readonly PublicTrailSection[];
@@ -814,7 +789,7 @@ export const sim0Media: SiteMedia = {
 export const sim0CurrentEditorMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-current-editor.webp",
-  alt: "sim0 working surface capture",
+  alt: "sim0 editor workspace capture",
   width: 1710,
   height: 900,
   tone: "desaturated",
@@ -823,7 +798,7 @@ export const sim0CurrentEditorMedia: SiteMedia = {
 export const sim0ShipSurfaceMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-machine-ship.webp",
-  alt: "sim0 preview, local API, shipping, and staged changes surface",
+  alt: "sim0 preview, local API, shipping, and staged changes",
   width: 1600,
   height: 900,
   tone: "desaturated",
@@ -886,7 +861,7 @@ export const antonetaGardenLandingMedia: SiteMedia = {
 export const antonetaGardenPreviewMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/antoneta-garden-preview.webp",
-  alt: "Antoneta's Garden WebGL preview capture",
+  alt: "Antoneta's Garden browser preview capture",
   width: 1280,
   height: 800,
   tone: "desaturated",
@@ -931,7 +906,7 @@ export const royalShellLogoMedia: SiteMedia = {
 export const chessLmUnityMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/chesslm-unity.webp",
-  alt: "ChessLM Unity WebGL chessboard capture",
+  alt: "ChessLM Unity chessboard capture",
   width: 1440,
   height: 900,
   tone: "desaturated",
@@ -1102,13 +1077,13 @@ export const profileFacts: ProfileFact[] = [
   },
   {
     label: "Location",
-    value: "Fort Myers, Florida",
-    detail: "I work from Fort Myers and keep this page direct.",
+    value: "FL",
+    detail: "I work from Florida and keep this page direct.",
     source: "Base",
   },
   {
     label: "Places lived",
-    value: "Santo Domingo, Cape Coral, Fort Myers, Lawrence",
+    value: "Santo Domingo, Cape Coral, FL, Lawrence",
     detail:
       "Dominican Republic, Florida, and Massachusetts all sit inside the personal map.",
     source: "Joe",
@@ -1150,16 +1125,16 @@ export const profileFacts: ProfileFact[] = [
   },
   {
     label: "Motion choice",
-    value: "GSAP for personal work; Motion.dev for commercial work",
+    value: "Purposeful motion for personal and commercial work",
     detail:
       "The animation preference depends on context: expressive personal experiments or production client surfaces.",
     source: "Joe",
   },
   {
     label: "3D learning",
-    value: "Bruno Simon's Three.js Journey",
+    value: "Browser graphics study",
     detail:
-      "A Three.js class that reinforced the interest in browser-native spatial interfaces.",
+      "A browser graphics class that reinforced the interest in spatial interfaces.",
     source: "Joe",
   },
   {
@@ -1401,12 +1376,69 @@ export const learningCredentials: LearningCredential[] = [
     sourceLabel: "LinkedIn certification",
     href: linkedinChannel.href,
   },
+];
+
+export const credentialGroups: CredentialGroup[] = [
   {
-    label: "What is SignNow",
-    issuer: "Barracuda",
-    period: "Valid June 9, 2017 / June 9, 2018",
-    sourceLabel: "Local certificate",
-    href: linkedinChannel.href,
+    id: "web",
+    label: "Web",
+    detail: "Recent web training records.",
+    credentialLabels: [
+      "Next.js SEO Fundamentals",
+      "React Foundations for Next.js",
+    ],
+  },
+  {
+    id: "systems-networking",
+    label: "Systems & Networking",
+    detail: "Networking and hardware fundamentals.",
+    credentialLabels: [
+      "Microsoft Technology Associate: Networking Fundamentals",
+      "CompTIA A+",
+      "CompTIA Network+",
+    ],
+  },
+  {
+    id: "vendor-tools",
+    label: "Vendor Tools",
+    detail: "Backup, recovery, and security service training.",
+    credentialLabels: [
+      "Unitrends Certified Associate (UCA)",
+      "Datto Technical Specialist I",
+      "Datto Technical Specialist II",
+      "Barracuda Web Security Service Certified Engineer",
+      "Barracuda Email Security Service Certified Engineer",
+    ],
+  },
+  {
+    id: "drone-operations",
+    label: "Drone Operations",
+    detail: "FAA drone coursework completed in 2020.",
+    credentialLabels: [
+      "Part 107 Small Unmanned Aircraft Systems Initial",
+      "Cert Prep: FAA Part 107 Commercial Drone License",
+    ],
+  },
+];
+
+export const proudSystemsRoles: ProudRole[] = [
+  {
+    id: "macromedica-system-administrator",
+    title: "System Administrator",
+    organization: "Macromedica",
+    detail: "Healthcare systems administration role.",
+  },
+  {
+    id: "neveroff-disaster-recovery-engineer",
+    title: "Disaster Recovery Engineer",
+    organization: "Neveroff Technology",
+    detail: "Backup and continuity role focused on disaster recovery.",
+  },
+  {
+    id: "brox-system-administrator",
+    title: "System Administrator",
+    organization: "Brox Industries",
+    detail: "Industrial systems administration role.",
   },
 ];
 
@@ -1428,7 +1460,7 @@ export const githubRepositories: GithubRepository[] = [
       "Public GitHub profile for Joe Simo: Devsigner. One more thing.",
     kind: "Profile",
     source: "github.com/joe-simo",
-    meta: ["github", "@joe-simo", "public trail"],
+    meta: ["github", "@joe-simo", "public profile"],
   },
 ];
 
@@ -1537,7 +1569,7 @@ export const sim0ProofPoints = [
     finding: "The Ship action is visible at the edge of the active project panel.",
     interfaceDecision:
       "Put the release action where the working state can justify it.",
-    completionLabel: "Shipping surface found",
+    completionLabel: "Shipping action found",
     hotspot: { x: 88, y: 11, zoomX: 88, zoomY: 11 },
     webglNode: { x: 78, y: 32, tension: 0.64, depth: 0.68 },
   },
@@ -1548,7 +1580,7 @@ export const sim0ProofPoints = [
     visibleLabel: "Staged changes",
     title: "Change state remains inspectable.",
     detail:
-      "The surface shows repository and change context without padding a case study around it.",
+      "The workspace shows repository and change context without padding a case study around it.",
     lens: "surface",
     action: "ship",
     readout: "Expose change state so the next decision is not a guess.",
@@ -1557,10 +1589,10 @@ export const sim0ProofPoints = [
     y: 72,
     zoom: { x: 88, y: 72 },
     phase: "ship",
-    prompt: "Confirm the shipped interface route.",
+    prompt: "Confirm the shipped change.",
     finding: "Repository and change state remain inspectable at the release edge.",
     interfaceDecision:
-      "Make the final route show what changed before it asks for confidence.",
+      "Show what changed before asking for confidence.",
     completionLabel: "Case signal complete",
     hotspot: { x: 88, y: 72, zoomX: 88, zoomY: 72 },
     webglNode: { x: 86, y: 62, tension: 0.7, depth: 0.74 },
@@ -1569,23 +1601,23 @@ export const sim0ProofPoints = [
 
 export const sim0InvestigationCase = {
   slug: "sim0",
-  title: "Find the stuck point. Trace the signal. Ship the surface.",
-  hook: "Find what is stuck. Trace the signal. Ship the surface.",
+  title: "Find the stuck point. Trace the state. Ship the change.",
+  hook: "Find what is stuck. Trace the state. Ship the change.",
   emotionalStake:
-    "When state is hidden, people guess. This case shows the stuck point, follows the signal, and lands the decision on the surface.",
+    "When state is hidden, people guess. This case shows the stuck point, follows the state, and lands the decision in the workspace.",
   humanStake: {
-    blockedPerson: "A builder trying to understand why the surface has not moved yet.",
+    blockedPerson: "A builder trying to understand why the preview has not moved yet.",
     confusion:
       "Preview state, runtime handoff, local context, release action, and changed files can feel like separate rooms.",
     madeVisible:
-      "The machine keeps those signals on the same surface, then makes the next action visible.",
+      "The workspace keeps those states together, then makes the next action visible.",
     whyItMatters:
       "When the stuck point is readable, the person doing the work can decide instead of guessing.",
   },
   premise:
-    "Operate one real sim0 surface through three actions: find, trace, ship.",
+    "Review one real sim0 workflow through three actions: find, trace, ship.",
   outcome:
-    "The completed route shows how a hidden product state becomes a readable shipped interface.",
+    "The completed workflow shows how hidden product state becomes a readable shipped interface.",
   artifact: sim0CurrentEditorMedia,
   actions: [
     {
@@ -1599,7 +1631,7 @@ export const sim0InvestigationCase = {
     {
       id: "trace",
       label: "Trace",
-      hook: "Trace runtime and local API context where the surface can use it.",
+      hook: "Trace runtime and local API context where the workspace can use it.",
       primaryProofPointId: "runtime",
       supportingProofPointIds: ["api"],
       completionLabel: "Signal traced",
@@ -1607,10 +1639,10 @@ export const sim0InvestigationCase = {
     {
       id: "ship",
       label: "Ship",
-      hook: "Ship the surface with release and change state still visible.",
+      hook: "Ship with release and change state still visible.",
       primaryProofPointId: "ship",
       supportingProofPointIds: ["changes"],
-      completionLabel: "Surface shipped",
+      completionLabel: "Changes ready",
     },
   ],
   machineStates: [
@@ -1629,7 +1661,7 @@ export const sim0InvestigationCase = {
       label: "Trace",
       title: "Runtime and local API path",
       detail:
-        "Follow the handoff signals that explain why the surface is behaving that way.",
+        "Follow the handoff states that explain why the preview is behaving that way.",
       proofPointIds: ["runtime", "api"],
       mediaId: "sim0-machine-trace",
       accent: "signal",
@@ -1639,7 +1671,7 @@ export const sim0InvestigationCase = {
       label: "Ship",
       title: "Release action and changes",
       detail:
-        "Keep the decision point and change state visible at the edge of the working surface.",
+        "Keep the decision point and change state visible at the edge of the workspace.",
       proofPointIds: ["ship", "changes"],
       mediaId: "sim0-machine-ship",
       accent: "proof",
@@ -1647,9 +1679,9 @@ export const sim0InvestigationCase = {
     {
       id: "receipt",
       label: "Receipt",
-      title: "Surface shipped",
+      title: "Changes ready",
       detail:
-        "The route resolves into one completed surface after all five proof points are inspected.",
+        "The workflow resolves after all five checkpoints are inspected.",
       proofPointIds: ["preview", "runtime", "api", "ship", "changes"],
       mediaId: "sim0-machine-surface",
       accent: "live",
@@ -1659,9 +1691,9 @@ export const sim0InvestigationCase = {
   steps: sim0ProofPoints,
   signature: {
     label: "Route receipt",
-    title: "Surface shipped.",
+    title: "Changes ready.",
     detail:
-      "The stuck point, runtime signal, local context, release action, and change state resolve into one readable surface.",
+      "The stuck point, runtime state, local context, release action, and change state resolve into one readable workspace.",
     requiredStepIds: ["preview", "runtime", "api", "ship", "changes"],
   },
 } as const satisfies InvestigationCase;
@@ -1672,7 +1704,7 @@ export const proofItems: ProofItem[] = [
   {
     id: "joe-identity",
     label: "Identity",
-    claim: "Joe Simo, Devsigner, based in Fort Myers.",
+    claim: "Joe Simo, Devsigner, based in FL.",
     proofType: "identity",
     sourceLabel: "Joe",
     media: profileMedia,
@@ -1713,15 +1745,15 @@ export const fieldNotes: FieldNote[] = [
     code: "N1",
     title: "The broken path is the brief.",
     body:
-      "If the failure can be described in plain language, the interface has enough signal to begin. The first job is to make the stuck moment visible.",
+      "If the failure can be described in plain language, the interface has enough shape to begin. The first job is to make the stuck moment visible.",
     source: "Support",
   },
   {
     code: "N2",
     title: "A system is only useful when its state can be read.",
     body:
-      "Telematics trained the habit: timing, handoff, routing, and state matter. The screen should not hide those signals from the person doing the work.",
-    source: "Signals",
+      "Telematics trained the habit: timing, handoff, routing, and state matter. The screen should make those details readable for the person doing the work.",
+    source: "Systems",
   },
   {
     code: "N3",
@@ -1739,7 +1771,7 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     label: "Joe",
     title: "Joe Simo",
     body:
-      "Fort Myers devsigner working from support failures, systems, telematics, and interface clarity.",
+      "Florida devsigner working from support failures, systems, telematics, and interface clarity.",
     anchor: "#joe",
     progress: 0,
     sceneMode: "origin",
@@ -1773,10 +1805,10 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     id: "notes",
     code: "03",
     label: "Field Notes",
-    title: "Short notes from the method.",
+    title: "Small notes, kept secondary.",
     body:
-      "Small authored fragments hold the site together until there is a larger writing archive.",
-    anchor: "#blog",
+      "Small authored fragments stay near the community section instead of becoming a primary destination.",
+    anchor: "#community",
     progress: 0.66,
     sceneMode: "trail",
     point: { x: 56, y: 76 },
@@ -1787,7 +1819,7 @@ export const methodWorldChapters: MethodWorldChapter[] = [
     label: "Contact",
     title: "Public profiles are the route.",
     body:
-      "Bring a stuck workflow, product surface, or useful introduction through the public trail.",
+      "Bring a stuck workflow, product surface, or useful introduction through public profiles.",
     anchor: "#contact",
     progress: 0.88,
     sceneMode: "contact",
@@ -1802,7 +1834,7 @@ export const methodWorldMoments: MethodWorldMoment[] = [
     progress: 0,
     code: "00",
     label: "Joe",
-    readout: "Joe Simo. Fort Myers. Devsigner.",
+    readout: "Joe Simo. FL. Devsigner.",
   },
   {
     id: "world-breakage",
@@ -1829,7 +1861,7 @@ export const methodWorldMoments: MethodWorldMoment[] = [
     progress: 0.44,
     code: "02A",
     label: "Surface",
-    readout: "Land the trace on a working surface.",
+    readout: "Land the trace on a working interface.",
   },
   {
     id: "world-proof",
@@ -1846,7 +1878,7 @@ export const methodWorldMoments: MethodWorldMoment[] = [
     progress: 0.66,
     code: "03",
     label: "Field Notes",
-    readout: "Keep the public trail short and named.",
+    readout: "Keep the optional notes short and named.",
   },
   {
     id: "world-contact",
@@ -1863,22 +1895,31 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     slug: "sim0",
     code: "W01",
     title: "sim0",
-    role: "Designed and built product interface surface",
+    role: "Designed and built the product interface",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
     applicationCategory: "DeveloperApplication",
     summary:
-      "Figma for real codebases: a working surface where an imported app runs in the browser and visual edits map back to source code.",
+      "A browser workspace for previewing, editing, and reviewing an app.",
     evidence: [
-      "Interface still",
-      "Public product route at sim0.com",
-      "Visible workflow state in one interface",
+      "Browser app import and preview",
+      "Visual editing tied to source changes",
+      "Public site at sim0.com",
     ],
     assets: [
       {
+        id: "sim0-editor-artifact",
+        captionId: "sim0-working-surface",
+        label: "Ship review capture",
+        claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
+        media: sim0Media,
+        sourcePath: "Downloads/final/sim0",
+        treatment: "hero",
+      },
+      {
         id: "sim0-ship-surface",
         captionId: "sim0-working-surface",
-        label: "Shipping surface capture",
+        label: "App editor capture",
         claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
         media: sim0ShipSurfaceMedia,
         sourcePath: "Downloads/final/sim0",
@@ -1887,7 +1928,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         id: "sim0-current-editor",
         captionId: "sim0-working-surface",
-        label: "Working surface capture",
+        label: "Editor workspace capture",
         claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
         media: sim0CurrentEditorMedia,
         sourcePath: "Downloads/final/sim0",
@@ -1900,47 +1941,47 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "featured",
     story: {
       signal:
-        "A running app becomes the design surface when preview state, runtime context, and source changes stay readable together.",
+        "A running app, preview state, and source changes sit in the same workspace.",
       problem:
-        "Real interface work can stall when the design surface, running product, and code diff live in different places.",
+        "Interface work slows down when the running product and code changes live in separate tools.",
       constraint:
-        "The public case shows the owned editor artifact and product route, not private implementation detail.",
+        "The public case shows the editor workflow without exposing private implementation details.",
       approach: [
         "Import a real repo and run the app in the browser.",
-        "Keep visual edits, AI edits, runtime context, and local API context close to the working surface.",
-        "Put the code diff, ship action, and change state where the decision happens.",
+        "Keep visual edits, local context, and source changes in one workspace.",
+        "Show the code diff next to the decision to ship.",
       ],
       outcome:
-        "The sim0 surface reads as one route from running product to editable source code.",
+        "The workflow connects the running product to editable source code.",
     },
     humanStake: {
-      blockedPerson: "A builder waiting for a preview to explain what it is doing.",
+      blockedPerson: "A builder waiting for a preview to explain what changed.",
       confusion:
-        "The state appears in fragments: preview, runtime, API context, ship action, and staged changes.",
+        "Preview, local context, and staged changes can be split across tools.",
       madeVisible:
-        "The operated case keeps the route on one surface and asks the visitor to complete it.",
+        "The editor keeps preview and change state together.",
       whyItMatters:
-        "A visible route turns a blocked moment into a decision instead of another guess.",
+        "The next decision is easier when the running app and the code change are visible together.",
     },
     miniWorld: {
-      hook: "Operate the real surface until the stuck preview becomes a shipped route.",
+      hook: "Review the editor workflow from preview to source changes.",
       humanStake: {
-        blockedPerson: "A builder waiting for a preview to explain what it is doing.",
+        blockedPerson: "A builder waiting for a preview to explain what changed.",
         confusion:
-          "The state appears in fragments: preview, runtime, API context, ship action, and staged changes.",
+          "Preview, local context, and staged changes can be split across tools.",
         madeVisible:
-          "The operated case keeps the route on one surface and asks the visitor to complete it.",
+          "The editor keeps preview and change state together.",
         whyItMatters:
-          "A visible route turns a blocked moment into a decision instead of another guess.",
+          "The next decision is easier when the running app and the code change are visible together.",
       },
       media: sim0MachineProofMedia,
       panels: [
         {
           id: "problem-scene",
           label: "Problem",
-          title: "The surface is not stuck in silence.",
+          title: "The preview needs context.",
           body:
-            "The preview state is present, but it only becomes useful when the interface makes that state readable.",
+            "The preview is useful when nearby context explains what changed.",
           assetId: "sim0-current-editor",
           mediaId: "sim0-machine-find",
           captionId: "sim0-working-surface",
@@ -1950,9 +1991,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "proof-operation",
           label: "Operate",
-          title: "The route is inspected, not narrated.",
+          title: "The workflow is inspectable.",
           body:
-            "The visitor follows runtime and local API context through the same real product surface.",
+            "Local context and preview state stay visible in the same product view.",
           mediaId: "sim0-route-replay",
           captionId: "sim0-working-surface",
           claimIds: ["sim0-runtime", "sim0-preview"],
@@ -1961,9 +2002,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "decision-moment",
           label: "Decision",
-          title: "The release action has evidence beside it.",
+          title: "The ship action has context.",
           body:
-            "Ship and staged changes stay visible at the edge where the product asks for confidence.",
+            "Staged changes remain visible where the product asks for a decision.",
           assetId: "sim0-current-editor",
           mediaId: "sim0-machine-ship",
           captionId: "sim0-working-surface",
@@ -1973,9 +2014,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "outcome",
           label: "Receipt",
-          title: "Surface shipped.",
+          title: "Changes ready.",
           body:
-            "The completed route is preview state, runtime, local API, ship action, and changes resolved into one readable surface.",
+            "Preview, local context, ship action, and staged changes resolve into one reviewable workflow.",
           mediaId: "sim0-machine-surface",
           captionId: "sim0-working-surface",
           claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
@@ -1985,27 +2026,27 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     proofCaptions: {
       "sim0-working-surface": {
-        eyebrow: "Operated proof",
-        title: "Working surface capture",
+        eyebrow: "Capture",
+        title: "Editor workspace",
         detail:
-          "Preview, runtime, local API context, shipping, and staged changes are visible in one product field.",
+          "Preview, edit, review, and ship from one browser workspace.",
         sourceLabel: "Interface still",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "sim0 is the flagship operated case: a broken product signal is inspected, traced, surfaced, and completed as one readable route.",
+        "sim0 shows a running app, visual editing, and source changes in one browser workspace.",
     },
     safeClaimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
     proofMode: "operated",
     proofSummary:
-      "Operated proof case: inspect real interface hotspots across preview, runtime, local context, shipping, and changes.",
+      "Browser workspace for previewing an imported app, editing the UI, and reviewing source changes.",
     homepageFeature: {
       rank: 1,
-      mediaAssetIds: ["sim0-ship-surface", "sim0-current-editor"],
+      mediaAssetIds: ["sim0-editor-artifact", "sim0-ship-surface"],
       treatment: "operated-surface",
     },
   },
@@ -2013,22 +2054,22 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     slug: "astrosimo",
     code: "W02",
     title: "Astrosimo",
-    role: "Built iOS release and guidance surfaces",
+    role: "Built iOS planning and guidance screens",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
     applicationCategory: "LifestyleApplication",
     summary:
-      "A night-planning and live-guidance product surface represented by owned release-pack screenshots.",
+      "An iOS stargazing app with night planning, verified capture, and live sky guidance screens.",
     evidence: [
       "Verified capture flow",
-      "Night planner surface",
-      "Live sky guidance surface",
+      "Night planner screen",
+      "Live sky guidance screen",
     ],
     assets: [
       {
         id: "astrosimo-signal-strip",
         captionId: "astrosimo-release-strip",
-        label: "Release proof strip",
+        label: "Release screenshot strip",
         claimIds: ["astrosimo-release", "astrosimo-guidance"],
         media: astrosimoSignalStripMedia,
         sourcePath: "Downloads/astro/artifacts",
@@ -2063,43 +2104,43 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     links: [],
-    status: "Release proof",
+    status: "iOS release artifact",
     sourcePath: "Downloads/astro",
     tier: "case",
     story: {
       signal:
-        "Astrosimo turns sky-planning state into phone-sized guidance surfaces.",
+        "Astrosimo turns sky planning into phone-sized guidance.",
       problem:
-        "A planning app has to compress time, location, verification, and live guidance into a small mobile surface.",
+        "A planning app has to compress time, location, verification, and live guidance into small mobile screens.",
       constraint:
         "The public case uses owned release screenshots and avoids private app-store or service data.",
       approach: [
         "Show verified capture as the trust point.",
-        "Keep planning and live guidance as adjacent proof surfaces.",
+        "Keep planning and live guidance adjacent.",
         "Let the release strip carry the story from verified capture to guidance.",
       ],
       outcome:
-        "The case shows a mobile product moving from planning to live guidance through owned release artifacts.",
+        "The screenshots show the app moving from planning to live guidance.",
     },
     humanStake: {
-      blockedPerson: "A person trying to plan a night outside from a phone-sized surface.",
+      blockedPerson: "A person trying to plan a night outside from a phone.",
       confusion:
         "Verification, timing, planning, and guidance can feel disconnected when each screen asks for trust separately.",
       madeVisible:
-        "The release reel connects verified capture, night planning, and live guidance as one mobile route.",
+        "The screenshots connect verified capture, night planning, and live guidance.",
       whyItMatters:
-        "A small screen has to make the next outdoor decision readable without making the person decode the system.",
+        "A small screen has to make the next outdoor decision clear.",
     },
     miniWorld: {
-      hook: "A phone-sized release route: verify, plan, then follow the sky guidance surface.",
+      hook: "Verify, plan, then follow the sky guidance screen.",
       humanStake: {
-        blockedPerson: "A person trying to plan a night outside from a phone-sized surface.",
+        blockedPerson: "A person trying to plan a night outside from a phone.",
         confusion:
           "Verification, timing, planning, and guidance can feel disconnected when each screen asks for trust separately.",
         madeVisible:
-          "The release reel connects verified capture, night planning, and live guidance as one mobile route.",
+          "The screenshots connect verified capture, night planning, and live guidance.",
         whyItMatters:
-          "A small screen has to make the next outdoor decision readable without making the person decode the system.",
+          "A small screen has to make the next outdoor decision clear.",
       },
       media: [astrosimoReleaseReelMedia],
       panels: [
@@ -2117,7 +2158,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "proof-operation",
           label: "Operate",
-          title: "The release reel becomes the route.",
+          title: "The screenshot strip shows the flow.",
           body:
             "Owned captures move from verified state to planning and live guidance.",
           mediaId: "astrosimo-release-reel",
@@ -2130,7 +2171,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           label: "Decision",
           title: "Planning and guidance stay adjacent.",
           body:
-            "The mobile surface keeps the night planner and guidance state close enough to make the next action clear.",
+            "The mobile screens keep planning and guidance close enough to make the next action clear.",
           assetId: "astrosimo-planner",
           captionId: "astrosimo-planner",
           claimIds: ["astrosimo-planning"],
@@ -2139,9 +2180,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "outcome",
           label: "Receipt",
-          title: "A mobile route, not a feature list.",
+          title: "A mobile flow, not a feature list.",
           body:
-            "The public proof stays limited to owned release captures: verified state, planning, and live guidance.",
+            "The public case stays limited to owned release captures: verified state, planning, and live guidance.",
           assetId: "astrosimo-guidance",
           captionId: "astrosimo-guidance",
           claimIds: ["astrosimo-guidance"],
@@ -2151,40 +2192,40 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     proofCaptions: {
       "astrosimo-release-strip": {
-        eyebrow: "Release proof",
-        title: "Release proof strip",
+        eyebrow: "Release screenshots",
+        title: "Release screenshot strip",
         detail:
-          "Verified capture, night planning, and live guidance are represented as one local mobile proof strip.",
+          "Verified capture, night planning, and live guidance are shown together.",
         sourceLabel: "Release reel",
         evidenceStatus: "local-proof",
       },
       "astrosimo-verified": {
         eyebrow: "Verification",
         title: "Verified capture",
-        detail: "The screen provides the trust state for the release proof.",
+        detail: "The screen provides the trust state for capture.",
         sourceLabel: "Release still",
         evidenceStatus: "local-proof",
       },
       "astrosimo-planner": {
         eyebrow: "Planning",
         title: "Night planner",
-        detail: "The planning surface shows the app as a mobile decision tool.",
+        detail: "The planning screen shows the app as a mobile decision tool.",
         sourceLabel: "Planning still",
         evidenceStatus: "local-proof",
       },
       "astrosimo-guidance": {
         eyebrow: "Guidance",
         title: "Live guidance",
-        detail: "The guidance surface completes the mobile signal path.",
+        detail: "The guidance screen completes the mobile flow.",
         sourceLabel: "Guidance still",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Astrosimo proves the method on mobile surfaces: verification, planning, and guidance stay visible as owned release evidence.",
+        "Astrosimo shows verification, planning, and guidance as a compact mobile product.",
     },
     safeClaimIds: [
       "astrosimo-release",
@@ -2193,7 +2234,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     proofMode: "reel",
     proofSummary:
-      "Release reel: verified capture, night planning, and live guidance are shown as owned mobile proof surfaces.",
+      "Verified capture, night planning, and live guidance shown through owned mobile screenshots.",
     homepageFeature: {
       rank: 2,
       mediaAssetIds: [
@@ -2209,15 +2250,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     slug: "antonetas-garden",
     code: "W03",
     title: "Antoneta's Garden",
-    role: "Built Unity game surface and web landing",
+    role: "Built Unity game screens and web landing",
     methodStage: "surface",
     schemaType: "VideoGame",
     summary:
-      "A game project with Unity/iOS work, mobile controls, release verification, and a web landing surface.",
+      "A game project with Unity work, mobile controls, release checks, and a web landing page.",
     evidence: [
       "Unity menu capture",
       "Landing page capture",
-      "WebGL preview capture",
+      "Browser preview capture",
       "Progress log with lint, build, iOS export, and mobile checks",
     ],
     assets: [
@@ -2242,7 +2283,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         id: "antoneta-preview",
         captionId: "antoneta-preview",
-        label: "WebGL preview",
+        label: "Browser preview",
         claimIds: ["antoneta-playable"],
         media: antonetaGardenPreviewMedia,
         sourcePath: "Downloads/video/output",
@@ -2250,41 +2291,41 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     links: [],
-    status: "Game project",
+    status: "Game prototype",
     sourcePath: "Downloads/video",
     tier: "case",
     story: {
       signal:
-        "Antoneta's Garden moves from a landing surface into a playable Unity/WebGL proof path.",
+        "Antoneta's Garden moves from a landing page into a playable browser preview.",
       problem:
-        "A game project needs to prove both the public story surface and the playable client surface.",
+        "A game project needs both a public entry point and a playable client.",
       constraint:
         "The public case is limited to owned captures and progress evidence from the project folder.",
       approach: [
-        "Show the landing surface as the entry point.",
-        "Show the Unity menu and gameplay surface as the playable proof.",
-        "Keep WebGL preview evidence tied to the same product route.",
+        "Show the landing page as the entry point.",
+        "Show the Unity menu and gameplay capture.",
+        "Keep browser preview evidence tied to the same game project.",
       ],
       outcome:
-        "The case carries a small game from public surface to playable proof.",
+        "The case carries a small game from public page to playable preview.",
     },
     humanStake: {
       blockedPerson: "A player who needs to know whether the world is more than a landing page.",
       confusion:
-        "A game can look public before it proves the playable surface exists.",
+        "A game can look public before the playable client is visible.",
       madeVisible:
-        "The progression moves from landing capture to Unity client and browser preview proof.",
+        "The progression moves from landing capture to Unity client and browser preview.",
       whyItMatters:
         "For a game, the interface promise only matters when the world can be entered.",
     },
     miniWorld: {
-      hook: "Move from the public garden surface into the playable client proof.",
+      hook: "Move from the public garden page into the playable client.",
       humanStake: {
         blockedPerson: "A player who needs to know whether the world is more than a landing page.",
         confusion:
-          "A game can look public before it proves the playable surface exists.",
+          "A game can look public before the playable client is visible.",
         madeVisible:
-          "The progression moves from landing capture to Unity client and browser preview proof.",
+          "The progression moves from landing capture to Unity client and browser preview.",
         whyItMatters:
           "For a game, the interface promise only matters when the world can be entered.",
       },
@@ -2293,9 +2334,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "problem-scene",
           label: "Problem",
-          title: "The story surface has to lead somewhere.",
+          title: "The landing page has to lead somewhere.",
           body:
-            "The landing capture sets the outside face, but the case needs playable proof behind it.",
+            "The landing capture sets the outside face, but the case needs a playable client behind it.",
           assetId: "antoneta-landing",
           captionId: "antoneta-landing",
           claimIds: ["antoneta-public-surface"],
@@ -2306,7 +2347,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           label: "Operate",
           title: "The reel crosses into the client.",
           body:
-            "Owned captures move from public surface to Unity and WebGL proof.",
+            "Owned captures move from public page to Unity and browser preview.",
           mediaId: "antoneta-progression-reel",
           captionId: "antoneta-unity",
           claimIds: ["antoneta-unity", "antoneta-playable"],
@@ -2315,9 +2356,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "decision-moment",
           label: "Decision",
-          title: "The playable surface becomes the proof.",
+          title: "The playable client carries the case.",
           body:
-            "The Unity capture carries the case because it shows the project as an operated game client.",
+            "The Unity capture carries the case because it shows the project as a game client.",
           assetId: "antoneta-unity",
           captionId: "antoneta-unity",
           claimIds: ["antoneta-unity", "antoneta-playable"],
@@ -2326,7 +2367,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "outcome",
           label: "Receipt",
-          title: "Landing to gameplay stays one route.",
+          title: "Landing to gameplay stays connected.",
           body:
             "The result is a small authored progression from public page to playable evidence.",
           assetId: "antoneta-preview",
@@ -2338,32 +2379,32 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     proofCaptions: {
       "antoneta-unity": {
-        eyebrow: "Playable proof",
+        eyebrow: "Playable capture",
         title: "Unity menu",
-        detail: "The Unity capture shows the game as an operated client surface.",
+        detail: "The Unity capture shows the game client.",
         sourceLabel: "Playable capture",
         evidenceStatus: "local-proof",
       },
       "antoneta-landing": {
-        eyebrow: "Public surface",
+        eyebrow: "Landing page",
         title: "Landing page",
         detail: "The landing capture shows the outside face of the game project.",
         sourceLabel: "Landing still",
         evidenceStatus: "local-proof",
       },
       "antoneta-preview": {
-        eyebrow: "WebGL proof",
-        title: "WebGL preview",
-        detail: "The preview capture shows the game moving through a browser surface.",
+        eyebrow: "Browser preview",
+        title: "Browser preview",
+        detail: "The preview capture shows the game running in a browser.",
         sourceLabel: "Browser preview",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Antoneta's Garden proves Joe's surface work across landing, Unity, and WebGL artifacts.",
+        "Antoneta's Garden shows the public page, Unity client, and browser preview as one game project.",
     },
     safeClaimIds: [
       "antoneta-unity",
@@ -2372,7 +2413,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     proofMode: "reel",
     proofSummary:
-      "Progression reel: Unity gameplay and landing captures show the project moving from public surface to playable client.",
+      "Unity gameplay and landing captures show the project moving from public page to playable client.",
     homepageFeature: {
       rank: 3,
       mediaAssetIds: ["antoneta-unity", "antoneta-landing"],
@@ -2388,7 +2429,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     schemaType: "SoftwareApplication",
     applicationCategory: "TravelApplication",
     summary:
-      "A flight tracking app with search, maps, CMS-backed surfaces, and typed application structure.",
+      "A flight tracking app with search, maps, CMS-backed content, and typed application structure.",
     evidence: [
       "README lists real-time tracking, search, maps, and CMS",
       "Owned product artwork",
@@ -2420,30 +2461,30 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "supporting",
     story: {
       signal:
-        "Next Flights is a systems case: search, maps, boards, and typed routes become product anatomy.",
+        "Next Flights combines search, maps, boards, and typed routes.",
       problem:
-        "Flight-tracking surfaces depend on live data shape, routing, search, and map context.",
+        "Flight tracking depends on live data shape, routing, search, and map context.",
       constraint:
         "The public page can show owned artwork and repo evidence but not live service credentials.",
       approach: [
-        "Use product artwork to show the visual surface.",
+        "Use product artwork to show the visual direction.",
         "Describe the typed application structure without exposing secrets.",
         "Treat the case as product anatomy: artwork, routes, search, and map context.",
       ],
       outcome:
-        "The case shows a product structure built around signals and route boundaries.",
+        "The case shows a product structure built around search, maps, and route boundaries.",
     },
     proofCaptions: {
       "next-flights-overview": {
         eyebrow: "Product anatomy",
         title: "Product overview",
         detail:
-          "Owned artwork represents the flight tracking surface and signal-heavy product shape.",
+          "Owned artwork represents the flight tracking product shape.",
         sourceLabel: "Product anatomy",
         evidenceStatus: "local-proof",
       },
       "next-flights-cta": {
-        eyebrow: "Surface artwork",
+        eyebrow: "Interface artwork",
         title: "Interface artwork",
         detail: "The supporting artwork shows the public-facing visual system.",
         sourceLabel: "Interface artwork",
@@ -2451,15 +2492,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Next Flights supports the signal method through app structure, search, maps, and owned product artwork.",
+        "Next Flights shows app structure, search, maps, and owned product artwork.",
     },
     safeClaimIds: ["next-flights-product", "next-flights-maps"],
     proofMode: "anatomy",
     proofSummary:
-      "Product anatomy: owned artwork and repo evidence show search, map, board, and route/API structure without exposing live tokens.",
+      "Owned artwork and repo structure show search, map, board, and API boundaries without exposing live tokens.",
   },
   {
     slug: "grimgreen-channel-watch",
@@ -2483,7 +2524,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "specimen",
     story: {
       signal:
-        "GrimmGreen Channel Watch is a narrow reachability signal case.",
+        "GrimmGreen Channel Watch is a narrow reachability utility.",
       problem:
         "A small dashboard needs to report whether public channel URLs look reachable without relying on a platform token.",
       constraint:
@@ -2491,16 +2532,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       approach: [
         "Classify public URL fetch responses.",
         "Expose server status and polling state.",
-        "Keep the proof narrow until owned dashboard media exists.",
+        "Keep the public case narrow until dashboard media exists.",
       ],
       outcome:
-        "The case remains an honest process specimen for reachability, polling, and status routes.",
+        "The case remains a small utility record for reachability, polling, and status routes.",
       limitation:
         "Visual proof is intentionally limited until a real dashboard capture is added.",
     },
     proofCaptions: {
       "grimgreen-specimen": {
-        eyebrow: "Process specimen",
+        eyebrow: "Utility flow",
         title: "Reachability flow",
         detail:
           "The case is shown as a factual system flow until dashboard media exists.",
@@ -2509,26 +2550,26 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "GrimmGreen proves a small signals utility through reachability, polling, and status-route structure.",
+        "GrimmGreen documents a small utility for reachability, polling, and status-route structure.",
     },
     safeClaimIds: ["grimgreen-reachability", "grimgreen-status"],
     proofMode: "specimen",
     proofSummary:
-      "Process specimen: reachability classification, polling, and status routes are shown as a factual system flow until dashboard media exists.",
+      "Reachability classification, polling, and status routes shown as a factual system flow until dashboard media exists.",
   },
   {
     slug: "royal-shell",
     code: "W06",
     title: "Royal Shell",
-    role: "Signature generator surface",
+    role: "Signature generator utility",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
     applicationCategory: "BusinessApplication",
     summary:
-      "A real-estate signature generator surface with Royal Shell and Golden Ocala signature modes.",
+      "A real-estate signature generator with Royal Shell and Golden Ocala modes.",
     evidence: [
       "Next.js app",
       "Signature type selector",
@@ -2551,39 +2592,39 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "specimen",
     story: {
       signal:
-        "Royal Shell turns brand-specific signature requirements into a focused utility surface.",
+        "Royal Shell turns brand-specific signature requirements into a focused utility.",
       problem:
         "Email signature work breaks when brand assets, modes, and paste behavior drift apart.",
       constraint:
-        "The public case can show the app surface and brand asset without exposing private account data.",
+        "The public case can show the app and brand asset without exposing private account data.",
       approach: [
         "Keep signature mode selection explicit.",
         "Use fallback logo assets where the generated signature needs stability.",
         "Represent the case as a narrow business utility, not a broad platform.",
       ],
       outcome:
-        "The utility surface shows a practical brand workflow with limited public proof.",
+        "The utility shows a practical brand workflow with limited public media.",
     },
     proofCaptions: {
       "royal-shell-logo": {
-        eyebrow: "Brand surface",
+        eyebrow: "Brand asset",
         title: "Brand asset",
         detail:
-          "The fallback logo asset anchors the signature generator proof without exposing private account data.",
+          "The fallback logo asset anchors the signature generator without exposing private account data.",
         sourceLabel: "Brand utility still",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Royal Shell proves a focused signature workflow where brand surface and utility behavior meet.",
+        "Royal Shell documents a focused signature workflow with brand assets and utility behavior.",
     },
     safeClaimIds: ["royal-shell-signature", "royal-shell-brand"],
     proofMode: "specimen",
     proofSummary:
-      "Brand-surface specimen: signature modes and fallback brand assets are shown as a focused utility surface.",
+      "Signature modes and fallback brand assets are shown as a focused utility.",
   },
   {
     slug: "signature-copier",
@@ -2617,14 +2658,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "specimen",
     story: {
       signal:
-        "Signature Copier starts from a real paste failure and turns it into a focused preparation surface.",
+        "Signature Copier starts from a real paste failure and turns it into a focused preparation utility.",
       problem:
         "Email signatures can look correct in source form and still fail when pasted into Outlook.",
       constraint:
         "The case uses owned captures and avoids account-specific mail data.",
       approach: [
         "Treat paste behavior as the broken state.",
-        "Prepare signature assets for the real target surface.",
+        "Prepare signature assets for the real target app.",
         "Keep the workflow narrow enough to be reliable.",
       ],
       outcome:
@@ -2636,15 +2677,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         title: "Application capture",
         detail:
           "The capture shows a utility shaped around real email signature paste behavior.",
-        sourceLabel: "Signature surface",
+        sourceLabel: "Signature utility",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Signature Copier proves Joe's breakage-first method at utility scale: the failure path becomes the product surface.",
+        "Signature Copier documents a small utility built around a real copy/paste interface break.",
     },
     safeClaimIds: ["signature-paste", "signature-outlook"],
     proofMode: "specimen",
@@ -2673,14 +2714,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "specimen",
     story: {
       signal:
-        "Printer Scripts turns provisioning breakage into a redacted, cross-platform flow.",
+        "Printer Scripts turns provisioning failure into a redacted, cross-platform flow.",
       problem:
         "Printer setup can fail across operating systems, permissions, drivers, and local queue state.",
       constraint:
         "The public case must not reveal private network details, office-specific values, or internal endpoints.",
       approach: [
         "Show the installation flow rather than sensitive configuration.",
-        "Keep macOS and Windows paths visible as process proof.",
+        "Keep macOS and Windows paths visible as a process record.",
         "Redact the parts that belong to a private environment.",
       ],
       outcome:
@@ -2699,15 +2740,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "Printer Scripts proves the method can describe breakage and setup flow while protecting sensitive details.",
+        "Printer Scripts documents setup flow while protecting sensitive details.",
     },
     safeClaimIds: ["printer-macos", "printer-windows", "printer-redacted"],
     proofMode: "specimen",
     proofSummary:
-      "Redacted provisioning specimen: Windows and macOS installers are represented by flow steps, not private network details.",
+      "Windows and macOS installers are represented by flow steps, not private network details.",
   },
   {
     slug: "chesslm",
@@ -2718,10 +2759,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     schemaType: "SoftwareApplication",
     applicationCategory: "EducationalApplication",
     summary:
-      "A chess training and coaching product with a Next.js web/backend surface and a Unity client for WebGL, iPhone, and iPad.",
+      "A chess training product with a Next.js web/backend app and a Unity client for browser, iPhone, and iPad.",
     evidence: [
       "Next.js web/backend and classic training workspace",
-      "Unity client for WebGL, iPhone, and iPad",
+      "Unity client for browser, iPhone, and iPad",
       "Gateway-first production API boundary",
       "Classical chess and Chess960 support",
     ],
@@ -2729,7 +2770,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         id: "chesslm-unity",
         captionId: "chesslm-unity",
-        label: "Unity WebGL board",
+        label: "Unity board",
         claimIds: ["chesslm-unity", "chesslm-board"],
         media: chessLmUnityMedia,
         sourcePath: "Downloads/chess/output/playwright",
@@ -2751,36 +2792,36 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "case",
     story: {
       signal:
-        "ChessLM carries one training product across a web workspace and Unity board surface.",
+        "ChessLM carries one training product across a web workspace and Unity board.",
       problem:
         "A chess training product has to keep reasoning, board state, and client targets aligned.",
       constraint:
         "The public case uses owned captures and keeps provider secrets server-side.",
       approach: [
-        "Use the web workspace as the training surface.",
-        "Use the Unity board as the operated client surface.",
-        "Keep the product boundary clear across WebGL, iPhone, and iPad targets.",
+        "Use the web workspace for training.",
+        "Use the Unity board as the client.",
+        "Keep the product boundary clear across browser, iPhone, and iPad targets.",
       ],
       outcome:
-        "The case shows the same product signal across browser and game-client contexts.",
+        "The case shows the same training product across browser and game-client contexts.",
     },
     humanStake: {
       blockedPerson: "A player trying to connect coaching, board state, and the next move.",
       confusion:
-        "Training gets noisy when reasoning, board surface, and client target feel like separate products.",
+        "Training gets noisy when reasoning, board state, and client target feel like separate products.",
       madeVisible:
-        "The reel connects web workspace and Unity board as one training route.",
+        "The reel connects web workspace and Unity board.",
       whyItMatters:
         "A player should be able to follow the lesson without wondering which surface owns the state.",
     },
     miniWorld: {
-      hook: "Carry one training signal from the web workspace into the Unity board.",
+      hook: "Carry one training product from the web workspace into the Unity board.",
       humanStake: {
         blockedPerson: "A player trying to connect coaching, board state, and the next move.",
         confusion:
-          "Training gets noisy when reasoning, board surface, and client target feel like separate products.",
+          "Training gets noisy when reasoning, board state, and client target feel like separate products.",
         madeVisible:
-          "The reel connects web workspace and Unity board as one training route.",
+          "The reel connects web workspace and Unity board.",
         whyItMatters:
           "A player should be able to follow the lesson without wondering which surface owns the state.",
       },
@@ -2791,7 +2832,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           label: "Problem",
           title: "Training state has to stay aligned.",
           body:
-            "The browser workspace shows the reasoning surface, but the board client has to carry the same signal.",
+            "The browser workspace shows the reasoning, and the board client has to carry the same state.",
           assetId: "chesslm-workspace",
           captionId: "chesslm-workspace",
           claimIds: ["chesslm-web", "chesslm-training"],
@@ -2800,7 +2841,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "proof-operation",
           label: "Operate",
-          title: "The signal crosses surfaces.",
+          title: "The product crosses clients.",
           body:
             "The training reel moves from workspace context into the Unity board without exposing provider secrets.",
           mediaId: "chesslm-training-reel",
@@ -2811,9 +2852,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "decision-moment",
           label: "Decision",
-          title: "The board becomes the client surface.",
+          title: "The board becomes the client.",
           body:
-            "The Unity board capture proves the operated training client across WebGL, iPhone, and iPad direction.",
+            "The Unity board capture shows the training client across browser, iPhone, and iPad direction.",
           assetId: "chesslm-unity",
           captionId: "chesslm-unity",
           claimIds: ["chesslm-unity", "chesslm-board"],
@@ -2822,9 +2863,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "outcome",
           label: "Receipt",
-          title: "One product route crosses two clients.",
+          title: "One product crosses two clients.",
           body:
-            "The case shows a training surface moving between browser workspace and game-client board while secrets stay server-side.",
+            "The case shows a training product moving between browser workspace and game-client board while secrets stay server-side.",
           assetId: "chesslm-unity",
           captionId: "chesslm-unity",
           claimIds: ["chesslm-unity", "chesslm-training"],
@@ -2835,31 +2876,31 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     proofCaptions: {
       "chesslm-unity": {
         eyebrow: "Unity client",
-        title: "Unity WebGL board",
+        title: "Unity board",
         detail:
-          "The board capture shows the training product as an operated game-client surface.",
+          "The board capture shows the training product as a game-client app.",
         sourceLabel: "Training capture",
         evidenceStatus: "local-proof",
       },
       "chesslm-workspace": {
-        eyebrow: "Training surface",
+        eyebrow: "Training workspace",
         title: "Training workspace",
         detail:
-          "The workspace capture shows the browser training surface for the same product.",
+          "The workspace capture shows the browser training app for the same product.",
         sourceLabel: "Unity board capture",
         evidenceStatus: "local-proof",
       },
     },
     completedRoute: {
-      label: "Completed route",
-      title: "What this proves",
+      label: "Result",
+      title: "What changed",
       detail:
-        "ChessLM proves a product route that crosses web workspace and Unity client while keeping secrets out of the client.",
+        "ChessLM connects a web workspace and Unity client while keeping secrets out of the client.",
     },
     safeClaimIds: ["chesslm-unity", "chesslm-web", "chesslm-training"],
     proofMode: "reel",
     proofSummary:
-      "Training reel: web workspace and Unity board captures show the same product surface across browser and game-client contexts.",
+      "Web workspace and Unity board captures show the same product across browser and game-client contexts.",
     homepageFeature: {
       rank: 4,
       mediaAssetIds: ["chesslm-workspace", "chesslm-unity"],
@@ -3011,7 +3052,7 @@ export const writingFragments: WritingFragment[] = [
     code: "F2",
     title: "Visible state is a form of respect.",
     body:
-      "A working surface should not make people guess what the system is doing. State belongs close to the decision it affects.",
+      "A working interface should not make people guess what the system is doing. State belongs close to the decision it affects.",
     source: "Systems",
   },
   {
@@ -3023,10 +3064,10 @@ export const writingFragments: WritingFragment[] = [
   },
   {
     code: "F4",
-    title: "Small public proof should stay named.",
+    title: "Small public work should stay named.",
     body:
-      "If the public trail is small, it should stay small and named. The page can still show how the work thinks.",
-    source: "Trail",
+      "If the public project is small, it should stay small and named.",
+    source: "Work",
   },
   {
     code: "F5",
@@ -3057,7 +3098,7 @@ export const archiveArtifacts: ArchiveArtifact[] = [
     code: "A2",
     title: "World of Vanilla",
     body:
-      "A fan/community web identity from the deleted-site archive. The current page keeps it as design proof, not as an active public project.",
+      "A fan/community web identity from the deleted-site archive. The current page keeps it as a design archive item, not as an active public project.",
     sourceLabel: "Local logo archive",
     media: {
       kind: "artifact",
@@ -3116,14 +3157,14 @@ export const archiveArtifacts: ArchiveArtifact[] = [
 ];
 
 const reactMiamiDeveloperFrames = [
-  "Hallway signal",
+  "Hallway frame",
   "Builder table",
   "Night conversation",
   "Agentic infrastructure",
   "La Tropical",
   "Orange pocket",
   "Conference room",
-  "Badge receipt",
+  "Badge frame",
   "Hallway frame",
   "Front row",
   "After-hours group",
@@ -3133,8 +3174,8 @@ const reactMiamiDeveloperFrames = [
   "React Miami portrait",
   "React Miami lockup",
   "React Miami pair",
-  "React Miami proof",
-  "React Miami receipt",
+  "React Miami profile",
+  "React Miami contact sheet",
 ] as const;
 
 export const communityArtifacts: CommunityArtifact[] =
@@ -3146,7 +3187,7 @@ export const communityArtifacts: CommunityArtifact[] =
       code,
       title,
       body:
-        "Owned React Miami 2026 frame from Joe's developer community trail.",
+        "Owned React Miami 2026 frame from Joe's developer community.",
       sourceLabel: "Owned event photo",
       media: {
         kind: "artifact",
@@ -3164,7 +3205,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R00",
     title: "React Miami room",
     body:
-      "Owned React Miami 2026 room frame: the broader builder context before any individual receipt.",
+      "Owned React Miami 2026 room frame before the individual photos.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3179,7 +3220,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R01",
     title: "ThePrimeagen",
     body:
-      "Owned React Miami 2026 photo with ThePrimeagen, kept as a people-and-community receipt.",
+      "Owned React Miami 2026 photo with ThePrimeagen.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3194,7 +3235,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R02",
     title: "Builder table",
     body:
-      "Owned React Miami 2026 table frame from the same builder trail.",
+      "Owned React Miami 2026 table frame from the same event.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3207,7 +3248,7 @@ export const communityHighlights: CommunityArtifact[] = [
   },
   {
     code: "R03",
-    title: "Audience signal",
+    title: "Audience frame",
     body:
       "Owned React Miami 2026 audience frame showing the room around the work.",
     sourceLabel: "Owned event photo",
@@ -3241,9 +3282,9 @@ export const worldArtifacts: WorldArtifact[] = [
     code: "W0",
     label: "Origin",
     source: "Joe",
-    title: "A real face before a brand system.",
+    title: "Joe Simo.",
     detail:
-      "The portrait stays small on purpose. The site is personal, but the work still leads.",
+      "Designer/developer, FL.",
     stage: "origin",
     media: profileMedia,
   },
@@ -3272,9 +3313,9 @@ export const worldArtifacts: WorldArtifact[] = [
     code: "W3",
     label: "Surface",
     source: "sim0",
-    title: "The current proof object is a working surface.",
+    title: "sim0 is the current work.",
     detail:
-      "The sim0 interface still shows preview state, runtime context, shipping, and staged changes in one field.",
+      "The sim0 interface shows preview state, local context, shipping, and staged changes in one workspace.",
     stage: "surface",
     href: sim0Link.href,
     actionLabel: "Open sim0",
@@ -3285,9 +3326,9 @@ export const worldArtifacts: WorldArtifact[] = [
     code: "W4",
     label: "Code",
     source: "GitHub",
-    title: "The public code trail is intentionally small.",
+    title: "Public code stays small and named.",
     detail:
-      "The visible public repository surface is the profile plus a named public fork.",
+      "The visible public repository record is the profile plus a named public fork.",
     stage: "trail",
     href: "https://github.com/joe-simo/openai-agents-js",
     actionLabel: "View repo",
@@ -3299,7 +3340,7 @@ export const worldArtifacts: WorldArtifact[] = [
     source: "LinkedIn",
     title: "The exit stays public.",
     detail:
-      "For support, systems, web projects, sim0, or interface work, use the public profile trail.",
+      "For support, systems, web projects, sim0, or interface work, use the public profile links.",
     stage: "contact",
     href: linkedinChannel.href,
     actionLabel: "Open LinkedIn",
@@ -3312,17 +3353,17 @@ export const publicDepthItems: PublicDepthItem[] = [
     label: "Personal",
     title: "Joe is the subject.",
     detail:
-      "Portrait, name, Fort Myers, Devsigner, English and Spanish. The page starts with the person instead of a template category.",
+      "Portrait, name, FL, Devsigner, English and Spanish.",
     source: "Joe",
     media: profileMedia,
-    meta: ["portrait", "identity", "Fort Myers"],
+    meta: ["portrait", "identity", "FL"],
   },
   {
     code: "D2",
     label: "Current work",
     title: "sim0 is the current working artifact.",
     detail:
-      "The interface still gives the page a real product surface: preview state, runtime context, local API context, ship action, and change state.",
+      "The interface gives the page a real product artifact: preview state, local API context, ship action, and change state.",
     source: "sim0.com",
     href: sim0Link.href,
     actionLabel: "Open sim0",
@@ -3332,18 +3373,18 @@ export const publicDepthItems: PublicDepthItem[] = [
   {
     code: "D3",
     label: "Process",
-    title: "The method is shown as a usable instrument.",
+    title: "The work starts from support problems.",
     detail:
-      "Support breakage, telematics signals, and interface surface are not only copy. They are the way the page can be operated.",
+      "Support problems, telematics context, and interface decisions shape the work.",
     source: "Method",
-    meta: ["support", "signals", "surface"],
+    meta: ["support", "systems", "interfaces"],
   },
   {
     code: "D4",
     label: "Code",
     title: "Public code stays named.",
     detail:
-      "The visible GitHub proof is the public profile and the openai-agents-js fork.",
+      "The visible GitHub record is the public profile and the openai-agents-js fork.",
     source: "GitHub",
     href: "https://github.com/joe-simo/openai-agents-js",
     actionLabel: "View repo",
@@ -3354,7 +3395,7 @@ export const publicDepthItems: PublicDepthItem[] = [
     label: "Writing",
     title: "Notes live on the page until there is a larger archive.",
     detail:
-      "The writing here is short, direct, and tied to the method: breakage, signal, state, surface, and public proof.",
+      "The writing here is short, direct, and tied to support, systems, state, and public work.",
     source: "Notebook",
     meta: ["field notes", "method", "authored"],
   },
@@ -3363,7 +3404,7 @@ export const publicDepthItems: PublicDepthItem[] = [
     label: "Video",
     title: "The video exit is public and simple.",
     detail:
-      "YouTube stays as a direct public surface for video instead of an embedded feed wall.",
+      "YouTube stays as a direct public video link instead of an embedded feed wall.",
     source: "YouTube",
     href: "https://www.youtube.com/user/jos007",
     actionLabel: "Open YouTube",
@@ -3377,10 +3418,10 @@ export const siteRecords: SiteRecord[] = [
     label: "Joe",
     shortLabel: "Joe",
     kind: "origin",
-    status: "Joe Simo in Fort Myers.",
+    status: "Joe Simo in FL.",
     detail:
-      "Fort Myers devsigner working from support failures, systems work, telematics, and interface clarity.",
-    proof: "Joe Simo / Devsigner / Fort Myers",
+      "Florida devsigner working from support failures, systems work, telematics, and interface clarity.",
+    proof: "Joe Simo / Devsigner / FL",
     primaryAction: {
       id: "view-public-trail-work",
       label: "View Work",
@@ -3401,7 +3442,7 @@ export const siteRecords: SiteRecord[] = [
     scene: {
       code: "00",
       eyebrow: "Origin",
-      coordinate: "Fort Myers / Joe",
+      coordinate: "FL / Joe",
       tone: "origin",
       scrollRange: [0, 0.16],
     },
@@ -3423,7 +3464,7 @@ export const siteRecords: SiteRecord[] = [
     label: "Method",
     shortLabel: "method",
     kind: "method",
-    status: "Support breakage to system signal to interface surface.",
+    status: "Support problems to readable interfaces.",
     detail:
       "I start from the broken path a person can describe, trace the signal or system state behind it, then design the interface so the next action is obvious.",
     proof: "support / telematics / interfaces",
@@ -3449,7 +3490,7 @@ export const siteRecords: SiteRecord[] = [
     scene: {
       code: "01",
       eyebrow: "Method",
-      coordinate: "breakage / signal / surface",
+      coordinate: "support / systems / interfaces",
       tone: "method",
       scrollRange: [0.16, 0.38],
     },
@@ -3472,7 +3513,7 @@ export const siteRecords: SiteRecord[] = [
     kind: "work",
     status: "Current work: sim0.com.",
     detail:
-      "sim0 is the public product surface of this method: a browser-first workflow where system state and interface decisions stay visible.",
+      "sim0 is the current public product: a browser-first workflow where system state and interface decisions stay visible.",
     proof: "sim0.com / workflow product",
     primaryAction: sim0Link,
     secondaryActions: [
@@ -3510,12 +3551,12 @@ export const siteRecords: SiteRecord[] = [
   },
   {
     id: "trail",
-    label: "Trail",
-    shortLabel: "trail",
+    label: "Community",
+    shortLabel: "community",
     kind: "trail",
     status: "GitHub, X, Instagram, LinkedIn, and YouTube.",
     detail:
-      "The public trail keeps the real exits close: code, public profiles, professional context, and video.",
+      "Public profiles, community photos, professional context, and video stay close.",
     proof: "GitHub / X / Instagram / LinkedIn / YouTube",
     primaryAction: {
       id: "open-github",
@@ -3548,8 +3589,8 @@ export const siteRecords: SiteRecord[] = [
     sceneMode: "trail",
     scene: {
       code: "03",
-      eyebrow: "Trail",
-      coordinate: "public trail",
+      eyebrow: "Community",
+      coordinate: "community",
       tone: "trail",
       scrollRange: [0.58, 0.78],
     },
@@ -3558,8 +3599,8 @@ export const siteRecords: SiteRecord[] = [
       tension: 0.36,
       depth: 0.32,
     },
-    sectionAnchor: "#social",
-    readActionLabel: "Read Trail",
+    sectionAnchor: "#community",
+    readActionLabel: "View Community",
     map: {
       desktopPoint: { x: 62, y: 74 },
       mobilePoint: { x: 25, y: 50 },
@@ -3625,22 +3666,22 @@ export const navItems = [
     recordId: "work",
   },
   {
-    label: "Journal",
-    href: "#photos",
+    label: "Systems",
+    href: "#systems",
+    iconKey: "briefcase",
+    recordId: "method",
+  },
+  {
+    label: "Credentials",
+    href: "#credentials",
+    iconKey: "bookOpen",
+    recordId: "method",
+  },
+  {
+    label: "Community",
+    href: "#community",
     iconKey: "camera",
     recordId: "trail",
-  },
-  {
-    label: "Notes",
-    href: "#blog",
-    iconKey: "bookOpen",
-    recordId: "trail",
-  },
-  {
-    label: "Internet",
-    href: "#social",
-    iconKey: "code",
-    recordId: "contact",
   },
   {
     label: "Contact",

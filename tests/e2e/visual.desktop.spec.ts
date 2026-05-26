@@ -60,7 +60,9 @@ test.describe("desktop visual regression", () => {
     await prepareVisualPage(page, "light");
     await page.locator("#work").scrollIntoViewIfNeeded();
     await expectPageHealthy(page, problems);
-    await expect(page.getByRole("heading", { name: "sim0" })).toBeVisible();
+    await expect(
+      page.locator("#work").getByRole("heading", { name: "sim0" }),
+    ).toBeVisible();
 
     await expect(page).toHaveScreenshot("work-complete-desktop-light.png", {
       maxDiffPixelRatio: 0.02,

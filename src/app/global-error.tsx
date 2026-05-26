@@ -20,13 +20,13 @@ export default function GlobalError({
         <main className="grid min-h-screen place-items-center bg-background px-5 text-foreground">
           <section className="grid max-w-xl gap-6">
             <p className="font-pixel text-[10px] uppercase text-muted-foreground">
-              500 / Broken route
+              500 / Error
             </p>
             <h1 className="text-5xl font-medium leading-none tracking-normal">
-              The signal dropped.
+              Something went wrong.
             </h1>
             <p className="text-sm leading-6 text-muted-foreground">
-              Reload the route or go back to Joe Simo directly.
+              Reload the page or go back to Joe Simo directly.
             </p>
             <div className="flex flex-wrap gap-3">
               <button

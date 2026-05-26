@@ -22,32 +22,37 @@ test.describe("Joe Simo desktop homepage navigation", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator(".simo-trail-hero")).toBeVisible();
+    await expect(page.locator(".joe-hero")).toBeVisible();
     await expect(
-      page.locator('.simo-trail-hero a[href^="/work/"]'),
+      page.locator('.joe-hero a[href^="/work/"]'),
     ).toHaveCount(0);
 
     await expectHomeDestinationLink(page, "work");
-    const photosLink = await expectHomeDestinationLink(page, "photos");
+    const communityLink = await expectHomeDestinationLink(page, "community");
 
-    await photosLink.click();
-    await expect(page).toHaveURL(/#photos$/);
+    await communityLink.click();
+    await expect(page).toHaveURL(/#community$/);
 
-    const photosSection = await expectHomeDestinationSection(page, "photos");
-    await expect(photosSection).toBeInViewport();
-    await expect(page.locator('header a[href="#photos"]').first()).toHaveAttribute(
-      "aria-current",
-      "location",
+    const communitySection = await expectHomeDestinationSection(
+      page,
+      "community",
     );
+    await expect(communitySection).toBeInViewport();
+    await expect(
+      page.locator('header a[href="#community"]').first(),
+    ).toHaveAttribute("aria-current", "location");
 
-    const blogLink = page.locator('header a[href="#blog"]').first();
+    const credentialsLink = page.locator('header a[href="#credentials"]').first();
 
-    await blogLink.click();
-    await expect(page).toHaveURL(/#blog$/);
+    await credentialsLink.click();
+    await expect(page).toHaveURL(/#credentials$/);
 
-    const blogSection = await expectHomeDestinationSection(page, "blog");
-    await expect(blogSection).toBeInViewport();
-    await expect(blogLink).toHaveAttribute("aria-current", "location");
+    const credentialsSection = await expectHomeDestinationSection(
+      page,
+      "credentials",
+    );
+    await expect(credentialsSection).toBeInViewport();
+    await expect(credentialsLink).toHaveAttribute("aria-current", "location");
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const workLink = await expectHomeDestinationLink(page, "work");

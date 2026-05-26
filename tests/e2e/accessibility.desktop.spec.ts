@@ -38,15 +38,11 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
-    await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }));
-    await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }));
+    await expect(page.getByRole("button", { name: /jump/i })).toHaveCount(0);
+    await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }), 10);
     await tabUntilFocused(
       page,
-      page.locator('.simo-trail-hero a[href="#work"]').first(),
-    );
-    await tabUntilFocused(
-      page,
-      page.locator('.simo-trail-hero a[href="#photos"]').first(),
+      page.locator('.joe-hero a[href="#work"]').first(),
     );
   });
 
@@ -60,21 +56,21 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "photos");
+    await expectHomeDestinationLink(page, "community");
   });
 
-  test("social profile cards are keyboard reachable", async ({
+  test("contact profile links are keyboard reachable", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
-    await page.goto("/#social", { waitUntil: "domcontentloaded" });
+    await page.goto("/#contact", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
-    const githubLink = page.locator("#social").getByRole("link", { name: /GitHub/i });
+    const githubLink = page.locator("#contact").getByRole("link", { name: /GitHub/i });
     const linkedinLink = page
-      .locator("#social")
+      .locator("#contact")
       .getByRole("link", { name: /LinkedIn/i });
 
     await expect(githubLink).toBeVisible();

@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const e2ePort = process.env.PLAYWRIGHT_PORT ?? process.env.PORT ?? "3000";
+const e2eBaseURL = `http://127.0.0.1:${e2ePort}`;
+
 export default defineConfig({
   expect: {
     timeout: 7_500,
@@ -28,16 +31,16 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: e2eBaseURL,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
     video: "retain-on-failure",
   },
   webServer: {
-    command: "bun run start",
+    command: `PORT=${e2ePort} bun run start`,
     reuseExistingServer: !process.env.CI,
     timeout: 20_000,
-    url: "http://127.0.0.1:3000",
+    url: e2eBaseURL,
   },
   workers: 1,
 });

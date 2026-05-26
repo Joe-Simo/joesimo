@@ -23,8 +23,8 @@ export async function createSocialImage(label: string) {
 
   const facts = [
     "Joe Simo",
-    "Fort Myers, Florida",
-    "portfolio / photos / blog / social",
+    "FL",
+    "work / systems / credentials / community",
   ];
 
   return new ImageResponse(
@@ -143,10 +143,10 @@ export async function createSocialImage(label: string) {
           }}
         >
           {[
-            ["Portfolio", primaryWork?.title ?? "Selected work"],
-            ["Journal", "public archive"],
-            ["Notes", "field notes"],
-            ["Internet", "public profiles"],
+            ["Work", primaryWork?.title ?? "Selected work"],
+            ["Systems", "Macromedica / Neveroff / Brox"],
+            ["Credentials", "web / systems / drone"],
+            ["Contact", "X / GitHub / LinkedIn"],
           ].map(([title, detail]) => (
             <div
               key={title}

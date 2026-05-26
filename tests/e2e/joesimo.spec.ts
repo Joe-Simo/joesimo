@@ -4,10 +4,10 @@ import {
   collectConsoleProblems,
   expectHomeDestinationLink,
   expectHomeDestinationSection,
+  expectJoeSignalFieldReady,
   expectPageHealthy,
   expectProjectMediaFramesContained,
   expectRenderedImagesHealthy,
-  expectTrailCanvasNonBlank,
   workRoutes,
 } from "./helpers";
 
@@ -56,12 +56,16 @@ test.describe("Joe Simo personal site", () => {
     ).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "photos");
-    await expectTrailCanvasNonBlank(page);
+    await expectHomeDestinationLink(page, "systems");
+    await expectHomeDestinationLink(page, "credentials");
+    await expectHomeDestinationLink(page, "community");
+    await expect(page.locator(".joe-hero")).toBeVisible();
+    await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
+    await expectJoeSignalFieldReady(page);
     await expect(page.locator("#work")).toBeVisible();
-    await expect(page.locator("#photos")).toBeVisible();
-    await expect(page.locator("#blog")).toBeVisible();
-    await expect(page.locator("#social")).toBeVisible();
+    await expect(page.locator("#systems")).toBeVisible();
+    await expect(page.locator("#credentials")).toBeVisible();
+    await expect(page.locator("#community")).toBeVisible();
     await expect(page.locator("#contact")).toBeVisible();
 
     await expectPageHealthy(page, problems);
@@ -75,7 +79,7 @@ test.describe("Joe Simo personal site", () => {
     const pageText = await page.locator("body").innerText();
 
     expect(pageText).not.toMatch(
-      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year/i,
+      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|AI-native|public trail|famous developers|Three\.js|GSAP|WebGL|proof route|owned frames|readable product surface/i,
     );
     const privateMessageAction = ["Email", "Joe"].join(" ");
     const privateMessageHandlePrefix = ["hello", "@"].join("");
@@ -100,20 +104,24 @@ test.describe("Joe Simo personal site", () => {
   test("renders visible one-page chapters and anchor destinations", async ({
     page,
   }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(180_000);
 
     const problems = collectConsoleProblems(page);
 
     await page.goto("/");
 
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "photos");
+    await expectHomeDestinationLink(page, "community");
 
-    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
-    await expectHomeDestinationSection(page, "blog");
+    await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
+    await expectHomeDestinationSection(page, "credentials");
     await expect(
-      page.getByRole("heading", { exact: true, name: "Notes" }),
+      page.getByRole("heading", { exact: true, name: "Credentials" }),
     ).toBeVisible();
+    await expect(page.getByText("Web", { exact: true })).toBeVisible();
+    await expect(page.getByText("Systems & Networking")).toBeVisible();
+    await expect(page.getByText("Vendor Tools", { exact: true })).toBeVisible();
+    await expect(page.getByText("Drone Operations", { exact: true })).toBeVisible();
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const currentWorkLink = await expectHomeDestinationLink(page, "work");
@@ -125,21 +133,29 @@ test.describe("Joe Simo personal site", () => {
       workSection.getByRole("heading", { name: "sim0" }),
     ).toBeVisible();
 
-    const currentPhotosLink = await expectHomeDestinationLink(page, "photos");
+    const systemsSection = await expectHomeDestinationSection(page, "systems");
 
-    await currentPhotosLink.click();
-    await expect(page).toHaveURL(/#photos$/);
-    await expectHomeDestinationSection(page, "photos");
+    await expect(systemsSection.getByText("Macromedica")).toBeVisible();
+    await expect(systemsSection.getByText("Neveroff Technology")).toBeVisible();
+    await expect(systemsSection.getByText("Brox Industries")).toBeVisible();
+    await expect(systemsSection.getByText("Disaster Recovery Engineer")).toBeVisible();
+
+    const currentCommunityLink = await expectHomeDestinationLink(
+      page,
+      "community",
+    );
+
+    await currentCommunityLink.click();
+    await expect(page).toHaveURL(/#community$/);
+    await expectHomeDestinationSection(page, "community");
     await expect(
       page.getByRole("heading", {
-        name: "Journal",
+        name: "Community",
       }),
     ).toBeVisible();
+    await expect(page.getByText("With ThePrimeagen at React Miami 2026.")).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Say hi through the public trail." }),
-    ).toBeVisible();
-    await expect(
-      page.locator("#photos").getByRole("img", {
+      page.locator("#community").getByRole("img", {
         name: "Joe Simo with ThePrimeagen at React Miami 2026",
       }),
     ).toBeVisible();
@@ -158,7 +174,7 @@ test.describe("Joe Simo personal site", () => {
     await footerContactLink.click();
     await expect(page).toHaveURL(/#contact$/);
     await expect(
-      page.getByRole("heading", { name: "Say hi through the public trail." }),
+      page.getByRole("heading", { name: "Contact" }),
     ).toBeVisible();
     await expect(page.locator("#contact")).toBeInViewport();
     await expect(page.locator("#contact-title")).toBeInViewport();
@@ -171,44 +187,19 @@ test.describe("Joe Simo personal site", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("supports command-style jump navigation", async ({ page }, testInfo) => {
+  test("keeps the home header minimal and preserves anchor navigation", async ({
+    page,
+  }) => {
     const problems = collectConsoleProblems(page);
 
     await page.goto("/");
 
-    if (testInfo.project.name.includes("mobile")) {
-      await page.getByRole("button", { name: "Open jump menu" }).click();
-    } else {
-      await expect
-        .poll(async () => {
-          await page.keyboard.press("Control+K");
-          return page.getByRole("dialog").count();
-        })
-        .toBe(1);
-    }
+    await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
+    const communityLink = await expectHomeDestinationLink(page, "community");
 
-    const dialog = page.getByRole("dialog");
-
-    await expect(dialog).toBeVisible();
-    const searchInput = dialog.getByLabel("Filter jump destinations");
-
-    await expect(searchInput).toBeVisible();
-    await expect(dialog.getByRole("link", { name: /Work.*Section/i })).toBeVisible();
-
-    await searchInput.fill("Astro");
-    await expect(dialog.getByRole("link", { name: /Astrosimo/i })).toBeVisible();
-    await expect(dialog.getByRole("link", { name: /sim0/i })).toHaveCount(0);
-
-    await page.keyboard.press("Escape");
-    await expect(dialog).toHaveCount(0);
-
-    await page.getByRole("button", { name: "Open jump menu" }).click();
-    const reopenedDialog = page.getByRole("dialog");
-
-    await expect(reopenedDialog).toBeVisible();
-    await reopenedDialog.getByRole("link", { name: /Journal.*Section/i }).click();
-    await expect(page).toHaveURL(/#photos$/);
-    await expect(page.locator("#photos")).toBeVisible();
+    await communityLink.click();
+    await expect(page).toHaveURL(/#community$/);
+    await expect(page.locator("#community")).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });
@@ -227,7 +218,7 @@ test.describe("Joe Simo personal site", () => {
     const sim0Card = page.locator("#work-sim0");
 
     await expect(sim0Card.getByRole("heading", { name: "sim0" })).toBeVisible();
-    await sim0Card.getByRole("button", { name: /open artifact/i }).click();
+    await sim0Card.getByRole("button", { name: /view details/i }).click();
 
     const projectDialog = page.getByRole("dialog", { name: /sim0/i });
 
@@ -236,24 +227,8 @@ test.describe("Joe Simo personal site", () => {
     await expectFocusTrappedInDialog(page, projectDialog);
     await page.keyboard.press("Escape");
     await expect(projectDialog).toHaveCount(0);
-    await expect(sim0Card.getByRole("button", { name: /open artifact/i })).toBeFocused();
-
-    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
-    await page
-      .locator("#blog")
-      .getByRole("button", { name: /N1/i })
-      .click();
-
-    const noteDialog = page.getByRole("dialog");
-
-    await expect(noteDialog).toBeVisible();
-    await expect(noteDialog).toContainText(/N1/i);
-    await expectFocusTrappedInDialog(page, noteDialog);
-    await page.keyboard.press("Escape");
-    await expect(noteDialog).toHaveCount(0);
-    await expect(
-      page.locator("#blog").getByRole("button", { name: /N1/i }),
-    ).toBeFocused();
+    await expect(sim0Card.getByRole("button", { name: /view details/i })).toBeFocused();
+    await expect(page.locator("#community").getByRole("button")).toHaveCount(0);
 
     await expectPageHealthy(page, problems);
   });
@@ -275,6 +250,7 @@ test.describe("Joe Simo personal site", () => {
 
     const blogResponse = await request.get("/blog", { maxRedirects: 0 });
     expect([307, 308]).toContain(blogResponse.status());
+    expect(blogResponse.headers().location).toContain("/#community");
 
     for (const route of workRoutes) {
       const response = await request.get(route.path, { maxRedirects: 0 });

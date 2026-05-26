@@ -3,11 +3,11 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
   communityHighlights,
-  fieldNotes,
   joeProfile,
+  learningCredentials,
   projectCaseStudiesPublic,
+  proudSystemsRoles,
   socialChannels,
-  writingFragments,
 } from "@/lib/site-data";
 
 export default function Home() {
@@ -32,11 +32,11 @@ export default function Home() {
       >
         <JoeHomeStage
           communityArtifacts={communityHighlights}
-          fieldNotes={fieldNotes}
           joeProfile={joeProfile}
+          learningCredentials={learningCredentials}
           projects={projectCaseStudiesPublic}
+          proudRoles={proudSystemsRoles}
           socialChannels={socialChannels}
-          writingFragments={writingFragments}
         />
       </main>
 

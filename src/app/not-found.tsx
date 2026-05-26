@@ -3,13 +3,40 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteIcon } from "@/components/site/site-icons";
-import { siteRecords } from "@/lib/site-data";
 
-const featuredRecords = siteRecords.filter((record) =>
-  ["work", "trail"].includes(record.id),
-);
 const notFoundCopy =
-  "The direct paths are home, portfolio, blog, and footer socials.";
+  "The direct paths are home, work, systems, credentials, community, and contact.";
+
+const featuredLinks = [
+  {
+    detail: "Selected products and utilities.",
+    href: "/#work",
+    iconKey: "appWindow" as const,
+    label: "Work",
+    status: "Selected work",
+  },
+  {
+    detail: "System administration and recovery roles that shaped the work.",
+    href: "/#systems",
+    iconKey: "briefcase" as const,
+    label: "Systems",
+    status: "Practical systems background",
+  },
+  {
+    detail: "Grouped web, systems, vendor, and drone credentials.",
+    href: "/#credentials",
+    iconKey: "bookOpen" as const,
+    label: "Credentials",
+    status: "Training record",
+  },
+  {
+    detail: "React Miami contact sheet and public profile exits.",
+    href: "/#community",
+    iconKey: "camera" as const,
+    label: "Community",
+    status: "Owned event media",
+  },
+];
 
 export default function NotFound() {
   return (
@@ -57,19 +84,19 @@ export default function NotFound() {
               Portfolio
             </Link>
             <Link
-              href="/#blog"
+              href="/#credentials"
               className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 text-sm font-medium outline-none transition hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35"
             >
               <SiteIcon iconKey="bookOpen" aria-hidden />
-              Blog
+              Credentials
             </Link>
           </div>
 
           <div className="grid border-y border-border">
-            {featuredRecords.map((record) => (
+            {featuredLinks.map((record) => (
               <Link
-                key={record.id}
-                href={record.id === "trail" ? "/#blog" : `/${record.sectionAnchor}`}
+                key={record.href}
+                href={record.href}
                 className="grid gap-3 border-b border-border py-5 outline-none transition last:border-b-0 hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35 md:grid-cols-[8rem_minmax(0,1fr)]"
               >
                 <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">

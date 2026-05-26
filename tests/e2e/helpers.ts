@@ -13,26 +13,36 @@ export const workRoutes = [
   { heading: "ChessLM", path: "/work/chesslm" },
 ] as const;
 
-type HomeDestination = "photos" | "work" | "blog" | "social";
+type HomeDestination =
+  | "community"
+  | "contact"
+  | "credentials"
+  | "systems"
+  | "work";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
-  blog: 'header a[href="#blog"], a[href="#blog"], a[href="/#blog"]',
-  photos: 'header a[href="#photos"], a[href="#photos"], a[href="/#photos"]',
-  social: 'header a[href="#social"], a[href="#social"], a[href="/#social"]',
+  community:
+    'header a[href="#community"], a[href="#community"], a[href="/#community"]',
+  contact: 'header a[href="#contact"], a[href="#contact"], a[href="/#contact"]',
+  credentials:
+    'header a[href="#credentials"], a[href="#credentials"], a[href="/#credentials"]',
+  systems: 'header a[href="#systems"], a[href="#systems"], a[href="/#systems"]',
   work: 'header a[href="#work"], a[href="#work"], a[href="/#work"]',
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
-  blog: "#blog",
-  photos: "#photos",
-  social: "#social",
+  community: "#community",
+  contact: "#contact",
+  credentials: "#credentials",
+  systems: "#systems",
   work: "#work",
 };
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
-  blog: /blog|notes|read|writing/i,
-  photos: /journal|moments|photos|photo/i,
-  social: /internet|social|links/i,
+  community: /community/i,
+  contact: /contact|message|x/i,
+  credentials: /credentials/i,
+  systems: /systems/i,
   work: /work/i,
 };
 
@@ -66,20 +76,9 @@ export async function expectHomeDestinationLink(
   const link = homeDestinationLink(page, destination);
 
   await expect(link).toBeVisible();
-  await expect
-    .poll(async () =>
-      link.evaluate((element) =>
-        [
-          element.getAttribute("aria-label"),
-          element.textContent,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .replace(/\s+/g, " ")
-          .trim(),
-      ),
-    )
-    .toMatch(homeDestinationNamePatterns[destination]);
+  await expect(link).toHaveAccessibleName(
+    homeDestinationNamePatterns[destination],
+  );
 
   return link;
 }
@@ -168,6 +167,41 @@ export async function expectPageHealthy(
   expect(problems).toEqual([]);
 }
 
+export async function expectJoeSignalFieldReady(page: Page) {
+  const signalField = page.locator(".joe-signal-field").first();
+  const canvas = signalField.locator("canvas");
+
+  await expect(signalField).toBeVisible();
+  await expect
+    .poll(() => signalField.getAttribute("data-webgl-ready"), {
+      timeout: 15_000,
+    })
+    .toBe("true");
+  await expect
+    .poll(() => signalField.getAttribute("data-webgl-painted"), {
+      timeout: 15_000,
+    })
+    .toBe("true");
+  await expect(canvas).toBeVisible();
+
+  const canvasMetrics = await canvas.evaluate((element) => {
+    const canvasElement = element as HTMLCanvasElement;
+    const rect = canvasElement.getBoundingClientRect();
+
+    return {
+      clientHeight: Math.round(rect.height),
+      clientWidth: Math.round(rect.width),
+      height: canvasElement.height,
+      width: canvasElement.width,
+    };
+  });
+
+  expect(canvasMetrics.clientHeight).toBeGreaterThan(0);
+  expect(canvasMetrics.clientWidth).toBeGreaterThan(0);
+  expect(canvasMetrics.height).toBeGreaterThan(0);
+  expect(canvasMetrics.width).toBeGreaterThan(0);
+}
+
 export async function loadLazyImages(page: Page) {
   const scrollHeight = await page.evaluate(
     () => document.documentElement.scrollHeight,
@@ -228,15 +262,13 @@ export async function expectRenderedImagesHealthy(page: Page) {
 
 export async function expectProjectMediaFramesContained(page: Page) {
   const overflowingFrames = await page
-    .locator(".simo-work-media, .simo-os-media")
+    .locator(".simo-work-media, .joe-work-media, .joe-current-media")
     .evaluateAll((frames) =>
       frames
         .map((frame) => {
           const frameElement = frame as HTMLElement;
           const image =
-            frameElement.querySelector<HTMLElement>(
-              ".simo-trail-sim0-composition",
-            ) ?? frameElement.querySelector("img");
+            frameElement.querySelector<HTMLElement>("img");
 
           if (!image) {
             return null;
@@ -305,70 +337,10 @@ export async function installStableVisualStyles(page: Page) {
         transition-duration: 0s !important;
       }
 
-      .simo-signal-webgl canvas {
-        opacity: 0 !important;
-      }
-
-      .simo-public-trail-canvas canvas {
-        opacity: 0 !important;
-      }
-
       video {
         visibility: hidden !important;
       }
     `);
-}
-
-export async function expectTrailCanvasNonBlank(page: Page) {
-  await expect(page.locator("html")).toHaveAttribute(
-    "data-trail-runtime",
-    "ready",
-  );
-
-  const canvas = page.locator(".simo-public-trail-canvas canvas").first();
-
-  await expect(canvas).toBeVisible();
-  await expect
-    .poll(async () =>
-      canvas.evaluate(async (node) => {
-        await new Promise<void>((resolve) => {
-          window.requestAnimationFrame(() => resolve());
-        });
-
-        const canvasElement = node as HTMLCanvasElement;
-        const gl =
-          canvasElement.getContext("webgl2") ??
-          canvasElement.getContext("webgl");
-
-        if (!gl || canvasElement.width === 0 || canvasElement.height === 0) {
-          return 0;
-        }
-
-        const width = Math.min(canvasElement.width, 128);
-        const height = Math.min(canvasElement.height, 128);
-        const x = Math.max(0, Math.floor(canvasElement.width / 2 - width / 2));
-        const y = Math.max(0, Math.floor(canvasElement.height / 2 - height / 2));
-        const pixels = new Uint8Array(width * height * 4);
-
-        gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-
-        let litPixels = 0;
-
-        for (let index = 0; index < pixels.length; index += 4) {
-          if (
-            pixels[index] > 4 ||
-            pixels[index + 1] > 4 ||
-            pixels[index + 2] > 4 ||
-            pixels[index + 3] > 4
-          ) {
-            litPixels += 1;
-          }
-        }
-
-        return litPixels;
-      }),
-    )
-    .toBeGreaterThan(4);
 }
 
 export async function setTheme(page: Page, theme: "dark" | "light") {

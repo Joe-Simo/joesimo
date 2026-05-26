@@ -6,6 +6,7 @@ import {
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectInteractiveTextFits,
+  expectJoeSignalFieldReady,
   expectNoHorizontalOverflow,
   expectPageHealthy,
 } from "./helpers";
@@ -45,7 +46,7 @@ test.describe("responsive, theme, and fallback gates", () => {
         page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
       ).toBeVisible();
       await expectHomeDestinationLink(page, "work");
-      await expectHomeDestinationLink(page, "photos");
+      await expectHomeDestinationLink(page, "community");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
 
@@ -68,20 +69,29 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await blockHeavyMedia(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expectJoeSignalFieldReady(page);
     await expectPageHealthy(page, problems);
 
     await chooseTheme(page, "Dark");
     await expect(page.locator("html")).toHaveClass(/dark/);
+    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
+      "data-signal-theme",
+      "dark",
+    );
 
     await chooseTheme(page, "Light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
+    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
+      "data-signal-theme",
+      "light",
+    );
 
     await chooseTheme(page, "System");
     await expect(page.getByRole("button", { name: /theme: system/i })).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 
-  test("no-WebGL desktop fallback keeps the Joe-first index usable", async ({
+  test("desktop index stays usable when WebGL falls back", async ({
     page,
   }) => {
     await page.addInitScript(() => {
@@ -111,6 +121,11 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await blockHeavyMedia(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
+    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
+      "data-webgl-ready",
+      "false",
+    );
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
@@ -126,18 +141,20 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("photos and blog remain reachable without motion-only content", async ({
+  test("community and credentials remain reachable without motion-only content", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
-    await page.goto("/#photos", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("#photos")).toBeInViewport();
-    await expect(page.getByRole("heading", { name: "Journal" })).toBeVisible();
-    await page.goto("/#blog", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("#blog")).toBeInViewport();
-    await expect(page.getByRole("heading", { exact: true, name: "Notes" })).toBeVisible();
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#community")).toBeInViewport();
+    await expect(page.getByRole("heading", { name: "Community" })).toBeVisible();
+    await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#credentials")).toBeInViewport();
+    await expect(
+      page.getByRole("heading", { exact: true, name: "Credentials" }),
+    ).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 
@@ -146,16 +163,59 @@ test.describe("responsive, theme, and fallback gates", () => {
   }) => {
     const problems = collectConsoleProblems(page);
 
+    await page.addInitScript(() => {
+      const trackedWindow = window as typeof window & {
+        __joeWebglContextRequests?: number;
+      };
+      const canvasPrototype = HTMLCanvasElement.prototype as unknown as {
+        getContext: (
+          this: HTMLCanvasElement,
+          contextId: string,
+          ...args: unknown[]
+        ) => RenderingContext | null;
+      };
+      const originalGetContext = canvasPrototype.getContext;
+
+      trackedWindow.__joeWebglContextRequests = 0;
+      canvasPrototype.getContext = function getContext(
+        this: HTMLCanvasElement,
+        contextId: string,
+        ...args: unknown[]
+      ) {
+        if (contextId.includes("webgl")) {
+          trackedWindow.__joeWebglContextRequests =
+            (trackedWindow.__joeWebglContextRequests ?? 0) + 1;
+        }
+
+        return originalGetContext.call(this, contextId, ...args);
+      };
+    });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await blockHeavyMedia(page);
-    await page.goto("/#photos", { waitUntil: "domcontentloaded" });
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
 
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
-    await expect(page.locator("#photos")).toBeInViewport();
+    await expect(page.locator("#community")).toBeInViewport();
+    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
+      "data-webgl-ready",
+      "reduced-motion",
+    );
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (
+              window as typeof window & {
+                __joeWebglContextRequests?: number;
+              }
+            ).__joeWebglContextRequests ?? 0,
+        ),
+      )
+      .toBe(0);
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "photos");
+    await expectHomeDestinationLink(page, "community");
     await expectPageHealthy(page, problems);
   });
 });

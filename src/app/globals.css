@@ -199,885 +199,6 @@
   }
 }
 
-.simo-os-root {
-  --simo-os-line: color-mix(in oklab, var(--foreground) 12%, transparent);
-  --simo-os-line-soft: color-mix(in oklab, var(--foreground) 7%, transparent);
-  --simo-os-panel: color-mix(in oklab, var(--background) 98%, var(--foreground) 2%);
-  --simo-os-panel-strong: color-mix(in oklab, var(--background) 93%, var(--foreground) 7%);
-  --simo-os-blue: #0068d6;
-  --simo-os-green: #0f7a4d;
-  --simo-os-amber: #b76a00;
-  --simo-os-radius: 6px;
-  --simo-os-radius-lg: 12px;
-  min-height: 100vh;
-  overflow-x: clip;
-  color: var(--foreground);
-  background:
-    linear-gradient(var(--simo-os-line-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--simo-os-line-soft) 1px, transparent 1px),
-    var(--background);
-  background-size: 72px 72px;
-}
-
-.simo-os-root * {
-  letter-spacing: 0;
-}
-
-.simo-os-root h1:focus,
-.simo-os-root h2:focus,
-.simo-os-root h3:focus {
-  outline: none;
-}
-
-.simo-os-hero {
-  border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(
-      circle at 78% 16%,
-      color-mix(in oklab, var(--signal-accent) 8%, transparent),
-      transparent 32rem
-    ),
-    color-mix(in oklab, var(--background) 96%, transparent);
-}
-
-.simo-os-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(26rem, 1.05fr);
-  gap: 3rem;
-  min-height: calc(82svh - 4rem);
-  align-items: center;
-  padding-block: 3.6rem;
-}
-
-.simo-os-hero-copy {
-  max-width: 43rem;
-}
-
-.simo-os-kicker,
-.simo-os-section-heading p,
-.simo-os-work-copy span,
-.simo-os-work-copy dt,
-.simo-os-blog-list article > span,
-.simo-os-contact-shell p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-family: var(--font-geist-mono);
-  font-size: 0.73rem;
-  font-weight: 520;
-  line-height: 1.45;
-  text-transform: uppercase;
-}
-
-.simo-os-kicker {
-  color: var(--foreground);
-}
-
-.simo-os-hero-copy h1 {
-  margin: 0.7rem 0 0;
-  font-size: clamp(4rem, 10vw, 8.5rem);
-  font-weight: 640;
-  line-height: 0.88;
-  text-wrap: balance;
-}
-
-.simo-os-hero-line {
-  max-width: 19ch;
-  margin: 1.2rem 0 0;
-  font-size: clamp(1.55rem, 3.3vw, 3.35rem);
-  font-weight: 570;
-  line-height: 1.02;
-  text-wrap: balance;
-}
-
-.simo-os-hero-detail {
-  max-width: 34rem;
-  margin: 1rem 0 0;
-  color: var(--muted-foreground);
-  font-size: 1.05rem;
-  line-height: 1.65;
-}
-
-.simo-os-actions,
-.simo-os-contact-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-}
-
-.simo-os-actions {
-  margin-top: 1.45rem;
-}
-
-.simo-os-primary-link,
-.simo-os-secondary-link,
-.simo-os-work-copy > a,
-.simo-os-contact-actions a {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  padding: 0.72rem 1rem;
-  color: var(--foreground);
-  background: var(--background);
-  font-size: 0.94rem;
-  font-weight: 520;
-  line-height: 1.2;
-  text-decoration: none;
-  outline: none;
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease,
-    transform 160ms ease;
-}
-
-.simo-os-primary-link,
-.simo-os-contact-actions a:first-child {
-  border-color: var(--foreground);
-  color: var(--background);
-  background: var(--foreground);
-}
-
-.simo-os-primary-link:hover,
-.simo-os-secondary-link:hover,
-.simo-os-work-copy > a:hover,
-.simo-os-contact-actions a:hover {
-  border-color: var(--foreground);
-  transform: translateY(-1px);
-}
-
-.simo-os-primary-link:focus-visible,
-.simo-os-secondary-link:focus-visible,
-.simo-os-work-copy > a:focus-visible,
-.simo-os-contact-actions a:focus-visible,
-.simo-os-social-list a:focus-visible,
-.simo-os-current-card:focus-visible,
-.simo-os-note-list a:focus-visible,
-.simo-os-section-heading a:focus-visible {
-  outline: 2px solid var(--signal-accent);
-  outline-offset: 3px;
-}
-
-.simo-os-primary-link svg,
-.simo-os-secondary-link svg,
-.simo-os-work-copy > a svg,
-.simo-os-contact-actions a svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.simo-os-hero-facts {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  width: min(100%, 39rem);
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  margin: 1.35rem 0 0;
-  background: var(--simo-os-line);
-}
-
-.simo-os-hero-facts div {
-  min-width: 0;
-  padding: 0.72rem 0.8rem;
-  background: color-mix(in oklab, var(--background) 96%, transparent);
-}
-
-.simo-os-hero-facts dt {
-  color: var(--muted-foreground);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-weight: 520;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.simo-os-hero-facts dd {
-  overflow: hidden;
-  margin: 0.16rem 0 0;
-  font-size: 0.9rem;
-  font-weight: 540;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-board {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius-lg);
-  background: var(--simo-os-line);
-  box-shadow: 0 24px 80px color-mix(in oklab, #000000 9%, transparent);
-}
-
-.simo-os-board-photo,
-.simo-os-board-panel {
-  min-width: 0;
-  background: color-mix(in oklab, var(--background) 97%, transparent);
-}
-
-.simo-os-board-photo {
-  position: relative;
-  min-height: 22rem;
-  overflow: hidden;
-}
-
-.simo-os-board-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.04);
-}
-
-.simo-os-board-photo::after {
-  content: "Joe / personal archive";
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  border: 1px solid color-mix(in oklab, #ffffff 50%, transparent);
-  border-radius: var(--simo-os-radius);
-  padding: 0.35rem 0.5rem;
-  color: #ffffff;
-  background: color-mix(in oklab, #000000 44%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-}
-
-.simo-os-board-panel {
-  display: grid;
-  gap: 0.8rem;
-  align-content: start;
-  padding: 0.85rem;
-}
-
-.simo-os-board-current {
-  grid-row: span 2;
-}
-
-.simo-os-board-notes {
-  grid-column: 1 / -1;
-}
-
-.simo-os-panel-heading,
-.simo-os-section-heading {
-  display: flex;
-  min-width: 0;
-  align-items: start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.simo-os-panel-heading h2 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 580;
-  line-height: 1.25;
-}
-
-.simo-os-panel-heading span,
-.simo-os-panel-heading a {
-  color: var(--muted-foreground);
-  font-size: 0.78rem;
-  line-height: 1.35;
-  text-decoration: none;
-}
-
-.simo-os-panel-heading a:hover,
-.simo-os-section-heading a:hover {
-  color: var(--foreground);
-}
-
-.simo-os-current-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem;
-}
-
-.simo-os-current-card {
-  display: grid;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  color: var(--foreground);
-  background: var(--background);
-  text-decoration: none;
-  outline: none;
-}
-
-.simo-os-current-card img,
-.simo-os-current-card > span {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  background: var(--simo-os-panel-strong);
-}
-
-.simo-os-current-card strong {
-  overflow: hidden;
-  padding: 0.55rem 0.58rem 0.1rem;
-  font-size: 0.84rem;
-  font-weight: 560;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-current-card em {
-  padding: 0 0.58rem 0.58rem;
-  color: var(--muted-foreground);
-  font-size: 0.73rem;
-  font-style: normal;
-  line-height: 1.25;
-}
-
-.simo-os-social-list {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.7rem;
-}
-
-.simo-os-social-list.compact {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.45rem;
-}
-
-.simo-os-social-list a {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0.65rem;
-  align-items: center;
-  min-width: 0;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  padding: 0.7rem;
-  color: var(--foreground);
-  background: var(--background);
-  text-decoration: none;
-  outline: none;
-  transition:
-    border-color 160ms ease,
-    transform 160ms ease;
-}
-
-.simo-os-social-list a:hover {
-  border-color: var(--foreground);
-  transform: translateY(-1px);
-}
-
-.simo-os-social-list svg {
-  width: 1.05rem;
-  height: 1.05rem;
-}
-
-.simo-os-social-list a > svg:last-child {
-  color: var(--muted-foreground);
-}
-
-.simo-os-social-list span {
-  display: grid;
-  min-width: 0;
-}
-
-.simo-os-social-list strong {
-  overflow: hidden;
-  font-size: 0.9rem;
-  font-weight: 560;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-social-list em {
-  overflow: hidden;
-  color: var(--muted-foreground);
-  font-size: 0.78rem;
-  font-style: normal;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-note-list {
-  display: grid;
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  background: var(--simo-os-line);
-}
-
-.simo-os-note-list a {
-  display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr) 4.5rem;
-  gap: 0.65rem;
-  align-items: center;
-  min-width: 0;
-  padding: 0.58rem 0.65rem;
-  color: var(--foreground);
-  background: var(--background);
-  text-decoration: none;
-  outline: none;
-}
-
-.simo-os-note-list span,
-.simo-os-note-list em {
-  color: var(--muted-foreground);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-style: normal;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.simo-os-note-list strong {
-  overflow: hidden;
-  font-size: 0.82rem;
-  font-weight: 540;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-section {
-  border-bottom: 1px solid var(--border);
-  padding-block: 4rem;
-  background: color-mix(in oklab, var(--background) 98%, transparent);
-  scroll-margin-top: 4.2rem;
-}
-
-.simo-os-work-section,
-.simo-os-blog-section,
-.simo-os-contact-section {
-  background: var(--background);
-}
-
-.simo-os-section-heading {
-  margin-bottom: 1.4rem;
-}
-
-.simo-os-section-heading h2,
-.simo-os-contact-shell h2 {
-  margin: 0;
-  font-size: clamp(2rem, 4.6vw, 4.8rem);
-  font-weight: 610;
-  line-height: 0.94;
-  text-wrap: balance;
-}
-
-.simo-os-section-heading span,
-.simo-os-contact-shell span {
-  max-width: 30rem;
-  color: var(--muted-foreground);
-  font-size: 0.98rem;
-  line-height: 1.55;
-}
-
-.simo-os-section-heading a {
-  color: var(--muted-foreground);
-  font-size: 0.9rem;
-  font-weight: 520;
-  text-decoration: none;
-  outline: none;
-}
-
-.simo-os-work-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius-lg);
-  background: var(--simo-os-line);
-}
-
-.simo-os-work-card {
-  display: grid;
-  min-width: 0;
-  align-content: start;
-  background: var(--background);
-}
-
-.simo-os-work-card:first-child {
-  grid-column: span 2;
-}
-
-.simo-os-work-card:first-child .simo-os-media img {
-  aspect-ratio: 16 / 8;
-}
-
-.simo-os-media {
-  display: grid;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  border-bottom: 1px solid var(--simo-os-line);
-  background: var(--simo-os-panel-strong);
-}
-
-.simo-os-media img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-}
-
-.simo-os-media.is-empty {
-  min-height: 12rem;
-  place-items: center;
-}
-
-.simo-os-media.is-empty span {
-  width: 40%;
-  height: 1px;
-  background: var(--simo-os-line);
-}
-
-.simo-os-work-copy {
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-}
-
-.simo-os-work-copy h3 {
-  margin: 0.18rem 0 0;
-  font-size: 1.35rem;
-  font-weight: 590;
-  line-height: 1.08;
-  text-wrap: balance;
-}
-
-.simo-os-work-copy p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.simo-os-work-copy dl {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius);
-  margin: 0;
-  background: var(--simo-os-line);
-}
-
-.simo-os-work-copy dl div {
-  min-width: 0;
-  padding: 0.55rem;
-  background: var(--background);
-}
-
-.simo-os-work-copy dd {
-  overflow: hidden;
-  margin: 0.16rem 0 0;
-  font-size: 0.8rem;
-  font-weight: 520;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-work-copy > a {
-  width: fit-content;
-  min-height: 2.35rem;
-  padding: 0.58rem 0.72rem;
-  font-size: 0.84rem;
-}
-
-.simo-os-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius-lg);
-  background: var(--simo-os-line);
-}
-
-.simo-os-photo-card {
-  position: relative;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  background: var(--simo-os-panel-strong);
-}
-
-.simo-os-photo-card[data-featured="true"] {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.simo-os-photo-card img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  filter: saturate(0.86) contrast(1.02);
-}
-
-.simo-os-photo-card[data-featured="true"] img {
-  aspect-ratio: 1 / 1;
-}
-
-.simo-os-photo-card figcaption {
-  position: absolute;
-  right: 0.55rem;
-  bottom: 0.55rem;
-  left: 0.55rem;
-  display: grid;
-  gap: 0.1rem;
-  border: 1px solid color-mix(in oklab, #ffffff 44%, transparent);
-  border-radius: var(--simo-os-radius);
-  padding: 0.45rem 0.55rem;
-  color: #ffffff;
-  background: color-mix(in oklab, #000000 46%, transparent);
-  backdrop-filter: blur(10px);
-}
-
-.simo-os-photo-card figcaption strong {
-  overflow: hidden;
-  font-size: 0.82rem;
-  font-weight: 560;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-photo-card figcaption span {
-  overflow: hidden;
-  color: color-mix(in oklab, #ffffff 78%, transparent);
-  font-size: 0.7rem;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-os-blog-list {
-  display: grid;
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-os-line);
-  border-radius: var(--simo-os-radius-lg);
-  background: var(--simo-os-line);
-}
-
-.simo-os-blog-list article {
-  display: grid;
-  grid-template-columns: 4rem minmax(0, 0.6fr) minmax(0, 1fr) 7rem;
-  gap: 1rem;
-  align-items: start;
-  min-width: 0;
-  padding: 0.95rem;
-  background: var(--background);
-}
-
-.simo-os-blog-list h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 570;
-  line-height: 1.25;
-  text-wrap: balance;
-}
-
-.simo-os-blog-list p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
-.simo-os-blog-list em {
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-  font-style: normal;
-  line-height: 1.35;
-}
-
-.simo-os-social-shell {
-  display: grid;
-  gap: 1.3rem;
-}
-
-.simo-os-contact-section {
-  border-bottom: 0;
-}
-
-.simo-os-contact-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2rem;
-  align-items: end;
-}
-
-.simo-os-contact-shell > div:first-child {
-  display: grid;
-  gap: 0.75rem;
-  max-width: 52rem;
-}
-
-.simo-os-contact-actions {
-  justify-content: end;
-}
-
-@media (max-width: 1180px) {
-  .simo-os-hero-grid,
-  .simo-os-contact-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-os-board {
-    max-width: 54rem;
-  }
-
-  .simo-os-social-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .simo-os-work-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .simo-os-work-card:first-child {
-    grid-column: span 1;
-  }
-
-  .simo-os-work-card:first-child .simo-os-media img {
-    aspect-ratio: 16 / 10;
-  }
-
-  .simo-os-photo-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .simo-os-hero-grid {
-    gap: 1.4rem;
-    min-height: auto;
-    padding-block: 2rem 2.5rem;
-  }
-
-  .simo-os-hero-copy h1 {
-    font-size: clamp(3.4rem, 17vw, 5.5rem);
-  }
-
-  .simo-os-hero-line {
-    max-width: 21ch;
-    font-size: 1.55rem;
-  }
-
-  .simo-os-hero-detail {
-    font-size: 0.98rem;
-    line-height: 1.55;
-  }
-
-  .simo-os-hero-facts,
-  .simo-os-board,
-  .simo-os-current-grid,
-  .simo-os-work-grid,
-  .simo-os-work-copy dl,
-  .simo-os-social-list,
-  .simo-os-social-list.compact,
-  .simo-os-blog-list article {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-os-board-current,
-  .simo-os-board-notes {
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-  .simo-os-board-photo {
-    min-height: 20rem;
-  }
-
-  .simo-os-section {
-    padding-block: 3rem;
-  }
-
-  .simo-os-section-heading {
-    display: grid;
-  }
-
-  .simo-os-section-heading h2,
-  .simo-os-contact-shell h2 {
-    font-size: 2.35rem;
-  }
-
-  .simo-os-photo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .simo-os-photo-card[data-featured="true"] {
-    grid-column: span 2;
-    grid-row: span 1;
-  }
-
-  .simo-os-photo-card[data-featured="true"] img {
-    aspect-ratio: 16 / 10;
-  }
-
-  .simo-os-contact-actions {
-    justify-content: start;
-  }
-}
-
-@media (max-width: 420px) {
-  .simo-os-actions,
-  .simo-os-contact-actions {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-os-primary-link,
-  .simo-os-secondary-link,
-  .simo-os-contact-actions a {
-    width: 100%;
-  }
-
-  .simo-os-note-list a {
-    grid-template-columns: 2.3rem minmax(0, 1fr);
-  }
-
-  .simo-os-note-list em {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .simo-os-primary-link,
-  .simo-os-secondary-link,
-  .simo-os-work-copy > a,
-  .simo-os-contact-actions a,
-  .simo-os-social-list a {
-    transition: none;
-  }
-
-  .simo-os-primary-link:hover,
-  .simo-os-secondary-link:hover,
-  .simo-os-work-copy > a:hover,
-  .simo-os-contact-actions a:hover,
-  .simo-os-social-list a:hover {
-    transform: none;
-  }
-}
-
 header nav a[aria-current="location"] {
   position: relative;
   color: var(--foreground);
@@ -1378,5145 +499,988 @@ header nav a[aria-current="location"]::after {
   padding-right: max(1.25rem, env(safe-area-inset-right));
 }
 
-.simo-index-root {
-  --simo-line: color-mix(in oklab, var(--foreground) 12%, transparent);
-  --simo-line-soft: color-mix(in oklab, var(--foreground) 7%, transparent);
-  --simo-material-border: color-mix(in oklab, var(--foreground) 13%, transparent);
-  --simo-material-border-strong: color-mix(in oklab, var(--foreground) 24%, transparent);
-  --simo-radius-base: 6px;
-  --simo-radius-raised: 12px;
-  --simo-project-accent: var(--signal-accent);
-  --simo-surface: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
-  --simo-surface-strong: color-mix(in oklab, var(--background) 90%, var(--foreground) 10%);
-  background: var(--background);
-  color: var(--foreground);
-}
-
-.simo-index-root * {
-  letter-spacing: 0;
-}
-
-.simo-index-root h1:focus,
-.simo-index-root h2:focus,
-.simo-index-root h3:focus {
-  outline: none;
-}
-
-.simo-index-hero {
+/* Joe Simo homepage: quiet Geist interface */
+.joe-site {
+  --joe-bg: var(--background);
+  --joe-ink: var(--foreground);
+  --joe-muted: color-mix(in oklab, var(--foreground) 62%, transparent);
+  --joe-faint: color-mix(in oklab, var(--foreground) 42%, transparent);
+  --joe-line: color-mix(in oklab, var(--foreground) 12%, transparent);
+  --joe-line-strong: color-mix(in oklab, var(--foreground) 20%, transparent);
+  --joe-panel: color-mix(in oklab, var(--background) 98%, var(--foreground) 2%);
+  --joe-panel-strong: color-mix(in oklab, var(--background) 94%, var(--foreground) 6%);
+  background: var(--joe-bg);
+  color: var(--joe-ink);
+  isolation: isolate;
   position: relative;
-  display: grid;
-  min-height: calc(62svh - 4rem);
-  margin-top: 0;
-  padding-top: 0;
-  overflow: hidden;
-  border-bottom: 1px solid var(--border);
-  background: var(--background);
 }
 
-.simo-index-hero::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset: 4rem 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--simo-line), transparent);
+.dark .joe-site {
+  --joe-panel: color-mix(in oklab, #080808 82%, #ffffff 4%);
+  --joe-panel-strong: color-mix(in oklab, #111111 88%, #ffffff 7%);
 }
 
-.simo-index-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(15rem, 18.5rem);
-  gap: 3.5rem;
-  align-items: center;
-  padding-block: 3.2rem 3.15rem;
+.joe-site *,
+.joe-site *::before,
+.joe-site *::after {
+  box-sizing: border-box;
 }
 
-.simo-index-identity {
+.joe-site .site-shell {
+  max-width: 1200px;
+}
+
+.joe-site > :not(.joe-signal-field) {
+  position: relative;
   z-index: 1;
-  max-width: 46rem;
 }
 
-.simo-index-kicker,
-.simo-work-tier,
-.simo-specimen-card em,
-.simo-work-proofline span {
+.joe-site :is(h1, h2, h3, p) {
   margin: 0;
-  font-family: var(--font-geist-sans);
-  font-size: 0.82rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--muted-foreground);
 }
 
-.simo-index-kicker {
-  color: var(--foreground);
-}
-
-.simo-work-number span,
-.simo-method-step span,
-.simo-method-active span,
-.simo-proof-rail span,
-.simo-work-index span,
-.simo-writing-card span,
-.simo-community-frame span,
-.simo-specimen-card span {
-  margin: 0;
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1.4;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
-}
-
-.simo-index-identity h1 {
-  max-width: none;
-  margin: 0.65rem 0 0;
-  font-size: 4.35rem;
-  font-weight: 560;
-  line-height: 0.96;
-  text-wrap: balance;
-}
-
-.simo-index-headline {
-  max-width: 21ch;
-  margin: 1.1rem 0 0;
-  font-size: 1.85rem;
-  font-weight: 520;
-  line-height: 1.12;
-  text-wrap: balance;
-}
-
-.simo-index-detail {
-  max-width: 32rem;
-  margin: 0.9rem 0 0;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.simo-hero-actions,
-.simo-work-actions,
-.simo-contact-actions,
-.simo-social-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.simo-hero-actions {
-  margin-top: 1.35rem;
-}
-
-.simo-primary-link,
-.simo-secondary-link,
-.simo-work-actions a,
-.simo-social-row a {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  padding: 0.72rem 1rem;
-  font-family: var(--font-geist-sans);
-  font-size: 0.94rem;
-  font-weight: 500;
-  line-height: 1.2;
-  text-transform: none;
-  text-decoration: none;
+.joe-site :is(h1, h2, h3):focus {
   outline: none;
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease;
 }
 
-.simo-primary-link {
-  border-color: var(--foreground);
-  background: var(--foreground);
-  color: var(--background);
-}
-
-.simo-secondary-link,
-.simo-work-actions a,
-.simo-social-row a {
-  background: var(--background);
-  color: var(--foreground);
-}
-
-.simo-primary-link:hover,
-.simo-secondary-link:hover,
-.simo-work-actions a:hover,
-.simo-social-row a:hover {
-  border-color: var(--foreground);
-}
-
-.simo-primary-link:focus-visible,
-.simo-secondary-link:focus-visible,
-.simo-work-actions a:focus-visible,
-.simo-social-row a:focus-visible,
-.simo-method-step:focus-visible {
-  outline: 2px solid var(--signal-accent);
-  outline-offset: 3px;
-}
-
-.simo-index-portrait {
-  position: static;
-  display: grid;
-  width: min(100%, 18.5rem);
-  margin: 0;
-  justify-self: end;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  padding: 0;
-  background: var(--simo-surface);
-  box-shadow: none;
-  backdrop-filter: none;
-}
-
-.simo-index-portrait img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  border-radius: 0;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.03);
-}
-
-.simo-index-portrait figcaption {
-  display: grid;
-  gap: 0.25rem;
-  min-width: 0;
-  border-top: 1px solid var(--simo-material-border);
-  padding: 0.72rem 0.8rem;
-}
-
-.simo-index-portrait span {
-  font-family: var(--font-geist-sans);
-  font-size: 0.82rem;
-  font-weight: 500;
+.joe-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--joe-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
   line-height: 1.4;
-  color: var(--muted-foreground);
+  margin: 0;
+  text-transform: uppercase;
 }
 
-.simo-index-portrait strong {
-  font-size: 0.9rem;
-  font-weight: 520;
-  line-height: 1.25;
+.joe-section-label span {
+  color: var(--joe-ink);
+  font-family: var(--font-geist-pixel-square), var(--font-geist-mono), monospace;
 }
 
-.simo-signal-world {
-  position: relative;
+.joe-hero {
+  border-bottom: 1px solid var(--joe-line);
+  display: grid;
+  align-items: start;
   min-height: auto;
+  padding: clamp(4rem, 8vw, 6rem) 0 clamp(3rem, 6vw, 4.5rem);
+}
+
+.joe-signal-field {
+  height: 12rem;
+  inset: calc(50svh - 6rem) max(2rem, calc((100vw - 1200px) / 2)) auto auto;
   overflow: hidden;
-  border-bottom: 1px solid var(--border);
-  background: var(--background);
-  scroll-margin-top: 0;
-}
-
-.simo-signal-world::after {
-  position: absolute;
-  inset: auto 0 0;
-  height: 1px;
-  content: "";
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--simo-line), transparent);
-}
-
-.simo-signal-webgl {
-  opacity: 0.34;
-}
-
-.simo-signal-static-route {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  width: min(42rem, 42vw);
   z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
 }
 
-.simo-signal-static-route svg {
+.joe-signal-field canvas,
+.joe-signal-fallback {
+  height: 100%;
+  inset: 0;
   position: absolute;
-  inset: 5.25rem 2rem auto auto;
-  width: min(45rem, 52%);
-  height: 18rem;
-  color: var(--foreground);
+  width: 100%;
+}
+
+.joe-signal-field canvas {
   opacity: 0.18;
 }
 
-.simo-signal-static-route path {
-  fill: none;
-  stroke: currentcolor;
-  stroke-width: 0.22;
+.joe-signal-fallback {
+  background-image:
+    linear-gradient(
+      115deg,
+      transparent 0 18%,
+      color-mix(in oklab, var(--joe-ink) 5%, transparent) 18% 18.2%,
+      transparent 18.2% 100%
+    ),
+    linear-gradient(
+      72deg,
+      transparent 0 62%,
+      color-mix(in oklab, var(--signal-accent) 10%, transparent) 62% 62.15%,
+      transparent 62.15% 100%
+    );
+  opacity: 0;
 }
 
-.simo-signal-static-route circle {
-  fill: var(--background);
-  stroke: currentcolor;
-  stroke-width: 0.22;
-}
-
-.simo-signal-static-route g[data-active="true"] circle {
-  fill: currentcolor;
-}
-
-.simo-signal-static-route text {
+.joe-signal-field[data-webgl-ready="false"] canvas {
   display: none;
-  fill: currentcolor;
-  font-family: var(--font-geist-mono);
-  font-size: 2px;
-  text-anchor: middle;
 }
 
-.simo-signal-shell {
-  position: relative;
-  z-index: 1;
+.joe-signal-field[data-webgl-ready="reduced-motion"] canvas {
+  display: none;
+}
+
+.joe-signal-field[data-webgl-ready="false"] .joe-signal-fallback {
+  opacity: 1;
+}
+
+.joe-signal-field[data-webgl-ready="reduced-motion"] .joe-signal-fallback {
+  opacity: 1;
+}
+
+.joe-hero-shell {
+  align-items: stretch;
+  background: var(--joe-bg);
+  border: 1px solid var(--joe-line);
+  border-radius: 12px;
   display: grid;
-  grid-template-columns: minmax(0, 0.58fr) minmax(26rem, 1fr);
-  gap: 2.5rem;
-  min-height: inherit;
-  align-items: start;
-  padding-block: 4.75rem;
+  gap: 0;
+  grid-template-columns: minmax(20rem, 0.38fr) minmax(0, 0.62fr);
+  min-height: 0;
+  overflow: hidden;
 }
 
-.simo-signal-copy {
-  max-width: 48rem;
+.joe-hero-copy {
+  align-content: center;
+  border-right: 1px solid var(--joe-line);
+  display: grid;
+  gap: 1.05rem;
+  min-width: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.simo-signal-copy h2,
-.simo-section-heading h2,
-.simo-contact-grid h2 {
-  margin: 0.75rem 0 0;
-  font-size: 2.75rem;
-  font-weight: 560;
+.joe-hero h1 {
+  font-size: 4rem;
+  font-weight: 500;
+  letter-spacing: 0;
   line-height: 1;
   text-wrap: balance;
 }
 
-.simo-signal-copy h2 {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.22em;
+.joe-hero-subhead {
+  color: var(--joe-ink);
+  font-size: 1.25rem;
+  line-height: 1.28;
 }
 
-.simo-signal-copy h2 span {
+.joe-hero-body {
+  color: var(--joe-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  max-width: 22rem;
+}
+
+.joe-actions,
+.joe-contact-actions,
+.joe-dialog-actions,
+.joe-current-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.joe-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  width: fit-content;
+}
+
+.joe-actions a {
   white-space: nowrap;
 }
 
-.simo-signal-copy p:last-child,
-.simo-section-heading p,
-.simo-contact-grid p {
-  max-width: 42rem;
-  margin: 1rem 0 0;
-  color: var(--muted-foreground);
-  font-size: 1.04rem;
-  line-height: 1.65;
+.joe-actions a,
+.joe-contact-actions a,
+.joe-work-copy button,
+.joe-work-table button,
+.joe-dialog-actions a,
+.joe-dialog-actions button,
+.joe-current-actions a,
+.joe-current-actions button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
+  color: var(--joe-ink);
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.875rem;
+  text-decoration: none;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
-.simo-method-route {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  background: var(--simo-material-border);
+.joe-action-primary,
+.joe-actions .joe-action-primary,
+.joe-contact-actions .joe-action-primary {
+  background: var(--joe-ink);
+  border-color: var(--joe-ink);
+  color: var(--joe-bg);
 }
 
-.simo-method-step {
-  display: grid;
-  gap: 0.65rem;
-  width: 100%;
-  min-height: 14rem;
+.joe-actions a:hover,
+.joe-actions a:focus-visible,
+.joe-contact-actions a:hover,
+.joe-contact-actions a:focus-visible,
+.joe-work-copy button:hover,
+.joe-work-copy button:focus-visible,
+.joe-work-table button:hover,
+.joe-work-table button:focus-visible,
+.joe-dialog-actions a:hover,
+.joe-dialog-actions a:focus-visible,
+.joe-dialog-actions button:hover,
+.joe-dialog-actions button:focus-visible,
+.joe-current-actions a:hover,
+.joe-current-actions a:focus-visible,
+.joe-current-actions button:hover,
+.joe-current-actions button:focus-visible {
+  border-color: var(--joe-line-strong);
+  background: var(--joe-panel);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--signal-accent) 24%, transparent);
+  outline: none;
+}
+
+.joe-actions .joe-action-primary:hover,
+.joe-actions .joe-action-primary:focus-visible,
+.joe-contact-actions .joe-action-primary:hover,
+.joe-contact-actions .joe-action-primary:focus-visible {
+  background: var(--joe-ink);
+  color: var(--joe-bg);
+}
+
+.joe-current-card {
+  background: var(--joe-panel);
   border: 0;
   border-radius: 0;
-  padding: 1rem;
-  color: var(--foreground);
-  background: var(--background);
-  text-align: left;
-  outline: none;
-}
-
-.simo-method-step[data-active="true"] {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--signal-accent) 8%, transparent),
-      transparent 58%
-    ),
-    var(--background);
-}
-
-.simo-method-step button {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.55rem;
-  align-items: center;
-  width: 100%;
-  border: 0;
+  gap: 0;
+  min-width: 0;
+  overflow: hidden;
   padding: 0;
-  color: inherit;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  outline: none;
 }
 
-.simo-method-step button:focus-visible {
-  outline: 2px solid var(--signal-accent);
-  outline-offset: 4px;
-}
-
-.simo-method-step strong,
-.simo-method-step h3 {
-  font-size: 1rem;
-  font-weight: 560;
-  line-height: 1.2;
-}
-
-.simo-method-step h3 {
-  margin: 0.25rem 0 0;
-  font-size: 1.35rem;
-  line-height: 1.14;
-  text-wrap: balance;
-}
-
-.simo-method-step p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.simo-story-section {
-  border-bottom: 1px solid var(--border);
-  padding-block: 3.75rem;
-  scroll-margin-top: 0;
-}
-
-.simo-section-heading {
-  max-width: 58rem;
-  margin-bottom: 1.5rem;
-}
-
-.simo-work-feature-list {
-  display: grid;
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  background: var(--simo-material-border);
-  box-shadow: none;
-}
-
-.simo-work-cases {
-  position: relative;
-}
-
-.simo-work-index {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  position: sticky;
-  top: 4.75rem;
-  z-index: 8;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  margin: 0 0 0.75rem;
-  background: var(--simo-material-border);
-  box-shadow: 0 8px 24px color-mix(in oklab, #000000 6%, transparent);
-}
-
-.simo-work-index a {
-  display: grid;
-  gap: 0.25rem;
-  min-height: 4.8rem;
-  align-content: center;
-  padding: 0.75rem;
-  color: var(--foreground);
-  background: var(--background);
-  text-decoration: none;
-  outline: none;
-}
-
-.simo-work-index a:hover {
-  background: var(--simo-surface);
-}
-
-.simo-work-index a:focus-visible {
-  position: relative;
-  z-index: 1;
-  outline: 2px solid var(--signal-accent);
-  outline-offset: -2px;
-}
-
-.simo-work-index strong {
-  font-size: 0.98rem;
-  font-weight: 560;
-  line-height: 1.2;
-}
-
-.simo-work-index em {
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-  font-style: normal;
-  line-height: 1.35;
-}
-
-.simo-work-feature,
-.simo-work-feature[data-featured="true"] {
-  display: grid;
-  grid-template-columns: 2.75rem minmax(0, 0.72fr) minmax(0, 1fr);
-  gap: 1.15rem;
-  min-height: 0;
+.joe-current-heading {
   align-items: start;
-  padding: 1.15rem;
-  background: var(--background);
-}
-
-.simo-work-feature[data-featured="true"] {
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in oklab, var(--simo-project-accent) 5%, transparent),
-      transparent 42%
-    ),
-    var(--background);
-}
-
-.simo-work-feature[data-treatment="mobile-strip"] {
-  --simo-project-accent: #0070f3;
-}
-
-.simo-work-feature[data-treatment="progression-strip"] {
-  --simo-project-accent: #0f7a4d;
-}
-
-.simo-work-feature[data-treatment="training-strip"] {
-  --simo-project-accent: #9a6a18;
-}
-
-.simo-work-copy {
   display: grid;
-  gap: 0.8rem;
-  min-width: 0;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: clamp(1rem, 2vw, 1.35rem);
 }
 
-.simo-work-copy h3 {
-  margin: 0.2rem 0 0;
-  font-size: 1.9rem;
-  font-weight: 560;
-  line-height: 1;
-  text-wrap: balance;
-}
-
-.simo-work-meta {
+.joe-current-heading > div:first-child {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  margin: 0;
-  background: var(--simo-material-border);
+  gap: 0.4rem;
 }
 
-.simo-work-meta div {
-  display: grid;
-  gap: 0.15rem;
-  min-width: 0;
-  padding: 0.55rem;
-  background: var(--background);
-}
-
-.simo-work-meta dt {
-  color: var(--muted-foreground);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-weight: 500;
-  line-height: 1.2;
+.joe-current-heading > div:first-child p,
+.joe-work-copy > p,
+.joe-work-table span,
+.joe-timeline > article > span,
+.joe-education-row > span,
+.joe-photo-sheet figcaption span,
+.joe-dialog-copy > p {
+  color: var(--joe-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  line-height: 1.1;
   text-transform: uppercase;
 }
 
-.simo-work-meta dd {
-  overflow: hidden;
+.joe-current-card h2,
+.joe-work-copy h3,
+.joe-work-table h3,
+.joe-timeline h3,
+.joe-credential-list h3,
+.joe-education-row h3,
+.joe-dialog-copy h2 {
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  font-weight: 560;
+  line-height: 1.16;
+}
+
+.joe-current-heading > div:first-child span,
+.joe-work-copy > span,
+.joe-section-head p,
+.joe-contact p,
+.joe-dialog-description {
+  color: var(--joe-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.joe-current-media,
+.joe-work-media,
+.joe-dialog-media {
+  background: var(--joe-bg);
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
   margin: 0;
-  font-size: 0.84rem;
-  font-weight: 520;
-  line-height: 1.25;
+  overflow: hidden;
+  position: relative;
+}
+
+.joe-cover-image {
+  object-fit: cover;
+}
+
+.joe-current-media {
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+}
+
+.joe-product-frame {
+  background: var(--joe-panel-strong);
+  overflow: hidden;
+}
+
+.joe-product-bar {
+  align-items: center;
+  border-bottom: 1px solid var(--joe-line);
+  color: var(--joe-muted);
+  display: grid;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  grid-template-columns: 2.25rem minmax(0, 1fr) 2.25rem;
+  line-height: 1;
+  min-height: 2.25rem;
+  padding: 0 0.8rem;
+}
+
+.joe-product-bar > span:nth-child(2) {
+  color: var(--joe-ink);
+  overflow: hidden;
+  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.simo-work-copy p {
-  margin: 0;
-  color: var(--muted-foreground);
-  line-height: 1.6;
-}
-
-.simo-work-stake {
-  color: var(--foreground) !important;
-}
-
-.simo-work-proofline {
-  display: grid;
+.joe-product-dots {
+  display: inline-flex;
   gap: 0.35rem;
-  border-left: 1px solid color-mix(in oklab, var(--simo-project-accent) 36%, var(--simo-material-border));
-  padding-left: 0.8rem;
 }
 
-.simo-proof-rail {
+.joe-product-dots span {
+  border: 1px solid var(--joe-line-strong);
+  border-radius: 999px;
+  height: 0.45rem;
+  width: 0.45rem;
+}
+
+.joe-current-proof-grid {
+  align-items: stretch;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  background: var(--simo-material-border);
-}
-
-.simo-proof-rail article {
-  display: grid;
-  gap: 0.35rem;
-  align-content: start;
-  padding: 0.75rem;
-  background: var(--background);
-}
-
-.simo-proof-rail strong {
-  font-weight: 560;
-  line-height: 1.25;
-}
-
-.simo-proof-rail p {
-  margin: 0;
-  font-size: 0.86rem;
-  line-height: 1.45;
-}
-
-.simo-work-actions {
-  margin-top: 0;
-}
-
-.simo-work-actions a:first-child {
-  border-color: var(--foreground);
-  background: var(--foreground);
-  color: var(--background);
-}
-
-.simo-work-media-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.simo-work-media-grid .simo-work-media-video,
-.simo-work-media-grid[data-treatment="mobile-strip"] .simo-work-media-video,
-.simo-work-media-grid[data-treatment="progression-strip"] .simo-work-media-video,
-.simo-work-media-grid[data-treatment="training-strip"] .simo-work-media-video {
-  grid-column: 1 / -1;
-}
-
-.simo-work-media {
-  display: grid;
-  min-width: 0;
-  max-width: 100%;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  background: var(--simo-surface-strong);
-}
-
-.simo-work-media img,
-.simo-work-media video {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: contain;
-  max-height: 24rem;
-  padding: 0.55rem;
-}
-
-.simo-work-media video {
-  padding: 0;
-  background: #000000;
-}
-
-.simo-work-media[data-media-fit="phone"] img {
-  aspect-ratio: 9 / 16;
-  max-height: 25rem;
-  object-fit: contain;
-}
-
-.simo-work-media figcaption {
-  display: grid;
-  gap: 0.15rem;
-  border-top: 1px solid var(--simo-material-border);
-  padding: 0.65rem;
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-  line-height: 1.4;
-}
-
-.simo-work-media figcaption span {
-  font-family: var(--font-geist-sans);
-  font-size: 0.78rem;
-}
-
-.simo-work-media figcaption strong {
-  font-weight: 500;
-}
-
-.simo-work-media.is-empty {
-  display: grid;
-  min-height: 14rem;
-  place-items: center;
-}
-
-.simo-work-media.is-empty span {
-  width: 38%;
-  height: 1px;
-  background: var(--simo-line);
-}
-
-.simo-specimen-strip,
-.simo-notes-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
-  margin-top: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(9rem, 0.26fr);
+  padding: clamp(0.65rem, 1.5vw, 1rem);
 }
 
-.simo-specimen-card,
-.simo-writing-card {
-  display: grid;
-  gap: 0.55rem;
-  align-content: start;
-  min-width: 0;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  padding: 1rem;
-  background: var(--background);
-}
-
-.simo-specimen-card strong,
-.simo-writing-card h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 560;
-  line-height: 1.25;
-}
-
-.simo-specimen-card p,
-.simo-writing-card p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.92rem;
-  line-height: 1.55;
-}
-
-.simo-writing-card em,
-.simo-community-frame em {
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-  font-style: normal;
-}
-
-.simo-people-section,
-.simo-notes-section {
-  background: color-mix(in oklab, var(--background) 98%, var(--foreground) 2%);
-}
-
-.simo-community-strip {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1px;
+.joe-current-image-frame {
+  aspect-ratio: 16 / 9;
+  background: #ffffff;
+  border: 1px solid var(--joe-line);
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  background: var(--simo-material-border);
+  position: relative;
 }
 
-.simo-community-frame {
-  display: grid;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  border: 0;
-  border-radius: 0;
-  background: var(--background);
+.joe-current-media .joe-cover-image {
+  object-position: center center;
 }
 
-.simo-community-frame[data-featured="true"] {
-  grid-column: span 3;
+.joe-current-image-frame-main .joe-cover-image {
+  transform: scale(1.035);
+  transform-origin: center;
 }
 
-.simo-community-frame[data-highlighted="true"] {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--signal-accent) 8%, transparent),
-      transparent 54%
-    ),
-    var(--background);
+.joe-current-image-frame-detail {
+  background-color: #ffffff;
+  background-position: 100% 44%;
+  background-repeat: no-repeat;
+  background-size: 295% auto;
+  border: 1px solid var(--joe-line);
+  border-radius: 8px;
 }
 
-.simo-community-media {
-  overflow: hidden;
-  border-bottom: 1px solid var(--simo-material-border);
-  background: var(--simo-surface-strong);
-}
-
-.simo-community-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-}
-
-.simo-community-frame[data-featured="true"] .simo-community-media img {
-  aspect-ratio: 16 / 10;
-}
-
-.simo-community-frame figcaption {
-  display: grid;
-  gap: 0.32rem;
-  padding: 0.75rem;
-}
-
-.simo-community-frame strong {
-  font-size: 0.98rem;
-  font-weight: 560;
-  line-height: 1.2;
-}
-
-.simo-community-frame p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-  line-height: 1.42;
-}
-
-.simo-community-frame:not([data-featured="true"]) p {
-  display: none;
-}
-
-.simo-notes-grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  background: var(--simo-material-border);
-}
-
-.simo-notes-grid .simo-writing-card {
-  grid-template-columns: 4.5rem minmax(0, 0.7fr) minmax(0, 1fr) 8rem;
-  gap: 1rem;
-  align-items: start;
-  border: 0;
-  border-radius: 0;
-  padding: 0.85rem;
-}
-
-.simo-notes-grid .simo-writing-card span,
-.simo-notes-grid .simo-writing-card em {
-  padding-top: 0.1rem;
-}
-
-.simo-notes-grid .simo-writing-card h3 {
-  font-size: 0.95rem;
-}
-
-.simo-notes-grid .simo-writing-card p {
-  font-size: 0.9rem;
-}
-
-.simo-contact-section {
-  min-height: auto;
-  border-bottom: 0;
-  background: var(--background);
-}
-
-.simo-contact-section:target {
-  min-height: calc(100svh - 4rem);
-}
-
-.simo-contact-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.48fr);
-  gap: 3rem;
-  min-height: inherit;
-  align-content: start;
-  align-items: start;
-}
-
-.simo-contact-actions {
-  align-self: start;
-  justify-content: flex-start;
-  margin-top: 0;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-raised);
-  padding: 0.75rem;
-  background: var(--background);
-}
-
-.simo-contact-actions .simo-primary-link {
-  width: 100%;
-}
-
-.simo-contact-actions .simo-social-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: 100%;
-}
-
-.simo-contact-actions .simo-social-row a {
-  min-width: 0;
-}
-
-.simo-contact-meta {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-material-border);
-  border-radius: var(--simo-radius-base);
-  margin: 0;
-  background: var(--simo-material-border);
-}
-
-.simo-contact-meta div {
-  display: grid;
-  gap: 0.25rem;
-  padding: 0.85rem;
-  background: var(--background);
-}
-
-.simo-contact-meta dt {
-  color: var(--muted-foreground);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
-.simo-contact-meta dd {
-  margin: 0;
-  color: var(--foreground);
-  font-size: 0.98rem;
-  font-weight: 520;
-  line-height: 1.35;
-}
-
-@media (min-width: 768px) {
-  .simo-index-identity h1 {
-    font-size: 5.25rem;
-  }
-
-  .simo-index-headline {
-    font-size: 2rem;
-  }
-
-  .simo-signal-copy h2,
-  .simo-section-heading h2,
-  .simo-contact-grid h2 {
-    font-size: 2.35rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .simo-index-identity h1 {
-    font-size: 5.85rem;
-  }
-}
-
-@media (max-width: 1180px) {
-  .simo-work-feature,
-  .simo-work-feature[data-featured="true"] {
-    grid-template-columns: 3rem minmax(0, 1fr);
-  }
-
-  .simo-work-index {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .simo-work-media-grid {
-    grid-column: 2;
-  }
-
-  .simo-proof-rail {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-community-strip,
-  .simo-specimen-strip,
-  .simo-notes-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .simo-community-frame[data-featured="true"] {
-    grid-column: span 1;
-  }
-
-  .simo-notes-grid .simo-writing-card {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (max-width: 900px) {
-  .simo-index-hero-grid,
-  .simo-signal-shell,
-  .simo-contact-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
-  }
-
-  .simo-index-portrait {
-    justify-self: start;
-    width: min(100%, 24rem);
-  }
-
-  .simo-signal-world {
-    min-height: auto;
-  }
-
-  .simo-signal-shell {
-    padding-block: 4rem;
-  }
-
-  .simo-signal-static-route svg {
-    inset: 2.5rem 1rem auto;
-    width: calc(100% - 2rem);
-    height: 12rem;
-    opacity: 0.1;
-  }
-
-  .simo-method-route {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-contact-actions {
-    padding-top: 0;
-  }
-}
-
-@media (max-width: 640px) {
-  .site-shell {
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  .simo-index-hero {
-    min-height: auto;
-  }
-
-  .simo-index-hero-grid {
-    gap: 1rem;
-    padding-block: 1.45rem 1.1rem;
-  }
-
-  .simo-signal-static-route {
-    display: none;
-  }
-
-  .simo-index-identity h1 {
-    margin-top: 0.55rem;
-    font-size: 3.05rem;
-  }
-
-  .simo-index-headline {
-    max-width: 20ch;
-    margin-top: 0.75rem;
-    font-size: 1.27rem;
-  }
-
-  .simo-index-portrait {
-    width: min(100%, 17.25rem);
-  }
-
-  .simo-index-portrait img {
-    aspect-ratio: 16 / 9;
-    object-position: center 24%;
-  }
-
-  .simo-index-detail,
-  .simo-signal-copy p:last-child,
-  .simo-section-heading p,
-  .simo-contact-grid p {
-    font-size: 0.98rem;
-  }
-
-  .simo-index-detail {
-    margin-top: 0.7rem;
-    line-height: 1.5;
-  }
-
-  .simo-hero-route {
-    margin-top: 0.75rem;
-    padding: 0.34rem 0.55rem;
-    font-size: 0.67rem;
-  }
-
-  .simo-hero-actions {
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .simo-hero-actions .simo-primary-link,
-  .simo-hero-actions .simo-secondary-link {
-    min-height: 2.45rem;
-    padding: 0.58rem 0.78rem;
-    font-size: 0.9rem;
-  }
-
-  .simo-index-portrait figcaption {
-    gap: 0.15rem;
-    padding: 0.62rem 0.7rem;
-  }
-
-  .simo-index-portrait span {
-    font-size: 0.76rem;
-  }
-
-  .simo-index-portrait strong {
-    font-size: 0.9rem;
-  }
-
-  .simo-signal-copy h2,
-  .simo-section-heading h2,
-  .simo-contact-grid h2 {
-    font-size: 2.05rem;
-  }
-
-  .simo-story-section {
-    padding-block: 3rem;
-  }
-
-  .simo-work-feature,
-  .simo-work-feature[data-featured="true"],
-  .simo-community-strip,
-  .simo-work-media-grid,
-  .simo-work-media-grid[data-treatment],
-  .simo-work-index,
-  .simo-work-meta,
-  .simo-contact-meta,
-  .simo-specimen-strip,
-  .simo-notes-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-work-index {
-    position: static;
-  }
-
-  .simo-work-media-grid {
-    grid-column: auto;
-  }
-
-  .simo-community-frame[data-featured="true"] {
-    grid-column: span 1;
-  }
-
-  .simo-notes-grid .simo-writing-card,
-  .simo-contact-actions .simo-social-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-work-copy h3 {
-    font-size: 1.8rem;
-  }
-
-  .simo-community-frame[data-featured="true"] .simo-community-media img,
-  .simo-community-media img {
-    aspect-ratio: 4 / 3;
-  }
-
-  .simo-community-frame[data-highlighted="true"] .simo-community-media img {
-    aspect-ratio: 4 / 5;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto !important;
-  }
-
-  .simo-signal-webgl canvas {
-    display: none !important;
-  }
-
-  .simo-primary-link,
-  .simo-secondary-link,
-  .simo-work-actions a,
-  .simo-social-row a {
-    transition: none;
-  }
-}
-
-/* Minimal personal portfolio surface */
-.simo-min-root {
-  --simo-min-border: color-mix(in oklab, var(--foreground) 13%, transparent);
-  --simo-min-border-strong: color-mix(in oklab, var(--foreground) 26%, transparent);
-  --simo-min-quiet: color-mix(in oklab, var(--foreground) 64%, var(--background));
-  --simo-min-card: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
-  background: var(--background);
-  color: var(--foreground);
-}
-
-.simo-min-root * {
-  letter-spacing: 0;
-}
-
-.simo-min-hero {
-  min-height: calc(100svh - 4rem);
-  border-bottom: 1px solid var(--simo-min-border);
-  background: transparent;
-}
-
-.simo-min-hero-shell {
-  display: grid;
-  min-height: calc(100svh - 4rem);
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  gap: clamp(1.5rem, 4vh, 3.5rem);
-  padding-block: clamp(2rem, 5vh, 4.5rem) 1rem;
-}
-
-.simo-min-kicker,
-.simo-min-section-head p,
-.simo-min-work-index,
-.simo-min-work-copy dt,
-.simo-min-note-list article > span,
-.simo-min-contact-shell p {
-  margin: 0;
-  color: var(--simo-min-quiet);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  font-weight: 560;
-  line-height: 1.45;
-  text-transform: uppercase;
-}
-
-.simo-min-kicker {
-  color: var(--foreground);
-}
-
-.simo-min-hero-title {
-  display: grid;
-  align-content: end;
-  gap: clamp(1rem, 2.6vw, 2rem);
-}
-
-.simo-min-hero-title h1 {
-  max-width: 10ch;
-  margin: 0;
-  font-size: clamp(5.4rem, 17vw, 18rem);
-  font-weight: 620;
-  line-height: 0.76;
-  text-wrap: balance;
-}
-
-.simo-min-hero-title p {
-  max-width: 13ch;
-  margin: 0;
-  font-size: clamp(1.85rem, 4vw, 4.8rem);
-  font-weight: 520;
-  line-height: 0.94;
-  text-wrap: balance;
-}
-
-.simo-min-hero-foot {
-  display: grid;
-  grid-template-columns: minmax(0, 34rem) auto;
-  gap: 2rem;
-  align-items: end;
-  border-top: 1px solid var(--simo-min-border);
-  padding-top: 1rem;
-}
-
-.simo-min-hero-foot > p,
-.simo-min-section-head > span,
-.simo-min-work-copy p,
-.simo-min-note-list p,
-.simo-min-contact-shell span {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.simo-min-hero-links,
-.simo-min-contact-actions {
+.joe-current-media figcaption {
+  align-items: baseline;
+  border-top: 1px solid var(--joe-line);
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  justify-content: end;
+  padding: 0.55rem clamp(0.75rem, 1.5vw, 1rem);
 }
 
-.simo-min-hero-links a,
-.simo-min-work-action,
-.simo-min-contact-actions a {
-  display: inline-flex;
-  min-height: 2.55rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  border: 1px solid var(--simo-min-border);
-  border-radius: 999px;
-  padding: 0.64rem 0.9rem;
-  color: var(--foreground);
-  background: color-mix(in oklab, var(--background) 90%, transparent);
-  font-size: 0.9rem;
-  font-weight: 520;
-  line-height: 1.2;
-  text-decoration: none;
-  outline: none;
-  backdrop-filter: blur(12px);
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    transform 180ms ease;
+.joe-current-media figcaption span {
+  color: var(--joe-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.simo-min-hero-links a:hover,
-.simo-min-work-action:hover,
-.simo-min-contact-actions a:hover {
-  border-color: var(--foreground);
-  transform: translateY(-1px);
+.joe-current-media figcaption strong {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25;
 }
 
-.simo-min-hero-links a:focus-visible,
-.simo-min-work-action:focus-visible,
-.simo-min-contact-actions a:focus-visible,
-.simo-min-visual-strip a:focus-visible,
-.simo-min-social-grid a:focus-visible {
-  outline: 2px solid var(--signal-accent);
-  outline-offset: 3px;
-}
-
-.simo-min-visual-strip {
+.joe-current-card dl,
+.joe-dialog-copy dl {
+  border-top: 1px solid var(--joe-line);
   display: grid;
-  grid-auto-columns: minmax(13rem, 1fr);
-  grid-auto-flow: column;
-  gap: 1px;
-  overflow-x: auto;
-  border: 1px solid var(--simo-min-border);
-  border-radius: 0;
-  background: var(--simo-min-border);
-  scrollbar-width: none;
-}
-
-.simo-min-visual-strip::-webkit-scrollbar {
-  display: none;
-}
-
-.simo-min-visual-strip a {
-  position: relative;
-  display: block;
-  min-width: 0;
-  overflow: hidden;
-  color: #fff;
-  background: #080808;
-  text-decoration: none;
-  outline: none;
-}
-
-.simo-min-visual-strip img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: clamp(12rem, 20vw, 18rem);
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  filter: grayscale(0.35) contrast(1.04);
-  opacity: 0.9;
-  transition:
-    filter 220ms ease,
-    opacity 220ms ease,
-    transform 600ms ease;
-}
-
-.simo-min-visual-strip a:hover img {
-  filter: grayscale(0) contrast(1.02);
-  opacity: 1;
-  transform: scale(1.025);
-}
-
-.simo-min-visual-strip span {
-  position: absolute;
-  right: 0.7rem;
-  bottom: 0.7rem;
-  left: 0.7rem;
-  display: flex;
-  min-height: 2rem;
-  align-items: center;
-  border: 1px solid color-mix(in oklab, #fff 34%, transparent);
-  padding: 0.34rem 0.5rem;
-  background: color-mix(in oklab, #000 42%, transparent);
-  font-size: 0.78rem;
-  font-weight: 540;
-  line-height: 1.2;
-  backdrop-filter: blur(14px);
-}
-
-.simo-min-section {
-  border-bottom: 1px solid var(--simo-min-border);
-  padding-block: clamp(4rem, 9vw, 8rem);
-  background: transparent;
-  scroll-margin-top: 4.5rem;
-}
-
-.simo-min-section-head {
-  display: grid;
-  grid-template-columns: minmax(10rem, 0.18fr) minmax(0, 0.82fr);
-  gap: 1rem;
-  align-items: end;
-  margin-bottom: clamp(1.8rem, 4vw, 3.6rem);
-}
-
-.simo-min-section-head h2 {
-  grid-column: 2;
-  max-width: 11ch;
+  gap: 0;
   margin: 0;
-  font-size: clamp(3rem, 8vw, 8.5rem);
-  font-weight: 590;
-  line-height: 0.82;
-  text-wrap: balance;
+  padding-top: 0;
 }
 
-.simo-min-section-head > span {
-  grid-column: 2;
-  max-width: 34rem;
-}
-
-.simo-min-work-list {
+.joe-current-card dl div {
   display: grid;
-  border-top: 1px solid var(--simo-min-border);
+  gap: 0.35rem;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0.625rem 0;
 }
 
-.simo-min-work-row {
-  display: grid;
-  grid-template-columns: 5rem minmax(0, 1fr) minmax(13rem, 20rem) auto;
-  gap: clamp(1rem, 3vw, 2.4rem);
-  align-items: center;
-  min-width: 0;
-  border-bottom: 1px solid var(--simo-min-border);
-  padding-block: 1.35rem;
-}
-
-.simo-min-work-copy {
+.joe-dialog-copy dl div {
   display: grid;
   gap: 0.75rem;
-  min-width: 0;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  padding: 0.625rem 0;
 }
 
-.simo-min-work-copy h3 {
+.joe-current-card dl {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding-inline: clamp(0.25rem, 1vw, 0.5rem);
+}
+
+.joe-current-card dl div {
+  border-right: 1px solid var(--joe-line);
+  padding: 0.75rem;
+}
+
+.joe-current-card dl div:last-child {
+  border-right: 0;
+}
+
+.joe-current-card dt,
+.joe-dialog-copy dt {
+  color: var(--joe-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.joe-current-card dd,
+.joe-dialog-copy dd {
   margin: 0;
-  font-size: clamp(1.45rem, 3.4vw, 3.2rem);
-  font-weight: 560;
-  line-height: 0.96;
-  text-wrap: balance;
 }
 
-.simo-min-work-copy p {
-  max-width: 47rem;
-  text-wrap: pretty;
+.joe-section {
+  border-bottom: 1px solid var(--joe-line);
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
 }
 
-.simo-min-work-copy dl {
-  display: none;
+.joe-section-head {
+  align-items: start;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 8rem minmax(0, 0.36fr) minmax(18rem, 0.64fr);
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.simo-min-work-copy dl div {
+.joe-section h2,
+.joe-contact h2 {
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+
+.joe-work-feature {
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
+  display: grid;
+  gap: 0;
+  grid-template-columns: minmax(19rem, 0.44fr) minmax(0, 0.56fr);
+  overflow: hidden;
+}
+
+.joe-work-copy {
+  align-content: start;
+  border-right: 1px solid var(--joe-line);
+  display: grid;
+  gap: 0.875rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.joe-work-copy ul,
+.joe-dialog-copy ul {
+  display: grid;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.joe-work-copy li,
+.joe-dialog-copy li {
+  color: var(--joe-muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.joe-work-copy li::before,
+.joe-dialog-copy li::before {
+  color: var(--joe-faint);
+  content: "-";
+  margin-right: 0.45rem;
+}
+
+.joe-work-copy a {
+  color: var(--joe-ink);
+}
+
+.joe-work-media {
+  aspect-ratio: 16 / 11;
+  border: 0;
+  border-radius: 0;
+}
+
+.joe-work-table {
+  border-top: 1px solid var(--joe-line);
+  margin-top: 0.75rem;
+}
+
+.joe-work-table article,
+.joe-timeline article,
+.joe-education-row,
+.joe-credential-list article {
+  border-bottom: 1px solid var(--joe-line);
+  display: grid;
+  gap: 1rem;
+}
+
+.joe-work-table article {
+  align-items: center;
+  grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 1fr) 8rem 6rem auto;
+  padding: 0.875rem 0;
+}
+
+.joe-work-table p {
+  color: var(--joe-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.joe-work-thumb {
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
+  display: block;
+  max-width: 5.5rem;
+  overflow: hidden;
+  position: relative;
+  width: 5.5rem;
+}
+
+.joe-timeline {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.joe-timeline article {
+  align-items: start;
+  background: var(--joe-panel);
+  border: 1px solid var(--joe-line);
+  border-radius: 8px;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 9.25rem;
+  padding: 1rem;
+}
+
+.joe-timeline p,
+.joe-timeline small,
+.joe-education-row p,
+.joe-education-row small,
+.joe-credential-list p,
+.joe-credential-list li span {
+  color: var(--joe-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.joe-timeline small {
+  font-size: 0.875rem;
+}
+
+.joe-education-row {
+  align-items: start;
+  background: var(--joe-panel);
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
+  grid-template-columns: 7rem minmax(0, 1fr) auto;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.joe-credential-list {
+  border-top: 1px solid var(--joe-line);
+}
+
+.joe-credential-list article {
+  grid-template-columns: minmax(12rem, 0.34fr) minmax(0, 1fr);
+  padding: 1rem 0;
+}
+
+.joe-credential-list ul {
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.joe-credential-list li {
   display: grid;
   gap: 0.15rem;
 }
 
-.simo-min-work-copy dd {
-  margin: 0;
-  color: var(--foreground);
-  font-size: 0.82rem;
-  font-weight: 520;
-  line-height: 1.25;
+.joe-credential-list strong {
+  font-weight: 500;
 }
 
-.simo-min-work-media {
-  box-sizing: border-box;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid var(--simo-min-border);
-  background: var(--simo-min-card);
-}
-
-.simo-min-work-media img {
-  box-sizing: border-box;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  filter: grayscale(0.2);
-  transition:
-    filter 220ms ease,
-    transform 600ms ease;
-}
-
-.simo-min-work-row:hover .simo-min-work-media img {
-  filter: grayscale(0);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .simo-min-work-row:hover .simo-min-work-media img {
-    transform: scale(1.025);
-  }
-}
-
-.simo-min-empty-media {
-  display: block;
-  min-height: 6rem;
-  border: 1px solid var(--simo-min-border);
-  background: var(--simo-min-card);
-}
-
-.simo-min-work-action {
-  white-space: nowrap;
-}
-
-.simo-min-work-spacer {
-  display: block;
-}
-
-.simo-min-photo-grid {
+.joe-photo-sheet {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--simo-min-border);
-  background: var(--simo-min-border);
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.simo-min-photo {
-  position: relative;
-  min-width: 0;
+.joe-photo-sheet:focus-visible {
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--signal-accent) 24%, transparent);
+  outline: none;
+}
+
+.joe-photo-sheet figure {
+  border: 1px solid var(--joe-line);
+  border-radius: 6px;
+  display: grid;
+  gap: 0;
   margin: 0;
   overflow: hidden;
-  background: #080808;
 }
 
-.simo-min-photo[data-wide="true"] {
+.joe-photo-sheet figure[data-featured="true"] {
   grid-column: span 2;
   grid-row: span 2;
 }
 
-.simo-min-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
+.joe-photo-frame {
   aspect-ratio: 4 / 5;
-  object-fit: cover;
-  filter: grayscale(0.65) contrast(1.06);
-  transition:
-    filter 220ms ease,
-    transform 700ms ease;
-}
-
-.simo-min-photo[data-wide="true"] img {
-  aspect-ratio: 1 / 1;
-}
-
-.simo-min-photo:hover img {
-  filter: grayscale(0.06) contrast(1.02);
-  transform: scale(1.018);
-}
-
-.simo-min-photo figcaption {
-  position: absolute;
-  inset: auto 0.6rem 0.6rem 0.6rem;
-  display: grid;
-  gap: 0.1rem;
-  border: 1px solid color-mix(in oklab, #fff 30%, transparent);
-  padding: 0.42rem 0.52rem;
-  color: #fff;
-  background: color-mix(in oklab, #000 48%, transparent);
-  opacity: 0;
-  transform: translateY(0.3rem);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
-  backdrop-filter: blur(14px);
-}
-
-.simo-min-photo:hover figcaption,
-.simo-min-photo:focus-within figcaption {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.simo-min-photo figcaption strong,
-.simo-min-photo figcaption span {
-  overflow: hidden;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-min-photo figcaption span {
-  color: color-mix(in oklab, #fff 74%, transparent);
-  font-size: 0.68rem;
-}
-
-.simo-min-note-list {
-  display: grid;
-  border-top: 1px solid var(--simo-min-border);
-}
-
-.simo-min-note-list article {
-  display: grid;
-  grid-template-columns: 4rem minmax(12rem, 0.38fr) minmax(0, 1fr) 7rem;
-  gap: clamp(0.8rem, 2vw, 1.6rem);
-  align-items: baseline;
-  min-width: 0;
-  border-bottom: 1px solid var(--simo-min-border);
-  padding-block: 1rem;
-}
-
-.simo-min-note-list h3 {
-  margin: 0;
-  font-size: clamp(1.05rem, 2vw, 1.55rem);
-  font-weight: 560;
-  line-height: 1.08;
-  text-wrap: balance;
-}
-
-.simo-min-note-list em {
-  color: var(--simo-min-quiet);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  font-style: normal;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.simo-min-social-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-top: 1px solid var(--simo-min-border);
-  border-left: 1px solid var(--simo-min-border);
-}
-
-.simo-min-social-grid a {
-  display: grid;
-  min-width: 0;
-  gap: 0.7rem;
-  align-content: start;
-  min-height: 12rem;
-  border-right: 1px solid var(--simo-min-border);
-  border-bottom: 1px solid var(--simo-min-border);
-  padding: 1rem;
-  color: var(--foreground);
-  background: color-mix(in oklab, var(--background) 88%, transparent);
-  text-decoration: none;
-  outline: none;
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-min-social-grid a:hover {
-  border-color: var(--simo-min-border-strong);
-  background: var(--background);
-  transform: translateY(-2px);
-}
-
-.simo-min-social-grid svg {
-  width: 1.15rem;
-  height: 1.15rem;
-}
-
-.simo-min-social-grid svg:last-child {
-  justify-self: end;
-  color: var(--muted-foreground);
-}
-
-.simo-min-social-grid strong {
-  margin-top: auto;
-  font-size: 1.2rem;
-  font-weight: 560;
-  line-height: 1;
-}
-
-.simo-min-social-grid span {
-  overflow: hidden;
-  color: var(--muted-foreground);
-  font-size: 0.85rem;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-min-contact-section {
-  min-height: 50svh;
-  border-bottom: 0;
-}
-
-.simo-min-contact-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2rem;
-  align-items: end;
-}
-
-.simo-min-contact-shell > div:first-child {
-  display: grid;
-  gap: 0.9rem;
-}
-
-.simo-min-contact-shell h2 {
-  max-width: 12ch;
-  margin: 0;
-  font-size: clamp(3rem, 8vw, 8rem);
-  font-weight: 590;
-  line-height: 0.82;
-  text-wrap: balance;
-}
-
-@media (max-width: 1180px) {
-  .simo-min-work-row {
-    grid-template-columns: 4rem minmax(0, 1fr) minmax(10rem, 15rem);
-  }
-
-  .simo-min-work-action {
-    grid-column: 2;
-    width: fit-content;
-  }
-
-  .simo-min-photo-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .simo-min-social-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .simo-min-hero,
-  .simo-min-hero-shell {
-    min-height: auto;
-  }
-
-  .simo-min-hero-shell {
-    gap: 1.5rem;
-    padding-block: 2.5rem 1rem;
-  }
-
-  .simo-min-hero-title h1 {
-    font-size: clamp(4.2rem, 25vw, 7rem);
-  }
-
-  .simo-min-hero-title p {
-    font-size: clamp(1.9rem, 11vw, 3.25rem);
-  }
-
-  .simo-min-hero-foot,
-  .simo-min-section-head,
-  .simo-min-work-row,
-  .simo-min-note-list article,
-  .simo-min-contact-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-min-hero-links,
-  .simo-min-contact-actions {
-    justify-content: start;
-  }
-
-  .simo-min-visual-strip {
-    margin-inline: calc(var(--site-shell-padding) * -1);
-    border-inline: 0;
-    scroll-padding-inline: var(--site-shell-padding);
-  }
-
-  .simo-min-visual-strip a {
-    min-width: 72vw;
-  }
-
-  .simo-min-section {
-    padding-block: 4rem;
-  }
-
-  .simo-min-section-head h2,
-  .simo-min-section-head > span {
-    grid-column: auto;
-  }
-
-  .simo-min-section-head h2,
-  .simo-min-contact-shell h2 {
-    font-size: clamp(3.1rem, 18vw, 5.5rem);
-  }
-
-  .simo-min-work-index,
-  .simo-min-work-action {
-    grid-column: auto;
-  }
-
-  .simo-min-work-media {
-    grid-row: 2;
-  }
-
-  .simo-min-photo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .simo-min-photo[data-wide="true"] {
-    grid-column: span 2;
-    grid-row: span 1;
-  }
-
-  .simo-min-photo[data-wide="true"] img {
-    aspect-ratio: 16 / 10;
-  }
-
-  .simo-min-photo figcaption {
-    opacity: 1;
-    transform: none;
-  }
-
-  .simo-min-note-list article {
-    align-items: start;
-  }
-
-  .simo-min-social-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-min-social-grid a {
-    min-height: 6rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .simo-min-hero-links a,
-  .simo-min-contact-actions a {
-    width: 100%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .simo-min-visual-strip img,
-  .simo-min-work-media img,
-  .simo-min-photo img,
-  .simo-min-photo figcaption,
-  .simo-min-hero-links a,
-  .simo-min-work-action,
-  .simo-min-social-grid a,
-  .simo-min-contact-actions a {
-    transition: none;
-  }
-
-  .simo-min-visual-strip a:hover img,
-  .simo-min-work-row:hover .simo-min-work-media img,
-  .simo-min-photo:hover img,
-  .simo-min-hero-links a:hover,
-  .simo-min-work-action:hover,
-  .simo-min-social-grid a:hover,
-  .simo-min-contact-actions a:hover {
-    transform: none;
-  }
-}
-
-/* Joe Simo Public Trail */
-
-.simo-trail-root {
-  --trail-bg: #f7f7f4;
-  --trail-ink: var(--foreground);
-  --trail-muted: color-mix(in oklab, var(--foreground) 64%, transparent);
-  --trail-line: color-mix(in oklab, var(--foreground) 11%, transparent);
-  --trail-line-strong: color-mix(in oklab, var(--foreground) 24%, transparent);
-  --trail-panel: #eeeeeb;
-  --trail-panel-strong: #f9f9f7;
-  --trail-accent: var(--signal-accent);
-  --trail-board-scale: 1;
-  --trail-board-y: 0px;
-  --trail-orbit-scale: 1;
-  --trail-orbit-x: 0px;
-  --trail-orbit-y: 0px;
-  --trail-pointer-x: 50vw;
-  --trail-pointer-y: 42vh;
-  --trail-scroll-progress: 0;
-  --theme-wipe-x: 100vw;
-  --theme-wipe-y: 0px;
-  --trail-radius: 8px;
-  position: relative;
-  isolation: isolate;
-  min-height: 100svh;
-  overflow-x: clip;
-  background:
-    radial-gradient(circle at 72% 12%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 34rem),
-    radial-gradient(circle at 18% 36%, color-mix(in oklab, var(--foreground) 6%, transparent), transparent 28rem),
-    var(--trail-bg);
-  color: var(--trail-ink);
-}
-
-.simo-trail-root::before {
-  pointer-events: none;
-  content: "";
-  position: fixed;
-  z-index: 0;
-  inset: 0;
-  background:
-    radial-gradient(
-      38rem circle at var(--trail-pointer-x) var(--trail-pointer-y),
-      color-mix(in oklab, var(--trail-accent) 12%, transparent),
-      transparent 68%
-    ),
-    linear-gradient(
-      115deg,
-      transparent 0 42%,
-      color-mix(in oklab, var(--trail-ink) 5%, transparent) 42.08%,
-      transparent 42.3% 100%
-    );
-  opacity: 0.78;
-}
-
-.simo-trail-root::after {
-  pointer-events: none;
-  content: "";
-  position: fixed;
-  z-index: 60;
-  inset: 0;
-  background: radial-gradient(
-    circle at var(--theme-wipe-x) var(--theme-wipe-y),
-    color-mix(in oklab, var(--trail-accent) 28%, var(--trail-bg)) 0,
-    color-mix(in oklab, var(--trail-accent) 9%, transparent) 28%,
-    transparent 64%
-  );
-  opacity: 0;
-  transform: scale(0.18);
-  transform-origin: var(--theme-wipe-x) var(--theme-wipe-y);
-}
-
-html[data-theme-transition="active"] .simo-trail-root::after {
-  animation: simo-theme-wipe 720ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-
-.dark .simo-trail-root {
-  --trail-bg: #050505;
-  --trail-muted: color-mix(in oklab, #ffffff 64%, transparent);
-  --trail-line: color-mix(in oklab, #ffffff 14%, transparent);
-  --trail-line-strong: color-mix(in oklab, #ffffff 28%, transparent);
-  --trail-panel: color-mix(in oklab, #080808 72%, transparent);
-  --trail-panel-strong: color-mix(in oklab, #111111 82%, transparent);
-}
-
-@keyframes simo-theme-wipe {
-  0% {
-    opacity: 0;
-    transform: scale(0.08);
-  }
-
-  35% {
-    opacity: 0.72;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(3.6);
-  }
-}
-
-.simo-trail-root * {
-  letter-spacing: 0;
-}
-
-.simo-trail-root h1:focus:not(:focus-visible),
-.simo-trail-root h2:focus:not(:focus-visible),
-.simo-trail-root h3:focus:not(:focus-visible) {
-  outline: none;
-}
-
-.simo-trail-root h1:focus-visible,
-.simo-trail-root h2:focus-visible,
-.simo-trail-root h3:focus-visible {
-  border-radius: 0.04em;
-  box-shadow: -0.09em 0 0 -0.06em var(--trail-accent);
-  outline: none;
-}
-
-.simo-public-trail-canvas {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.simo-public-trail-canvas canvas,
-.simo-public-trail-fallback {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.simo-public-trail-canvas canvas {
   display: block;
-  opacity: 0.78;
-}
-
-.simo-public-trail-canvas[data-active-section="work"] canvas {
-  opacity: 0.28;
-}
-
-.simo-public-trail-canvas[data-active-section="work"] .simo-public-trail-fallback {
-  opacity: 0.06;
-}
-
-.simo-public-trail-fallback {
-  background:
-    linear-gradient(115deg, transparent 26%, var(--trail-line) 26.1%, transparent 26.4%),
-    radial-gradient(circle at 60% 40%, var(--trail-line-strong) 0 1px, transparent 1.5px);
-  background-size: 100% 100%, 4.5rem 4.5rem;
-  opacity: 0.22;
-}
-
-.simo-trail-root > section {
-  position: relative;
-  z-index: 1;
-}
-
-.simo-trail-root > section::before {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: -1px;
-  bottom: -1px;
-  left: clamp(0.34rem, 0.86vw, 0.72rem);
-  width: 1px;
-  background: linear-gradient(
-    transparent,
-    color-mix(in oklab, var(--trail-accent) 48%, transparent) 18%,
-    color-mix(in oklab, var(--trail-ink) 18%, transparent) 54%,
-    transparent
-  );
-  opacity: 0.52;
-}
-
-.simo-trail-root > section::after {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: clamp(5rem, 20vh, 12rem);
-  left: calc(clamp(0.34rem, 0.86vw, 0.72rem) - 0.13rem);
-  width: 0.26rem;
-  height: 0.26rem;
-  border: 1px solid var(--trail-accent);
-  border-radius: 999px;
-  background: var(--trail-bg);
-  box-shadow: 0 0 18px color-mix(in oklab, var(--trail-accent) 34%, transparent);
-}
-
-.simo-trail-root > section > * {
-  position: relative;
-  z-index: 1;
-}
-
-.simo-trail-marker {
-  margin: 0;
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  font-weight: 560;
-  line-height: 1.45;
-  text-transform: uppercase;
-}
-
-.simo-trail-hero {
-  min-height: calc(92svh - 4rem);
-  border-bottom: 1px solid var(--trail-line);
-}
-
-.simo-trail-hero-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 0.74fr) minmax(24rem, 0.86fr);
-  gap: 4rem;
-  min-height: calc(92svh - 4rem);
-  align-items: center;
-  padding-block: 3.35rem 3rem;
-}
-
-.simo-trail-hero-copy {
-  max-width: 49rem;
-}
-
-.simo-trail-hero h1 {
-  max-width: 8ch;
-  margin: 1.1rem 0 0;
-  font-size: 7.35rem;
-  font-weight: 650;
-  line-height: 0.82;
-  text-wrap: balance;
-}
-
-.simo-trail-hero-line {
-  max-width: 19ch;
-  margin: 1.35rem 0 0;
-  font-size: 2.35rem;
-  font-weight: 540;
-  line-height: 1.04;
-  text-wrap: balance;
-}
-
-.simo-trail-hero-detail,
-.simo-trail-section-head p,
-.simo-trail-contact-shell p {
-  max-width: 36rem;
-  margin: 1rem 0 0;
-  color: var(--trail-muted);
-  font-size: 1rem;
-  line-height: 1.65;
-  text-wrap: pretty;
-}
-
-.simo-trail-hero-links,
-.simo-trail-contact-actions,
-.simo-trail-dialog-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.simo-trail-hero-links {
-  margin-top: 1.6rem;
-}
-
-.simo-trail-hero-links a,
-.simo-trail-open-button,
-.simo-trail-contact-actions a,
-.simo-trail-dialog-actions a,
-.simo-trail-dialog-actions button {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  display: inline-flex;
-  min-height: 2.55rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.46rem;
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-  padding: 0.68rem 0.92rem;
-  color: var(--trail-ink);
-  background: color-mix(in oklab, var(--trail-panel) 82%, transparent);
-  font-size: 0.9rem;
-  font-weight: 540;
-  line-height: 1.2;
-  text-decoration: none;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
-  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
-  backdrop-filter: blur(16px);
-}
-
-.simo-trail-open-button {
-  width: fit-content;
-  cursor: pointer;
-}
-
-.simo-trail-hero-links a:hover,
-.simo-trail-open-button:hover,
-.simo-trail-contact-actions a:hover,
-.simo-trail-dialog-actions a:hover,
-.simo-trail-dialog-actions button:hover {
-  border-color: var(--trail-line-strong);
-  background: color-mix(in oklab, var(--trail-panel-strong) 88%, transparent);
-}
-
-.simo-trail-hero-links a:focus-visible,
-.simo-trail-open-button:focus-visible,
-.simo-trail-contact-actions a:focus-visible,
-.simo-trail-dialog-actions a:focus-visible,
-.simo-trail-dialog-actions button:focus-visible,
-.simo-trail-social-constellation a:focus-visible,
-.simo-trail-note-row:focus-visible,
-.simo-trail-orbit-card:focus-visible,
-.simo-trail-dialog-close:focus-visible {
-  outline: 2px solid var(--trail-accent);
-  outline-offset: 3px;
-}
-
-.simo-trail-orbit-board {
-  position: relative;
-  min-height: 34rem;
   overflow: hidden;
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  background:
-    linear-gradient(var(--trail-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--trail-line) 1px, transparent 1px),
-    color-mix(in oklab, var(--trail-panel) 72%, transparent);
-  background-size: 3rem 3rem;
-  box-shadow: 0 24px 90px color-mix(in oklab, #000000 18%, transparent);
-  transform: translate3d(
-      var(--trail-orbit-x),
-      calc(var(--trail-orbit-y) + var(--trail-board-y)),
-      0
-    )
-    scale(var(--trail-board-scale));
-  transform-origin: center;
-  transition:
-    border-color 220ms ease,
-    transform 420ms ease;
-  backdrop-filter: blur(20px);
+  position: relative;
 }
 
-.simo-trail-orbit-board::before {
-  content: "";
-  position: absolute;
-  inset: 1rem;
-  border: 1px solid color-mix(in oklab, var(--trail-accent) 22%, transparent);
-  opacity: 0.3;
-}
-
-.simo-trail-orbit-board::after {
-  content: "";
-  position: absolute;
-  top: clamp(9rem, 45%, 18rem);
-  left: calc(48% + var(--trail-orbit-x));
-  width: 0.52rem;
-  height: 0.52rem;
-  border-radius: 999px;
-  background: var(--trail-ink);
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--trail-bg) 70%, transparent),
-    0 0 38px color-mix(in oklab, var(--trail-accent) 62%, transparent);
-}
-
-.simo-trail-orbit-core {
-  position: absolute;
-  inset: 50% auto auto 50%;
-  display: grid;
-  width: 13rem;
-  height: 13rem;
-  place-items: center;
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-  color: var(--trail-muted);
-  transform: translate(-50%, -50%);
-}
-
-.simo-trail-orbit-core::before,
-.simo-trail-orbit-core::after {
-  content: "";
-  position: absolute;
-  inset: -2.2rem;
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-}
-
-.simo-trail-orbit-core::after {
-  inset: -4.4rem;
-  opacity: 0.56;
-}
-
-.simo-trail-orbit-core span {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--trail-ink);
-  box-shadow: 0 0 28px var(--trail-accent);
-}
-
-.simo-trail-orbit-core strong,
-.simo-trail-orbit-card span,
-.simo-trail-orbit-readout {
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-weight: 560;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.simo-trail-orbit-card {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  position: absolute;
-  display: grid;
-  width: 15rem;
-  overflow: hidden;
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  color: #ffffff;
-  background: #080808;
-  text-decoration: none;
-  transform:
-    translate3d(var(--magnet-x), var(--magnet-y), 0)
-    rotate(var(--card-rotate, 0deg));
-  transition:
-    border-color 180ms ease,
-    filter 220ms ease,
-    transform 220ms ease;
-}
-
-.simo-trail-orbit-card:hover {
-  border-color: color-mix(in oklab, #ffffff 62%, transparent);
-  filter: brightness(1.08);
-}
-
-.simo-trail-orbit-card img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  filter: grayscale(0.7) contrast(1.06);
-}
-
-.simo-trail-orbit-card span {
-  padding: 0.6rem;
-  background: color-mix(in oklab, #000000 78%, transparent);
-}
-
-.simo-trail-orbit-card-work {
-  --card-rotate: -3deg;
-  top: 12%;
-  left: 9%;
-  width: 18rem;
-}
-
-.simo-trail-orbit-card-work img {
-  object-position: right center;
-}
-
-.simo-trail-orbit-card-moment {
-  --card-rotate: 4deg;
-  right: 8%;
-  bottom: 12%;
-}
-
-.simo-trail-orbit-readout {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
+.joe-photo-sheet figcaption {
+  align-items: center;
+  border-top: 1px solid var(--joe-line);
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  border-top: 1px solid var(--trail-line);
-  padding-top: 0.8rem;
-  color: var(--trail-muted);
+  gap: 0.55rem;
+  font-size: 0.875rem;
+  min-height: 2.5rem;
+  padding: 0.625rem 0.75rem;
 }
 
-.simo-trail-section {
-  border-bottom: 1px solid var(--trail-line);
-  padding-block: 6rem;
-  background: color-mix(in oklab, var(--trail-bg) 76%, transparent);
-  scroll-margin-top: 4.5rem;
+.joe-contact {
+  padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
-.simo-trail-section-shell {
-  display: grid;
-  grid-template-columns: minmax(13rem, 0.24fr) minmax(0, 1fr);
-  gap: 3rem;
+.joe-contact-shell {
   align-items: start;
-}
-
-.simo-trail-section-head {
   display: grid;
-  gap: 0.85rem;
-  min-width: 0;
-}
-
-.simo-trail-work-section .simo-trail-section-head {
-  position: sticky;
-  top: 5.25rem;
-}
-
-.simo-trail-work-section {
-  overflow: hidden;
-  background: var(--trail-bg);
-  isolation: isolate;
-}
-
-.simo-trail-work-veil {
-  pointer-events: none;
-  position: absolute !important;
-  z-index: 0 !important;
-  inset: -18vh 0 auto;
-  height: min(72vh, 46rem);
-  background:
-    linear-gradient(
-      to bottom,
-      var(--trail-bg) 0%,
-      color-mix(in oklab, var(--trail-bg) 84%, transparent) 24%,
-      color-mix(in oklab, var(--trail-bg) 72%, transparent) 58%,
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse at 68% 18%,
-      color-mix(in oklab, var(--trail-accent) 13%, transparent),
-      transparent 42%
-    );
-  opacity: 0.92;
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 13%,
-    black 72%,
-    transparent 100%
-  );
-}
-
-.simo-trail-work-section .simo-trail-section-shell {
-  position: relative;
-  z-index: 2;
-}
-
-.simo-trail-section-head h2,
-.simo-trail-contact-shell h2 {
-  max-width: 10ch;
-  margin: 0;
-  font-size: 5.25rem;
-  font-weight: 620;
-  line-height: 0.86;
-  text-wrap: balance;
-}
-
-.simo-trail-wide-head {
-  max-width: 96rem;
-  margin-inline: auto;
-  padding-inline: max(1.25rem, env(safe-area-inset-left));
-}
-
-.simo-trail-work-grid {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  border: 1px solid var(--trail-line);
-  background: var(--trail-line);
-  perspective: 1800px;
-  box-shadow: 0 36px 120px color-mix(in oklab, #000000 7%, transparent);
-}
-
-.simo-trail-work-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  min-width: 0;
-  background:
-    radial-gradient(circle at 80% 10%, color-mix(in oklab, var(--trail-accent) 9%, transparent), transparent 18rem),
-    var(--trail-panel-strong);
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--trail-ink) 8%, transparent);
-  transform-style: preserve-3d;
-  transition:
-    box-shadow 220ms ease,
-    transform 320ms ease;
-}
-
-.simo-trail-work-card:hover {
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--trail-ink) 10%, transparent),
-    0 18px 68px color-mix(in oklab, #000000 9%, transparent);
-  transform: translateY(-0.36rem);
-}
-
-.simo-trail-work-card::after {
-  content: attr(data-artifact);
-  position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  color: color-mix(in oklab, var(--trail-ink) 32%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.64rem;
-  font-weight: 560;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.simo-trail-work-card[data-featured="true"] {
-  grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1.08fr) minmax(19rem, 0.72fr);
-}
-
-.simo-trail-work-card:not([data-featured="true"]):last-child {
-  grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 0.86fr) minmax(21rem, 0.62fr);
-}
-
-.simo-trail-work-media {
-  position: relative;
-  display: grid;
-  min-height: 18rem;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  padding: clamp(0.14rem, 0.3vw, 0.3rem);
-  background:
-    radial-gradient(circle at 18% 10%, color-mix(in oklab, var(--trail-accent) 8%, transparent), transparent 16rem),
-    linear-gradient(180deg, color-mix(in oklab, var(--trail-panel-strong) 98%, #000000 2%), color-mix(in oklab, var(--trail-panel) 96%, #000000 4%));
-}
-
-.simo-trail-work-media::before {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 1;
-  inset: clamp(0.14rem, 0.3vw, 0.3rem);
-  border: 1px solid color-mix(in oklab, var(--trail-ink) 9%, transparent);
-  box-shadow:
-    0 18px 58px color-mix(in oklab, #000000 6%, transparent),
-    inset 0 1px 0 color-mix(in oklab, #ffffff 72%, transparent);
-}
-
-.simo-trail-work-media::after {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: clamp(0.14rem, 0.3vw, 0.3rem);
-  background:
-    linear-gradient(120deg, color-mix(in oklab, #ffffff 18%, transparent), transparent 24%),
-    linear-gradient(180deg, transparent 62%, color-mix(in oklab, #000000 18%, transparent));
-  mix-blend-mode: screen;
-  opacity: 0.16;
-}
-
-.simo-trail-work-media img,
-.simo-trail-work-media > span,
-.simo-trail-sim0-composition {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 18rem;
-  aspect-ratio: 16 / 10;
-  background: color-mix(in oklab, var(--trail-bg) 78%, #000000 8%);
-}
-
-.simo-trail-work-media > img,
-.simo-trail-work-media > span {
-  object-fit: cover;
-  filter: grayscale(0.26) contrast(1.04) brightness(0.94);
-  transition:
-    filter 240ms ease,
-    transform 420ms ease;
-}
-
-.dark .simo-trail-work-media {
-  background:
-    radial-gradient(circle at 18% 10%, color-mix(in oklab, var(--trail-accent) 12%, transparent), transparent 16rem),
-    linear-gradient(180deg, #111111, #050505);
-}
-
-.dark .simo-trail-work-media::before {
-  border-color: color-mix(in oklab, #ffffff 11%, transparent);
-  box-shadow:
-    0 20px 70px color-mix(in oklab, #000000 42%, transparent),
-    inset 0 1px 0 color-mix(in oklab, #ffffff 8%, transparent);
-}
-
-.dark .simo-trail-work-media > img,
-.dark .simo-trail-work-media > span {
-  filter: grayscale(0.38) contrast(1.08) brightness(0.84);
-}
-
-.simo-trail-work-card:hover .simo-trail-work-media > img {
-  filter: grayscale(0.03) contrast(1.02) brightness(0.98);
-  transform: scale(1.018);
-}
-
-.simo-trail-work-card[data-featured="true"] .simo-trail-work-media,
-.simo-trail-work-card[data-featured="true"] .simo-trail-work-media img {
-  min-height: 25rem;
-}
-
-.simo-trail-sim0-composition {
-  position: relative;
-  overflow: hidden;
-  background:
-    linear-gradient(color-mix(in oklab, #ffffff 9%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, #ffffff 9%, transparent) 1px, transparent 1px),
-    radial-gradient(circle at 22% 20%, color-mix(in oklab, var(--trail-accent) 32%, transparent), transparent 16rem),
-    linear-gradient(135deg, #090b0f, #151922 54%, #f3f5f8);
-  background-size: 2rem 2rem, 2rem 2rem, auto, auto;
-}
-
-.simo-trail-sim0-composition::before {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 4;
-  inset: 0;
-  background:
-    linear-gradient(120deg, color-mix(in oklab, #ffffff 22%, transparent), transparent 28%),
-    radial-gradient(circle at 82% 20%, color-mix(in oklab, var(--trail-accent) 20%, transparent), transparent 10rem);
-  mix-blend-mode: screen;
-  opacity: 0.42;
-}
-
-.simo-trail-sim0-composition::after {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 4;
-  right: 6%;
-  bottom: 12%;
-  width: 0.56rem;
-  height: 0.56rem;
-  border-radius: 999px;
-  background: var(--trail-accent);
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, #ffffff 64%, transparent),
-    0 0 34px color-mix(in oklab, var(--trail-accent) 76%, transparent);
-  transition:
-    box-shadow 240ms ease,
-    transform 240ms ease;
-}
-
-.simo-trail-sim0-composition img {
-  position: absolute;
-  height: auto;
-  min-height: 0;
-  object-fit: cover;
-  background: #ffffff;
-  box-shadow:
-    0 22px 70px color-mix(in oklab, #000000 22%, transparent),
-    0 0 0 1px color-mix(in oklab, #ffffff 18%, transparent);
-  filter: grayscale(0.04) contrast(1.06) brightness(0.94);
-  transition:
-    filter 260ms ease,
-    transform 520ms ease;
-}
-
-.simo-trail-work-card[data-featured="true"] .simo-trail-sim0-composition img {
-  min-height: 0;
-}
-
-.simo-trail-sim0-primary {
-  left: 4.5%;
-  top: 15%;
-  z-index: 1;
-  width: 58%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  border-radius: 0.62rem;
-  object-position: right center;
-  opacity: 0.96;
-}
-
-.simo-trail-sim0-inset {
-  right: 5.2%;
-  top: 15%;
-  z-index: 2;
-  width: 35%;
-  aspect-ratio: 16 / 9;
-  border-radius: 0.54rem;
-  object-position: right center;
-}
-
-.simo-trail-sim0-ghost {
-  right: 8%;
-  bottom: 21%;
-  z-index: 3;
-  width: 38%;
-  aspect-ratio: 16 / 9;
-  border-radius: 0.52rem;
-  opacity: 0.92;
-  object-position: right center;
-}
-
-.simo-trail-sim0-composition ol {
-  position: absolute;
-  z-index: 5;
-  left: 1rem;
-  top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.simo-trail-sim0-route {
-  position: absolute;
-  z-index: 5;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
-  border: 1px solid color-mix(in oklab, #ffffff 17%, transparent);
-  border-radius: 0.56rem;
-  background: color-mix(in oklab, #050608 70%, transparent);
-  backdrop-filter: blur(14px);
-}
-
-.simo-trail-sim0-route span,
-.simo-trail-sim0-map span {
-  overflow: hidden;
-  color: color-mix(in oklab, #ffffff 78%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.62rem;
-  font-weight: 560;
-  line-height: 1;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.simo-trail-sim0-route span {
-  min-width: 0;
-  border-right: 1px solid color-mix(in oklab, #ffffff 12%, transparent);
-  padding: 0.62rem;
-}
-
-.simo-trail-sim0-route span:last-child {
-  border-right: 0;
-  color: color-mix(in oklab, var(--trail-accent) 82%, #ffffff 18%);
-}
-
-.simo-trail-sim0-map {
-  position: absolute;
-  z-index: 5;
-  top: 43%;
-  right: 5.5%;
-  display: grid;
-  gap: 0.34rem;
-  width: min(13rem, 31%);
-}
-
-.simo-trail-sim0-map span {
-  position: relative;
-  border: 1px solid color-mix(in oklab, #ffffff 16%, transparent);
-  border-radius: 999px;
-  padding: 0.46rem 0.66rem 0.46rem 1.35rem;
-  background: color-mix(in oklab, #050608 64%, transparent);
-  backdrop-filter: blur(12px);
-}
-
-.simo-trail-sim0-map span::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0.58rem;
-  width: 0.38rem;
-  height: 0.38rem;
-  border-radius: 999px;
-  background: var(--trail-accent);
-  transform: translateY(-50%);
-  box-shadow: 0 0 18px color-mix(in oklab, var(--trail-accent) 72%, transparent);
-}
-
-.simo-trail-sim0-composition li {
-  border: 1px solid color-mix(in oklab, var(--trail-ink) 16%, transparent);
-  border-radius: 999px;
-  padding: 0.38rem 0.52rem;
-  color: var(--trail-ink);
-  background: color-mix(in oklab, var(--trail-bg) 78%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.62rem;
-  font-weight: 560;
-  line-height: 1;
-  text-transform: uppercase;
-  backdrop-filter: blur(14px);
-}
-
-.simo-trail-work-card:hover .simo-trail-sim0-primary {
-  transform: translate3d(0.4rem, -0.28rem, 0) scale(1.012);
-}
-
-.simo-trail-work-card:hover .simo-trail-sim0-inset {
-  transform: translate3d(-0.24rem, 0.2rem, 0) scale(1.018);
-}
-
-.simo-trail-work-card:hover .simo-trail-sim0-ghost {
-  transform: translate3d(0.18rem, 0.28rem, 0) scale(1.02);
-}
-
-.simo-trail-work-card[data-featured="true"]:hover .simo-trail-sim0-composition::after {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, #ffffff 70%, transparent),
-    0 0 46px color-mix(in oklab, var(--trail-accent) 86%, transparent);
-  transform: scale(1.24);
-}
-
-.simo-trail-work-copy {
-  display: grid;
-  gap: 0.9rem;
-  align-content: start;
-  min-width: 0;
-  padding: 1.2rem;
-  transition:
-    background-color 180ms ease,
-    color 180ms ease;
-}
-
-.simo-trail-work-card:hover .simo-trail-work-copy {
-  background: color-mix(in oklab, var(--trail-accent) 4%, transparent);
-}
-
-.simo-trail-work-card:hover .simo-trail-open-button {
-  border-color: color-mix(in oklab, var(--trail-accent) 42%, var(--trail-line));
-  background: color-mix(in oklab, var(--trail-accent) 12%, var(--trail-panel));
-}
-
-.simo-trail-work-copy > span,
-.simo-trail-work-copy dt,
-.simo-trail-dialog-copy > p,
-.simo-trail-note-dialog > p {
-  margin: 0;
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-weight: 560;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.simo-trail-work-copy h3 {
-  margin: 0;
-  font-size: 2.15rem;
-  font-weight: 610;
-  line-height: 0.95;
-  text-wrap: balance;
-}
-
-.simo-trail-work-copy p {
-  margin: 0;
-  color: var(--trail-muted);
-  font-size: 0.96rem;
-  line-height: 1.55;
-}
-
-.simo-trail-work-copy dl,
-.simo-trail-dialog-meta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  margin: 0;
-  background: var(--trail-line);
-}
-
-.simo-trail-work-copy dl div,
-.simo-trail-dialog-meta div {
-  min-width: 0;
-  padding: 0.62rem;
-  background: color-mix(in oklab, var(--trail-panel) 88%, transparent);
-}
-
-.simo-trail-work-copy dd,
-.simo-trail-dialog-meta dd {
-  overflow: hidden;
-  margin: 0.18rem 0 0;
-  font-size: 0.78rem;
-  font-weight: 540;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-trail-moments-section {
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.simo-trail-moment-rail {
-  display: grid;
-  grid-auto-columns: minmax(17rem, 30vw);
-  grid-auto-flow: column;
-  gap: 0.85rem;
-  overflow-x: auto;
-  padding: 0.85rem 0.85rem 1.2rem;
-  border-block: 1px solid var(--trail-line);
-  background:
-    linear-gradient(var(--trail-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--trail-line) 1px, transparent 1px),
-    color-mix(in oklab, var(--trail-panel) 72%, transparent);
-  background-size: 3rem 3rem;
-  perspective: 900px;
-  scrollbar-width: none;
-}
-
-.simo-trail-moment-rail:focus-visible {
-  outline: 2px solid var(--trail-accent);
-  outline-offset: -2px;
-}
-
-.simo-trail-moment-rail::-webkit-scrollbar {
-  display: none;
-}
-
-@media (min-width: 1081px) and (prefers-reduced-motion: no-preference) {
-  .simo-trail-moment-rail {
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-  }
-}
-
-.simo-trail-moment {
-  position: relative;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  background: #070707;
-  box-shadow: inset 0 1px 0 color-mix(in oklab, #ffffff 9%, transparent);
-  transform: rotateY(-8deg);
-  transform-origin: center;
-  transition:
-    border-color 220ms ease,
-    transform 520ms ease;
-}
-
-.simo-trail-moment::before {
-  content: attr(data-code);
-  position: absolute;
-  z-index: 0;
-  right: 0.8rem;
-  top: 0.78rem;
-  color: color-mix(in oklab, #ffffff 14%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: clamp(2.8rem, 5vw, 5rem);
-  font-weight: 620;
-  line-height: 0.8;
-}
-
-.simo-trail-moment::after {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  background:
-    linear-gradient(180deg, color-mix(in oklab, #000000 4%, transparent), color-mix(in oklab, #000000 54%, transparent)),
-    radial-gradient(circle at 12% 12%, color-mix(in oklab, var(--trail-accent) 13%, transparent), transparent 10rem);
-}
-
-.simo-trail-moment[data-active="true"] {
-  transform: rotateY(0deg);
-}
-
-.simo-trail-moment[data-depth="1"] {
-  transform: translateY(2rem) rotateY(6deg);
-}
-
-.simo-trail-moment[data-depth="2"] {
-  transform: translateY(4rem) rotateY(-5deg);
-}
-
-.simo-trail-moment:hover {
-  border-color: color-mix(in oklab, var(--trail-accent) 48%, transparent);
-  transform: translateY(-0.5rem) rotateY(0deg);
-}
-
-.simo-trail-moment img {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 31rem;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  filter: grayscale(0.68) contrast(1.08) brightness(0.78);
-  transition:
-    filter 220ms ease,
-    transform 900ms ease;
-}
-
-.simo-trail-moment[data-code="R00"] img,
-.simo-trail-moment[data-code="R02"] img {
-  object-position: 42% center;
-}
-
-.simo-trail-moment:hover img {
-  filter: grayscale(0.05) contrast(1.02) brightness(0.94);
-  transform: scale(1.035);
-}
-
-.simo-trail-moment figcaption {
-  position: absolute;
-  right: 0.8rem;
-  bottom: 0.8rem;
-  left: 0.8rem;
-  z-index: 3;
-  display: grid;
-  gap: 0.16rem;
-  border-left: 1px solid color-mix(in oklab, #ffffff 72%, transparent);
-  padding: 0.6rem 0.72rem;
-  color: #ffffff;
-  background: color-mix(in oklab, #000000 54%, transparent);
-  backdrop-filter: blur(16px);
-}
-
-.simo-trail-moment figcaption::before {
-  content: "";
-  position: absolute;
-  top: 0.72rem;
-  left: -0.28rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--trail-accent);
-  box-shadow: 0 0 24px color-mix(in oklab, var(--trail-accent) 62%, transparent);
-  opacity: 0;
-  transform: scale(0.72);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-moment:hover figcaption::before,
-.simo-trail-moment[data-active="true"] figcaption::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.simo-trail-moment figcaption span,
-.simo-trail-moment figcaption em {
-  color: color-mix(in oklab, #ffffff 72%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.66rem;
-  font-style: normal;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.simo-trail-moment figcaption strong {
-  overflow: hidden;
-  font-size: 0.9rem;
-  font-weight: 580;
-  line-height: 1.16;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.simo-trail-note-wall {
-  display: grid;
-  border-top: 1px solid var(--trail-line);
-}
-
-.simo-trail-note-row {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  position: relative;
-  display: grid;
-  grid-template-columns: 4rem minmax(12rem, 0.45fr) 7rem minmax(0, 1fr);
   gap: 1rem;
-  align-items: baseline;
-  width: 100%;
-  min-height: 4.85rem;
-  min-width: 0;
-  border: 0;
-  border-bottom: 1px solid var(--trail-line);
-  padding: 1.38rem 0;
-  color: var(--trail-ink);
-  background: transparent;
-  text-align: left;
-  outline: none;
-  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
-  transition:
-    background-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-note-row::before {
-  content: "";
-  position: absolute;
-  top: 0.65rem;
-  bottom: 0.65rem;
-  left: 0;
-  width: 1px;
-  background: var(--trail-accent);
-  opacity: 0;
-  transform: scaleY(0.35);
-  transition:
-    opacity 180ms ease,
-    transform 220ms ease;
-}
-
-.simo-trail-note-row::after {
-  content: "->";
-  position: absolute;
-  right: 0;
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-  opacity: 0;
-  transform: translateX(-0.5rem);
-  transition:
-    opacity 180ms ease,
-    transform 220ms ease;
-}
-
-.simo-trail-note-row:hover {
-  background: color-mix(in oklab, var(--trail-accent) 7%, transparent);
-}
-
-.simo-trail-note-row:hover::before,
-.simo-trail-note-row:focus-visible::before {
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-.simo-trail-note-row:hover::after,
-.simo-trail-note-row:focus-visible::after {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.simo-trail-note-row span,
-.simo-trail-note-row em {
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  font-style: normal;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.simo-trail-note-row strong {
-  font-size: 1.05rem;
-  font-weight: 590;
-  line-height: 1.2;
-  transition:
-    color 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-note-row p {
-  max-height: 1.58rem;
-  overflow: hidden;
-  margin: 0;
-  color: color-mix(in oklab, var(--trail-ink) 78%, transparent);
-  font-size: 0.99rem;
-  line-height: 1.45;
-  transition:
-    color 180ms ease,
-    max-height 220ms ease;
-}
-
-.simo-trail-note-row:hover strong,
-.simo-trail-note-row:focus-visible strong {
-  color: var(--trail-ink);
-  transform: translateX(0.38rem);
-}
-
-.simo-trail-note-row:hover p {
-  color: color-mix(in oklab, var(--trail-ink) 90%, transparent);
-  max-height: 6rem;
-}
-
-.simo-trail-internet-section {
-  overflow: hidden;
-}
-
-.simo-trail-internet-section .simo-trail-section-shell {
-  position: relative;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 2rem;
-}
-
-.simo-trail-internet-section .simo-trail-section-head {
-  min-height: clamp(10rem, 16vw, 14rem);
-}
-
-.simo-trail-internet-section .simo-trail-section-head h2 {
-  max-width: none;
-  color: color-mix(in oklab, var(--trail-ink) 12%, transparent);
-  font-size: clamp(5.4rem, 14vw, 13rem);
-  line-height: 0.78;
-}
-
-.simo-trail-internet-section .simo-trail-section-head p {
-  position: relative;
-  z-index: 1;
-  max-width: 32rem;
-  margin-top: -0.4rem;
-}
-
-.simo-trail-social-constellation {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
-  border: 1px solid var(--trail-line);
-  background: var(--trail-line);
-}
-
-.simo-trail-social-constellation a {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  position: relative;
-  display: grid;
-  gap: 0.82rem;
-  min-width: 0;
-  min-height: 16rem;
-  align-content: start;
-  padding: 1rem;
-  color: var(--trail-ink);
-  background:
-    radial-gradient(circle at 50% 22%, color-mix(in oklab, var(--trail-accent) 11%, transparent), transparent 7rem),
-    color-mix(in oklab, var(--trail-panel) 86%, transparent);
-  text-decoration: none;
-  outline: none;
-  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
-  transition:
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-social-constellation a::before {
-  content: attr(data-node-index);
-  display: grid;
-  place-items: center;
-  width: 0.72rem;
-  height: 0.72rem;
-  border-radius: 999px;
-  background: currentcolor;
-  box-shadow: 0 0 30px color-mix(in oklab, var(--trail-accent) 58%, transparent);
-  color: var(--trail-bg);
-  font-family: var(--font-geist-mono);
-  font-size: 0.01rem;
-  overflow: hidden;
-  transition:
-    border-radius 180ms ease,
-    color 180ms ease,
-    font-size 180ms ease,
-    height 180ms ease,
-    width 180ms ease;
-}
-
-.simo-trail-social-constellation a::after {
-  content: "";
-  position: absolute;
-  top: 2.08rem;
-  left: 1rem;
-  width: calc(100% - 2rem);
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    currentcolor,
-    color-mix(in oklab, var(--trail-accent) 54%, transparent),
-    transparent
-  );
-  opacity: 0.42;
-  transform: scaleX(0.18);
-  transform-origin: left;
-  transition:
-    opacity 180ms ease,
-    transform 260ms ease;
-}
-
-.simo-trail-social-constellation a:hover {
-  background:
-    radial-gradient(circle at 50% 22%, color-mix(in oklab, var(--trail-accent) 18%, transparent), transparent 8rem),
-    color-mix(in oklab, var(--trail-panel-strong) 90%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--trail-accent) 24%, transparent);
-}
-
-.simo-trail-social-constellation a:hover::before {
-  width: 2rem;
-  height: 1.2rem;
-  border-radius: 999px;
-  color: var(--trail-bg);
-  font-size: 0.58rem;
-}
-
-.simo-trail-social-constellation a:hover::after {
-  opacity: 0.72;
-  transform: scaleX(1);
-}
-
-.simo-trail-social-constellation svg {
-  width: 1.2rem;
-  height: 1.2rem;
-  transition:
-    color 180ms ease,
-    transform 220ms ease;
-}
-
-.simo-trail-social-constellation a > svg:first-of-type {
-  color: var(--trail-ink);
-}
-
-.simo-trail-social-constellation a:hover > svg:first-of-type {
-  color: var(--trail-accent);
-  transform: translateY(-0.28rem);
-}
-
-.simo-trail-social-constellation svg:last-of-type {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  color: var(--trail-muted);
-}
-
-.simo-trail-social-constellation a:hover svg:last-of-type {
-  color: var(--trail-ink);
-  transform: rotate(45deg);
-}
-
-.simo-trail-social-constellation strong {
-  margin-top: auto;
-  font-size: 1.28rem;
-  font-weight: 610;
-  line-height: 1;
-}
-
-.simo-trail-social-constellation span,
-.simo-trail-social-constellation em {
-  overflow: hidden;
-  color: var(--trail-muted);
-  font-size: 0.86rem;
-  font-style: normal;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-}
-
-.simo-trail-social-constellation em {
-  font-family: var(--font-geist-mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.simo-trail-contact-section {
-  min-height: 72svh;
-  border-bottom: 0;
-}
-
-.simo-trail-contact-shell {
-  position: relative;
-  display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2rem;
-  align-items: end;
-  min-height: 42svh;
-  overflow: hidden;
-  padding-block: 2rem;
 }
 
-.simo-trail-contact-shell::before {
-  pointer-events: none;
-  content: "";
-  position: absolute;
-  right: clamp(1rem, 6vw, 6rem);
-  bottom: clamp(3rem, 10vh, 7rem);
-  width: min(34rem, 54vw);
-  height: min(34rem, 54vw);
-  border: 1px solid color-mix(in oklab, var(--trail-accent) 28%, transparent);
-  border-radius: 999px;
-  background:
-    repeating-conic-gradient(
-      from 90deg,
-      color-mix(in oklab, var(--trail-ink) 12%, transparent) 0 2deg,
-      transparent 2deg 12deg
-    );
-  opacity: 0.16;
-  transform: translate3d(18%, 20%, 0) scale(var(--trail-orbit-scale));
-  transform-origin: center;
-  animation: simo-contact-signal-spin 28s linear infinite;
-}
-
-.simo-trail-contact-shell > div:first-child {
-  position: relative;
-  z-index: 1;
+.joe-contact-shell > div:first-child {
   display: grid;
-  gap: 0.9rem;
+  gap: 1rem;
+  max-width: 38rem;
 }
 
-.simo-trail-contact-actions {
-  position: relative;
-  z-index: 1;
-  justify-content: end;
+.joe-contact-actions svg,
+.joe-dialog-actions svg {
+  height: 1rem;
+  width: 1rem;
 }
 
-.simo-trail-contact-signal {
-  pointer-events: none;
-  position: absolute;
-  right: clamp(1rem, 8vw, 7rem);
-  bottom: clamp(2rem, 8vh, 5rem);
-  z-index: 0;
-  width: min(30rem, 50vw);
-  height: min(30rem, 50vw);
-  border-radius: 999px;
-  transform: translate3d(14%, 18%, 0) scale(var(--trail-orbit-scale));
-  transform-origin: center;
-}
-
-.simo-trail-contact-signal::before,
-.simo-trail-contact-signal::after {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 1px solid color-mix(in oklab, var(--trail-accent) 22%, transparent);
-  border-radius: 999px;
-}
-
-.simo-trail-contact-signal::after {
-  inset: 34%;
-  background: radial-gradient(
-    circle,
-    color-mix(in oklab, var(--trail-accent) 22%, transparent),
-    transparent 68%
-  );
-}
-
-.simo-trail-contact-signal span {
-  position: absolute;
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 999px;
-  background: var(--trail-accent);
-  box-shadow: 0 0 28px color-mix(in oklab, var(--trail-accent) 60%, transparent);
-  animation: simo-contact-node-pulse 4.8s ease-in-out infinite;
-}
-
-.simo-trail-contact-signal span:nth-child(1) {
-  top: 10%;
-  left: 48%;
-  animation-delay: -0.8s;
-}
-
-.simo-trail-contact-signal span:nth-child(2) {
-  top: 34%;
-  right: 12%;
-  animation-delay: -1.7s;
-}
-
-.simo-trail-contact-signal span:nth-child(3) {
-  right: 27%;
-  bottom: 10%;
-  animation-delay: -2.5s;
-}
-
-.simo-trail-contact-signal span:nth-child(4) {
-  bottom: 21%;
-  left: 16%;
-  animation-delay: -3.2s;
-}
-
-.simo-trail-contact-signal span:nth-child(5) {
-  top: 31%;
-  left: 9%;
-  animation-delay: -4s;
-}
-
-@keyframes simo-contact-signal-spin {
-  to {
-    rotate: 360deg;
-  }
-}
-
-@keyframes simo-contact-node-pulse {
-  0%,
-  100% {
-    opacity: 0.72;
-    transform: translateZ(0) scale(0.82);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateZ(0) scale(1.18);
-  }
-}
-
-.simo-trail-progress-nav {
-  position: fixed;
-  z-index: 31;
-  top: 50%;
-  left: max(0.42rem, env(safe-area-inset-left));
-  display: grid;
-  gap: 0.72rem;
-  transform: translateY(-50%);
-}
-
-.simo-trail-progress-nav::before,
-.simo-trail-progress-nav::after {
-  content: "";
-  position: absolute;
-  top: 0.42rem;
-  bottom: 0.42rem;
-  left: 0.28rem;
-  width: 1px;
-  background: color-mix(in oklab, var(--trail-ink) 13%, transparent);
-}
-
-.simo-trail-progress-nav::after {
-  bottom: auto;
-  height: calc((100% - 0.84rem) * var(--trail-scroll-progress));
-  background: linear-gradient(
-    var(--trail-accent),
-    color-mix(in oklab, var(--trail-accent) 26%, transparent)
-  );
-  box-shadow: 0 0 24px color-mix(in oklab, var(--trail-accent) 42%, transparent);
-}
-
-.simo-trail-progress-nav a {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 0.72rem max-content;
-  gap: 0.58rem;
-  align-items: center;
-  min-height: 1.6rem;
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.66rem;
-  line-height: 1;
-  text-decoration: none;
-  text-transform: uppercase;
-  outline: none;
-}
-
-.simo-trail-progress-nav a::before {
-  content: "";
-  grid-column: 1;
-  grid-row: 1;
-  width: 0.58rem;
-  height: 0.58rem;
-  border: 1px solid color-mix(in oklab, var(--trail-accent) 48%, transparent);
-  border-radius: 999px;
-  background: var(--trail-bg);
-  box-shadow: 0 0 0 color-mix(in oklab, var(--trail-accent) 0%, transparent);
-  transition:
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-progress-nav a[aria-current="location"]::before,
-.simo-trail-progress-nav a:hover::before,
-.simo-trail-progress-nav a:focus-visible::before {
-  background: var(--trail-accent);
-  box-shadow: 0 0 20px color-mix(in oklab, var(--trail-accent) 46%, transparent);
-  transform: scale(1.22);
-}
-
-.simo-trail-progress-nav span,
-.simo-trail-progress-nav strong {
-  grid-column: 2;
-  grid-row: 1;
-  font-weight: 560;
-  opacity: 0;
-  transform: translateX(-0.36rem);
-  transition:
-    color 180ms ease,
-    opacity 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-progress-nav strong {
-  padding-left: 1.6rem;
-}
-
-.simo-trail-progress-nav a:hover span,
-.simo-trail-progress-nav a:hover strong,
-.simo-trail-progress-nav a:focus-visible span,
-.simo-trail-progress-nav a:focus-visible strong {
-  color: var(--trail-ink);
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.simo-trail-progress-nav a:focus-visible {
-  outline: 2px solid var(--trail-accent);
-  outline-offset: 4px;
-}
-
-.simo-trail-status {
-  position: fixed;
-  z-index: 22;
-  right: max(1rem, env(safe-area-inset-right));
-  bottom: max(1rem, env(safe-area-inset-bottom));
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: center;
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-  padding: 0.45rem 0.68rem;
-  color: var(--trail-muted);
-  background: color-mix(in oklab, var(--trail-panel) 82%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  line-height: 1;
-  text-transform: uppercase;
-  backdrop-filter: blur(18px);
-}
-
-.simo-trail-status span {
-  color: var(--trail-ink);
-}
-
-.simo-trail-social-orbit {
-  pointer-events: none;
-  position: fixed;
-  z-index: 0;
-  inset: auto 7vw 9vh auto;
-  width: 18rem;
-  height: 18rem;
-  opacity: 0.26;
-  transform: scale(var(--trail-orbit-scale));
-  transform-origin: center;
-  transition: transform 420ms ease;
-}
-
-.simo-trail-social-orbit span {
-  position: absolute;
-  width: 0.32rem;
-  height: 0.32rem;
-  border-radius: 999px;
-  background: var(--trail-ink);
-}
-
-.simo-trail-social-orbit span:nth-child(1) {
-  top: 4%;
-  left: 48%;
-}
-
-.simo-trail-social-orbit span:nth-child(2) {
-  top: 30%;
-  right: 8%;
-}
-
-.simo-trail-social-orbit span:nth-child(3) {
-  right: 24%;
-  bottom: 8%;
-}
-
-.simo-trail-social-orbit span:nth-child(4) {
-  bottom: 16%;
-  left: 18%;
-}
-
-.simo-trail-social-orbit span:nth-child(5) {
-  top: 28%;
-  left: 7%;
-}
-
-.simo-trail-dialog-layer {
+.joe-dialog-backdrop {
+  background: color-mix(in oklab, #000000 52%, transparent);
+  inset: 0;
   position: fixed;
   z-index: 80;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  overscroll-behavior: contain;
-  padding: max(4.5rem, env(safe-area-inset-top)) 1rem 1rem;
 }
 
-.simo-trail-dialog-backdrop {
+.joe-dialog-layer {
+  display: grid;
+  inset: 0;
+  overflow-y: auto;
+  padding: clamp(1rem, 4vw, 3rem);
+  place-items: center;
   position: fixed;
-  z-index: 79;
-  inset: 0;
-  background: color-mix(in oklab, #000000 72%, transparent);
-  backdrop-filter: blur(18px);
+  z-index: 81;
 }
 
-.simo-trail-project-dialog,
-.simo-trail-note-dialog {
+.joe-project-dialog {
+  background: var(--background);
+  border: 1px solid var(--joe-line-strong);
+  border-radius: 12px;
+  box-shadow: 0 24px 80px color-mix(in oklab, #000000 32%, transparent);
+  display: grid;
+  grid-template-columns: minmax(0, 0.56fr) minmax(18rem, 0.44fr);
+  max-width: min(1040px, 100%);
+  min-height: 24rem;
+  outline: none;
+  overflow: hidden;
   position: relative;
-  width: min(100%, 76rem);
-  max-height: min(44rem, calc(100svh - 6rem));
-  overflow: auto;
-  overscroll-behavior: contain;
-  border: 1px solid color-mix(in oklab, #ffffff 20%, transparent);
-  border-radius: var(--trail-radius);
-  background: #080808;
-  color: #ffffff;
-  box-shadow: 0 30px 110px color-mix(in oklab, #000000 44%, transparent);
-}
-
-.simo-trail-project-dialog {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.78fr);
-}
-
-.simo-trail-dialog-close {
-  position: absolute;
-  z-index: 2;
-  top: 0.8rem;
-  right: 0.8rem;
-  display: grid;
-  width: 2.35rem;
-  height: 2.35rem;
-  place-items: center;
-  border: 1px solid color-mix(in oklab, #ffffff 22%, transparent);
-  border-radius: 999px;
-  color: #ffffff;
-  background: color-mix(in oklab, #000000 54%, transparent);
-  cursor: pointer;
-}
-
-.simo-trail-dialog-media {
-  display: grid;
-  align-content: start;
-  gap: 1px;
-  min-width: 0;
-  background: color-mix(in oklab, #ffffff 12%, transparent);
-}
-
-.simo-trail-dialog-media img,
-.simo-trail-dialog-media video {
-  display: block;
   width: 100%;
-  height: auto;
-  max-height: 34rem;
-  object-fit: contain;
-  background: #000000;
 }
 
-.simo-trail-dialog-copy,
-.simo-trail-note-dialog {
+.joe-dialog-close {
+  align-items: center;
+  background: var(--background);
+  border: 1px solid var(--joe-line);
+  border-radius: 999px;
+  color: var(--foreground);
+  display: inline-flex;
+  height: 2.5rem;
+  justify-content: center;
+  position: absolute;
+  right: 0.85rem;
+  top: 0.85rem;
+  width: 2.5rem;
+  z-index: 2;
+}
+
+.joe-dialog-close svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.joe-dialog-media {
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  min-height: 100%;
+}
+
+.joe-dialog-copy {
+  align-content: start;
   display: grid;
   gap: 1rem;
-  align-content: start;
-  padding: 1.25rem;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
 }
 
-.simo-trail-dialog-copy h2,
-.simo-trail-note-dialog h2 {
-  margin: 0;
-  font-size: 2.7rem;
-  font-weight: 620;
-  line-height: 0.94;
-  text-wrap: balance;
-}
-
-.simo-trail-dialog-description,
-.simo-trail-proofline span {
-  color: color-mix(in oklab, #ffffff 72%, transparent);
-  font-size: 0.98rem;
-  line-height: 1.6;
-}
-
-.simo-trail-dialog-description {
-  margin: 0;
-}
-
-.simo-trail-dialog-meta div {
-  background: #080808;
-}
-
-.simo-trail-proofline {
-  display: grid;
-  gap: 0.4rem;
-  border-left: 1px solid var(--trail-accent);
-  padding-left: 0.9rem;
-}
-
-.simo-trail-proofline strong {
-  font-size: 1rem;
-  line-height: 1.3;
-}
-
-.simo-trail-proof-list {
-  display: grid;
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid color-mix(in oklab, #ffffff 14%, transparent);
-  border-radius: var(--trail-radius);
-  margin: 0;
-  padding: 0;
-  background: color-mix(in oklab, #ffffff 14%, transparent);
-  list-style: none;
-}
-
-.simo-trail-proof-list li {
-  display: grid;
-  grid-template-columns: 2.8rem minmax(0, 1fr);
-  gap: 0.6rem;
-  padding: 0.72rem;
-  background: #080808;
-}
-
-.simo-trail-proof-list span {
-  color: color-mix(in oklab, #ffffff 54%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-}
-
-.simo-trail-proof-list strong {
-  font-size: 0.9rem;
-  line-height: 1.25;
-}
-
-.simo-trail-note-layer {
-  justify-items: end;
-}
-
-.simo-trail-note-dialog {
-  width: min(100%, 32rem);
-  margin-right: max(1rem, env(safe-area-inset-right));
-}
-
-/* Dark cinematic public trail */
-
-.dark .site-header-home {
-  border-color: color-mix(in oklab, #ffffff 10%, transparent);
-  background: color-mix(in oklab, #050505 78%, transparent);
-}
-
-.dark .simo-trail-root {
-  --trail-bg: #050505;
-  --trail-ink: #f5f5f5;
-  --trail-muted: color-mix(in oklab, #ffffff 58%, transparent);
-  --trail-line: color-mix(in oklab, #ffffff 12%, transparent);
-  --trail-line-strong: color-mix(in oklab, #ffffff 28%, transparent);
-  --trail-panel: color-mix(in oklab, #0b0b0b 82%, transparent);
-  --trail-panel-strong: color-mix(in oklab, #111111 90%, transparent);
-  --trail-accent: #7da2ff;
-  background:
-    radial-gradient(circle at 68% 18%, color-mix(in oklab, var(--trail-accent) 18%, transparent), transparent 35rem),
-    radial-gradient(circle at 18% 22%, color-mix(in oklab, #ffffff 7%, transparent), transparent 34rem),
-    linear-gradient(180deg, #020202, #070707 28%, #050505);
-}
-
-.dark .simo-trail-root::before {
-  background:
-    radial-gradient(
-      42rem circle at var(--trail-pointer-x) var(--trail-pointer-y),
-      color-mix(in oklab, var(--trail-accent) 16%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(circle at 60% 19%, color-mix(in oklab, #ffffff 22%, transparent) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 76% 48%, color-mix(in oklab, #ffffff 13%, transparent) 0 1px, transparent 1.8px),
-    linear-gradient(
-      115deg,
-      transparent 0 42%,
-      color-mix(in oklab, #ffffff 8%, transparent) 42.08%,
-      transparent 42.3% 100%
-    );
-  background-size: auto, 5.4rem 5.4rem, 7.2rem 7.2rem, auto;
-  opacity: 0.88;
-}
-
-.dark .simo-public-trail-canvas canvas {
-  opacity: 0.92;
-}
-
-.dark .simo-public-trail-canvas[data-active-section="work"] canvas {
-  opacity: 0.5;
-}
-
-.dark .simo-trail-hero {
-  min-height: calc(100svh - 3.5rem);
-  overflow: hidden;
-  border-bottom-color: color-mix(in oklab, #ffffff 10%, transparent);
-  background:
-    radial-gradient(ellipse at 63% 34%, color-mix(in oklab, #ffffff 11%, transparent), transparent 31rem),
-    radial-gradient(ellipse at 72% 36%, color-mix(in oklab, var(--trail-accent) 15%, transparent), transparent 40rem),
-    linear-gradient(180deg, color-mix(in oklab, #000000 92%, transparent), color-mix(in oklab, #070707 96%, transparent));
-}
-
-.dark .simo-trail-hero-shell {
-  position: relative;
-  grid-template-columns: minmax(0, 1fr);
-  min-height: calc(100svh - 3.5rem);
-  align-items: center;
-  padding-block: clamp(5.5rem, 9vh, 8rem) clamp(3rem, 8vh, 5rem);
-}
-
-.dark .simo-trail-hero-copy {
-  position: relative;
-  z-index: 4;
-  max-width: min(50rem, 62vw);
-}
-
-.dark .simo-trail-hero h1 {
-  max-width: 7.4ch;
-  color: #ffffff;
-  font-size: clamp(5.6rem, 12vw, 13.8rem);
-  line-height: 0.76;
-  text-shadow: 0 0 52px color-mix(in oklab, #ffffff 20%, transparent);
-}
-
-.dark .simo-trail-hero-line {
-  max-width: 18ch;
-  color: color-mix(in oklab, #ffffff 91%, transparent);
-  font-size: clamp(1.55rem, 3vw, 3.25rem);
-  line-height: 1.02;
-}
-
-.dark .simo-trail-hero-detail {
-  max-width: 38rem;
-  color: color-mix(in oklab, #ffffff 66%, transparent);
-}
-
-.dark .simo-trail-orbit-board {
-  position: absolute;
-  z-index: 1;
-  top: clamp(4rem, 10vh, 7rem);
-  right: max(-5vw, -4rem);
-  width: min(66rem, 62vw);
-  height: min(48rem, 70svh);
-  min-height: 32rem;
-  border-color: color-mix(in oklab, #ffffff 8%, transparent);
-  background:
-    radial-gradient(ellipse at 48% 42%, color-mix(in oklab, #ffffff 20%, transparent), transparent 6rem),
-    radial-gradient(ellipse at 52% 42%, color-mix(in oklab, #ffffff 10%, transparent), transparent 18rem),
-    repeating-radial-gradient(ellipse at 52% 42%, transparent 0 4.4rem, color-mix(in oklab, #ffffff 10%, transparent) 4.48rem 4.52rem),
-    linear-gradient(color-mix(in oklab, #ffffff 6%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, #ffffff 6%, transparent) 1px, transparent 1px);
-  background-size: auto, auto, auto, 3rem 3rem, 3rem 3rem;
-  box-shadow: none;
-  opacity: 0.94;
-  backdrop-filter: none;
-}
-
-.dark .simo-trail-orbit-board::before {
-  inset: 0;
-  border-color: color-mix(in oklab, #ffffff 8%, transparent);
-  background:
-    radial-gradient(circle at 52% 42%, transparent 0 4rem, color-mix(in oklab, #ffffff 16%, transparent) 4.08rem 4.12rem, transparent 4.2rem),
-    conic-gradient(from 110deg at 52% 42%, transparent, color-mix(in oklab, var(--trail-accent) 16%, transparent), transparent 42%);
-  opacity: 0.64;
-}
-
-.dark .simo-trail-orbit-board::after {
-  background: #ffffff;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, #000000 70%, transparent),
-    0 0 54px color-mix(in oklab, var(--trail-accent) 82%, transparent);
-}
-
-.dark .simo-trail-orbit-core {
-  border-color: color-mix(in oklab, #ffffff 12%, transparent);
-  color: color-mix(in oklab, #ffffff 62%, transparent);
-  transform: translate(-50%, -50%) scale(1.35);
-}
-
-.dark .simo-trail-orbit-card {
-  border-color: color-mix(in oklab, #ffffff 18%, transparent);
-  background: color-mix(in oklab, #050505 84%, transparent);
-  box-shadow: 0 24px 80px color-mix(in oklab, #000000 54%, transparent);
-}
-
-.dark .simo-trail-orbit-card img {
-  filter: grayscale(0.88) contrast(1.12) brightness(0.76);
-}
-
-.dark .simo-trail-orbit-card-work {
-  left: 23%;
-  top: 15%;
-  width: 17rem;
-}
-
-.dark .simo-trail-orbit-card-moment {
-  right: 5%;
-  bottom: 10%;
-}
-
-.dark .simo-trail-orbit-readout {
-  border-color: color-mix(in oklab, #ffffff 12%, transparent);
-  color: color-mix(in oklab, #ffffff 62%, transparent);
-}
-
-.dark .simo-trail-section {
-  border-bottom-color: color-mix(in oklab, #ffffff 10%, transparent);
-  background:
-    radial-gradient(circle at 76% 0%, color-mix(in oklab, var(--trail-accent) 8%, transparent), transparent 31rem),
-    linear-gradient(180deg, color-mix(in oklab, #0a0a0a 92%, transparent), color-mix(in oklab, #050505 96%, transparent));
-}
-
-.dark .simo-trail-work-grid,
-.dark .simo-trail-social-constellation,
-.dark .simo-trail-note-wall,
-.dark .simo-trail-system-grid {
-  box-shadow: 0 38px 120px color-mix(in oklab, #000000 46%, transparent);
-}
-
-.dark .simo-trail-work-card {
-  background:
-    radial-gradient(circle at 76% 10%, color-mix(in oklab, var(--trail-accent) 13%, transparent), transparent 17rem),
-    linear-gradient(180deg, color-mix(in oklab, #151515 92%, transparent), color-mix(in oklab, #080808 96%, transparent));
-}
-
-.dark .simo-trail-notes-section {
-  background:
-    radial-gradient(circle at 17% 24%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 24rem),
-    #050505;
-}
-
-.dark .simo-trail-note-row {
-  background: color-mix(in oklab, #080808 62%, transparent);
-}
-
-.simo-trail-about-section {
-  overflow: hidden;
-}
-
-.simo-trail-about-shell {
-  display: grid;
-  grid-template-columns: minmax(15rem, 0.38fr) minmax(0, 1fr);
-  gap: clamp(2rem, 6vw, 6rem);
-  align-items: center;
-}
-
-.simo-trail-about-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 0.4rem;
-}
-
-.simo-trail-about-tags span {
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-  padding: 0.42rem 0.58rem;
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.62rem;
-  font-weight: 560;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.simo-trail-about-orb {
-  position: relative;
-  min-height: 31rem;
-  overflow: hidden;
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  background:
-    linear-gradient(var(--trail-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--trail-line) 1px, transparent 1px),
-    color-mix(in oklab, var(--trail-panel) 80%, transparent);
-  background-size: 3rem 3rem;
-}
-
-.simo-trail-about-sphere {
-  position: absolute;
-  top: 50%;
-  left: 54%;
-  width: min(18rem, 46vw);
-  height: min(18rem, 46vw);
-  border: 1px solid color-mix(in oklab, var(--trail-ink) 18%, transparent);
-  border-radius: 999px;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 1.55rem, color-mix(in oklab, var(--trail-ink) 10%, transparent) 1.58rem 1.62rem),
-    radial-gradient(circle at 38% 34%, color-mix(in oklab, #ffffff 26%, transparent), transparent 28%),
-    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--trail-accent) 16%, transparent), transparent 62%);
-  box-shadow:
-    inset -2rem -2rem 5rem color-mix(in oklab, #000000 34%, transparent),
-    0 0 80px color-mix(in oklab, var(--trail-accent) 16%, transparent);
-  transform: translate(-50%, -50%);
-}
-
-.simo-trail-about-sphere::before,
-.simo-trail-about-sphere::after {
-  content: "";
-  position: absolute;
-  inset: -12%;
-  border: 1px solid color-mix(in oklab, var(--trail-ink) 12%, transparent);
-  border-radius: 999px;
-  transform: rotateX(62deg);
-}
-
-.simo-trail-about-sphere::after {
-  inset: 18%;
-  transform: rotateY(68deg);
-}
-
-.simo-trail-about-signals {
-  position: absolute;
-  inset: 1rem;
-}
-
-.simo-trail-about-signals article {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  position: absolute;
-  width: min(16rem, 42%);
-  border: 1px solid var(--trail-line);
-  border-radius: var(--trail-radius);
-  padding: 0.72rem;
-  color: var(--trail-ink);
-  background: color-mix(in oklab, var(--trail-panel-strong) 76%, transparent);
-  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
-  backdrop-filter: blur(16px);
-}
-
-.simo-trail-about-signals article:nth-child(1) {
-  top: 8%;
-  left: 7%;
-}
-
-.simo-trail-about-signals article:nth-child(2) {
-  top: 12%;
-  right: 6%;
-}
-
-.simo-trail-about-signals article:nth-child(3) {
-  right: 10%;
-  bottom: 10%;
-}
-
-.simo-trail-about-signals article:nth-child(4) {
-  bottom: 13%;
-  left: 8%;
-}
-
-.simo-trail-about-signals span {
-  display: block;
-  color: var(--trail-ink);
-  font-family: var(--font-geist-mono);
-  font-size: 0.66rem;
-  font-weight: 620;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.simo-trail-about-signals p {
-  margin: 0.5rem 0 0;
-  color: var(--trail-muted);
-  font-size: 0.82rem;
-  line-height: 1.45;
-}
-
-.simo-trail-system-section {
-  padding-bottom: 5rem;
-}
-
-.simo-trail-system-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  border: 1px solid var(--trail-line);
-  margin-top: 2rem;
-  background: var(--trail-line);
-}
-
-.simo-trail-system-grid article {
-  display: grid;
-  gap: 1rem;
-  min-height: 12rem;
-  align-content: start;
-  padding: 1rem;
-  background:
-    radial-gradient(circle at 70% 16%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 8rem),
-    color-mix(in oklab, var(--trail-panel) 88%, transparent);
-}
-
-.simo-trail-system-grid article:nth-child(4),
-.simo-trail-system-stack {
-  grid-column: span 2;
-}
-
-.simo-trail-system-grid h3 {
-  margin: 0;
-  color: var(--trail-ink);
-  font-family: var(--font-geist-mono);
-  font-size: 0.74rem;
-  font-weight: 620;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.simo-trail-system-grid ul {
-  display: grid;
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0;
-  color: var(--trail-muted);
-  font-size: 0.92rem;
-  line-height: 1.35;
-  list-style: none;
-}
-
-.simo-trail-system-grid li {
-  position: relative;
-  padding-left: 1rem;
-}
-
-.simo-trail-system-grid li::before {
-  content: "";
-  position: absolute;
-  top: 0.46rem;
-  left: 0;
-  width: 0.35rem;
-  height: 0.35rem;
-  border: 1px solid var(--trail-accent);
-  border-radius: 999px;
-}
-
-.simo-trail-system-stack div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.simo-trail-system-stack span {
-  border: 1px solid var(--trail-line);
-  border-radius: 999px;
-  padding: 0.5rem 0.62rem;
-  color: var(--trail-ink);
-  background: color-mix(in oklab, var(--trail-panel-strong) 76%, transparent);
-  font-size: 0.9rem;
-  font-weight: 560;
-  line-height: 1;
-}
-
-@media (min-width: 1280px) {
-  .simo-trail-hero h1 {
-    font-size: 9rem;
-  }
-
-  .simo-trail-section-head h2,
-  .simo-trail-contact-shell h2 {
-    font-size: 6.3rem;
-  }
-}
-
-@media (max-width: 1080px) {
-  .simo-trail-hero-shell,
-  .simo-trail-section-shell,
-  .simo-trail-about-shell,
-  .simo-trail-contact-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-trail-work-section .simo-trail-section-head {
-    position: static;
-  }
-
-  .dark .simo-trail-hero-copy {
-    max-width: none;
-  }
-
-  .dark .simo-trail-orbit-board {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 100%;
-    height: auto;
-    min-height: 24rem;
-  }
-
-  .simo-trail-work-card[data-featured="true"],
-  .simo-trail-work-card:not([data-featured="true"]):last-child,
-  .simo-trail-project-dialog {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-trail-social-constellation {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .simo-trail-hero,
-  .simo-trail-hero-shell {
-    min-height: auto;
-  }
-
-  .simo-trail-hero-shell {
-    gap: 2rem;
-    padding-block: 3rem 2rem;
-  }
-
-  .simo-trail-hero h1 {
-    font-size: 4.65rem;
-  }
-
-  .simo-trail-hero-line {
-    font-size: 1.8rem;
-  }
-
-  .simo-trail-orbit-board {
-    min-height: 25rem;
-  }
-
-  .simo-trail-orbit-core {
-    width: 9rem;
+@media (max-width: 980px) {
+  .joe-signal-field {
     height: 9rem;
+    inset: 7.5rem 1rem auto auto;
+    width: min(32rem, 88vw);
   }
 
-  .simo-trail-orbit-card-work {
-    top: 8%;
-    left: 6%;
-    width: 13rem;
-  }
-
-  .simo-trail-orbit-card-moment {
-    right: 6%;
-    bottom: 14%;
-    width: 11rem;
-  }
-
-  .simo-trail-orbit-readout {
-    display: grid;
-  }
-
-  .simo-trail-section {
-    padding-block: 4rem;
-  }
-
-  .simo-trail-section-head h2,
-  .simo-trail-contact-shell h2 {
-    font-size: 3.45rem;
-  }
-
-  .simo-trail-work-grid,
-  .simo-trail-work-card[data-featured="true"],
-  .simo-trail-work-card:not([data-featured="true"]):last-child,
-  .simo-trail-work-copy dl,
-  .simo-trail-dialog-meta,
-  .simo-trail-social-constellation,
-  .simo-trail-note-row {
+  .joe-hero-shell,
+  .joe-work-feature,
+  .joe-contact-shell,
+  .joe-project-dialog {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .simo-trail-work-card[data-featured="true"] .simo-trail-work-media img,
-  .simo-trail-work-media img,
-  .simo-trail-work-media > span {
-    min-height: 15rem;
-  }
-
-  .simo-trail-sim0-composition {
-    min-height: 17rem;
-  }
-
-  .simo-trail-work-card[data-featured="true"] .simo-trail-sim0-composition img {
+  .joe-hero-shell {
     min-height: 0;
   }
 
-  .simo-trail-sim0-primary {
-    left: 4%;
-    top: 18%;
-    width: 68%;
+  .joe-hero-copy {
+    border-bottom: 1px solid var(--joe-line);
+    border-right: 0;
   }
 
-  .simo-trail-sim0-inset {
-    right: 4%;
-    top: 12%;
-    width: 38%;
+  .joe-current-card dl {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .simo-trail-sim0-ghost {
-    right: 5%;
-    bottom: 28%;
-    width: 42%;
+  .joe-current-card dl div {
+    border-right: 0;
   }
 
-  .simo-trail-sim0-map {
+  .joe-dialog-media {
+    aspect-ratio: 16 / 10;
+    min-height: 0;
+  }
+
+  .joe-work-copy {
+    border-bottom: 1px solid var(--joe-line);
+    border-right: 0;
+  }
+
+  .joe-work-table article {
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.7fr) auto;
+  }
+
+  .joe-timeline {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .joe-work-table article > p:last-of-type,
+  .joe-work-thumb {
     display: none;
   }
 
-  .simo-trail-sim0-route {
-    grid-template-columns: minmax(0, 1fr);
+  .joe-photo-sheet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .joe-site .site-shell {
+    width: min(100% - 2rem, 1180px);
   }
 
-  .simo-trail-sim0-route span {
-    border-right: 0;
-    border-bottom: 1px solid color-mix(in oklab, #ffffff 12%, transparent);
+  .joe-hero {
+    min-height: auto;
+    padding: 1rem 0 2rem;
   }
 
-  .simo-trail-sim0-route span:last-child {
-    border-bottom: 0;
+  .joe-hero-copy {
+    gap: 0.8rem;
+    padding: 1.25rem;
   }
 
-  .simo-trail-moment-rail {
-    grid-auto-columns: minmax(14rem, 72vw);
-    gap: 0.6rem;
-    padding: 0.6rem;
+  .joe-hero h1 {
+    font-size: 2.8rem;
   }
 
-  .simo-trail-moment img {
-    min-height: 23rem;
+  .joe-hero-subhead {
+    font-size: 1.125rem;
   }
 
-  .simo-trail-moment[data-depth],
-  .simo-trail-moment {
-    transform: none;
+  .joe-current-card h2 {
+    font-size: 1.3rem;
   }
 
-  .simo-trail-contact-actions {
-    justify-content: start;
-  }
-
-  .simo-trail-social-constellation a {
-    gap: 0.52rem;
-    min-height: 9.5rem;
-    padding: 0.9rem;
-  }
-
-  .simo-trail-about-orb {
-    min-height: 28rem;
-  }
-
-  .simo-trail-about-signals article {
-    position: relative;
-    inset: auto !important;
-    width: auto;
-  }
-
-  .simo-trail-about-signals {
-    position: relative;
-    inset: auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.6rem;
+  .joe-current-heading {
+    gap: 0.875rem;
     padding: 1rem;
   }
 
-  .simo-trail-about-sphere {
-    opacity: 0.38;
+  .joe-actions {
+    display: flex;
+    max-width: none;
+    width: fit-content;
   }
 
-  .simo-trail-system-grid,
-  .simo-trail-system-grid article:nth-child(4),
-  .simo-trail-system-stack {
-    grid-column: auto;
+  .joe-contact-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .joe-actions a {
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .joe-contact-actions a {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .joe-current-heading {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .simo-trail-social-constellation a::after {
-    top: 1.92rem;
-    left: 0.9rem;
-    width: calc(100% - 1.8rem);
+  .joe-current-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .simo-trail-social-constellation strong {
-    margin-top: 0.72rem;
-    font-size: 1.08rem;
+  .joe-current-actions a,
+  .joe-current-actions button {
+    justify-content: center;
+    min-height: 2.35rem;
   }
 
-  .simo-trail-social-constellation svg:last-of-type {
-    right: 0.9rem;
-    bottom: 0.9rem;
+  .joe-current-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.625rem;
   }
 
-  .simo-trail-contact-signal {
-    right: -4rem;
-    bottom: -3rem;
-    width: 18rem;
-    height: 18rem;
-    opacity: 0.42;
-  }
-
-  .simo-trail-contact-actions a,
-  .simo-trail-hero-links a {
-    flex: 1 1 9rem;
-  }
-
-  .simo-trail-status,
-  .simo-trail-social-orbit,
-  .simo-trail-progress-nav {
+  .joe-current-image-frame-detail {
     display: none;
   }
 
-  .simo-trail-internet-section .simo-trail-section-head {
-    min-height: auto;
+  .joe-product-bar {
+    grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+    min-height: 2rem;
+    padding: 0 0.625rem;
   }
 
-  .simo-trail-dialog-copy h2,
-  .simo-trail-note-dialog h2 {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .simo-trail-hero h1 {
-    font-size: 4rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .simo-public-trail-canvas canvas,
-  .simo-trail-hero-links a,
-  .simo-trail-open-button,
-  .simo-trail-contact-actions a,
-  .simo-trail-dialog-actions a,
-  .simo-trail-dialog-actions button,
-  .simo-trail-orbit-board,
-  .simo-trail-orbit-card,
-  .simo-trail-work-card,
-  .simo-trail-work-media img,
-  .simo-trail-moment img,
-  .simo-trail-moment,
-  .simo-trail-note-row,
-  .simo-trail-note-row p,
-  .simo-trail-social-constellation a,
-  .simo-trail-root::after,
-  .simo-trail-contact-signal,
-  .simo-trail-contact-signal span,
-  .simo-trail-contact-shell::before {
-    transition: none;
-    animation: none;
-  }
-
-  .simo-trail-hero-links a,
-  .simo-trail-open-button,
-  .simo-trail-contact-actions a,
-  .simo-trail-dialog-actions a,
-  .simo-trail-dialog-actions button,
-  .simo-trail-orbit-board,
-  .simo-trail-orbit-card,
-  .simo-trail-work-card,
-  .simo-trail-note-row,
-  .simo-trail-social-constellation a {
-    transform: none !important;
-  }
-}
-
-/* Final cinematic composition overrides */
-
-.simo-trail-root {
-  --trail-cinema-gap: clamp(0.45rem, 0.82vw, 0.82rem);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--trail-cinema-gap);
-  padding: var(--trail-cinema-gap);
-  background:
-    radial-gradient(circle at 52% 9%, color-mix(in oklab, var(--trail-accent) 10%, transparent), transparent 32rem),
-    #000000;
-}
-
-.simo-trail-root > section {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid color-mix(in oklab, var(--trail-ink) 9%, transparent);
-  border-radius: 0;
-  background:
-    radial-gradient(circle at 74% 12%, color-mix(in oklab, var(--trail-accent) 7%, transparent), transparent 22rem),
-    linear-gradient(135deg, color-mix(in oklab, var(--trail-panel) 94%, transparent), color-mix(in oklab, var(--trail-bg) 98%, transparent));
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--trail-ink) 5%, transparent);
-}
-
-.simo-trail-root > .simo-trail-hero,
-.simo-trail-root > .simo-trail-system-section {
-  grid-column: 1 / -1;
-}
-
-.simo-trail-root > section::before {
-  left: 1.85rem;
-  opacity: 0.24;
-}
-
-.simo-trail-root > section::after {
-  left: calc(1.85rem - 0.13rem);
-}
-
-.simo-trail-section {
-  min-height: clamp(34rem, 54vw, 45rem);
-  border-bottom: 0;
-  padding-block: 0;
-}
-
-.simo-trail-section .site-shell,
-.simo-trail-hero .site-shell {
-  max-width: none;
-}
-
-.simo-trail-section-shell,
-.simo-trail-about-shell,
-.simo-trail-contact-shell,
-.simo-trail-menu-shell {
-  width: 100%;
-  min-height: inherit;
-  padding: clamp(1.45rem, 3vw, 2.45rem);
-}
-
-.simo-trail-section-shell,
-.simo-trail-about-shell,
-.simo-trail-menu-shell {
-  grid-template-columns: minmax(12rem, 0.38fr) minmax(0, 1fr);
-  gap: clamp(1.2rem, 3vw, 2.8rem);
-}
-
-.simo-trail-cinematic-hero,
-.dark .simo-trail-cinematic-hero {
-  min-height: calc(100svh - 3.5rem);
-  background:
-    radial-gradient(ellipse at 58% 42%, color-mix(in oklab, #ffffff 19%, transparent), transparent 7.5rem),
-    radial-gradient(ellipse at 58% 42%, color-mix(in oklab, #ffffff 9%, transparent), transparent 24rem),
-    radial-gradient(ellipse at 66% 43%, color-mix(in oklab, var(--trail-accent) 12%, transparent), transparent 34rem),
-    linear-gradient(180deg, #030303, #070707);
-}
-
-.simo-trail-hero-shell,
-.dark .simo-trail-hero-shell {
-  grid-template-columns: minmax(0, 1fr);
-  min-height: calc(100svh - 3.5rem);
-  align-items: stretch;
-  padding: clamp(1.7rem, 3vw, 2.6rem);
-}
-
-.simo-trail-hero-copy,
-.dark .simo-trail-hero-copy {
-  z-index: 5;
-  align-self: center;
-  max-width: min(82rem, 78vw);
-}
-
-.simo-trail-hero h1,
-.dark .simo-trail-hero h1 {
-  max-width: none;
-  color: #ffffff;
-  font-size: clamp(5.4rem, 9.8vw, 11.6rem);
-  line-height: 0.78;
-  white-space: nowrap;
-}
-
-.simo-trail-hero-kicker {
-  margin: clamp(3rem, 11vh, 7rem) 0 0;
-  color: color-mix(in oklab, var(--trail-ink) 82%, transparent);
-  font-size: clamp(1.08rem, 1.7vw, 1.58rem);
-  line-height: 1.1;
-}
-
-.simo-trail-hero-world,
-.dark .simo-trail-hero-world {
-  pointer-events: auto;
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  width: auto;
-  height: auto;
-  min-height: 0;
-  border: 0;
-  background:
-    radial-gradient(ellipse at 58% 42%, transparent 0 4.8rem, color-mix(in oklab, #ffffff 19%, transparent) 4.9rem 5.12rem, transparent 5.22rem),
-    repeating-radial-gradient(ellipse at 58% 42%, transparent 0 5.6rem, color-mix(in oklab, #ffffff 10%, transparent) 5.7rem 5.78rem),
-    conic-gradient(from 26deg at 58% 42%, transparent 0 12%, color-mix(in oklab, #ffffff 15%, transparent) 18%, transparent 33%, color-mix(in oklab, var(--trail-accent) 10%, transparent) 45%, transparent 58% 100%),
-    linear-gradient(color-mix(in oklab, #ffffff 4%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, #ffffff 4%, transparent) 1px, transparent 1px);
-  background-size: auto, auto, auto, 5rem 5rem, 5rem 5rem;
-  box-shadow: none;
-  opacity: 0.96;
-  mix-blend-mode: screen;
-  transform: translate3d(calc(var(--trail-orbit-x) * 0.28), calc(var(--trail-orbit-y) * 0.28 + var(--trail-board-y)), 0) scale(var(--trail-board-scale));
-  backdrop-filter: none;
-}
-
-.simo-trail-hero-world::before,
-.dark .simo-trail-hero-world::before {
-  inset: 0;
-  border: 0;
-  background:
-    radial-gradient(ellipse at 57% 42%, #000000 0 4.2rem, transparent 4.35rem),
-    radial-gradient(circle at 18% 22%, color-mix(in oklab, #ffffff 45%, transparent) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 86% 58%, color-mix(in oklab, #ffffff 50%, transparent) 0 1px, transparent 1.5px);
-  background-size: auto, 7rem 7rem, 8rem 8rem;
-  opacity: 0.88;
-}
-
-.simo-trail-hero-world::after,
-.dark .simo-trail-hero-world::after {
-  top: 42%;
-  left: 58%;
-  background: #ffffff;
-}
-
-.simo-trail-hero-world .simo-trail-orbit-core,
-.dark .simo-trail-hero-world .simo-trail-orbit-core {
-  left: 58%;
-  color: color-mix(in oklab, #ffffff 50%, transparent);
-  opacity: 0.74;
-  transform: translate(-50%, -50%) scale(1.5);
-}
-
-.simo-trail-hero-world .simo-trail-orbit-card-work,
-.dark .simo-trail-hero-world .simo-trail-orbit-card-work {
-  top: 12%;
-  left: 44%;
-  width: min(18rem, 22vw);
-}
-
-.simo-trail-hero-world .simo-trail-orbit-card-moment,
-.dark .simo-trail-hero-world .simo-trail-orbit-card-moment {
-  right: 7%;
-  bottom: 11%;
-  width: min(15rem, 19vw);
-}
-
-.simo-trail-hero-scroll-cue,
-.simo-trail-hero-orbit-label {
-  position: absolute;
-  z-index: 6;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.78rem;
-  color: color-mix(in oklab, #ffffff 78%, transparent);
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.simo-trail-hero-scroll-cue {
-  left: clamp(1.7rem, 4vw, 3rem);
-  bottom: clamp(2rem, 7vh, 4rem);
-}
-
-.simo-trail-hero-orbit-label {
-  right: clamp(1.7rem, 4vw, 3rem);
-  bottom: clamp(2rem, 7vh, 4rem);
-}
-
-.simo-trail-hero-scroll-cue i,
-.simo-trail-hero-orbit-label i {
-  width: 2.4rem;
-  height: 2.4rem;
-  border: 1px solid color-mix(in oklab, #ffffff 20%, transparent);
-  border-radius: 999px;
-}
-
-.simo-trail-hero-scroll-cue i::before,
-.simo-trail-hero-orbit-label i::before {
-  content: "";
-  display: block;
-  width: 0.32rem;
-  height: 0.32rem;
-  margin: calc(50% - 0.16rem);
-  border-radius: 999px;
-  background: currentcolor;
-}
-
-.simo-trail-work-section .simo-trail-section-shell,
-.simo-trail-notes-section .simo-trail-section-shell {
-  grid-template-columns: minmax(10rem, 0.32fr) minmax(0, 1fr);
-}
-
-.simo-trail-root > section:not(.simo-trail-hero):not(.simo-trail-system-section)
-  .simo-trail-section-head h2 {
-  font-size: clamp(3.2rem, 5vw, 5.25rem);
-}
-
-.simo-trail-work-grid {
-  min-height: 29rem;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-@media (min-width: 1081px) {
-  .simo-trail-work-grid {
+  .joe-product-bar > span:last-child {
     display: block;
   }
 
-  .simo-trail-work-card {
-    position: absolute;
-    width: min(16rem, 34%);
-    min-height: 18rem;
-    transform-origin: center;
+  .joe-current-media figcaption {
+    padding: 0.5rem 0.625rem;
   }
 
-  .simo-trail-work-card[data-featured="true"] {
-    top: 4.7rem;
-    left: 7%;
-    z-index: 4;
-    width: min(18.4rem, 38%);
-    grid-template-columns: minmax(0, 1fr);
-    transform: rotateY(-8deg) rotateZ(-2deg);
-  }
-
-  .simo-trail-work-card:nth-child(2) {
-    top: 5.7rem;
-    left: 35%;
-    z-index: 3;
-    filter: brightness(0.82);
-    transform: translateZ(-4rem) rotateY(-12deg) rotateZ(2deg) scale(0.92);
-  }
-
-  .simo-trail-work-card:nth-child(3) {
-    top: 7rem;
-    left: 55%;
-    z-index: 2;
-    filter: brightness(0.68);
-    transform: translateZ(-8rem) rotateY(-15deg) rotateZ(3deg) scale(0.84);
-  }
-
-  .simo-trail-work-card:nth-child(4) {
-    right: 3%;
-    bottom: 4.2rem;
-    z-index: 1;
-    width: min(13.5rem, 28%);
-    filter: brightness(0.58);
-    transform: translateZ(-10rem) rotateY(-18deg) scale(0.76);
-  }
-}
-
-.simo-trail-work-card[data-featured="true"] .simo-trail-work-media,
-.simo-trail-work-card[data-featured="true"] .simo-trail-work-media img {
-  min-height: 10.6rem;
-}
-
-.simo-trail-work-media,
-.simo-trail-work-media img,
-.simo-trail-work-media > span,
-.simo-trail-sim0-composition {
-  min-height: 9.8rem;
-}
-
-.simo-trail-work-card:not([data-featured="true"]) .simo-trail-work-copy p {
-  display: none;
-}
-
-.simo-trail-work-copy dl {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.simo-trail-work-copy dl div:nth-child(n + 2) {
-  display: none;
-}
-
-.simo-trail-about-signals article {
-  width: min(12rem, 36%);
-  padding: 0.62rem;
-}
-
-.simo-trail-about-signals article:nth-child(5) {
-  top: 43%;
-  left: 4%;
-}
-
-.simo-trail-about-signals article:nth-child(6) {
-  top: 42%;
-  right: 3%;
-}
-
-.simo-trail-about-signals p {
-  font-size: 0.74rem;
-  line-height: 1.35;
-}
-
-.simo-trail-notes-section .simo-trail-note-row {
-  grid-template-columns: 3.15rem minmax(0, 1fr) minmax(4.8rem, 0.26fr);
-  gap: 0.85rem;
-  padding-right: 1.3rem;
-}
-
-.simo-trail-notes-section .simo-trail-note-row p {
-  grid-column: 2 / 4;
-  max-height: 0;
-  opacity: 0;
-}
-
-.simo-trail-notes-section .simo-trail-note-row:hover p,
-.simo-trail-notes-section .simo-trail-note-row:focus-visible p {
-  max-height: 4.8rem;
-  opacity: 1;
-}
-
-.simo-trail-contact-section {
-  min-height: clamp(34rem, 54vw, 45rem);
-  border-bottom: 1px solid color-mix(in oklab, var(--trail-ink) 9%, transparent);
-}
-
-.simo-trail-contact-shell {
-  grid-template-columns: minmax(0, 0.92fr) minmax(12rem, 0.42fr);
-  align-items: center;
-}
-
-.simo-trail-menu-shell {
-  display: grid;
-  grid-template-areas:
-    "head preview"
-    "social social";
-}
-
-.simo-trail-menu-shell > .simo-trail-section-head {
-  grid-area: head;
-  align-self: center;
-}
-
-.simo-trail-menu-preview {
-  grid-area: preview;
-  position: relative;
-  min-height: 13rem;
-  overflow: hidden;
-  border: 1px solid var(--trail-line);
-  background:
-    linear-gradient(116deg, transparent, color-mix(in oklab, #ffffff 18%, transparent), transparent 56%),
-    radial-gradient(circle at 52% 46%, color-mix(in oklab, #ffffff 18%, transparent), transparent 5rem),
-    #242424;
-  filter: grayscale(1);
-}
-
-.simo-trail-menu-preview span {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(83deg, transparent 0 44%, color-mix(in oklab, #ffffff 16%, transparent) 45% 47%, transparent 52%),
-    repeating-linear-gradient(97deg, transparent 0 1.6rem, color-mix(in oklab, #ffffff 5%, transparent) 1.64rem 1.7rem);
-}
-
-.simo-trail-menu-list {
-  display: grid;
-  gap: 0.48rem;
-  margin-top: 1rem;
-}
-
-.simo-trail-menu-list a {
-  --magnet-x: 0px;
-  --magnet-y: 0px;
-  display: inline-flex;
-  width: fit-content;
-  gap: 0.58rem;
-  color: var(--trail-ink);
-  font-size: 0.9rem;
-  line-height: 1.25;
-  text-decoration: none;
-  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
-  transition:
-    color 180ms ease,
-    transform 180ms ease;
-}
-
-.simo-trail-menu-list a:hover,
-.simo-trail-menu-list a:focus-visible {
-  color: var(--trail-accent);
-}
-
-.simo-trail-menu-list span {
-  color: var(--trail-muted);
-  font-family: var(--font-geist-mono);
-  font-size: 0.72rem;
-}
-
-.simo-trail-menu-shell > .simo-trail-social-constellation {
-  grid-area: social;
-  align-self: end;
-}
-
-.simo-trail-social-constellation {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-.simo-trail-social-constellation a {
-  min-height: 7.8rem;
-  padding: 0.78rem;
-}
-
-.simo-trail-social-constellation span {
-  display: none;
-}
-
-.simo-trail-system-section {
-  min-height: auto;
-  padding-block: 0;
-}
-
-.simo-trail-engine-section .site-shell {
-  padding: clamp(1.45rem, 3vw, 2.45rem);
-}
-
-.simo-trail-system-grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.simo-trail-system-grid article,
-.simo-trail-system-grid article:nth-child(4),
-.simo-trail-system-stack {
-  grid-column: span 2;
-}
-
-:root:not(.dark) .simo-trail-cinematic-hero {
-  background:
-    radial-gradient(ellipse at 58% 42%, color-mix(in oklab, #111111 14%, transparent), transparent 7.5rem),
-    radial-gradient(ellipse at 66% 43%, color-mix(in oklab, var(--trail-accent) 9%, transparent), transparent 34rem),
-    linear-gradient(180deg, #f7f7f2, #eeeeea);
-}
-
-:root:not(.dark) .simo-trail-hero h1 {
-  color: #080808;
-  text-shadow: none;
-}
-
-:root:not(.dark) .simo-trail-hero-line,
-:root:not(.dark) .simo-trail-hero-kicker,
-:root:not(.dark) .simo-trail-hero-scroll-cue,
-:root:not(.dark) .simo-trail-hero-orbit-label {
-  color: color-mix(in oklab, #080808 82%, transparent);
-}
-
-@media (max-width: 1180px) {
-  .simo-trail-root {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-trail-root > section {
-    grid-column: 1;
-  }
-
-  .simo-trail-section-shell,
-  .simo-trail-about-shell,
-  .simo-trail-contact-shell,
-  .simo-trail-menu-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .simo-trail-work-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-height: auto;
-  }
-
-  .simo-trail-work-card,
-  .simo-trail-work-card[data-featured="true"],
-  .simo-trail-work-card:not([data-featured="true"]):last-child {
-    position: relative;
-    inset: auto;
-    width: auto;
-    filter: none;
-    transform: none;
-  }
-
-  .simo-trail-menu-shell {
-    grid-template-areas:
-      "head"
-      "preview"
-      "social";
-  }
-}
-
-@media (max-width: 760px) {
-  .simo-trail-root {
-    gap: 0;
-    padding: 0;
-  }
-
-  .simo-trail-root > section {
-    border-right: 0;
-    border-left: 0;
-  }
-
-  .simo-trail-hero-copy,
-  .dark .simo-trail-hero-copy {
-    max-width: 100%;
-  }
-
-  .simo-trail-hero h1,
-  .dark .simo-trail-hero h1 {
-    font-size: clamp(4.15rem, 22vw, 7rem);
-    white-space: normal;
-  }
-
-  .simo-trail-hero-world {
-    opacity: 0.42;
-  }
-
-  .simo-trail-orbit-card-work,
-  .simo-trail-orbit-card-moment,
-  .simo-trail-orbit-readout,
-  .simo-trail-hero-orbit-label {
+  .joe-current-card dl {
     display: none;
   }
 
-  .simo-trail-section {
-    min-height: auto;
-  }
-
-  .simo-trail-work-grid,
-  .simo-trail-social-constellation,
-  .simo-trail-system-grid {
+  .joe-section-head,
+  .joe-timeline article,
+  .joe-education-row,
+  .joe-credential-list article {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .simo-trail-system-grid article,
-  .simo-trail-system-grid article:nth-child(4),
-  .simo-trail-system-stack {
-    grid-column: auto;
-  }
-}
-
-.simo-trail-note-item {
-  position: relative;
-  border-bottom: 1px solid var(--trail-line);
-}
-
-.simo-trail-note-item .simo-trail-note-row {
-  border-bottom: 0;
-}
-
-.simo-trail-note-preview {
-  max-height: 0;
-  overflow: hidden;
-  margin: 0;
-  padding: 0 1.3rem 0 calc(3.15rem + 0.85rem);
-  color: color-mix(in oklab, var(--trail-ink) 78%, transparent);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  opacity: 0;
-  transition:
-    color 180ms ease,
-    max-height 220ms ease,
-    opacity 180ms ease,
-    padding-bottom 220ms ease;
-}
-
-.simo-trail-note-item:hover .simo-trail-note-preview,
-.simo-trail-note-item:focus-within .simo-trail-note-preview {
-  max-height: 4.8rem;
-  padding-bottom: 1rem;
-  color: color-mix(in oklab, var(--trail-ink) 90%, transparent);
-  opacity: 1;
-}
-
-.simo-trail-note-item:focus-within .simo-trail-note-row::before {
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-.simo-trail-note-item:focus-within .simo-trail-note-row::after {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-@media (max-width: 760px) {
-  .simo-trail-work-section .simo-trail-section-shell,
-  .simo-trail-notes-section .simo-trail-section-shell {
-    grid-template-columns: minmax(0, 1fr);
+  .joe-work-table article {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .simo-trail-note-preview {
+  .joe-work-table article > p {
     display: none;
   }
 
-  .simo-trail-notes-section .simo-trail-note-row {
-    grid-template-columns: 2.75rem minmax(0, 1fr);
+  .joe-photo-sheet {
+    display: flex;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    overflow-x: auto;
+    padding: 0 1rem 0.35rem;
+    scroll-snap-type: x mandatory;
   }
 
-  .simo-trail-note-row em {
-    grid-column: 2;
+  .joe-photo-sheet figure {
+    flex: 0 0 min(17rem, 78vw);
+    scroll-snap-align: start;
+  }
+
+  .joe-photo-sheet figure[data-featured="true"] {
+    flex-basis: min(19rem, 84vw);
+  }
+
+  .joe-current-card dl div,
+  .joe-dialog-copy dl div {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .simo-trail-note-preview {
-    transition: none;
+  .joe-site *,
+  .joe-site *::before,
+  .joe-site *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
   }
 }

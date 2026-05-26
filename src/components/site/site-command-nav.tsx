@@ -55,7 +55,7 @@ function normalizeText(value: string) {
 function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
   const sectionItems: CommandItem[] = [
     {
-      description: "Return to the first personal signal.",
+      description: "Return to the first page section.",
       href: resolveNavHref("#joe", sectionPrefix),
       iconKey: "home",
       label: "Joe",
@@ -79,7 +79,7 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
     })
     .slice(0, 4)
     .map((project) => ({
-      description: project.proofSummary,
+      description: project.summary,
       href: resolveNavHref(`#work-${project.slug}`, sectionPrefix),
       iconKey: "appWindow" as const,
       label: project.title,
@@ -88,7 +88,7 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
 
   const momentItems = communityHighlights.slice(0, 4).map((artifact) => ({
     description: artifact.body,
-    href: resolveNavHref("#photos", sectionPrefix),
+    href: resolveNavHref("#community", sectionPrefix),
     iconKey: "camera" as const,
     label: artifact.title,
     meta: artifact.code,
@@ -108,7 +108,7 @@ function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
   return [
     { label: "Sections", items: sectionItems },
     { label: "Work", items: workItems },
-    { label: "Journal", items: momentItems },
+    { label: "Community", items: momentItems },
     { label: "Profiles", items: profileItems },
   ];
 }

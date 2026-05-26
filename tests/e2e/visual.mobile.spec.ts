@@ -40,7 +40,9 @@ test.describe("mobile visual regression", () => {
     await prepareVisualPage(page, "dark");
     await page.locator("#work").scrollIntoViewIfNeeded();
     await expectPageHealthy(page, problems);
-    await expect(page.getByRole("heading", { name: "sim0" })).toBeVisible();
+    await expect(
+      page.locator("#work").getByRole("heading", { name: "sim0" }),
+    ).toBeVisible();
 
     await expect(page).toHaveScreenshot("work-mobile-dark.png", {
       maxDiffPixelRatio: 0.02,

@@ -27,7 +27,7 @@ export function SiteFooter() {
           Joe Simo
         </a>
         <p>
-          Fort Myers. Devsigner. Support, systems, web projects,
+          FL. Designer/developer. Support, systems, web projects,
           Telematics Engineering.
         </p>
         <nav
