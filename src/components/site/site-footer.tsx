@@ -26,7 +26,7 @@ export function SiteFooter() {
   );
 
   return (
-    <footer className="site-footer-shell grid gap-5 border-t border-border py-8 text-sm text-muted-foreground lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+    <footer className="site-footer-shell grid gap-5 py-8 text-sm text-muted-foreground lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
       <div className="grid gap-1">
         <a
           href="#joe"

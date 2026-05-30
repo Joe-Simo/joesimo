@@ -23,12 +23,12 @@ type PointerState = {
 };
 
 type ParticlePalette = {
-  accent: string;
   foreground: string;
 };
 
 const MAX_PIXEL_RATIO = 1.65;
 const POINTER_RADIUS = 168;
+const EDGE_GUARD = 14;
 
 function cssVar(name: string, fallback: string) {
   const value = window
@@ -41,7 +41,6 @@ function cssVar(name: string, fallback: string) {
 
 function readParticlePalette(): ParticlePalette {
   return {
-    accent: cssVar("--signal-accent", "#3291ff"),
     foreground: cssVar("--foreground", "#ffffff"),
   };
 }
@@ -50,6 +49,23 @@ function canvasFontFrom(element: HTMLElement) {
   const style = window.getComputedStyle(element);
 
   return `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+}
+
+function applyCanvasTextStyle(
+  context: CanvasRenderingContext2D,
+  element: HTMLElement,
+) {
+  const style = window.getComputedStyle(element);
+  const letterSpacing =
+    style.letterSpacing === "normal" ? "0px" : style.letterSpacing;
+
+  context.font = canvasFontFrom(element);
+
+  if ("letterSpacing" in context) {
+    (
+      context as CanvasRenderingContext2D & { letterSpacing: string }
+    ).letterSpacing = letterSpacing;
+  }
 }
 
 function createParticle({
@@ -100,26 +116,35 @@ function buildParticles({
 }) {
   const bounds = title.getBoundingClientRect();
   const dpr = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-  const paddingX = 40;
-  const paddingY = 10;
-  const textWidth = Math.max(1, Math.ceil(bounds.width));
+  const paddingX = Math.round(Math.max(14, Math.min(32, bounds.width * 0.06)));
+  const paddingY = Math.round(Math.max(8, Math.min(14, bounds.height * 0.14)));
+  applyCanvasTextStyle(context, title);
+
+  const textMetrics = context.measureText(text);
+  const measuredTextWidth = Math.max(
+    textMetrics.width,
+    textMetrics.actualBoundingBoxLeft + textMetrics.actualBoundingBoxRight,
+  );
+  const textWidth = Math.max(1, Math.ceil(bounds.width), Math.ceil(measuredTextWidth));
   const textHeight = Math.max(1, Math.ceil(bounds.height));
-  const width = textWidth + paddingX * 2;
+  const extraTextWidth = Math.max(0, textWidth - bounds.width);
+  const width = textWidth + paddingX * 2 + EDGE_GUARD * 2;
   const height = textHeight + paddingY * 2;
+  const drawX = paddingX + EDGE_GUARD + extraTextWidth / 2;
 
   canvas.width = Math.ceil(width * dpr);
   canvas.height = Math.ceil(height * dpr);
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
-  canvas.style.left = `-${paddingX}px`;
+  canvas.style.left = `-${paddingX + EDGE_GUARD + extraTextWidth / 2}px`;
   canvas.style.top = `-${paddingY}px`;
 
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
   context.clearRect(0, 0, width, height);
   context.fillStyle = "#ffffff";
-  context.font = canvasFontFrom(title);
+  applyCanvasTextStyle(context, title);
   context.textBaseline = "middle";
-  context.fillText(text, paddingX, height / 2);
+  context.fillText(text, drawX, height / 2);
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   const particles: Particle[] = [];
@@ -154,7 +179,6 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
       return;
     }
 
-    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const canvasElement = canvas;
     const titleElement = title;
@@ -176,7 +200,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
         return;
       }
 
-      if (!hoverQuery.matches || motionQuery.matches) {
+      if (motionQuery.matches) {
         setReady(false);
         return;
       }
@@ -244,7 +268,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
             particle.y +=
               (particle.baseY - Math.sin(angle) * force * 46 - particle.y) *
               0.24;
-            drawingContext.fillStyle = palette.accent;
+            drawingContext.fillStyle = palette.foreground;
           } else {
             particle.x += (particle.baseX - particle.x) * 0.09;
             particle.y += (particle.baseY - particle.y) * 0.09;
@@ -349,13 +373,11 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
       attributes: true,
     });
     motionQuery.addEventListener("change", handleMotionSettingChange);
-    hoverQuery.addEventListener("change", handleMotionSettingChange);
     startParticles();
 
     return () => {
       disposed = true;
       motionQuery.removeEventListener("change", handleMotionSettingChange);
-      hoverQuery.removeEventListener("change", handleMotionSettingChange);
       themeObserver.disconnect();
       stopParticles(false);
     };
@@ -363,7 +385,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
 
   return (
     <div className="joe-name-particles" data-particles-ready={ready}>
-      <h1 id={id} ref={titleRef} tabIndex={-1}>
+      <h1 id={id} ref={titleRef}>
         {text}
       </h1>
       <canvas

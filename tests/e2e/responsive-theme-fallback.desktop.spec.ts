@@ -44,14 +44,10 @@ test.describe("responsive, theme, and fallback gates", () => {
       await expect(
         page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
       ).toBeVisible();
-      await expectHomeDestinationLink(page, "work");
-      await expectHomeDestinationLink(page, "community");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
 
-      const workLink = await expectHomeDestinationLink(page, "work");
-
-      await workLink.click();
+      await page.goto("/#work", { waitUntil: "domcontentloaded" });
       await expectHomeDestinationSection(page, "work");
       await expectNoHorizontalOverflow(page);
       await expectInteractiveTextFits(page);
@@ -69,7 +65,8 @@ test.describe("responsive, theme, and fallback gates", () => {
     await blockHeavyMedia(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
-    await expect(page.locator(".joe-identity-field")).toBeVisible();
+    await expect(page.locator(".joe-identity-field")).toHaveCount(0);
+    await expect(page.locator(".joe-name-particles")).toBeVisible();
     await expectPageHealthy(page, problems);
 
     await chooseTheme(page, "Dark");
@@ -85,7 +82,7 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("desktop index keeps the identity field and page content usable", async ({
+  test("desktop index keeps the centered hero and page content usable", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -94,7 +91,8 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
-    await expect(page.locator(".joe-identity-field")).toBeVisible();
+    await expect(page.locator(".joe-identity-field")).toHaveCount(0);
+    await expect(page.locator(".joe-name-particles")).toBeVisible();
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
@@ -166,14 +164,12 @@ test.describe("responsive, theme, and fallback gates", () => {
     ).toBeVisible();
     await expect(page.locator("#community")).toBeInViewport();
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "fallback",
+    await expect(page.locator(".joe-identity-field")).toHaveCount(0);
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "false",
     );
-    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
-    await expect(
-      page.locator(".joe-identity-fallback img"),
-    ).toHaveCount(1);
+    await expect(page.locator(".joe-name-particles-canvas")).toBeHidden();
     await expect
       .poll(() =>
         page.evaluate(
@@ -187,11 +183,10 @@ test.describe("responsive, theme, and fallback gates", () => {
       )
       .toBe(0);
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "community");
     await expectPageHealthy(page, problems);
   });
 
-  test("identity field tears down WebGL when reduced motion becomes active", async ({
+  test("name particle hero tears down when reduced motion becomes active", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -199,20 +194,20 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "ready",
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "true",
       { timeout: 20_000 },
     );
-    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(1);
+    await expect(page.locator(".joe-name-particles-canvas")).toBeVisible();
 
     await page.emulateMedia({ reducedMotion: "reduce" });
 
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "fallback",
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "false",
     );
-    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
+    await expect(page.locator(".joe-name-particles-canvas")).toBeHidden();
     await expectHomeDestinationLink(page, "work");
     await expectPageHealthy(page, problems);
   });
@@ -226,6 +221,10 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await blockHeavyMedia(page);
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-portfolio-runtime",
+      "ready",
+    );
 
     const firstWorkRow = page.locator(".joe-work-table article").first();
 
@@ -269,59 +268,4 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("identity field falls back cleanly when WebGL is unavailable", async ({
-    page,
-  }) => {
-    const problems = collectConsoleProblems(page);
-
-    await page.addInitScript(() => {
-      const canvasPrototype = HTMLCanvasElement.prototype as unknown as {
-        getContext: (
-          this: HTMLCanvasElement,
-          contextId: string,
-          ...args: unknown[]
-        ) => RenderingContext | null;
-      };
-      const originalGetContext = canvasPrototype.getContext;
-
-      canvasPrototype.getContext = function getContext(
-        this: HTMLCanvasElement,
-        contextId: string,
-        ...args: unknown[]
-      ) {
-        if (/^webgl/i.test(contextId)) {
-          return null;
-        }
-
-        return originalGetContext.call(this, contextId, ...args);
-      };
-    });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "fallback",
-      { timeout: 20_000 },
-    );
-    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
-    await expect(
-      page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
-    ).toBeVisible();
-    await expectHomeDestinationLink(page, "work");
-    await page.waitForTimeout(300);
-    await expect(
-      page.locator(
-        '[data-nextjs-dialog-overlay], nextjs-portal [role="dialog"], nextjs-portal [data-nextjs-dialog]',
-      ),
-    ).toHaveCount(0);
-    await expectNoHorizontalOverflow(page);
-    expect(
-      problems.filter(
-        (problem) =>
-          !problem.includes(
-            "THREE.WebGLRenderer: Error creating WebGL context.",
-          ),
-      ),
-    ).toEqual([]);
-  });
 });

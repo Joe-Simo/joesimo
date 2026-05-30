@@ -333,16 +333,6 @@ function useStructuralMotion() {
             y: 0,
           },
         );
-        gsap.to(".joe-identity-field", {
-          opacity: 0.48,
-          scrollTrigger: {
-            end: "bottom top",
-            scrub: 0.7,
-            start: "top top",
-            trigger: ".joe-hero",
-          },
-          yPercent: -9,
-        });
       });
 
       cleanupGsap = () => {

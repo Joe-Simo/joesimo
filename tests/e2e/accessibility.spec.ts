@@ -33,9 +33,7 @@ test.describe("accessibility quality gates", () => {
     });
   }
 
-  test("has no serious axe violations with the mobile jump menu open", async ({
-    page,
-  }) => {
+  test("has no serious axe violations on mobile home", async ({ page }) => {
     test.setTimeout(60_000);
 
     const problems = collectConsoleProblems(page);
@@ -44,9 +42,6 @@ test.describe("accessibility quality gates", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
-
-    await page.getByRole("button", { name: "Open jump menu" }).click();
-    await expect(page.getByRole("dialog", { name: "Jump menu" })).toBeVisible();
 
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

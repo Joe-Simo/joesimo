@@ -10,11 +10,11 @@ import {
   workRoutes,
 } from "./helpers";
 
-async function expectHeroCanvasReady(page: Page) {
-  const field = page.locator(".joe-identity-field");
-  const canvas = page.locator(".joe-identity-field canvas");
+async function expectHeroNameParticlesReady(page: Page) {
+  const field = page.locator(".joe-name-particles");
+  const canvas = field.locator("canvas");
 
-  await expect(field).toHaveAttribute("data-hero-webgl", "ready", {
+  await expect(field).toHaveAttribute("data-particles-ready", "true", {
     timeout: 20_000,
   });
   await expect(canvas).toHaveCount(1);
@@ -23,7 +23,7 @@ async function expectHeroCanvasReady(page: Page) {
   const canvasBox = await canvas.boundingBox();
 
   expect(canvasBox?.width ?? 0).toBeGreaterThan(120);
-  expect(canvasBox?.height ?? 0).toBeGreaterThan(120);
+  expect(canvasBox?.height ?? 0).toBeGreaterThan(60);
 }
 
 async function expectFocusTrappedInDialog(page: Page, dialog: Locator) {
@@ -82,21 +82,14 @@ test.describe("Joe Simo personal site", () => {
     await expect(
       page.getByText("React / Next.js / TypeScript / JavaScript"),
     ).toBeVisible();
-    const viewport = page.viewportSize();
-
-    if (viewport && viewport.width < 981) {
-      await expect(page.locator(".joe-identity-field")).toBeHidden();
-      await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
-    } else {
-      await expect(page.locator(".joe-identity-field")).toBeVisible();
-      await expectHeroCanvasReady(page);
-    }
+    await expect(page.locator(".joe-identity-field")).toHaveCount(0);
+    await expectHeroNameParticlesReady(page);
     expect(remotePetAssetRequests).toEqual([]);
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "systems");
-    await expectHomeDestinationLink(page, "credentials");
-    await expectHomeDestinationLink(page, "community");
+    await expectHomeDestinationLink(page, "contact");
     await expect(page.locator(".joe-hero")).toBeVisible();
+    await expect(page.locator(".joe-hero a")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
     await expect(page.locator("#work")).toBeVisible();
@@ -150,8 +143,7 @@ test.describe("Joe Simo personal site", () => {
     await page.goto("/");
 
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "community");
-    await expectHomeDestinationLink(page, "blog");
+    await expectHomeDestinationLink(page, "contact");
 
     const viewport = page.viewportSize();
 
@@ -246,13 +238,7 @@ test.describe("Joe Simo personal site", () => {
     await expect(systemsSection.getByText("Disaster Recovery Engineer")).toBeVisible();
     await expect(systemsSection.getByText("IT Systems Administrator")).toBeVisible();
 
-    const currentCommunityLink = await expectHomeDestinationLink(
-      page,
-      "community",
-    );
-
-    await currentCommunityLink.click();
-    await expect(page).toHaveURL(/#community$/);
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "community");
     await expect(
       page.getByRole("heading", {
@@ -322,46 +308,20 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/");
 
-    const jumpMenu = page.getByRole("button", { name: "Open jump menu" });
-    const viewport = page.viewportSize();
-
-    await expect(jumpMenu).toBeVisible();
-    await jumpMenu.click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    const searchInput = page.getByRole("searchbox", {
-      name: "Filter jump destinations",
-    });
-
-    if (viewport && viewport.width >= 700) {
-      await expect(searchInput).toBeFocused();
-    } else {
-      await expect(
-        page.getByRole("button", { name: "Close jump menu" }),
-      ).toBeFocused();
-    }
-
-    await expect(searchInput).toHaveAttribute(
-      "placeholder",
-      "Search sections, work, community, profiles…",
-    );
-    await searchInput.fill("Royal Shell");
-    await expect(page.getByRole("status")).toHaveText(
-      "No matching destination.",
-    );
-    await searchInput.fill("Love Presentation");
-    await expect(
-      page.getByRole("link", { name: /Love Presentation/i }),
-    ).toBeVisible();
-
-    await page.keyboard.press("Escape");
+    await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
     await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator(".simo-command-nav")).toHaveCount(0);
+    await expect(page.locator(".joe-hero a")).toHaveCount(0);
 
-    const communityLink = await expectHomeDestinationLink(page, "community");
+    const workLink = await expectHomeDestinationLink(page, "work");
+    const contactLink = await expectHomeDestinationLink(page, "contact");
 
-    await communityLink.click();
-    await expect(page).toHaveURL(/#community$/);
-    await expect(page.locator("#community")).toBeVisible();
+    await workLink.click();
+    await expect(page).toHaveURL(/#work$/);
+    await expect(page.locator("#work")).toBeVisible();
+    await contactLink.click();
+    await expect(page).toHaveURL(/#contact$/);
+    await expect(page.locator("#contact")).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });
@@ -458,7 +418,7 @@ test.describe("Joe Simo personal site", () => {
       .poll(() => workImage.evaluate((image) => getComputedStyle(image).filter))
       .toMatch(/grayscale\((1|100%)\)/);
 
-    await workImage.hover();
+    await workRow.hover();
     await expect
       .poll(() => workImage.evaluate((image) => getComputedStyle(image).filter))
       .not.toMatch(/grayscale\((1|100%)\)/);

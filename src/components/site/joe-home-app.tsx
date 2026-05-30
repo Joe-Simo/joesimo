@@ -10,14 +10,12 @@ import {
   type ProjectTranslationMap,
 } from "@/components/site/portfolio-runtime";
 import { HeroNameParticles } from "@/components/site/hero-name-particles";
-import { HeroWebGLField } from "@/components/site/hero-webgl-field";
 import { SiteIcon } from "@/components/site/site-icons";
 import {
   credentialGroups,
   educationRecords,
   isHomepageProject,
   portfolioSections,
-  profileMedia,
   type CommunityArtifact,
   type CredentialGroup,
   type JoeProfile,
@@ -268,11 +266,6 @@ function HeroSection({
         <div className="joe-hero-stage" data-joe-reveal>
           <div className="joe-signature-stage">
             <div className="joe-identity-core">
-              <HeroWebGLField
-                alt={profileMedia.alt}
-                imageSrc={profileMedia.src}
-                label="Interactive black-and-white Joe Simo portrait"
-              />
               <div className="joe-hero-title-group">
                 <HeroNameParticles id="joe-title" text="Joe Simo" />
                 <p className="joe-hero-subhead">
@@ -288,11 +281,6 @@ function HeroSection({
               <p className="joe-hero-stack">
                 React / Next.js / TypeScript / JavaScript
               </p>
-              <nav aria-label="Primary homepage actions" className="joe-actions">
-                <a className="joe-action-primary" href="#work">
-                  <T en="View work" es="Ver trabajos" />
-                </a>
-              </nav>
             </div>
           </div>
         </div>

@@ -38,12 +38,8 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
-    await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }), 10);
+    await tabUntilFocused(page, page.locator('header a[href="#work"]'), 10);
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }), 4);
-    await tabUntilFocused(
-      page,
-      page.locator('.joe-hero a[href="#work"]').first(),
-    );
   });
 
   test("homepage destination controls expose usable accessible names", async ({
@@ -56,7 +52,7 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     await expectHomeDestinationLink(page, "work");
-    await expectHomeDestinationLink(page, "community");
+    await expectHomeDestinationLink(page, "contact");
   });
 
   test("contact profile links are keyboard reachable", async ({

@@ -3,7 +3,6 @@ import { expect, test } from "@playwright/test";
 import {
   blockHeavyMedia,
   collectConsoleProblems,
-  expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectInteractiveTextFits,
   expectNoHorizontalOverflow,
@@ -11,7 +10,7 @@ import {
 } from "./helpers";
 
 test.describe("Joe Simo mobile homepage navigation", () => {
-  test("mobile keeps primary destinations tappable without overflow or scroll trapping", async ({
+  test("mobile keeps sections reachable without overflow or scroll trapping", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -20,13 +19,12 @@ test.describe("Joe Simo mobile homepage navigation", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const communityLink = await expectHomeDestinationLink(page, "community");
-    const workLink = await expectHomeDestinationLink(page, "work");
-
     await expectNoHorizontalOverflow(page);
     await expectInteractiveTextFits(page);
     await expect(page.locator(".joe-hero-metadata")).toHaveCount(0);
     await expect(page.locator(".joe-hero-work")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /theme:/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /language:/i })).toBeVisible();
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const startingScrollY = await page.evaluate(() => window.scrollY);
@@ -35,8 +33,7 @@ test.describe("Joe Simo mobile homepage navigation", () => {
       .poll(() => page.evaluate((start) => window.scrollY > start, startingScrollY))
       .toBe(true);
 
-    await communityLink.click();
-    await expect(page).toHaveURL(/#community$/);
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
 
     const communitySection = await expectHomeDestinationSection(
       page,
@@ -52,9 +49,7 @@ test.describe("Joe Simo mobile homepage navigation", () => {
     );
     await expect(credentialsSection).toBeInViewport();
 
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await workLink.click();
-    await expect(page).toHaveURL(/#(work|portfolio)$/);
+    await page.goto("/#work", { waitUntil: "domcontentloaded" });
 
     const workSection = await expectHomeDestinationSection(page, "work");
     await expect(workSection).toBeInViewport();

@@ -18,15 +18,6 @@ async function prepareVisualPage(
   await installStableVisualStyles(page);
 }
 
-async function freezeAnimationFrameTime(page: Page) {
-  await page.addInitScript(() => {
-    const requestAnimationFrame = window.requestAnimationFrame.bind(window);
-
-    window.requestAnimationFrame = (callback) =>
-      requestAnimationFrame(() => callback(1200));
-  });
-}
-
 test.describe("desktop visual regression", () => {
   test("desktop light home first viewport stays composed", async ({
     page,
@@ -84,29 +75,4 @@ test.describe("desktop visual regression", () => {
     });
   });
 
-  test("desktop normal-motion identity WebGL field stays composed", async ({
-    page,
-  }) => {
-    const problems = collectConsoleProblems(page);
-
-    await freezeAnimationFrameTime(page);
-    await blockHeavyMedia(page);
-    await setTheme(page, "dark");
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await installStableVisualStyles(page);
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "ready",
-      { timeout: 20_000 },
-    );
-    await expect(page.locator(".joe-identity-field canvas")).toBeVisible();
-    await expectPageHealthy(page, problems);
-
-    await expect(page.locator(".joe-identity-field")).toHaveScreenshot(
-      "identity-webgl-normal-desktop.png",
-      {
-        maxDiffPixelRatio: 0.03,
-      },
-    );
-  });
 });

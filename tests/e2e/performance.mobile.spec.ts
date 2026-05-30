@@ -35,14 +35,13 @@ test.describe("mobile performance budgets", () => {
 
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
-    await expect(page.locator(".joe-identity-field")).toBeHidden();
-    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
-      "data-hero-webgl",
-      "disabled",
+    await expect(page.locator(".joe-identity-field")).toHaveCount(0);
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "true",
+      { timeout: 20_000 },
     );
-    await expect
-      .poll(() => page.locator(".joe-identity-field canvas").count())
-      .toBe(0);
+    await expect(page.locator(".joe-name-particles-canvas")).toBeVisible();
     expect(mobileHeroEffectRequests).toEqual([]);
     expect(snapshot.decodedScriptBytes).toBeLessThan(2_800_000);
     expect(snapshot.decodedImageBytes).toBeLessThan(6_500_000);

@@ -194,12 +194,6 @@ export type InvestigationStep = ArtifactProofPoint & {
     zoomX: number;
     zoomY: number;
   };
-  webglNode: {
-    x: number;
-    y: number;
-    tension: number;
-    depth: number;
-  };
 };
 
 export type HumanStake = {
@@ -1333,7 +1327,6 @@ export const sim0ProofPoints = [
       "Make the stuck state readable before asking the user to trust the next action.",
     completionLabel: "Broken state found",
     hotspot: { x: 60, y: 34, zoomX: 60, zoomY: 34 },
-    webglNode: { x: 46, y: 52, tension: 0.48, depth: 0.48 },
   },
   {
     id: "runtime",
@@ -1357,7 +1350,6 @@ export const sim0ProofPoints = [
       "Keep system handoff visible where the interface decision is made.",
     completionLabel: "Runtime signal traced",
     hotspot: { x: 45, y: 62, zoomX: 45, zoomY: 62 },
-    webglNode: { x: 58, y: 45, tension: 0.54, depth: 0.56 },
   },
   {
     id: "api",
@@ -1381,7 +1373,6 @@ export const sim0ProofPoints = [
       "Avoid hiding local state behind a second screen when the work depends on it.",
     completionLabel: "Local context traced",
     hotspot: { x: 25, y: 83, zoomX: 25, zoomY: 83 },
-    webglNode: { x: 41, y: 72, tension: 0.62, depth: 0.6 },
   },
   {
     id: "ship",
@@ -1405,7 +1396,6 @@ export const sim0ProofPoints = [
       "Put the release action where the working state can justify it.",
     completionLabel: "Shipping action found",
     hotspot: { x: 88, y: 11, zoomX: 88, zoomY: 11 },
-    webglNode: { x: 78, y: 32, tension: 0.64, depth: 0.68 },
   },
   {
     id: "changes",
@@ -1429,7 +1419,6 @@ export const sim0ProofPoints = [
       "Show what changed before asking for confidence.",
     completionLabel: "Case signal complete",
     hotspot: { x: 88, y: 72, zoomX: 88, zoomY: 72 },
-    webglNode: { x: 86, y: 62, tension: 0.7, depth: 0.74 },
   },
 ] as const satisfies readonly InvestigationStep[];
 
