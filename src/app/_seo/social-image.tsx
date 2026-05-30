@@ -3,9 +3,20 @@ import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
 
-import { heroCopy, projectCaseStudies, siteDescription } from "@/lib/site-data";
+import {
+  heroCopy,
+  isHomepageProject,
+  projectCaseStudiesPublic,
+  siteDescription,
+} from "@/lib/site-data";
 
-const primaryWork = projectCaseStudies[0];
+const primaryWork = [...projectCaseStudiesPublic]
+  .filter(isHomepageProject)
+  .sort((left, right) => {
+    const dateOrder = right.started.sortKey.localeCompare(left.started.sortKey);
+
+    return dateOrder || left.title.localeCompare(right.title);
+  })[0];
 
 export async function createSocialImage(label: string) {
   const geistSans = await readFile(
@@ -34,8 +45,8 @@ export async function createSocialImage(label: string) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#fbfbfb",
-          color: "#09090b",
+          background: "#ffffff",
+          color: "#000000",
           fontFamily:
             'Geist, "Geist Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
           padding: 56,
@@ -47,7 +58,7 @@ export async function createSocialImage(label: string) {
             position: "absolute",
             inset: 0,
             display: "flex",
-            border: "1px solid rgba(9, 9, 11, 0.12)",
+            border: "1px solid rgba(0, 0, 0, 0.12)",
           }}
         />
         <div
@@ -67,7 +78,7 @@ export async function createSocialImage(label: string) {
                 fontSize: 18,
                 letterSpacing: 3,
                 textTransform: "uppercase",
-                color: "#606069",
+                color: "#666666",
               }}
             >
               {label} / joesimo.com
@@ -90,7 +101,7 @@ export async function createSocialImage(label: string) {
                 marginTop: 26,
                 fontSize: 32,
                 lineHeight: 1.2,
-                color: "#09090b",
+                color: "#000000",
               }}
             >
               {heroCopy.intro}
@@ -101,7 +112,7 @@ export async function createSocialImage(label: string) {
                 marginTop: 22,
                 fontSize: 24,
                 lineHeight: 1.45,
-                color: "#606069",
+                color: "#666666",
               }}
             >
               {siteDescription}
@@ -115,11 +126,11 @@ export async function createSocialImage(label: string) {
                 style={{
                   display: "flex",
                   marginRight: 12,
-                  border: "1px solid rgba(9, 9, 11, 0.16)",
+                  border: "1px solid rgba(0, 0, 0, 0.16)",
                   borderRadius: 8,
                   padding: "10px 16px",
                   fontSize: 18,
-                  color: "#09090b",
+                  color: "#000000",
                 }}
               >
                 {fact}
@@ -136,7 +147,7 @@ export async function createSocialImage(label: string) {
             width: 360,
             display: "flex",
             flexDirection: "column",
-            border: "1px solid rgba(9, 9, 11, 0.16)",
+            border: "1px solid rgba(0, 0, 0, 0.16)",
             borderRadius: 18,
             overflow: "hidden",
             background: "#ffffff",
@@ -144,16 +155,16 @@ export async function createSocialImage(label: string) {
         >
           {[
             ["Work", primaryWork?.title ?? "Selected work"],
-            ["Systems", "Macromedica / Neveroff / Brox"],
+            ["Systems", "Macromedica Dominicana / Never Off / Brox"],
             ["Credentials", "web / systems / drone"],
-            ["Contact", "X / GitHub / LinkedIn"],
+            ["Contact", "X / GitHub / LinkedIn / Instagram"],
           ].map(([title, detail]) => (
             <div
               key={title}
               style={{
                 display: "flex",
                 flexDirection: "column",
-                borderBottom: "1px solid rgba(9, 9, 11, 0.12)",
+                borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
                 padding: 22,
               }}
             >
@@ -163,7 +174,7 @@ export async function createSocialImage(label: string) {
                   fontSize: 18,
                   letterSpacing: 2,
                   textTransform: "uppercase",
-                  color: "#606069",
+                  color: "#666666",
                 }}
               >
                 {title}
@@ -174,7 +185,7 @@ export async function createSocialImage(label: string) {
                   marginTop: 8,
                   fontSize: 34,
                   fontWeight: 700,
-                  color: "#09090b",
+                  color: "#000000",
                 }}
               >
                 {detail}
@@ -190,7 +201,7 @@ export async function createSocialImage(label: string) {
             bottom: 54,
             height: 4,
             display: "flex",
-            background: "#09090b",
+            background: "#000000",
           }}
         />
       </div>

@@ -31,7 +31,7 @@ export default function Home() {
         className="outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
       >
         <JoeHomeStage
-          communityArtifacts={communityHighlights}
+          communityHighlights={communityHighlights}
           joeProfile={joeProfile}
           learningCredentials={learningCredentials}
           projects={projectCaseStudiesPublic}

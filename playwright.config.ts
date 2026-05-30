@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const e2ePort = process.env.PLAYWRIGHT_PORT ?? process.env.PORT ?? "3000";
+const e2ePort = process.env.PLAYWRIGHT_PORT ?? process.env.PORT ?? "3030";
 const e2eBaseURL = `http://127.0.0.1:${e2ePort}`;
 
 export default defineConfig({
@@ -38,7 +38,7 @@ export default defineConfig({
   },
   webServer: {
     command: `PORT=${e2ePort} bun run start`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 20_000,
     url: e2eBaseURL,
   },

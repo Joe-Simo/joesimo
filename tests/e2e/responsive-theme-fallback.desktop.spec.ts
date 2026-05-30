@@ -6,7 +6,6 @@ import {
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectInteractiveTextFits,
-  expectJoeSignalFieldReady,
   expectNoHorizontalOverflow,
   expectPageHealthy,
 } from "./helpers";
@@ -69,63 +68,33 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await blockHeavyMedia(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expectJoeSignalFieldReady(page);
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
+    await expect(page.locator(".joe-identity-field")).toBeVisible();
     await expectPageHealthy(page, problems);
 
     await chooseTheme(page, "Dark");
     await expect(page.locator("html")).toHaveClass(/dark/);
-    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
-      "data-signal-theme",
-      "dark",
-    );
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
 
     await chooseTheme(page, "Light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
-    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
-      "data-signal-theme",
-      "light",
-    );
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
 
     await chooseTheme(page, "System");
     await expect(page.getByRole("button", { name: /theme: system/i })).toBeVisible();
     await expectPageHealthy(page, problems);
   });
 
-  test("desktop index stays usable when WebGL falls back", async ({
+  test("desktop index keeps the identity field and page content usable", async ({
     page,
   }) => {
-    await page.addInitScript(() => {
-      const canvasPrototype = HTMLCanvasElement.prototype as unknown as {
-        getContext: (
-          this: HTMLCanvasElement,
-          contextId: string,
-          ...args: unknown[]
-        ) => RenderingContext | null;
-      };
-      const originalGetContext = canvasPrototype.getContext;
-
-      canvasPrototype.getContext = function getContext(
-        this: HTMLCanvasElement,
-        contextId: string,
-        ...args: unknown[]
-      ) {
-        if (contextId.includes("webgl")) {
-          return null;
-        }
-
-        return originalGetContext.call(this, contextId, ...args);
-      };
-    });
-
     const problems = collectConsoleProblems(page);
 
     await blockHeavyMedia(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
-    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
-      "data-webgl-ready",
-      "false",
-    );
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
+    await expect(page.locator(".joe-identity-field")).toBeVisible();
     await expect(
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
@@ -136,7 +105,7 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
     await expect(
-      workSection.getByRole("heading", { name: "sim0" }),
+      workSection.getByRole("heading", { name: "Love Presentation" }),
     ).toBeVisible();
     await expectPageHealthy(page, problems);
   });
@@ -165,7 +134,7 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await page.addInitScript(() => {
       const trackedWindow = window as typeof window & {
-        __joeWebglContextRequests?: number;
+        __joeCanvasContextRequests?: number;
       };
       const canvasPrototype = HTMLCanvasElement.prototype as unknown as {
         getContext: (
@@ -176,16 +145,14 @@ test.describe("responsive, theme, and fallback gates", () => {
       };
       const originalGetContext = canvasPrototype.getContext;
 
-      trackedWindow.__joeWebglContextRequests = 0;
+      trackedWindow.__joeCanvasContextRequests = 0;
       canvasPrototype.getContext = function getContext(
         this: HTMLCanvasElement,
         contextId: string,
         ...args: unknown[]
       ) {
-        if (contextId.includes("webgl")) {
-          trackedWindow.__joeWebglContextRequests =
-            (trackedWindow.__joeWebglContextRequests ?? 0) + 1;
-        }
+        trackedWindow.__joeCanvasContextRequests =
+          (trackedWindow.__joeCanvasContextRequests ?? 0) + 1;
 
         return originalGetContext.call(this, contextId, ...args);
       };
@@ -198,24 +165,163 @@ test.describe("responsive, theme, and fallback gates", () => {
       page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
     ).toBeVisible();
     await expect(page.locator("#community")).toBeInViewport();
-    await expect(page.locator(".joe-signal-field")).toHaveAttribute(
-      "data-webgl-ready",
-      "reduced-motion",
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
+    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
+      "data-hero-webgl",
+      "fallback",
     );
+    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
+    await expect(
+      page.locator(".joe-identity-fallback img"),
+    ).toHaveCount(1);
     await expect
       .poll(() =>
         page.evaluate(
           () =>
             (
               window as typeof window & {
-                __joeWebglContextRequests?: number;
+                __joeCanvasContextRequests?: number;
               }
-            ).__joeWebglContextRequests ?? 0,
+            ).__joeCanvasContextRequests ?? 0,
         ),
       )
       .toBe(0);
     await expectHomeDestinationLink(page, "work");
     await expectHomeDestinationLink(page, "community");
     await expectPageHealthy(page, problems);
+  });
+
+  test("identity field tears down WebGL when reduced motion becomes active", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
+      "data-hero-webgl",
+      "ready",
+      { timeout: 20_000 },
+    );
+    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(1);
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+
+    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
+      "data-hero-webgl",
+      "fallback",
+    );
+    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
+    await expectHomeDestinationLink(page, "work");
+    await expectPageHealthy(page, problems);
+  });
+
+  test("pointer surface polish follows live reduced motion preference", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await blockHeavyMedia(page);
+    await page.goto("/#work", { waitUntil: "domcontentloaded" });
+
+    const firstWorkRow = page.locator(".joe-work-table article").first();
+
+    await expect(firstWorkRow).toBeVisible();
+
+    const rowBox = await firstWorkRow.boundingBox();
+
+    expect(rowBox).not.toBeNull();
+
+    if (!rowBox) {
+      return;
+    }
+
+    await page.mouse.move(rowBox.x + rowBox.width / 2, rowBox.y + rowBox.height / 2);
+    await expect
+      .poll(() =>
+        firstWorkRow.evaluate((element) =>
+          (element as HTMLElement).style.getPropertyValue("--surface-x"),
+        ),
+      )
+      .not.toBe("");
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect
+      .poll(() =>
+        firstWorkRow.evaluate((element) =>
+          (element as HTMLElement).style.getPropertyValue("--surface-x"),
+        ),
+      )
+      .toBe("");
+
+    await page.mouse.move(rowBox.x + rowBox.width / 2 + 8, rowBox.y + rowBox.height / 2);
+    await page.waitForTimeout(120);
+    await expect
+      .poll(() =>
+        firstWorkRow.evaluate((element) =>
+          (element as HTMLElement).style.getPropertyValue("--surface-x"),
+        ),
+      )
+      .toBe("");
+    await expectPageHealthy(page, problems);
+  });
+
+  test("identity field falls back cleanly when WebGL is unavailable", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.addInitScript(() => {
+      const canvasPrototype = HTMLCanvasElement.prototype as unknown as {
+        getContext: (
+          this: HTMLCanvasElement,
+          contextId: string,
+          ...args: unknown[]
+        ) => RenderingContext | null;
+      };
+      const originalGetContext = canvasPrototype.getContext;
+
+      canvasPrototype.getContext = function getContext(
+        this: HTMLCanvasElement,
+        contextId: string,
+        ...args: unknown[]
+      ) {
+        if (/^webgl/i.test(contextId)) {
+          return null;
+        }
+
+        return originalGetContext.call(this, contextId, ...args);
+      };
+    });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
+      "data-hero-webgl",
+      "fallback",
+      { timeout: 20_000 },
+    );
+    await expect(page.locator(".joe-identity-field canvas")).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Joe Simo/i }),
+    ).toBeVisible();
+    await expectHomeDestinationLink(page, "work");
+    await page.waitForTimeout(300);
+    await expect(
+      page.locator(
+        '[data-nextjs-dialog-overlay], nextjs-portal [role="dialog"], nextjs-portal [data-nextjs-dialog]',
+      ),
+    ).toHaveCount(0);
+    await expectNoHorizontalOverflow(page);
+    expect(
+      problems.filter(
+        (problem) =>
+          !problem.includes(
+            "THREE.WebGLRenderer: Error creating WebGL context.",
+          ),
+      ),
+    ).toEqual([]);
   });
 });

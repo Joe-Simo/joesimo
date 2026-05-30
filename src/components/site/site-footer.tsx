@@ -1,7 +1,15 @@
+import { LocalizedText, navLabelEs } from "@/components/site/localized-text";
 import { navItems, socialChannels } from "@/lib/site-data";
 
 function ExternalCue({ show }: { show: boolean }) {
-  return show ? <span className="sr-only">opens in a new tab</span> : null;
+  return show ? (
+    <span className="sr-only">
+      <LocalizedText
+        en="opens in a new tab"
+        es="abre en una pestaña nueva"
+      />
+    </span>
+  ) : null;
 }
 
 const footerLinks = [
@@ -27,8 +35,10 @@ export function SiteFooter() {
           Joe Simo
         </a>
         <p>
-          FL. Designer/developer. Support, systems, web projects,
-          Telematics Engineering.
+          <LocalizedText
+            en="FL. Designer/developer. Support, systems, web projects, Telematics Engineering."
+            es="FL. Diseñador/desarrollador. Soporte, sistemas, proyectos web e Ingeniería Telemática."
+          />
         </p>
         <nav
           aria-label="Footer navigation"
@@ -41,7 +51,7 @@ export function SiteFooter() {
                 href={link.href}
                 className="rounded-sm outline-none hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
               >
-                {link.label}
+                <LocalizedText en={link.label} es={navLabelEs(link.label)} />
               </a>
             </span>
           ))}
@@ -56,7 +66,7 @@ export function SiteFooter() {
             rel="noreferrer"
             className="inline-flex min-h-11 min-w-11 items-center rounded-md px-3 outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/35"
           >
-            {channel.label}
+            {channel.label === "X" ? `X ${channel.handle}` : channel.label}
             <ExternalCue show />
           </a>
         ))}

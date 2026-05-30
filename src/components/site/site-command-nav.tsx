@@ -1,5 +1,6 @@
 "use client";
 
+import { Dialog } from "@base-ui/react/dialog";
 import {
   Search,
   X,
@@ -8,109 +9,47 @@ import {
 import {
   useEffect,
   useCallback,
-  useMemo,
   useRef,
   useState,
   type ComponentPropsWithoutRef,
 } from "react";
 
 import { SiteIcon } from "@/components/site/site-icons";
+import { LocalizedText } from "@/components/site/localized-text";
+import { useSiteLanguage } from "@/components/site/use-site-language";
 import { Button } from "@/components/ui/button";
-import {
-  communityHighlights,
-  navItems,
-  projectCaseStudiesPublic,
-  socialChannels,
-  type IconKey,
-  type NavHref,
-} from "@/lib/site-data";
+import type { IconKey } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-type CommandGroup = {
-  label: string;
+export type CommandText = {
+  en: string;
+  es: string;
+};
+
+export type CommandGroup = {
+  label: CommandText;
   items: CommandItem[];
 };
 
 type CommandItem = {
-  description: string;
+  description: CommandText;
   external?: boolean;
   href: string;
   iconKey: IconKey;
-  label: string;
-  meta: string;
+  label: CommandText;
+  meta: CommandText;
 };
 
 type SiteCommandNavProps = ComponentPropsWithoutRef<"div"> & {
-  sectionPrefix?: string;
+  groups: readonly CommandGroup[];
 };
-
-function resolveNavHref(href: NavHref | `#${string}`, sectionPrefix: string) {
-  return href.startsWith("#") ? `${sectionPrefix}${href}` : href;
-}
 
 function normalizeText(value: string) {
   return value.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
-function buildCommandGroups(sectionPrefix: string): CommandGroup[] {
-  const sectionItems: CommandItem[] = [
-    {
-      description: "Return to the first page section.",
-      href: resolveNavHref("#joe", sectionPrefix),
-      iconKey: "home",
-      label: "Joe",
-      meta: "Start",
-    },
-    ...navItems.map((item) => ({
-      description: `Jump to ${item.label.toLowerCase()}.`,
-      href: resolveNavHref(item.href, sectionPrefix),
-      iconKey: item.iconKey,
-      label: item.label,
-      meta: "Section",
-    })),
-  ];
-
-  const workItems = [...projectCaseStudiesPublic]
-    .sort((left, right) => {
-      const leftRank = left.homepageFeature?.rank ?? 99;
-      const rightRank = right.homepageFeature?.rank ?? 99;
-
-      return leftRank - rightRank || left.title.localeCompare(right.title);
-    })
-    .slice(0, 4)
-    .map((project) => ({
-      description: project.summary,
-      href: resolveNavHref(`#work-${project.slug}`, sectionPrefix),
-      iconKey: "appWindow" as const,
-      label: project.title,
-      meta: project.code,
-    }));
-
-  const momentItems = communityHighlights.slice(0, 4).map((artifact) => ({
-    description: artifact.body,
-    href: resolveNavHref("#community", sectionPrefix),
-    iconKey: "camera" as const,
-    label: artifact.title,
-    meta: artifact.code,
-  }));
-
-  const profileItems = socialChannels
-    .filter((channel) => channel.href.startsWith("http"))
-    .map((channel) => ({
-      description: channel.description,
-      external: true,
-      href: channel.href,
-      iconKey: channel.iconKey,
-      label: channel.label,
-      meta: channel.handle,
-    }));
-
-  return [
-    { label: "Sections", items: sectionItems },
-    { label: "Work", items: workItems },
-    { label: "Community", items: momentItems },
-    { label: "Profiles", items: profileItems },
-  ];
+function textForSearch(value: CommandText) {
+  return `${value.en} ${value.es}`;
 }
 
 function CommandIcon({
@@ -133,17 +72,20 @@ function CommandIcon({
 
 export function SiteCommandNav({
   className,
-  sectionPrefix = "",
+  groups,
   ...props
 }: SiteCommandNavProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const hasOpenedRef = useRef(false);
+  const language = useSiteLanguage();
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const groups = useMemo(() => buildCommandGroups(sectionPrefix), [sectionPrefix]);
   const normalizedQuery = normalizeText(query);
+  const searchPlaceholder =
+    language === "es"
+      ? "Buscar secciones, trabajos, comunidad, perfiles…"
+      : "Search sections, work, community, profiles…";
 
   const filteredGroups = groups
     .map((group) => ({
@@ -154,14 +96,13 @@ export function SiteCommandNav({
         }
 
         return normalizeText(
-          `${item.label} ${item.meta} ${item.description}`,
+          `${textForSearch(item.label)} ${textForSearch(item.meta)} ${textForSearch(item.description)}`,
         ).includes(normalizedQuery);
       }),
     }))
     .filter((group) => group.items.length > 0);
 
   const openCommand = useCallback(() => {
-    hasOpenedRef.current = true;
     setOpen(true);
   }, []);
 
@@ -170,156 +111,176 @@ export function SiteCommandNav({
     setQuery("");
   }, []);
 
+  const resolveInitialFocus = useCallback(() => {
+    const shouldFocusSearch =
+      typeof window !== "undefined" &&
+      window.matchMedia(
+        "(min-width: 700px) and (hover: hover) and (pointer: fine)",
+      ).matches;
+
+    return shouldFocusSearch ? inputRef.current : closeButtonRef.current;
+  }, []);
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         openCommand();
-        return;
-      }
-
-      if (open && event.key === "Tab") {
-        const focusableElements = Array.from(
-          panelRef.current?.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-          ) ?? [],
-        ).filter((element) => {
-          const rect = element.getBoundingClientRect();
-          const styles = window.getComputedStyle(element);
-
-          return (
-            rect.width > 0 &&
-            rect.height > 0 &&
-            styles.display !== "none" &&
-            styles.visibility !== "hidden"
-          );
-        });
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements.at(-1);
-
-        if (firstElement && lastElement) {
-          if (event.shiftKey && document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
-            return;
-          }
-
-          if (!event.shiftKey && document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
-            return;
-          }
-        }
-      }
-
-      if (event.key === "Escape") {
-        closeCommand();
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeCommand, open, openCommand]);
-
-  useEffect(() => {
-    if (!open) {
-      if (hasOpenedRef.current) {
-        triggerRef.current?.focus();
-      }
-      return;
-    }
-
-    const frame = window.requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, [open]);
+  }, [openCommand]);
 
   return (
-    <div className={cn("simo-command-nav", className)} {...props}>
-      <Button
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        aria-label="Open jump menu"
-        className="simo-command-trigger"
-        onClick={openCommand}
-        ref={triggerRef}
-        type="button"
-        variant="outline"
-      >
-        <CommandIcon icon={Search} />
-        <span>Jump</span>
-        <kbd>⌘K</kbd>
-      </Button>
+    <Dialog.Root
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
 
-      {open ? (
-        <div
-          aria-modal="true"
-          className="simo-command-overlay"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              closeCommand();
-            }
-          }}
-          role="dialog"
+        if (!nextOpen) {
+          setQuery("");
+        }
+      }}
+      open={open}
+    >
+      <div className={cn("simo-command-nav", className)} {...props}>
+        <Button
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          aria-label={
+            language === "es" ? "Abrir menú de navegación" : "Open jump menu"
+          }
+          className="simo-command-trigger"
+          onClick={openCommand}
+          ref={triggerRef}
+          type="button"
+          variant="outline"
         >
-          <div className="simo-command-panel" ref={panelRef}>
-            <div className="simo-command-search">
-              <Search aria-hidden />
-              <input
-                aria-label="Filter jump destinations"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search sections, work, people, profiles..."
-                ref={inputRef}
-                type="search"
-                value={query}
-              />
-              <button
-                aria-label="Close jump menu"
-                onClick={closeCommand}
-                type="button"
-              >
-                <X aria-hidden />
-                <span>Esc</span>
-              </button>
-            </div>
+          <CommandIcon icon={Search} />
+          <span>
+            <LocalizedText en="Jump" es="Navegar" />
+          </span>
+          <kbd>⌘K</kbd>
+        </Button>
 
-            <div className="simo-command-results">
-              {filteredGroups.length > 0 ? (
-                filteredGroups.map((group) => (
-                  <section key={group.label}>
-                    <h2>{group.label}</h2>
-                    <div>
-                      {group.items.map((item) => (
-                        <a
-                          href={item.href}
-                          key={`${group.label}-${item.href}-${item.label}`}
-                          onClick={closeCommand}
-                          rel={item.external ? "noreferrer" : undefined}
-                          target={item.external ? "_blank" : undefined}
-                        >
-                          <span className="simo-command-item-icon">
-                            <SiteIcon aria-hidden iconKey={item.iconKey} />
-                          </span>
-                          <span className="simo-command-item-copy">
-                            <strong>{item.label}</strong>
-                            <span>{item.description}</span>
-                          </span>
-                          <em>{item.meta}</em>
-                        </a>
-                      ))}
-                    </div>
-                  </section>
-                ))
-              ) : (
-                <p className="simo-command-empty">No matching destination.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </div>
+        <Dialog.Portal>
+          <Dialog.Backdrop className="simo-command-overlay" />
+          <Dialog.Viewport className="simo-command-layer">
+            <Dialog.Popup
+              aria-label={
+                language === "es" ? "Menú de navegación" : "Jump menu"
+              }
+              className="simo-command-panel"
+              finalFocus={triggerRef}
+              initialFocus={resolveInitialFocus}
+            >
+              <div className="simo-command-search">
+                <Search aria-hidden />
+                <input
+                  aria-label={
+                    language === "es"
+                      ? "Filtrar destinos de navegación"
+                      : "Filter jump destinations"
+                  }
+                  aria-controls="site-command-results"
+                  autoComplete="off"
+                  enterKeyHint="search"
+                  name="site-jump-search"
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={searchPlaceholder}
+                  ref={inputRef}
+                  spellCheck={false}
+                  type="search"
+                  value={query}
+                />
+                <Dialog.Close
+                  aria-label={
+                    language === "es"
+                      ? "Cerrar menú de navegación"
+                      : "Close jump menu"
+                  }
+                  render={
+                    <button ref={closeButtonRef} type="button">
+                      <X aria-hidden />
+                      <span>Esc</span>
+                    </button>
+                  }
+                />
+              </div>
+
+              <div
+                aria-live="polite"
+                className="simo-command-results"
+                id="site-command-results"
+              >
+                {filteredGroups.length > 0 ? (
+                  filteredGroups.map((group) => (
+                    <section key={group.label.en}>
+                      <h2>
+                        <LocalizedText
+                          en={group.label.en}
+                          es={group.label.es}
+                        />
+                      </h2>
+                      <div>
+                        {group.items.map((item) => (
+                          <a
+                            href={item.href}
+                            key={`${group.label.en}-${item.href}-${item.label.en}`}
+                            onClick={closeCommand}
+                            rel={item.external ? "noreferrer" : undefined}
+                            target={item.external ? "_blank" : undefined}
+                          >
+                            <span className="simo-command-item-icon">
+                              <SiteIcon aria-hidden iconKey={item.iconKey} />
+                            </span>
+                            <span className="simo-command-item-copy">
+                              <strong>
+                                <LocalizedText
+                                  en={item.label.en}
+                                  es={item.label.es}
+                                />
+                              </strong>
+                              <span>
+                                <LocalizedText
+                                  en={item.description.en}
+                                  es={item.description.es}
+                                />
+                              </span>
+                            </span>
+                            <em>
+                              <LocalizedText
+                                en={item.meta.en}
+                                es={item.meta.es}
+                              />
+                            </em>
+                            {item.external ? (
+                              <span className="sr-only">
+                                <LocalizedText
+                                  en="opens in a new tab"
+                                  es="abre en una pestaña nueva"
+                                />
+                              </span>
+                            ) : null}
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  ))
+                ) : (
+                  <p className="simo-command-empty" role="status">
+                    {language === "es"
+                      ? "No hay resultados."
+                      : "No matching destination."}
+                  </p>
+                )}
+              </div>
+            </Dialog.Popup>
+          </Dialog.Viewport>
+        </Dialog.Portal>
+      </div>
+    </Dialog.Root>
   );
 }

@@ -3,11 +3,20 @@
 import { useEffect } from "react";
 
 function targetsForHash(hash: string) {
-  if (!hash) {
+  if (!hash.startsWith("#") || hash.length === 1) {
     return null;
   }
 
-  const target = document.querySelector<HTMLElement>(hash);
+  const rawId = hash.slice(1);
+  let id = rawId;
+
+  try {
+    id = decodeURIComponent(rawId);
+  } catch {
+    id = rawId;
+  }
+
+  const target = document.getElementById(id);
 
   if (!target) {
     return null;
@@ -21,13 +30,10 @@ function targetsForHash(hash: string) {
   }
 
   const containingSection = target.closest<HTMLElement>("section");
-  const isMethodStepTarget = Boolean(target.closest(".simo-method-route"));
 
   return {
     focusTarget: target.querySelector<HTMLElement>("h1, h2, h3") ?? target,
-    scrollTarget: isMethodStepTarget
-      ? containingSection ?? target
-      : target,
+    scrollTarget: containingSection ?? target,
   };
 }
 

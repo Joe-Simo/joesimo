@@ -1,12 +1,23 @@
 import Image from "next/image";
 
 import { HashFocus } from "@/components/site/hash-focus";
-import { PublicTrailRuntime } from "@/components/site/public-trail-runtime";
+import {
+  LocalizedText as T,
+  navLabelEs,
+} from "@/components/site/localized-text";
+import {
+  PortfolioRuntime,
+  type ProjectTranslationMap,
+} from "@/components/site/portfolio-runtime";
+import { HeroNameParticles } from "@/components/site/hero-name-particles";
+import { HeroWebGLField } from "@/components/site/hero-webgl-field";
 import { SiteIcon } from "@/components/site/site-icons";
 import {
   credentialGroups,
   educationRecords,
-  publicTrailSections,
+  isHomepageProject,
+  portfolioSections,
+  profileMedia,
   type CommunityArtifact,
   type CredentialGroup,
   type JoeProfile,
@@ -14,12 +25,12 @@ import {
   type ProudRole,
   type PublicEvidenceAsset,
   type PublicProjectCaseStudy,
-  type PublicTrailSection,
+  type PortfolioSection,
   type SocialChannel,
 } from "@/lib/site-data";
 
 type JoeHomeAppProps = {
-  communityArtifacts: CommunityArtifact[];
+  communityHighlights: CommunityArtifact[];
   joeProfile: JoeProfile;
   learningCredentials: LearningCredential[];
   projects: PublicProjectCaseStudy[];
@@ -28,7 +39,11 @@ type JoeHomeAppProps = {
 };
 
 function ExternalCue({ show }: { show?: boolean }) {
-  return show ? <span className="sr-only">opens in a new tab</span> : null;
+  return show ? (
+    <span className="sr-only">
+      <T en="opens in a new tab" es="abre en una pestaña nueva" />
+    </span>
+  ) : null;
 }
 
 function isImageAsset(asset: PublicEvidenceAsset | undefined) {
@@ -46,17 +61,17 @@ function getPreferredImageAsset(project: PublicProjectCaseStudy) {
 
 function orderedProjects(projects: readonly PublicProjectCaseStudy[]) {
   return [...projects]
+    .filter(isHomepageProject)
+    .filter((project) => Boolean(getPreferredImageAsset(project)))
     .sort((left, right) => {
-      const leftRank = left.homepageFeature?.rank ?? 99;
-      const rightRank = right.homepageFeature?.rank ?? 99;
+      const dateOrder = right.started.sortKey.localeCompare(left.started.sortKey);
 
-      return leftRank - rightRank || left.title.localeCompare(right.title);
-    })
-    .slice(0, 4);
+      return dateOrder || left.title.localeCompare(right.title);
+    });
 }
 
-function trailSection(id: PublicTrailSection["id"]) {
-  const section = publicTrailSections.find((item) => item.id === id);
+function portfolioSection(id: PortfolioSection["id"]) {
+  const section = portfolioSections.find((item) => item.id === id);
 
   if (!section) {
     throw new Error(`Missing public section: ${id}`);
@@ -65,11 +80,11 @@ function trailSection(id: PublicTrailSection["id"]) {
   return section;
 }
 
-function SectionLabel({ section }: { section: PublicTrailSection }) {
+function SectionLabel({ section }: { section: PortfolioSection }) {
   return (
     <p className="joe-section-label">
       <span>{section.code}</span>
-      {section.label}
+      <T en={section.label} es={navLabelEs(section.label)} />
     </p>
   );
 }
@@ -85,22 +100,163 @@ function socialChannel(
   return channels.find((channel) => channel.label === label);
 }
 
+const projectTranslations: ProjectTranslationMap = {
+  "love-presentation": {
+    es: {
+      role: "Construí la app de presentaciones con Next.js",
+      status: "Código abierto",
+      summary: "Una app pequeña para enlaces privados de presentaciones.",
+      evidence: [
+        "Sitio activo en lovepresentation.com",
+        "Repositorio público MIT en GitHub",
+        "Flujo ligero de presentación animada",
+        "Sin cuentas, subidas ni base de datos en el flujo público",
+      ],
+    },
+  },
+  garden0: {
+    es: {
+      role: "Construí pantallas en Unity y la landing web",
+      status: "Prototipo de juego",
+      summary:
+        "Un proyecto de juego con Unity, controles móviles, revisiones de entrega y landing web.",
+      evidence: [
+        "Captura del menú en Unity",
+        "Captura de la landing page",
+        "Captura de preview en navegador",
+        "Registro de progreso con lint, build, export de iOS y revisiones móviles",
+      ],
+    },
+  },
+  astrosimo: {
+    es: {
+      role: "Construí pantallas de planificación y guía para iOS",
+      status: "App iOS",
+      summary:
+        "Una app de observación del cielo con planificación nocturna, captura verificada y guía en vivo.",
+      evidence: [
+        "Flujo de captura verificada",
+        "Pantalla de planificación nocturna",
+        "Pantalla de guía del cielo en vivo",
+      ],
+    },
+  },
+  chesslm: {
+    es: {
+      role: "Producto de entrenamiento de ajedrez y cliente Unity",
+      status: "Producto de entrenamiento",
+      summary:
+        "Un producto de entrenamiento de ajedrez con app web/backend en Next.js y cliente Unity para navegador, iPhone y iPad.",
+      evidence: [
+        "App web/backend en Next.js y espacio clásico de entrenamiento",
+        "Cliente Unity para navegador, iPhone y iPad",
+        "Límite de API de producción primero en servidor",
+        "Soporte para ajedrez clásico y Chess960",
+      ],
+    },
+  },
+  sim0: {
+    es: {
+      role: "Diseñé y construí la interfaz del producto",
+      status: "Producto activo",
+      summary:
+        "Un espacio de trabajo en navegador para previsualizar, editar y revisar una app.",
+      evidence: [
+        "Importación y preview de una app en navegador",
+        "Edición visual conectada a cambios de código",
+        "Sitio público en sim0.com",
+      ],
+    },
+  },
+  "next-flights": {
+    es: {
+      role: "Aplicación de seguimiento de vuelos",
+      status: "App de vuelos",
+      summary:
+        "Una app de seguimiento de vuelos con búsqueda, mapas, contenido desde CMS y estructura tipada.",
+      evidence: [
+        "README con tracking en tiempo real, búsqueda, mapas y CMS",
+        "Arte de producto propio",
+        "Estructura tipada de aplicación Next.js",
+      ],
+    },
+  },
+};
+
+function projectCopy(project: PublicProjectCaseStudy) {
+  const es = projectTranslations[project.slug]?.es;
+
+  return {
+    evidenceEs: es?.evidence ?? project.evidence,
+    roleEs: es?.role ?? project.role,
+    statusEs: es?.status ?? project.status,
+    summaryEs: es?.summary ?? project.summary,
+  };
+}
+
+function credentialMetaEs(meta: string) {
+  return meta
+    .replaceAll("Issued", "Emitida")
+    .replaceAll("Expired", "Expirada")
+    .replaceAll("Completed", "Completado");
+}
+
+function educationFocusEs(focus: string) {
+  const translations: Record<string, string> = {
+    "Bachelor of Science, Telematics Engineering":
+      "Licenciatura en Ingeniería Telemática",
+    "CCNA 1, IT": "CCNA 1, TI",
+    "CCNA 2, IT": "CCNA 2, TI",
+    "CCNA 3, IT": "CCNA 3, TI",
+    "CCNA 4, IT": "CCNA 4, TI",
+    "IT 1, IT": "TI 1, TI",
+    "IT 2, IT": "TI 2, TI",
+  };
+
+  return translations[focus] ?? focus;
+}
+
+function educationDetailEs(detail: string) {
+  const translations: Record<string, string> = {
+    "Reference degree for developing and programming networks and applications that make the Information Society possible.":
+      "Carrera orientada al desarrollo y programación de redes y aplicaciones para la sociedad de la información.",
+    "Networking Basics": "Fundamentos de redes",
+    "Routers and Routing Basics": "Routers y fundamentos de enrutamiento",
+    "Switching Basics and Intermediate Routing":
+      "Fundamentos de switching y enrutamiento intermedio",
+    "WAN Technologies": "Tecnologías WAN",
+    "Hardware and Software": "Hardware y software",
+    "Servers and Network OS": "Servidores y sistemas operativos de red",
+  };
+
+  return translations[detail] ?? detail;
+}
+
+function roleTitleEs(title: string) {
+  const translations: Record<string, string> = {
+    "Disaster Recovery Engineer": "Ingeniero de recuperación ante desastres",
+    "IT Systems Administrator": "Administrador de sistemas IT",
+    "System Administrator": "Administrador de sistemas",
+  };
+
+  return translations[title] ?? title;
+}
+
+function communityTitleEs(title: string) {
+  const translations: Record<string, string> = {
+    "Audience frame": "Audiencia",
+    "Builder table": "Mesa de builders",
+    "React Miami room": "Sala de React Miami",
+  };
+
+  return translations[title] ?? title;
+}
+
 function HeroSection({
   joeProfile,
-  projects,
-  proudRoles,
 }: {
   joeProfile: JoeProfile;
-  projects: readonly PublicProjectCaseStudy[];
-  proudRoles: readonly ProudRole[];
 }) {
-  const currentProject = projects[0];
-  const currentAsset = currentProject
-    ? getPreferredImageAsset(currentProject)
-    : undefined;
-  const currentLink = currentProject?.links[0];
-  const systemsLine = proudRoles.map((role) => role.organization).join(" / ");
-
   return (
     <section
       aria-labelledby="joe-title"
@@ -109,97 +265,36 @@ function HeroSection({
       id="joe"
     >
       <div className="site-shell">
-        <div className="joe-hero-shell" data-joe-reveal>
-          <div className="joe-hero-copy">
-            <h1 id="joe-title" tabIndex={-1}>
-              Joe Simo
-            </h1>
-            <p className="joe-hero-subhead">{joeProfile.headline}</p>
-            <p className="joe-hero-body">{joeProfile.detail}</p>
-            <nav aria-label="Primary homepage actions" className="joe-actions">
-              <a className="joe-action-primary" href="#work">
-                View work
-              </a>
-            </nav>
-          </div>
-
-          {currentProject ? (
-            <article className="joe-current-card">
-              <div className="joe-current-heading">
-                <div>
-                  <p>Featured</p>
-                  <h2>{currentProject.title}</h2>
-                  <span>{currentProject.summary}</span>
-                </div>
-                <div className="joe-current-actions">
-                  {currentLink ? (
-                    <a
-                      href={currentLink.href}
-                      rel={currentLink.external ? "noreferrer" : undefined}
-                      target={currentLink.external ? "_blank" : undefined}
-                    >
-                      {currentLink.label}
-                      <ExternalCue show={currentLink.external} />
-                    </a>
-                  ) : null}
-                  <button data-project-open={currentProject.slug} type="button">
-                    Details
-                  </button>
-                </div>
+        <div className="joe-hero-stage" data-joe-reveal>
+          <div className="joe-signature-stage">
+            <div className="joe-identity-core">
+              <HeroWebGLField
+                alt={profileMedia.alt}
+                imageSrc={profileMedia.src}
+                label="Interactive black-and-white Joe Simo portrait"
+              />
+              <div className="joe-hero-title-group">
+                <HeroNameParticles id="joe-title" text="Joe Simo" />
+                <p className="joe-hero-subhead">
+                  <T en={joeProfile.headline} es="Diseñador/desarrollador, FL." />
+                </p>
               </div>
-              {currentAsset ? (
-                <figure className="joe-current-media simo-work-media">
-                  <div className="joe-product-frame">
-                    <div aria-hidden="true" className="joe-product-bar">
-                      <span className="joe-product-dots">
-                        <span />
-                        <span />
-                        <span />
-                      </span>
-                      <span>sim0.com</span>
-                      <span />
-                    </div>
-                    <div className="joe-current-proof-grid">
-                      <div className="joe-current-image-frame joe-current-image-frame-main">
-                        <Image
-                          alt={currentAsset.media.alt}
-                          className="joe-cover-image"
-                          fetchPriority="high"
-                          fill
-                          loading="eager"
-                          sizes="(max-width: 900px) 100vw, 60vw"
-                          src={currentAsset.media.src}
-                        />
-                      </div>
-                      <div
-                        aria-hidden="true"
-                        className="joe-current-image-frame-detail"
-                        style={{ backgroundImage: `url(${currentAsset.media.src})` }}
-                      />
-                    </div>
-                  </div>
-                  <figcaption>
-                    <span>Capture</span>
-                    <strong>Preview, edit, review, ship.</strong>
-                  </figcaption>
-                </figure>
-              ) : null}
-              <dl>
-                <div>
-                  <dt>Role</dt>
-                  <dd>{currentProject.role}</dd>
-                </div>
-                <div>
-                  <dt>Status</dt>
-                  <dd>{currentProject.status}</dd>
-                </div>
-                <div>
-                  <dt>Systems</dt>
-                  <dd>{systemsLine}</dd>
-                </div>
-              </dl>
-            </article>
-          ) : null}
+              <p className="joe-hero-body">
+                <T
+                  en={joeProfile.detail}
+                  es="Creo herramientas web prácticas, interfaces de producto y sistemas pequeños basados en soporte, sistemas y recuperación."
+                />
+              </p>
+              <p className="joe-hero-stack">
+                React / Next.js / TypeScript / JavaScript
+              </p>
+              <nav aria-label="Primary homepage actions" className="joe-actions">
+                <a className="joe-action-primary" href="#work">
+                  <T en="View work" es="Ver trabajos" />
+                </a>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -211,97 +306,82 @@ function WorkSection({
 }: {
   projects: readonly PublicProjectCaseStudy[];
 }) {
-  const section = trailSection("work");
-  const [featuredProject, ...supportingProjects] = projects;
-  const featuredAsset = featuredProject
-    ? getPreferredImageAsset(featuredProject)
-    : undefined;
+  const section = portfolioSection("work");
 
   return (
     <section
       aria-labelledby="work-title"
       className="joe-section joe-work"
       data-section-id="work"
+      data-section-trace="product"
       id="work"
     >
       <div className="site-shell">
         <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="work-title" tabIndex={-1}>
-            Work
+            <T en="Work" es="Trabajo" />
           </h2>
-          <p>{section.copy.detail}</p>
+          <p>
+            <T
+              en={section.copy.detail}
+              es="Proyectos ordenados por fecha de inicio."
+            />
+          </p>
         </div>
 
-        {featuredProject ? (
-          <article
-            className="joe-work-feature"
-            data-joe-reveal
-            id={`work-${featuredProject.slug}`}
-          >
-            <div className="joe-work-copy">
-              <p>{featuredProject.code}</p>
-              <h3>{featuredProject.title}</h3>
-              <span>{featuredProject.summary}</span>
-              <ul aria-label={`${featuredProject.title} details`}>
-                <li>{featuredProject.role}</li>
-                <li>{featuredProject.status}</li>
-                {featuredProject.links[0] ? (
-                  <li>
-                    <a
-                      href={featuredProject.links[0].href}
-                      rel={featuredProject.links[0].external ? "noreferrer" : undefined}
-                      target={featuredProject.links[0].external ? "_blank" : undefined}
-                    >
-                      {featuredProject.links[0].label}
-                      <ExternalCue show={featuredProject.links[0].external} />
-                    </a>
-                  </li>
-                ) : null}
-              </ul>
-              <button data-project-open={featuredProject.slug} type="button">
-                View details
-              </button>
-            </div>
-            {featuredAsset ? (
-              <figure className="joe-work-media simo-work-media">
-                <Image
-                  alt={featuredAsset.media.alt}
-                  className="joe-cover-image"
-                  fill
-                  sizes="(max-width: 900px) 100vw, 54vw"
-                  src={featuredAsset.media.src}
-                />
-              </figure>
-            ) : null}
-          </article>
-        ) : null}
-
         <div className="joe-work-table">
-          {supportingProjects.map((project) => {
+          {projects.map((project, index) => {
             const asset = getPreferredImageAsset(project);
+            const media = project.homepageFeature?.thumbnailMedia ?? asset?.media;
+            const copy = projectCopy(project);
+            const shouldEagerLoadMedia = index === 0;
 
             return (
-              <article id={`work-${project.slug}`} key={project.slug}>
-                <div>
-                  <span>{project.code}</span>
-                  <h3>{project.title}</h3>
+              <article data-section-trace="product" id={`work-${project.slug}`} key={project.slug}>
+                <div className="joe-work-title">
+                  <span className="joe-work-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3>{project.title}</h3>
+                    <p className="joe-work-meta">
+                      <T en={project.role} es={copy.roleEs} />
+                      {" / "}
+                      <T en="Started" es="Inicio" /> {project.started.label}
+                      {" / "}
+                      <T en={project.status} es={copy.statusEs} />
+                    </p>
+                  </div>
                 </div>
-                <p>{project.role}</p>
-                <p>{project.status}</p>
-                {asset ? (
+                {media ? (
                   <span className="joe-work-thumb">
                     <Image
-                      alt={asset.media.alt}
+                      alt={media.alt}
                       className="joe-cover-image"
+                      fetchPriority={shouldEagerLoadMedia ? "high" : undefined}
                       fill
-                      sizes="5.5rem"
-                      src={asset.media.src}
+                      loading={shouldEagerLoadMedia ? "eager" : undefined}
+                      sizes="(max-width: 980px) calc(100vw - 4rem), (max-width: 1180px) calc(100vw - 9rem), 16rem"
+                      src={media.src}
                     />
                   </span>
-                ) : null}
-                <button data-project-open={project.slug} type="button">
-                  Details
+                ) : (
+                  <span aria-hidden="true" className="joe-work-thumb joe-work-thumb-empty" />
+                )}
+                <button
+                  data-project-open={project.slug}
+                  type="button"
+                >
+                  <span aria-hidden="true">
+                    <T en="Details" es="Detalles" />
+                  </span>
+                  <span className="sr-only">
+                    <T
+                      en={`View details for ${project.title}`}
+                      es={`Ver detalles de ${project.title}`}
+                    />
+                  </span>
                 </button>
               </article>
             );
@@ -313,32 +393,51 @@ function WorkSection({
 }
 
 function SystemsSection({ roles }: { roles: readonly ProudRole[] }) {
-  const section = trailSection("systems");
+  const section = portfolioSection("systems");
 
   return (
     <section
       aria-labelledby="systems-title"
       className="joe-section joe-systems"
       data-section-id="systems"
+      data-section-trace="systems"
       id="systems"
     >
       <div className="site-shell">
         <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="systems-title" tabIndex={-1}>
-            Systems
+            <T en="Systems" es="Sistemas" />
           </h2>
-          <p>{section.copy.detail}</p>
+          <p>
+            <T
+              en={section.copy.detail}
+              es="Tres roles de sistemas de los que estoy orgulloso."
+            />
+          </p>
         </div>
         <div className="joe-timeline">
           {roles.map((role, index) => (
             <article key={role.id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
-                <h3>{role.title}</h3>
+                <h3>
+                  <T en={role.title} es={roleTitleEs(role.title)} />
+                </h3>
                 <p>{role.organization}</p>
               </div>
-              <small>{role.detail}</small>
+              <small>
+                <T
+                  en={role.detail}
+                  es={
+                    role.id === "macromedica-system-administrator"
+                      ? "Administré bases de datos, infraestructura Windows Server, servicios de directorio, telefonía, acceso VPN, virtualización, cableado e infraestructura principal de oficina."
+                      : role.id === "neveroff-disaster-recovery-engineer"
+                        ? "Instalé, apoyé y diagnostiqué recuperación ante desastres, alta disponibilidad, continuidad de negocio, virtualización, appliances de respaldo, restauraciones y seguridad."
+                        : "Manejé revisiones diarias de infraestructura, salud de servidores, acceso de red, respaldos, seguridad endpoint, actualizaciones programadas, snapshots y soporte a sistemas de manufactura."
+                  }
+                />
+              </small>
             </article>
           ))}
         </div>
@@ -354,63 +453,167 @@ function CredentialsSection({
   credentials: readonly LearningCredential[];
   groups: readonly CredentialGroup[];
 }) {
-  const section = trailSection("credentials");
+  const section = portfolioSection("credentials");
   const byLabel = credentialMap(credentials);
-  const education = educationRecords[0];
-
   return (
     <section
       aria-labelledby="credentials-title"
       className="joe-section joe-credentials"
       data-section-id="credentials"
+      data-section-trace="telematics"
       id="credentials"
     >
       <div className="site-shell">
         <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="credentials-title" tabIndex={-1}>
-            Credentials
+            <T en="Credentials" es="Credenciales" />
           </h2>
-          <p>{section.copy.detail}</p>
+          <p>
+            <T
+              en={section.copy.detail}
+              es="Educación y certificaciones agrupadas por uso."
+            />
+          </p>
         </div>
-        {education ? (
-          <article className="joe-education-row">
-            <span>Education</span>
+        <details className="joe-proof-group joe-education-list">
+          <summary>
+            <span>
+              <T en="Education" es="Educación" />
+            </span>
             <div>
-              <h3>{education.focus}</h3>
-              <p>{education.school}</p>
+              <h3>
+                <T en="Education" es="Educación" />
+              </h3>
+              <p>
+                <T
+                  en="Degree and Cisco Networking Academy courses."
+                  es="Título universitario y cursos de Cisco Networking Academy."
+                />
+              </p>
             </div>
-            <small>{education.period}</small>
-          </article>
-        ) : null}
+            <small>
+              {educationRecords.length} <T en="records" es="registros" />
+            </small>
+          </summary>
+          <div className="joe-proof-group-body">
+            {educationRecords.map((education, index) => (
+              <article
+                className="joe-education-row"
+                key={`${education.school}-${education.focus}`}
+              >
+              <span>
+                {index === 0 ? (
+                  <T en="Education" es="Educación" />
+                ) : (
+                  <T en="Course" es="Curso" />
+                )}
+              </span>
+              <div>
+                <h3>
+                  <T
+                    en={education.focus}
+                    es={educationFocusEs(education.focus)}
+                  />
+                </h3>
+                <p>
+                  {education.school}
+                  {education.detail ? (
+                    <>
+                      {" / "}
+                      <T
+                        en={education.detail}
+                        es={educationDetailEs(education.detail)}
+                      />
+                    </>
+                  ) : null}
+                </p>
+              </div>
+              <small>{education.period}</small>
+              </article>
+            ))}
+          </div>
+        </details>
         <div className="joe-credential-list">
           {groups.map((group) => (
-            <article key={group.id}>
-              <div>
-                <h3>{group.label}</h3>
-                <p>{group.detail}</p>
+            <details className="joe-proof-group" key={group.id}>
+              <summary>
+                <span>{String(group.credentialLabels.length).padStart(2, "0")}</span>
+                <div>
+                  <h3>
+                    <T
+                      en={group.label}
+                      es={
+                        group.id === "web"
+                          ? "Web, Vercel y SEO"
+                          : group.id === "systems-networking"
+                            ? "Sistemas y redes"
+                            : group.id === "vendor-tools"
+                              ? "Herramientas de proveedor"
+                              : "Operaciones con drones"
+                      }
+                    />
+                  </h3>
+                  <p>
+                    <T
+                      en={group.detail}
+                      es={
+                        group.id === "web"
+                          ? "Registros de formación web, Vercel y SEO."
+                          : group.id === "systems-networking"
+                            ? "Fundamentos de redes, hardware y sistemas."
+                            : group.id === "vendor-tools"
+                              ? "Formación en respaldo, recuperación y seguridad."
+                              : "Cursos FAA de drones completados en 2020."
+                      }
+                    />
+                  </p>
+                </div>
+                <small>
+                  {group.credentialLabels.length}{" "}
+                  <T en="credentials" es="credenciales" />
+                </small>
+              </summary>
+              <div className="joe-proof-group-body">
+                <ul>
+                  {group.credentialLabels.map((label) => {
+                    const credential = byLabel.get(label);
+
+                    if (!credential) {
+                      return null;
+                    }
+
+                    const credentialMeta = [
+                      credential.issuer,
+                      credential.issued,
+                      credential.period,
+                    ]
+                      .filter(Boolean)
+                      .join(" / ");
+                    const credentialMetaSpanish = [
+                      credential.issuer,
+                      credential.issued
+                        ? credentialMetaEs(credential.issued)
+                        : undefined,
+                      credential.period
+                        ? credentialMetaEs(credential.period)
+                        : undefined,
+                    ]
+                      .filter(Boolean)
+                      .join(" / ");
+
+                    return (
+                      <li key={label}>
+                        <strong>{label}</strong>
+                        <span>
+                          <T en={credentialMeta} es={credentialMetaSpanish} />
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-              <ul>
-                {group.credentialLabels.map((label) => {
-                  const credential = byLabel.get(label);
-
-                  if (!credential) {
-                    return null;
-                  }
-
-                  return (
-                    <li key={label}>
-                      <strong>{label}</strong>
-                      <span>
-                        {credential.issuer}
-                        {credential.issued ? ` / ${credential.issued}` : ""}
-                        {credential.period ? ` / ${credential.period}` : ""}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </article>
+            </details>
           ))}
         </div>
       </div>
@@ -423,23 +626,29 @@ function CommunitySection({
 }: {
   moments: readonly CommunityArtifact[];
 }) {
-  const section = trailSection("community");
-  const visibleMoments = moments.slice(0, 5);
+  const section = portfolioSection("community");
+  const visibleMoments = moments.slice(0, 3);
 
   return (
     <section
       aria-labelledby="community-title"
       className="joe-section joe-community"
       data-section-id="community"
+      data-section-trace="product"
       id="community"
     >
       <div className="site-shell">
         <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="community-title" tabIndex={-1}>
-            Community
+            <T en="Community" es="Comunidad" />
           </h2>
-          <p>{section.copy.detail}</p>
+          <p>
+            <T
+              en={section.copy.detail}
+              es="Fotos de React Miami 2026."
+            />
+          </p>
         </div>
         <div
           aria-label="React Miami contact sheet"
@@ -447,7 +656,7 @@ function CommunitySection({
           role="list"
           tabIndex={0}
         >
-          {visibleMoments.map((moment) => (
+          {visibleMoments.map((moment, index) => (
             <figure
               data-featured={moment.title === "ThePrimeagen"}
               key={`${moment.code}-${moment.media.src}`}
@@ -457,7 +666,9 @@ function CommunitySection({
                 <Image
                   alt={moment.media.alt}
                   className="joe-cover-image"
+                  fetchPriority={index === 0 ? "high" : undefined}
                   fill
+                  loading={index === 0 ? "eager" : undefined}
                   sizes={
                     moment.title === "ThePrimeagen"
                       ? "(max-width: 760px) 82vw, 30vw"
@@ -467,14 +678,70 @@ function CommunitySection({
                 />
               </span>
               <figcaption>
-                <span>{moment.code}</span>
+                <span className="joe-photo-code">{moment.code}</span>
                 {moment.title === "ThePrimeagen"
-                  ? "With ThePrimeagen at React Miami 2026."
-                  : moment.title}
+                  ? (
+                    <T
+                      en="With ThePrimeagen at React Miami 2026."
+                      es="Con ThePrimeagen en React Miami 2026."
+                    />
+                  )
+                  : (
+                    <T en={moment.title} es={communityTitleEs(moment.title)} />
+                  )}
               </figcaption>
             </figure>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function BlogSection({ socialChannels }: { socialChannels: readonly SocialChannel[] }) {
+  const section = portfolioSection("blog");
+  const xChannel = socialChannel(socialChannels, "X");
+
+  return (
+    <section
+      aria-labelledby="blog-title"
+      className="joe-section joe-blog"
+      data-section-id="blog"
+      data-section-trace="product"
+      id="blog"
+    >
+      <div className="site-shell">
+        <div className="joe-section-head" data-joe-reveal>
+          <SectionLabel section={section} />
+          <h2 id="blog-title" tabIndex={-1}>
+            <T en="Blog" es="Blog" />
+          </h2>
+          <p>
+            <T en={section.copy.detail} es="Notas cortas y escritura." />
+          </p>
+        </div>
+        <article className="joe-blog-row">
+          <span>
+            <T en="Notes" es="Notas" />
+          </span>
+          <div>
+            <h3>
+              <T en="Short writing" es="Escritura breve" />
+            </h3>
+            <p>
+              <T
+                en="Public notes and updates live on X while this site stays focused."
+                es="Las notas públicas y actualizaciones viven en X para mantener este sitio enfocado."
+              />
+            </p>
+          </div>
+          {xChannel ? (
+            <a href={xChannel.href} rel="noreferrer" target="_blank">
+              <T en="Read on X" es="Leer en X" />
+              <ExternalCue show />
+            </a>
+          ) : null}
+        </article>
       </div>
     </section>
   );
@@ -485,17 +752,18 @@ function ContactSection({
 }: {
   socialChannels: readonly SocialChannel[];
 }) {
-  const section = trailSection("contact");
+  const section = portfolioSection("contact");
   const xChannel = socialChannel(socialChannels, "X");
-  const secondaryChannels = socialChannels.filter((channel) =>
-    ["GitHub", "LinkedIn"].includes(channel.label),
-  );
+  const secondaryChannels = (["GitHub", "LinkedIn", "Instagram"] as const)
+    .map((label) => socialChannel(socialChannels, label))
+    .filter((channel): channel is SocialChannel => Boolean(channel));
 
   return (
     <section
       aria-labelledby="contact-title"
       className="joe-section joe-contact"
       data-section-id="contact"
+      data-section-trace="product"
       id="contact"
     >
       <div className="site-shell joe-contact-shell">
@@ -503,9 +771,14 @@ function ContactSection({
           <div data-joe-reveal>
             <SectionLabel section={section} />
             <h2 id="contact-title" tabIndex={-1}>
-              Contact
+              <T en="Contact" es="Contacto" />
             </h2>
-            <p>{section.copy.detail}</p>
+            <p>
+              <T
+                en={section.copy.detail}
+                es="Escríbeme en X. LinkedIn, GitHub e Instagram son formas públicas de contacto y contexto."
+              />
+            </p>
           </div>
         </div>
         <div className="joe-contact-actions" data-joe-reveal>
@@ -541,8 +814,6 @@ export function JoeHomeApp(props: JoeHomeAppProps) {
       <HashFocus />
       <HeroSection
         joeProfile={props.joeProfile}
-        projects={featuredProjects}
-        proudRoles={props.proudRoles}
       />
       <WorkSection projects={featuredProjects} />
       <SystemsSection roles={props.proudRoles} />
@@ -550,9 +821,14 @@ export function JoeHomeApp(props: JoeHomeAppProps) {
         credentials={props.learningCredentials}
         groups={credentialGroups}
       />
-      <CommunitySection moments={props.communityArtifacts} />
+      <CommunitySection moments={props.communityHighlights} />
+      <BlogSection socialChannels={props.socialChannels} />
       <ContactSection socialChannels={props.socialChannels} />
-      <PublicTrailRuntime projects={featuredProjects} sections={publicTrailSections} />
+      <PortfolioRuntime
+        projectTranslations={projectTranslations}
+        projects={featuredProjects}
+        sections={portfolioSections}
+      />
     </div>
   );
 }

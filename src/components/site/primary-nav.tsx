@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { navItems, type NavHref } from "@/lib/site-data";
+import { LocalizedText, navLabelEs } from "@/components/site/localized-text";
+import type { NavHref, NavItem } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 type HashNavHref = Extract<NavHref, `#${string}`>;
+type PrimaryNavItem = NavItem;
+type PrimaryHashNavHref = Extract<PrimaryNavItem["href"], `#${string}`>;
 
 function resolveNavHref(href: NavHref, sectionPrefix: string) {
   return href.startsWith("#") ? `${sectionPrefix}${href}` : href;
@@ -22,9 +25,11 @@ function isInternalRouteHref(href: string) {
 
 export function PrimaryNav({
   activeHref: initialActiveHref = null,
+  items,
   sectionPrefix = "",
 }: {
   activeHref?: NavHref | null;
+  items: readonly NavItem[];
   sectionPrefix?: string;
 }) {
   const [activeHref, setActiveHref] = useState<NavHref | null>(
@@ -47,8 +52,8 @@ export function PrimaryNav({
       return;
     }
 
-    const targets = navItems
-      .filter((item): item is (typeof navItems)[number] & { href: HashNavHref } =>
+    const targets = items
+      .filter((item): item is PrimaryNavItem & { href: PrimaryHashNavHref } =>
         isHashNavHref(item.href),
       )
       .map((item) => ({
@@ -56,7 +61,8 @@ export function PrimaryNav({
         target: document.querySelector<HTMLElement>(item.href),
       }))
       .filter(
-        (item): item is { href: HashNavHref; target: HTMLElement } =>
+        (item): item is { href: PrimaryHashNavHref; target: HTMLElement } =>
+          isHashNavHref(item.href) &&
           Boolean(item.target),
       );
 
@@ -133,14 +139,14 @@ export function PrimaryNav({
       window.removeEventListener("resize", scheduleResizeUpdate);
       window.removeEventListener("hashchange", scheduleHashUpdate);
     };
-  }, [isDesktop, sectionPrefix]);
+  }, [isDesktop, items, sectionPrefix]);
 
   return (
     <nav
       aria-label="Primary navigation"
       className="hidden items-center gap-1 lg:flex"
     >
-      {navItems.map((item) => {
+      {items.map((item) => {
         const active = item.href === activeHref;
 
         return (
@@ -150,11 +156,11 @@ export function PrimaryNav({
               href={resolveNavHref(item.href, sectionPrefix)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "inline-flex min-h-11 items-center rounded-md px-3 text-sm text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
+                "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
                 active && "text-foreground",
               )}
             >
-              {item.label}
+              <LocalizedText en={item.label} es={navLabelEs(item.label)} />
             </Link>
           ) : (
             <a
@@ -162,11 +168,11 @@ export function PrimaryNav({
               href={resolveNavHref(item.href, sectionPrefix)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "inline-flex min-h-11 items-center rounded-md px-3 text-sm text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
+                "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
                 active && "text-foreground",
               )}
             >
-              {item.label}
+              <LocalizedText en={item.label} es={navLabelEs(item.label)} />
             </a>
           )
         );

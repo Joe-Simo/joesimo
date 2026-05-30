@@ -1,21 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
     <html lang="en">
+      <head>
+        <title>Joe Simo / Error</title>
+      </head>
       <body>
         <main className="grid min-h-screen place-items-center bg-background px-5 text-foreground">
           <section className="grid max-w-xl gap-6">

@@ -9,7 +9,7 @@ import type {
 } from "@/lib/site-data";
 
 type JoeHomeStageProps = {
-  communityArtifacts: CommunityArtifact[];
+  communityHighlights: CommunityArtifact[];
   joeProfile: JoeProfile;
   learningCredentials: LearningCredential[];
   projects: PublicProjectCaseStudy[];

@@ -10,64 +10,29 @@ export type IconKey =
   | "linkedin"
   | "mail"
   | "menu"
-  | "video"
   | "x";
 
 export type AccentKey = "ink" | "signal" | "fault" | "live";
 
-export type SiteNodeId =
-  | "joe"
-  | "method"
-  | "work"
-  | "trail"
-  | "contact";
-
-export type SceneMode =
-  | "origin"
-  | "method"
-  | "work"
-  | "trail"
-  | "contact";
-
-export type PublicTrailSectionId =
+export type PortfolioSectionId =
   | "joe"
   | "work"
   | "systems"
   | "credentials"
   | "community"
+  | "blog"
   | "contact";
 
-export type PublicTrailSection = {
-  id: PublicTrailSectionId;
+export type PortfolioSection = {
+  id: PortfolioSectionId;
   code: string;
   label: string;
-  navLabel: string;
-  panelKind:
-    | "hero"
-    | "work"
-    | "systems"
-    | "credentials"
-    | "community"
-    | "contact";
   anchor: `#${string}`;
-  sceneMode: SceneMode;
-  point: {
-    x: number;
-    y: number;
-    z: number;
-  };
   copy: {
     title: string;
     detail: string;
   };
 };
-
-export type SiteRecordKind =
-  | "origin"
-  | "method"
-  | "work"
-  | "trail"
-  | "contact";
 
 export type SiteAction = {
   id?: string;
@@ -100,63 +65,12 @@ export type ProofMedia = {
   treatment: "machine-state" | "route-replay" | "release-reel" | "progression-reel";
 };
 
-export type ExperienceScene = {
-  code: string;
-  eyebrow: string;
-  coordinate: string;
-  tone: "origin" | "method" | "work" | "trail" | "contact";
-  scrollRange: [number, number];
-};
-
-export type ExperienceRoute = {
-  from: SiteNodeId;
-  tension: number;
-  depth: number;
-};
-
-export type SiteRecord = {
-  id: SiteNodeId;
-  label: string;
-  shortLabel: string;
-  kind: SiteRecordKind;
-  status: string;
-  detail: string;
-  proof: string;
-  primaryAction: SiteAction;
-  secondaryActions: SiteAction[];
-  iconKey: IconKey;
-  accent: AccentKey;
-  sceneMode: SceneMode;
-  scene: ExperienceScene;
-  route: ExperienceRoute;
-  sectionAnchor: `#${string}`;
-  readActionLabel: string;
-  media?: SiteMedia;
-  map: {
-    desktopPoint: {
-      x: number;
-      y: number;
-    };
-    mobilePoint: {
-      x: number;
-      y: number;
-    };
-  };
-};
-
 export type SocialChannel = {
   label: string;
   handle: string;
   href: string;
   iconKey: IconKey;
   description: string;
-};
-
-export type ProfileFact = {
-  label: string;
-  value: string;
-  detail: string;
-  source: string;
 };
 
 export type EducationRecord = {
@@ -349,15 +263,6 @@ export type ProofItem = {
   };
 };
 
-export type FieldNote = {
-  code: string;
-  title: string;
-  body: string;
-  source: string;
-};
-
-export type MethodChapterId = "joe" | "method" | "work" | "notes" | "contact";
-
 export type MethodLens = "breakage" | "signals" | "surface";
 
 export type MethodStage = MethodLens;
@@ -434,6 +339,11 @@ export type ProjectCaseStudy = {
   slug: string;
   code: string;
   title: string;
+  started: {
+    label: string;
+    sortKey: string;
+    sourceLabel: string;
+  };
   role: string;
   methodStage: MethodStage;
   schemaType: "SoftwareApplication" | "VideoGame" | "CreativeWork";
@@ -455,12 +365,14 @@ export type ProjectCaseStudy = {
   proofMode: ProjectProofMode;
   proofSummary: string;
   homepageFeature?: {
-    rank: 1 | 2 | 3 | 4;
+    rank: number;
     mediaAssetIds: readonly string[];
+    thumbnailMedia?: SiteMedia;
     treatment:
       | "operated-surface"
       | "mobile-strip"
       | "progression-strip"
+      | "site-snapshot"
       | "training-strip";
   };
 };
@@ -478,7 +390,7 @@ export type PublicProjectCaseStudy = Omit<
 };
 
 export function publicSourceLabel(sourcePath: string) {
-  if (sourcePath.includes("final/sim0")) {
+  if (sourcePath.includes("sim0")) {
     return "Interface still";
   }
 
@@ -486,7 +398,11 @@ export function publicSourceLabel(sourcePath: string) {
     return "Release reel";
   }
 
-  if (sourcePath.includes("video")) {
+  if (sourcePath.includes("love-presentation")) {
+    return "Live site snapshot";
+  }
+
+  if (sourcePath.includes("garden0") || sourcePath.includes("video")) {
     return "Playable capture";
   }
 
@@ -498,56 +414,24 @@ export function publicSourceLabel(sourcePath: string) {
     return "Process trace";
   }
 
-  if (sourcePath.includes("royalshell")) {
+  if (sourcePath.includes("royal-shell")) {
     return "Brand utility still";
   }
 
-  if (sourcePath.includes("steve")) {
+  if (sourcePath.includes("signature-copier")) {
     return "Signature utility";
   }
 
-  if (sourcePath.includes("Printers")) {
+  if (sourcePath.includes("printer-scripts")) {
     return "Redacted process trace";
   }
 
-  if (sourcePath.includes("chess")) {
+  if (sourcePath.includes("chesslm")) {
     return "Training capture";
   }
 
-  return "Owned work artifact";
+  return "Owned work sample";
 }
-
-export type MethodWorldChapter = {
-  id: MethodChapterId;
-  code: string;
-  label: string;
-  title: string;
-  body: string;
-  anchor: `#${string}`;
-  progress: number;
-  sceneMode: SceneMode;
-  point: {
-    x: number;
-    y: number;
-  };
-};
-
-export type MethodWorldMoment = {
-  id: string;
-  chapter: MethodChapterId;
-  stage?: MethodStage;
-  progress: number;
-  code: string;
-  label: string;
-  readout: string;
-};
-
-export type WritingFragment = {
-  code: string;
-  title: string;
-  body: string;
-  source: string;
-};
 
 export type ArchiveArtifact = {
   code: string;
@@ -565,105 +449,22 @@ export type CommunityArtifact = {
   media: SiteMedia;
 };
 
-export type ProductReportArtifact = {
-  code: string;
-  title: string;
-  body: string;
-  outcome: string;
-  sourceLabel: string;
-};
-
-export type PublicDepthItem = {
-  code: string;
-  label: string;
-  title: string;
-  detail: string;
-  source: string;
-  href?: string;
-  actionLabel?: string;
-  media?: SiteMedia;
-  meta: string[];
-};
-
-export type WorldArtifact = {
-  id: string;
-  code: string;
-  label: string;
-  source: string;
-  title: string;
-  detail: string;
-  stage: "origin" | "breakage" | "signal" | "surface" | "trail" | "contact";
-  href?: string;
-  actionLabel?: string;
-  media?: SiteMedia;
-};
-
-export type SiteCanvasRecord = Pick<
-  SiteRecord,
-  | "id"
-  | "label"
-  | "shortLabel"
-  | "kind"
-  | "status"
-  | "detail"
-  | "proof"
-  | "primaryAction"
-  | "secondaryActions"
-  | "iconKey"
-  | "accent"
-  | "sceneMode"
-  | "scene"
-  | "route"
-  | "sectionAnchor"
-  | "readActionLabel"
-  | "media"
-  | "map"
->;
-
-export const originNodeId = "joe" satisfies SiteNodeId;
-export const defaultActiveNodeId = "joe" satisfies SiteNodeId;
-export const routeNodeIds = [
-  "method",
-  "work",
-  "trail",
-  "contact",
-] as const satisfies readonly SiteNodeId[];
-
-export const legacyNodeIdMap = {
-  home: "joe",
-  now: "work",
-  sim0: "work",
-  code: "trail",
-  linkedin: "method",
-  systems: "method",
-  notes: "trail",
-  writing: "trail",
-} as const satisfies Partial<Record<string, SiteNodeId>>;
-
-export const legacyHashMap = {
-  "#top": "joe",
-  "#now": "joe",
-  "#sim0": "work",
-  "#background": "method",
-  "#systems": "method",
-} as const satisfies Partial<Record<string, SiteNodeId>>;
-
 export const heroCopy = {
   title: "Joe Simo",
   intro: "Designer/developer, FL.",
   detail:
-    "Web products and interfaces shaped by support, recovery, and systems work.",
+    "I build practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.",
 };
 
 export const siteDescription =
-  "Joe Simo is a Florida designer/developer building web products and interfaces shaped by support, recovery, and systems work.";
+  "Joe Simo is a Florida designer/developer building practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.";
 
 export const joeProfile: JoeProfile = {
   name: heroCopy.title,
   kicker: "FL / Designer-developer / systems background",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Work / Systems / Credentials / Community.",
+  routeLabel: "Work / Systems / Credentials / Community / Blog.",
   receiptTitle: "Support -> Recovery -> Interfaces",
   receiptDetail:
     "Practical work shaped by support rooms, disaster recovery, and product interfaces.",
@@ -671,16 +472,12 @@ export const joeProfile: JoeProfile = {
     "Web projects, interface work, systems questions, or useful introductions.",
 };
 
-export const publicTrailSections = [
+export const portfolioSections = [
   {
     id: "joe",
     code: "00",
     label: "Profile",
-    navLabel: "Joe",
-    panelKind: "hero",
     anchor: "#joe",
-    sceneMode: "origin",
-    point: { x: -2.8, y: 0.3, z: 2.8 },
     copy: {
       title: "Joe Simo",
       detail: "Designer/developer, FL.",
@@ -690,74 +487,64 @@ export const publicTrailSections = [
     id: "work",
     code: "01",
     label: "Work",
-    navLabel: "Work",
-    panelKind: "work",
     anchor: "#work",
-    sceneMode: "work",
-    point: { x: -1.2, y: -0.4, z: 1.3 },
     copy: {
       title: "Work",
-      detail: "Selected products and utilities.",
+      detail: "Selected projects, ordered by start date.",
     },
   },
   {
     id: "systems",
     code: "02",
     label: "Systems",
-    navLabel: "Systems",
-    panelKind: "systems",
     anchor: "#systems",
-    sceneMode: "method",
-    point: { x: -0.05, y: 0.22, z: 0.68 },
     copy: {
       title: "Systems",
-      detail:
-        "System administration and disaster recovery roles that shaped the work.",
+      detail: "Systems roles that shaped how I design and build.",
     },
   },
   {
     id: "credentials",
     code: "03",
     label: "Credentials",
-    navLabel: "Credentials",
-    panelKind: "credentials",
     anchor: "#credentials",
-    sceneMode: "trail",
-    point: { x: 0.5, y: 0.45, z: 0.2 },
     copy: {
       title: "Credentials",
-      detail: "Training across web, networking, vendor tools, and drone operations.",
+      detail: "Training, certifications, and education grouped by use.",
     },
   },
   {
     id: "community",
     code: "04",
     label: "Community",
-    navLabel: "Community",
-    panelKind: "community",
     anchor: "#community",
-    sceneMode: "trail",
-    point: { x: 1.5, y: -0.35, z: -1.1 },
     copy: {
       title: "Community",
-      detail: "Owned photos from React Miami 2026.",
+      detail: "Photos from React Miami 2026.",
+    },
+  },
+  {
+    id: "blog",
+    code: "05",
+    label: "Blog",
+    anchor: "#blog",
+    copy: {
+      title: "Blog",
+      detail: "Short notes and writing.",
     },
   },
   {
     id: "contact",
-    code: "05",
+    code: "06",
     label: "Contact",
-    navLabel: "Contact",
-    panelKind: "contact",
     anchor: "#contact",
-    sceneMode: "contact",
-    point: { x: 2.45, y: -0.05, z: -2.2 },
     copy: {
       title: "Contact",
-      detail: "Message me on X. GitHub and LinkedIn are secondary.",
+      detail:
+        "Message me on X. LinkedIn, GitHub, and Instagram are public ways to reach or review my work.",
     },
   },
-] as const satisfies readonly PublicTrailSection[];
+] as const satisfies readonly PortfolioSection[];
 
 export const sim0Link: SiteAction = {
   id: "open-sim0",
@@ -766,6 +553,24 @@ export const sim0Link: SiteAction = {
   external: true,
   ariaLabel: "Open sim0 in a new tab",
   kind: "primary",
+};
+
+export const lovePresentationLink: SiteAction = {
+  id: "open-love-presentation",
+  label: "Open Love Presentation",
+  href: "https://lovepresentation.com",
+  external: true,
+  ariaLabel: "Open Love Presentation in a new tab",
+  kind: "primary",
+};
+
+export const lovePresentationRepoLink: SiteAction = {
+  id: "open-love-presentation-repo",
+  label: "GitHub",
+  href: "https://github.com/Joe-Simo/love-presentation",
+  external: true,
+  ariaLabel: "Open Love Presentation on GitHub in a new tab",
+  kind: "secondary",
 };
 
 export const profileMedia: SiteMedia = {
@@ -783,6 +588,24 @@ export const sim0Media: SiteMedia = {
   alt: "sim0 editor capture",
   width: 1495,
   height: 900,
+  tone: "desaturated",
+};
+
+export const sim0HeroCropMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/sim0-hero-crop.webp",
+  alt: "sim0 editor workspace with preview state and ship panel",
+  width: 1600,
+  height: 900,
+  tone: "desaturated",
+};
+
+export const sim0WorkThumbMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/sim0-work-thumb.webp",
+  alt: "sim0 editor workspace thumbnail",
+  width: 960,
+  height: 540,
   tone: "desaturated",
 };
 
@@ -804,12 +627,39 @@ export const sim0ShipSurfaceMedia: SiteMedia = {
   tone: "desaturated",
 };
 
+export const lovePresentationHomeMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/love-presentation-home.png",
+  alt: "Love Presentation homepage with hero copy and slideshow preview",
+  width: 1440,
+  height: 520,
+  tone: "desaturated",
+};
+
+export const lovePresentationWorkThumbMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/love-presentation-work-thumb.webp",
+  alt: "Love Presentation homepage thumbnail",
+  width: 960,
+  height: 540,
+  tone: "desaturated",
+};
+
 export const astrosimoSignalStripMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/astrosimo-signal-strip.webp",
-  alt: "Astrosimo release screens composed as a horizontal proof strip",
+  alt: "Astrosimo release screens shown in one row",
   width: 1600,
   height: 900,
+  tone: "desaturated",
+};
+
+export const astrosimoWorkThumbMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/astrosimo-work-thumb.webp",
+  alt: "Astrosimo planning screens thumbnail",
+  width: 960,
+  height: 540,
   tone: "desaturated",
 };
 
@@ -825,7 +675,7 @@ export const astrosimoVerifiedCaptureMedia: SiteMedia = {
 export const astrosimoNightPlannerMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/astrosimo-night-planner.webp",
-  alt: "Astrosimo AI night planner screen",
+  alt: "Astrosimo night planner screen",
   width: 560,
   height: 1214,
   tone: "desaturated",
@@ -840,28 +690,37 @@ export const astrosimoLiveGuidanceMedia: SiteMedia = {
   tone: "desaturated",
 };
 
-export const antonetaGardenMedia: SiteMedia = {
+export const garden0UnityMedia: SiteMedia = {
   kind: "artifact",
-  src: "/media/work/antoneta-garden-unity.webp",
-  alt: "Antoneta's Garden Unity gameplay capture",
+  src: "/media/work/garden0-unity.webp",
+  alt: "garden0 Unity gameplay capture",
   width: 1440,
   height: 950,
   tone: "desaturated",
 };
 
-export const antonetaGardenLandingMedia: SiteMedia = {
+export const garden0WorkThumbMedia: SiteMedia = {
   kind: "artifact",
-  src: "/media/work/antoneta-garden-landing.webp",
-  alt: "Antoneta's Garden landing page capture",
+  src: "/media/work/garden0-work-thumb.webp",
+  alt: "garden0 gameplay thumbnail",
+  width: 960,
+  height: 540,
+  tone: "desaturated",
+};
+
+export const garden0LandingMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/garden0-landing.webp",
+  alt: "garden0 landing page capture",
   width: 1440,
   height: 1072,
   tone: "desaturated",
 };
 
-export const antonetaGardenPreviewMedia: SiteMedia = {
+export const garden0PreviewMedia: SiteMedia = {
   kind: "artifact",
-  src: "/media/work/antoneta-garden-preview.webp",
-  alt: "Antoneta's Garden browser preview capture",
+  src: "/media/work/garden0-preview.webp",
+  alt: "garden0 browser preview capture",
   width: 1280,
   height: 800,
   tone: "desaturated",
@@ -918,6 +777,15 @@ export const chessLmWorkspaceMedia: SiteMedia = {
   alt: "ChessLM web training workspace capture",
   width: 1280,
   height: 1259,
+  tone: "desaturated",
+};
+
+export const chessLmWorkThumbMedia: SiteMedia = {
+  kind: "artifact",
+  src: "/media/work/chesslm-work-thumb.webp",
+  alt: "ChessLM training workspace thumbnail",
+  width: 960,
+  height: 540,
   tone: "desaturated",
 };
 
@@ -993,12 +861,12 @@ export const astrosimoReleaseReelMedia: ProofMedia = {
   treatment: "release-reel",
 };
 
-export const antonetaProgressionReelMedia: ProofMedia = {
-  id: "antoneta-progression-reel",
+export const garden0ProgressionReelMedia: ProofMedia = {
+  id: "garden0-progression-reel",
   kind: "video",
-  src: "/media/work/antoneta-progression-reel.webm",
-  posterSrc: antonetaGardenMedia.src,
-  alt: "Antoneta's Garden progression reel from landing to gameplay captures",
+  src: "/media/work/garden0-progression-reel.webm",
+  posterSrc: garden0UnityMedia.src,
+  alt: "garden0 progression reel from landing to gameplay captures",
   width: 1600,
   height: 900,
   label: "Progression reel",
@@ -1021,13 +889,6 @@ export const chessLmTrainingReelMedia: ProofMedia = {
 
 export const socialChannels: SocialChannel[] = [
   {
-    label: "GitHub",
-    handle: "@joe-simo",
-    href: "https://github.com/joe-simo",
-    iconKey: "github",
-    description: "Code trail, systems, and experiments.",
-  },
-  {
     label: "X",
     handle: "@joesimo",
     href: "https://x.com/joesimo",
@@ -1035,11 +896,11 @@ export const socialChannels: SocialChannel[] = [
     description: "Public notes and short thinking.",
   },
   {
-    label: "Instagram",
-    handle: "@joesimo_",
-    href: "https://www.instagram.com/joesimo_/",
-    iconKey: "camera",
-    description: "Moments, people, and rooms.",
+    label: "GitHub",
+    handle: "@Joe-Simo",
+    href: "https://github.com/Joe-Simo",
+    iconKey: "github",
+    description: "Code, systems, and experiments.",
   },
   {
     label: "LinkedIn",
@@ -1049,214 +910,28 @@ export const socialChannels: SocialChannel[] = [
     description: "Work graph and public context.",
   },
   {
-    label: "YouTube",
-    handle: "@jos007",
-    href: "https://www.youtube.com/user/jos007",
-    iconKey: "video",
-    description: "Experiments and video surfaces.",
+    label: "Instagram",
+    handle: "@joesimo_",
+    href: "https://www.instagram.com/joesimo_/",
+    iconKey: "camera",
+    description: "Moments, people, and rooms.",
   },
 ];
 
-const githubChannel = socialChannels[0];
-const xChannel = socialChannels[1];
-const instagramChannel = socialChannels[2];
-const linkedinChannel = socialChannels[3];
+const githubChannel = socialChannels.find((channel) => channel.label === "GitHub");
+const linkedinChannel = socialChannels.find((channel) => channel.label === "LinkedIn");
 
-export const profileFacts: ProfileFact[] = [
-  {
-    label: "Name",
-    value: "Joe Simo",
-    detail: "The name I use across the public places linked here.",
-    source: "Identity",
-  },
-  {
-    label: "Bio",
-    value: "Devsigner. One more thing.",
-    detail: "The short public identity from Joe's GitHub profile.",
-    source: "GitHub",
-  },
-  {
-    label: "Location",
-    value: "FL",
-    detail: "I work from Florida and keep this page direct.",
-    source: "Base",
-  },
-  {
-    label: "Places lived",
-    value: "Santo Domingo, Cape Coral, FL, Lawrence",
-    detail:
-      "Dominican Republic, Florida, and Massachusetts all sit inside the personal map.",
-    source: "Joe",
-  },
-  {
-    label: "Formation",
-    value: "Catholic school and Catholic university",
-    detail:
-      "Catholic formation runs through Quisqueya School in the Dominican Republic and PUCMM.",
-    source: "Joe",
-  },
-  {
-    label: "Sacraments",
-    value: "Baptism, First Communion, Confirmation",
-    detail:
-      "Completed while attending Quisqueya School in the Dominican Republic.",
-    source: "Joe",
-  },
-  {
-    label: "Professional track",
-    value: "Support, systems, and web projects",
-    detail:
-      "The interface work sits on support, systems, and web projects.",
-    source: "Method",
-  },
-  {
-    label: "Default stack",
-    value: "Next.js, Bun, Tailwind, shadcn/ui, Convex, Clerk, Polar, Resend, OpenAI SDK, Cloudflare Workers",
-    detail:
-      "Bun is the package manager and test runner; the rest is modern TypeScript, product UI, and server-side boundaries for sensitive work.",
-    source: "Joe",
-  },
-  {
-    label: "AI coding tool",
-    value: "Codex",
-    detail:
-      "Codex is the preferred coding partner because it tends to follow direction closely in Joe's workflow.",
-    source: "Joe",
-  },
-  {
-    label: "Motion choice",
-    value: "Purposeful motion for personal and commercial work",
-    detail:
-      "The animation preference depends on context: expressive personal experiments or production client surfaces.",
-    source: "Joe",
-  },
-  {
-    label: "3D learning",
-    value: "Browser graphics study",
-    detail:
-      "A browser graphics class that reinforced the interest in spatial interfaces.",
-    source: "Joe",
-  },
-  {
-    label: "Interface curiosity",
-    value: "HTML on Canvas",
-    detail:
-      "The interesting part is the possibility of operating real interface elements inside a canvas-like surface.",
-    source: "Joe",
-  },
-  {
-    label: "Work scope",
-    value: "Support / systems / web projects",
-    detail:
-      "The public contact lanes are support, systems, web projects, and interface work.",
-    source: "Method",
-  },
-  {
-    label: "Telematics",
-    value: "Telematics Engineering",
-    detail:
-      "The engineering base is networks, systems, signals, and communication.",
-    source: "PUCMM",
-  },
-  {
-    label: "Languages",
-    value: "English and Spanish",
-    detail: "I work comfortably across both.",
-    source: "LinkedIn",
-  },
-  {
-    label: "Certification record",
-    value: "Next.js, React, FAA, Cisco, Microsoft, CompTIA, Barracuda",
-    detail:
-      "The LinkedIn profile export carries the fuller certification and class trail.",
-    source: "LinkedIn PDF",
-  },
-  {
-    label: "Design",
-    value: "I love design.",
-    detail:
-      "The site treats design as how the surface works, not only how it looks.",
-    source: "Joe",
-  },
-  {
-    label: "Design shelf",
-    value: "Steve Jobs and Jony Ive biographies",
-    detail:
-      "Both read twice; the taste reference is usefulness, restraint, and craft.",
-    source: "Joe",
-  },
-  {
-    label: "Coding spark",
-    value: "Theo Browne",
-    detail:
-      "Theo's work helped turn coding into a real hobby and ongoing practice.",
-    source: "Joe",
-  },
-  {
-    label: "Admiration",
-    value: "Jobs, Ive, Tesla, Maxwell, Faraday",
-    detail:
-      "Product taste, industrial detail, electricity, fields, and signals sit behind the method.",
-    source: "Joe",
-  },
-  {
-    label: "Family orbit",
-    value: "Architecture, pharmaceutical science, graphic design",
-    detail:
-      "My dad is an architect, my mom studied pharmaceutical science, and my sister is a graphic designer.",
-    source: "Joe",
-  },
-  {
-    label: "Chess",
-    value: "Study, puzzles, and computer games",
-    detail:
-      "Chess sits closer to practice than competition here: pattern study, puzzles, and playing against the computer.",
-    source: "Joe",
-  },
-  {
-    label: "Stargazing",
-    value: "Universe study",
-    detail:
-      "I like stargazing and studying the universe because scale, fields, and motion never stop being fascinating.",
-    source: "Joe",
-  },
-  {
-    label: "Independent physics note",
-    value: "Acceleration and electromagnetic constants",
-    detail:
-      "I wrote an independent physics note and tried to publish it, but could not get endorsement. It stays here as curiosity, not a credential.",
-    source: "Independent note",
-  },
-  {
-    label: "Dogs",
-    value: "I love dogs.",
-    detail:
-      "A simple personal fact that belongs in the map more than another generic portfolio line.",
-    source: "Joe",
-  },
-  {
-    label: "Longboards",
-    value: "Cruising, not recently",
-    detail:
-      "A personal interest kept honestly: I like longboards, even if I have not cruised in a while.",
-    source: "Joe",
-  },
-  {
-    label: "Cars",
-    value: "Cool cars, calm cruises",
-    detail:
-      "I do not love driving, but I like well-designed cars and quiet cruising without street chaos.",
-    source: "Joe",
-  },
-];
+if (!githubChannel || !linkedinChannel) {
+  throw new Error("Missing required profile channels.");
+}
 
 export const educationRecords: EducationRecord[] = [
   {
     school: "Pontificia Universidad Católica Madre y Maestra",
-    focus: "Bachelor of Science - BS, Telematics Engineering",
+    focus: "Bachelor of Science, Telematics Engineering",
     period: "2006 - 2014",
     detail:
-      "Engineering base across networks, programming, systems, signals, and communication.",
+      "Reference degree for developing and programming networks and applications that make the Information Society possible.",
     sourceLabel: "LinkedIn profile export",
     href: linkedinChannel.href,
   },
@@ -1264,7 +939,7 @@ export const educationRecords: EducationRecord[] = [
     school: "Cisco Networking Academy",
     focus: "CCNA 1, IT",
     period: "2004 - 2005",
-    detail: "Early networking class sequence from the LinkedIn profile export.",
+    detail: "Networking Basics",
     sourceLabel: "LinkedIn profile export",
     href: linkedinChannel.href,
   },
@@ -1272,7 +947,7 @@ export const educationRecords: EducationRecord[] = [
     school: "Cisco Networking Academy",
     focus: "CCNA 2, IT",
     period: "2004 - 2005",
-    detail: "Early networking class sequence from the LinkedIn profile export.",
+    detail: "Routers and Routing Basics",
     sourceLabel: "LinkedIn profile export",
     href: linkedinChannel.href,
   },
@@ -1280,7 +955,7 @@ export const educationRecords: EducationRecord[] = [
     school: "Cisco Networking Academy",
     focus: "CCNA 3, IT",
     period: "2004 - 2005",
-    detail: "Early networking class sequence from the LinkedIn profile export.",
+    detail: "Switching Basics and Intermediate Routing",
     sourceLabel: "LinkedIn profile export",
     href: linkedinChannel.href,
   },
@@ -1288,7 +963,23 @@ export const educationRecords: EducationRecord[] = [
     school: "Cisco Networking Academy",
     focus: "CCNA 4, IT",
     period: "2004 - 2005",
-    detail: "Early networking class sequence from the LinkedIn profile export.",
+    detail: "WAN Technologies",
+    href: linkedinChannel.href,
+    sourceLabel: "LinkedIn profile export",
+  },
+  {
+    school: "Cisco Networking Academy",
+    focus: "IT 1, IT",
+    period: "2004 - 2004",
+    detail: "Hardware and Software",
+    href: linkedinChannel.href,
+    sourceLabel: "LinkedIn profile export",
+  },
+  {
+    school: "Cisco Networking Academy",
+    focus: "IT 2, IT",
+    period: "2005 - 2005",
+    detail: "Servers and Network OS",
     href: linkedinChannel.href,
     sourceLabel: "LinkedIn profile export",
   },
@@ -1296,15 +987,101 @@ export const educationRecords: EducationRecord[] = [
 
 export const learningCredentials: LearningCredential[] = [
   {
+    label: "Next.js Pages Router Fundamentals",
+    issuer: "Vercel",
+    issued: "Issued May 2025",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Next.js App Router Fundamentals",
+    issuer: "Vercel",
+    issued: "Issued May 2025",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
     label: "Next.js SEO Fundamentals",
-    issuer: "LinkedIn profile record",
-    sourceLabel: "LinkedIn profile export",
+    issuer: "Vercel",
+    issued: "Issued May 2025",
+    sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
   },
   {
     label: "React Foundations for Next.js",
-    issuer: "LinkedIn profile record",
-    sourceLabel: "LinkedIn profile export",
+    issuer: "Vercel",
+    issued: "Issued May 2025",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "PPC Fundamentals Exam",
+    issuer: "Semrush",
+    period: "Issued Jan 2021 / Expired Jan 2022",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Content Marketing Fundamentals Exam",
+    issuer: "Semrush",
+    period: "Issued Jan 2021 / Expired Jan 2022",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Technical SEO Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Local SEO Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Mobile SEO Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Backlink Management Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Keyword Research Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "SEO Fundamentals Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Content Marketing and SEO Fundamentals Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Role of Content Exam",
+    issuer: "Semrush",
+    period: "Issued Dec 2020 / Expired Dec 2021",
+    sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
   },
   {
@@ -1315,9 +1092,23 @@ export const learningCredentials: LearningCredential[] = [
     href: linkedinChannel.href,
   },
   {
+    label: "Part 107 Small Unmanned Aircraft Systems Recurrent",
+    issuer: "FAA Safety Team Aviation Learning Center",
+    issued: "Completed February 24, 2020",
+    sourceLabel: "Local certificate",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Commercial Drone Pilot: CFR Part 107 Explained",
+    issuer: "FAA Safety Team Aviation Learning Center",
+    issued: "Completed February 24, 2020",
+    sourceLabel: "Local certificate",
+    href: linkedinChannel.href,
+  },
+  {
     label: "Cert Prep: FAA Part 107 Commercial Drone License",
     issuer: "LinkedIn",
-    issued: "Completed Feb 26, 2020",
+    issued: "Issued Feb 2020",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
   },
@@ -1331,42 +1122,48 @@ export const learningCredentials: LearningCredential[] = [
   {
     label: "Microsoft Technology Associate: Networking Fundamentals",
     issuer: "Microsoft",
-    issued: "Achieved June 23, 2017",
+    issued: "Issued Jun 2017",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
   },
   {
     label: "CompTIA A+",
     issuer: "CompTIA",
-    issued: "Issued June 28, 2007",
+    issued: "Issued Jun 2007",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
   },
   {
     label: "CompTIA Network+",
     issuer: "CompTIA",
-    period: "Issued September 28, 2017 / Expires September 28, 2020",
+    period: "Issued Sep 2017 / Expired Sep 2020",
     sourceLabel: "Local certificate",
+    href: linkedinChannel.href,
+  },
+  {
+    label: "Barracuda SignNow",
+    issuer: "Barracuda",
+    sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
   },
   {
     label: "Barracuda Web Security Service Certified Engineer",
     issuer: "Barracuda",
-    period: "Valid July 6, 2017 / July 6, 2020",
+    period: "Issued May 2017 / Expired May 2020",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
   },
   {
     label: "Barracuda Email Security Service Certified Engineer",
     issuer: "Barracuda",
-    period: "Valid February 24, 2017 / February 24, 2020",
+    period: "Issued Apr 2017 / Expired Apr 2020",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
   },
   {
     label: "Datto Technical Specialist I",
     issuer: "Datto, Inc.",
-    period: "Issued Jan 2017 / Expires Jan 2020",
+    period: "Issued Jan 2017 / Expired Jan 2020",
     sourceLabel: "LinkedIn certification",
     href: linkedinChannel.href,
   },
@@ -1381,11 +1178,23 @@ export const learningCredentials: LearningCredential[] = [
 export const credentialGroups: CredentialGroup[] = [
   {
     id: "web",
-    label: "Web",
-    detail: "Recent web training records.",
+    label: "Web / Vercel / SEO",
+    detail: "Web, Vercel, and SEO training records.",
     credentialLabels: [
+      "Next.js Pages Router Fundamentals",
+      "Next.js App Router Fundamentals",
       "Next.js SEO Fundamentals",
       "React Foundations for Next.js",
+      "PPC Fundamentals Exam",
+      "Content Marketing Fundamentals Exam",
+      "Technical SEO Exam",
+      "Local SEO Exam",
+      "Mobile SEO Exam",
+      "Backlink Management Exam",
+      "Keyword Research Exam",
+      "SEO Fundamentals Exam",
+      "Content Marketing and SEO Fundamentals Exam",
+      "Role of Content Exam",
     ],
   },
   {
@@ -1406,6 +1215,7 @@ export const credentialGroups: CredentialGroup[] = [
       "Unitrends Certified Associate (UCA)",
       "Datto Technical Specialist I",
       "Datto Technical Specialist II",
+      "Barracuda SignNow",
       "Barracuda Web Security Service Certified Engineer",
       "Barracuda Email Security Service Certified Engineer",
     ],
@@ -1416,6 +1226,8 @@ export const credentialGroups: CredentialGroup[] = [
     detail: "FAA drone coursework completed in 2020.",
     credentialLabels: [
       "Part 107 Small Unmanned Aircraft Systems Initial",
+      "Part 107 Small Unmanned Aircraft Systems Recurrent",
+      "Commercial Drone Pilot: CFR Part 107 Explained",
       "Cert Prep: FAA Part 107 Commercial Drone License",
     ],
   },
@@ -1425,50 +1237,72 @@ export const proudSystemsRoles: ProudRole[] = [
   {
     id: "macromedica-system-administrator",
     title: "System Administrator",
-    organization: "Macromedica",
-    detail: "Healthcare systems administration role.",
+    organization: "Macromedica Dominicana",
+    detail:
+      "Managed databases, Windows server infrastructure, directory services, telephony, VPN access, virtualization, cabling, and core office infrastructure.",
   },
   {
     id: "neveroff-disaster-recovery-engineer",
     title: "Disaster Recovery Engineer",
-    organization: "Neveroff Technology",
-    detail: "Backup and continuity role focused on disaster recovery.",
+    organization: "Never Off Technology",
+    detail:
+      "Installed, supported, and troubleshot disaster recovery, high availability, business continuity, virtualization, backup appliances, restores, and security workflows.",
   },
   {
     id: "brox-system-administrator",
-    title: "System Administrator",
+    title: "IT Systems Administrator",
     organization: "Brox Industries",
-    detail: "Industrial systems administration role.",
+    detail:
+      "Owned daily infrastructure checks, server health, network access, backups, endpoint security, scheduled updates, snapshots, and manufacturing systems support.",
   },
 ];
 
 export const githubRepositories: GithubRepository[] = [
   {
+    name: "love-presentation",
+    href: "https://github.com/Joe-Simo/love-presentation",
+    description:
+      "Public TypeScript project for lightweight private slideshow links.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/love-presentation",
+    homepage: "https://lovepresentation.com",
+    meta: ["github", "public repo", "TypeScript", "Next.js"],
+  },
+  {
+    name: "joe-simo-pet",
+    href: "https://github.com/Joe-Simo/joe-simo-pet",
+    description:
+      "Public MIT package for Joe Simo's Codex pet assets and package metadata.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/joe-simo-pet",
+    meta: ["github", "public repo", "MIT"],
+  },
+  {
     name: "openai-agents-js",
-    href: "https://github.com/joe-simo/openai-agents-js",
+    href: "https://github.com/Joe-Simo/openai-agents-js",
     description:
       "Public GitHub fork described as a lightweight framework for multi-agent workflows and voice agents.",
     kind: "Public fork",
-    source: "github.com/joe-simo/openai-agents-js",
+    source: "github.com/Joe-Simo/openai-agents-js",
     homepage: "https://openai.github.io/openai-agents-js/",
     meta: ["github", "public repo", "agent workflow"],
   },
   {
-    name: "GitHub / @joe-simo",
+    name: "GitHub / @Joe-Simo",
     href: githubChannel.href,
     description:
       "Public GitHub profile for Joe Simo: Devsigner. One more thing.",
     kind: "Profile",
-    source: "github.com/joe-simo",
-    meta: ["github", "@joe-simo", "public profile"],
+    source: "github.com/Joe-Simo",
+    meta: ["github", "@Joe-Simo", "public profile"],
   },
 ];
 
 export const featuredWork: WorkArtifact = {
-  label: "Current work",
+  label: "Product work",
   title: "sim0.com",
   detail:
-    "sim0 is the current public product surface of Joe's method: browser-first workflow, visible system state, and interface decisions close to the work.",
+    "sim0 is a public product surface for browser-first workflow, visible system state, and interface decisions close to the work.",
   href: sim0Link.href,
   actionLabel: "Open sim0",
   iconKey: "appWindow",
@@ -1508,7 +1342,7 @@ export const sim0ProofPoints = [
     visibleLabel: "SSR wiring",
     title: "Runtime work stays close to the interface.",
     detail:
-      "The artifact points to entry runtime and SSR wiring without turning the page into an implementation dump.",
+      "The capture points to entry runtime and SSR wiring without turning the page into an implementation dump.",
     lens: "signals",
     action: "trace",
     readout: "Trace runtime context next to the surface it affects.",
@@ -1725,8 +1559,8 @@ export const proofItems: ProofItem[] = [
   },
   {
     id: "current-work",
-    label: "Current work",
-    claim: "sim0.com is the current public product surface.",
+    label: "Product work",
+    claim: "sim0.com is a public product surface.",
     detail:
       "The interface still shows preview state, runtime context, local API context, ship action, and change staging.",
     proofType: "artifact",
@@ -1740,161 +1574,16 @@ export const proofItems: ProofItem[] = [
   },
 ];
 
-export const fieldNotes: FieldNote[] = [
-  {
-    code: "N1",
-    title: "The broken path is the brief.",
-    body:
-      "If the failure can be described in plain language, the interface has enough shape to begin. The first job is to make the stuck moment visible.",
-    source: "Support",
-  },
-  {
-    code: "N2",
-    title: "A system is only useful when its state can be read.",
-    body:
-      "Telematics trained the habit: timing, handoff, routing, and state matter. The screen should make those details readable for the person doing the work.",
-    source: "Systems",
-  },
-  {
-    code: "N3",
-    title: "The surface should move the work forward.",
-    body:
-      "Good interface work does not decorate the system. It brings consequence close to the control and makes the next action hard to miss.",
-    source: "Interface",
-  },
-];
-
-export const methodWorldChapters: MethodWorldChapter[] = [
-  {
-    id: "joe",
-    code: "00",
-    label: "Joe",
-    title: "Joe Simo",
-    body:
-      "Florida devsigner working from support failures, systems, telematics, and interface clarity.",
-    anchor: "#joe",
-    progress: 0,
-    sceneMode: "origin",
-    point: { x: 18, y: 50 },
-  },
-  {
-    id: "method",
-    code: "01",
-    label: "Method",
-    title: "Support → Signals → Surface.",
-    body:
-      "The method starts with what a person can describe, traces timing, route, state, and handoff, then removes what does not help the next action.",
-    anchor: "#work",
-    progress: 0.22,
-    sceneMode: "method",
-    point: { x: 43, y: 28 },
-  },
-  {
-    id: "work",
-    code: "02",
-    label: "Work",
-    title: "Selected work, not a wall of projects.",
-    body:
-      "sim0 is the flagship proof. Astrosimo, Antoneta's Garden, ChessLM, Next Flights, and smaller utilities show the range around Joe's method.",
-    anchor: "#work",
-    progress: 0.44,
-    sceneMode: "work",
-    point: { x: 76, y: 38 },
-  },
-  {
-    id: "notes",
-    code: "03",
-    label: "Field Notes",
-    title: "Small notes, kept secondary.",
-    body:
-      "Small authored fragments stay near the community section instead of becoming a primary destination.",
-    anchor: "#community",
-    progress: 0.66,
-    sceneMode: "trail",
-    point: { x: 56, y: 76 },
-  },
-  {
-    id: "contact",
-    code: "04",
-    label: "Contact",
-    title: "Public profiles are the route.",
-    body:
-      "Bring a stuck workflow, product surface, or useful introduction through public profiles.",
-    anchor: "#contact",
-    progress: 0.88,
-    sceneMode: "contact",
-    point: { x: 84, y: 70 },
-  },
-];
-
-export const methodWorldMoments: MethodWorldMoment[] = [
-  {
-    id: "world-joe",
-    chapter: "joe",
-    progress: 0,
-    code: "00",
-    label: "Joe",
-    readout: "Joe Simo. FL. Devsigner.",
-  },
-  {
-    id: "world-breakage",
-    chapter: "method",
-    stage: "breakage",
-    progress: 0.16,
-    code: "01A",
-    label: "Breakage",
-    readout: "Start where the product stops.",
-  },
-  {
-    id: "world-signals",
-    chapter: "method",
-    stage: "signals",
-    progress: 0.29,
-    code: "01B",
-    label: "Signals",
-    readout: "Read timing, route, handoff, and state.",
-  },
-  {
-    id: "world-surface",
-    chapter: "work",
-    stage: "surface",
-    progress: 0.44,
-    code: "02A",
-    label: "Surface",
-    readout: "Land the trace on a working interface.",
-  },
-  {
-    id: "world-proof",
-    chapter: "work",
-    stage: "surface",
-    progress: 0.55,
-    code: "02B",
-    label: "Proof",
-    readout: "Move through named work artifacts.",
-  },
-  {
-    id: "world-notes",
-    chapter: "notes",
-    progress: 0.66,
-    code: "03",
-    label: "Field Notes",
-    readout: "Keep the optional notes short and named.",
-  },
-  {
-    id: "world-contact",
-    chapter: "contact",
-    progress: 0.88,
-    code: "04",
-    label: "Contact",
-    readout: "Public profiles are the route.",
-  },
-];
-
 export const projectCaseStudies: ProjectCaseStudy[] = [
   {
     slug: "sim0",
     code: "W01",
     title: "sim0",
+    started: {
+      label: "Sep 2025",
+      sortKey: "2025-09-06",
+      sourceLabel: "Repository created",
+    },
     role: "Designed and built the product interface",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
@@ -1908,12 +1597,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     assets: [
       {
+        id: "sim0-hero-crop",
+        captionId: "sim0-working-surface",
+        label: "Hero workspace crop",
+        claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
+        media: sim0HeroCropMedia,
+        sourcePath: "project/sim0",
+        treatment: "hero",
+      },
+      {
         id: "sim0-editor-artifact",
         captionId: "sim0-working-surface",
         label: "Ship review capture",
         claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
         media: sim0Media,
-        sourcePath: "Downloads/final/sim0",
+        sourcePath: "project/sim0",
         treatment: "hero",
       },
       {
@@ -1922,7 +1620,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "App editor capture",
         claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
         media: sim0ShipSurfaceMedia,
-        sourcePath: "Downloads/final/sim0",
+        sourcePath: "project/sim0",
         treatment: "hero",
       },
       {
@@ -1931,13 +1629,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Editor workspace capture",
         claimIds: ["sim0-preview", "sim0-runtime", "sim0-ship"],
         media: sim0CurrentEditorMedia,
-        sourcePath: "Downloads/final/sim0",
+        sourcePath: "project/sim0",
         treatment: "hero",
       },
     ],
     links: [sim0Link],
-    status: "Current public work",
-    sourcePath: "Downloads/final/sim0",
+    status: "Active product",
+    sourcePath: "project/sim0",
     tier: "featured",
     story: {
       signal:
@@ -2045,15 +1743,98 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     proofSummary:
       "Browser workspace for previewing an imported app, editing the UI, and reviewing source changes.",
     homepageFeature: {
-      rank: 1,
-      mediaAssetIds: ["sim0-editor-artifact", "sim0-ship-surface"],
+      rank: 5,
+      mediaAssetIds: ["sim0-hero-crop", "sim0-editor-artifact"],
+      thumbnailMedia: sim0WorkThumbMedia,
       treatment: "operated-surface",
     },
   },
   {
-    slug: "astrosimo",
+    slug: "love-presentation",
     code: "W02",
+    title: "Love Presentation",
+    started: {
+      label: "May 2026",
+      sortKey: "2026-05-22",
+      sourceLabel: "GitHub repository created",
+    },
+    role: "Built the Next.js slideshow app",
+    methodStage: "surface",
+    schemaType: "SoftwareApplication",
+    applicationCategory: "EntertainmentApplication",
+    summary: "A tiny app for private slideshow links.",
+    evidence: [
+      "Live site at lovepresentation.com",
+      "Public MIT GitHub repo",
+      "Lightweight animated presentation flow",
+      "No account, uploads, or database in the public product flow",
+    ],
+    assets: [
+      {
+        id: "love-presentation-home",
+        captionId: "love-presentation-home",
+        label: "Homepage capture",
+        claimIds: ["love-presentation-live", "love-presentation-repo"],
+        media: lovePresentationHomeMedia,
+        sourcePath: "project/love-presentation",
+        treatment: "hero",
+      },
+    ],
+    links: [lovePresentationLink, lovePresentationRepoLink],
+    status: "Open source",
+    sourcePath: "project/love-presentation",
+    tier: "case",
+    story: {
+      signal:
+        "A small form creates a shareable slideshow link.",
+      problem:
+        "The app needs to show the joke, the controls, and the output without making someone create an account.",
+      constraint:
+        "The public case uses the live site, public repo metadata, and a local snapshot of the homepage.",
+      approach: [
+        "Put the form and sample deck in the first screen.",
+        "Keep the public flow account-free.",
+        "Use the public repo and live page as the proof.",
+      ],
+      outcome:
+        "The site lets someone make and share a private slideshow link from one page.",
+    },
+    proofCaptions: {
+      "love-presentation-home": {
+        eyebrow: "Live site",
+        title: "Homepage",
+        detail:
+          "The first screen shows the form controls and slideshow preview together.",
+        sourceLabel: "Live site snapshot",
+        evidenceStatus: "local-proof",
+      },
+    },
+    completedRoute: {
+      label: "Result",
+      title: "What changed",
+      detail:
+        "Love Presentation turns a small form into a shareable slideshow page.",
+    },
+    safeClaimIds: ["love-presentation-live", "love-presentation-repo"],
+    proofMode: "specimen",
+    proofSummary:
+      "Live homepage capture and public repo metadata show the slideshow app as a shipped public project.",
+    homepageFeature: {
+      rank: 1,
+      mediaAssetIds: ["love-presentation-home"],
+      thumbnailMedia: lovePresentationWorkThumbMedia,
+      treatment: "site-snapshot",
+    },
+  },
+  {
+    slug: "astrosimo",
+    code: "W03",
     title: "Astrosimo",
+    started: {
+      label: "Feb 2026",
+      sortKey: "2026-02-15",
+      sourceLabel: "Repository created",
+    },
     role: "Built iOS planning and guidance screens",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
@@ -2072,7 +1853,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Release screenshot strip",
         claimIds: ["astrosimo-release", "astrosimo-guidance"],
         media: astrosimoSignalStripMedia,
-        sourcePath: "Downloads/astro/artifacts",
+        sourcePath: "project/astrosimo",
         treatment: "hero",
       },
       {
@@ -2081,7 +1862,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Verified capture",
         claimIds: ["astrosimo-release"],
         media: astrosimoVerifiedCaptureMedia,
-        sourcePath: "Downloads/astro/artifacts",
+        sourcePath: "project/astrosimo",
         treatment: "strip",
       },
       {
@@ -2090,7 +1871,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Night planner",
         claimIds: ["astrosimo-planning"],
         media: astrosimoNightPlannerMedia,
-        sourcePath: "Downloads/astro/artifacts",
+        sourcePath: "project/astrosimo",
         treatment: "strip",
       },
       {
@@ -2099,13 +1880,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Live guidance",
         claimIds: ["astrosimo-guidance"],
         media: astrosimoLiveGuidanceMedia,
-        sourcePath: "Downloads/astro/artifacts",
+        sourcePath: "project/astrosimo",
         treatment: "strip",
       },
     ],
     links: [],
-    status: "iOS release artifact",
-    sourcePath: "Downloads/astro",
+    status: "iOS app",
+    sourcePath: "project/astrosimo",
     tier: "case",
     story: {
       signal:
@@ -2236,20 +2017,26 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     proofSummary:
       "Verified capture, night planning, and live guidance shown through owned mobile screenshots.",
     homepageFeature: {
-      rank: 2,
+      rank: 3,
       mediaAssetIds: [
         "astrosimo-signal-strip",
         "astrosimo-verified",
         "astrosimo-planner",
         "astrosimo-guidance",
       ],
+      thumbnailMedia: astrosimoWorkThumbMedia,
       treatment: "mobile-strip",
     },
   },
   {
-    slug: "antonetas-garden",
-    code: "W03",
-    title: "Antoneta's Garden",
+    slug: "garden0",
+    code: "W04",
+    title: "garden0",
+    started: {
+      label: "May 2026",
+      sortKey: "2026-05-10",
+      sourceLabel: "Repository created",
+    },
     role: "Built Unity game screens and web landing",
     methodStage: "surface",
     schemaType: "VideoGame",
@@ -2263,40 +2050,40 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     assets: [
       {
-        id: "antoneta-unity",
-        captionId: "antoneta-unity",
+        id: "garden0-unity",
+        captionId: "garden0-unity",
         label: "Unity menu",
-        claimIds: ["antoneta-unity", "antoneta-playable"],
-        media: antonetaGardenMedia,
-        sourcePath: "Downloads/video/output/review",
+        claimIds: ["garden0-unity", "garden0-playable"],
+        media: garden0UnityMedia,
+        sourcePath: "project/garden0",
         treatment: "hero",
       },
       {
-        id: "antoneta-landing",
-        captionId: "antoneta-landing",
+        id: "garden0-landing",
+        captionId: "garden0-landing",
         label: "Landing page",
-        claimIds: ["antoneta-public-surface"],
-        media: antonetaGardenLandingMedia,
-        sourcePath: "Downloads/video/output",
+        claimIds: ["garden0-public-page"],
+        media: garden0LandingMedia,
+        sourcePath: "project/garden0",
         treatment: "supporting",
       },
       {
-        id: "antoneta-preview",
-        captionId: "antoneta-preview",
+        id: "garden0-preview",
+        captionId: "garden0-preview",
         label: "Browser preview",
-        claimIds: ["antoneta-playable"],
-        media: antonetaGardenPreviewMedia,
-        sourcePath: "Downloads/video/output",
+        claimIds: ["garden0-playable"],
+        media: garden0PreviewMedia,
+        sourcePath: "project/garden0",
         treatment: "strip",
       },
     ],
     links: [],
     status: "Game prototype",
-    sourcePath: "Downloads/video",
+    sourcePath: "project/garden0",
     tier: "case",
     story: {
       signal:
-        "Antoneta's Garden moves from a landing page into a playable browser preview.",
+        "garden0 moves from a landing page into a playable browser preview.",
       problem:
         "A game project needs both a public entry point and a playable client.",
       constraint:
@@ -2329,7 +2116,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         whyItMatters:
           "For a game, the interface promise only matters when the world can be entered.",
       },
-      media: [antonetaProgressionReelMedia],
+      media: [garden0ProgressionReelMedia],
       panels: [
         {
           id: "problem-scene",
@@ -2337,9 +2124,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "The landing page has to lead somewhere.",
           body:
             "The landing capture sets the outside face, but the case needs a playable client behind it.",
-          assetId: "antoneta-landing",
-          captionId: "antoneta-landing",
-          claimIds: ["antoneta-public-surface"],
+          assetId: "garden0-landing",
+          captionId: "garden0-landing",
+          claimIds: ["garden0-public-page"],
           evidenceStatus: "local-proof",
         },
         {
@@ -2348,9 +2135,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "The reel crosses into the client.",
           body:
             "Owned captures move from public page to Unity and browser preview.",
-          mediaId: "antoneta-progression-reel",
-          captionId: "antoneta-unity",
-          claimIds: ["antoneta-unity", "antoneta-playable"],
+          mediaId: "garden0-progression-reel",
+          captionId: "garden0-unity",
+          claimIds: ["garden0-unity", "garden0-playable"],
           evidenceStatus: "local-proof",
         },
         {
@@ -2359,9 +2146,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "The playable client carries the case.",
           body:
             "The Unity capture carries the case because it shows the project as a game client.",
-          assetId: "antoneta-unity",
-          captionId: "antoneta-unity",
-          claimIds: ["antoneta-unity", "antoneta-playable"],
+          assetId: "garden0-unity",
+          captionId: "garden0-unity",
+          claimIds: ["garden0-unity", "garden0-playable"],
           evidenceStatus: "local-proof",
         },
         {
@@ -2370,29 +2157,29 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "Landing to gameplay stays connected.",
           body:
             "The result is a small authored progression from public page to playable evidence.",
-          assetId: "antoneta-preview",
-          captionId: "antoneta-preview",
-          claimIds: ["antoneta-playable"],
+          assetId: "garden0-preview",
+          captionId: "garden0-preview",
+          claimIds: ["garden0-playable"],
           evidenceStatus: "local-proof",
         },
       ],
     },
     proofCaptions: {
-      "antoneta-unity": {
+      "garden0-unity": {
         eyebrow: "Playable capture",
         title: "Unity menu",
         detail: "The Unity capture shows the game client.",
         sourceLabel: "Playable capture",
         evidenceStatus: "local-proof",
       },
-      "antoneta-landing": {
+      "garden0-landing": {
         eyebrow: "Landing page",
         title: "Landing page",
         detail: "The landing capture shows the outside face of the game project.",
         sourceLabel: "Landing still",
         evidenceStatus: "local-proof",
       },
-      "antoneta-preview": {
+      "garden0-preview": {
         eyebrow: "Browser preview",
         title: "Browser preview",
         detail: "The preview capture shows the game running in a browser.",
@@ -2404,26 +2191,32 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       label: "Result",
       title: "What changed",
       detail:
-        "Antoneta's Garden shows the public page, Unity client, and browser preview as one game project.",
+        "garden0 shows the public page, Unity client, and browser preview as one game project.",
     },
     safeClaimIds: [
-      "antoneta-unity",
-      "antoneta-playable",
-      "antoneta-public-surface",
+      "garden0-unity",
+      "garden0-playable",
+      "garden0-public-page",
     ],
     proofMode: "reel",
     proofSummary:
       "Unity gameplay and landing captures show the project moving from public page to playable client.",
     homepageFeature: {
-      rank: 3,
-      mediaAssetIds: ["antoneta-unity", "antoneta-landing"],
+      rank: 2,
+      mediaAssetIds: ["garden0-unity", "garden0-landing"],
+      thumbnailMedia: garden0WorkThumbMedia,
       treatment: "progression-strip",
     },
   },
   {
     slug: "next-flights",
-    code: "W04",
+    code: "W06",
     title: "Next Flights",
+    started: {
+      label: "Oct 2024",
+      sortKey: "2024-10-31",
+      sourceLabel: "First local git commit",
+    },
     role: "Flight tracking application",
     methodStage: "signals",
     schemaType: "SoftwareApplication",
@@ -2442,7 +2235,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Product overview",
         claimIds: ["next-flights-product", "next-flights-maps"],
         media: nextFlightsOverviewMedia,
-        sourcePath: "Downloads/next-flights/public",
+        sourcePath: "project/next-flights",
         treatment: "hero",
       },
       {
@@ -2451,13 +2244,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Interface artwork",
         claimIds: ["next-flights-product"],
         media: nextFlightsCtaMedia,
-        sourcePath: "Downloads/next-flights/public",
+        sourcePath: "project/next-flights",
         treatment: "supporting",
       },
     ],
     links: [],
-    status: "App project",
-    sourcePath: "Downloads/next-flights",
+    status: "Flight app",
+    sourcePath: "project/next-flights",
     tier: "supporting",
     story: {
       signal:
@@ -2504,8 +2297,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
   {
     slug: "grimgreen-channel-watch",
-    code: "W05",
+    code: "W07",
     title: "GrimmGreen Channel Watch",
+    started: {
+      label: "Dec 2025",
+      sortKey: "2025-12-19",
+      sourceLabel: "First local git commit",
+    },
     role: "Public reachability monitor",
     methodStage: "signals",
     schemaType: "SoftwareApplication",
@@ -2520,7 +2318,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     assets: [],
     links: [],
     status: "Dashboard project",
-    sourcePath: "Downloads/grimgreen-watch",
+    sourcePath: "project/grimgreen-watch",
     tier: "specimen",
     story: {
       signal:
@@ -2562,8 +2360,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
   {
     slug: "royal-shell",
-    code: "W06",
+    code: "W08",
     title: "Royal Shell",
+    started: {
+      label: "Apr 2025",
+      sortKey: "2025-04-02",
+      sourceLabel: "Local project directory date",
+    },
     role: "Signature generator utility",
     methodStage: "surface",
     schemaType: "SoftwareApplication",
@@ -2582,13 +2385,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Brand asset",
         claimIds: ["royal-shell-signature", "royal-shell-brand"],
         media: royalShellLogoMedia,
-        sourcePath: "Downloads/royalshell/my-app/public",
+        sourcePath: "project/royal-shell",
         treatment: "hero",
       },
     ],
     links: [],
     status: "Tool project",
-    sourcePath: "Downloads/royalshell",
+    sourcePath: "project/royal-shell",
     tier: "specimen",
     story: {
       signal:
@@ -2628,8 +2431,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
   {
     slug: "signature-copier",
-    code: "W07",
+    code: "W09",
     title: "Signature Copier",
+    started: {
+      label: "Apr 2026",
+      sortKey: "2026-04-20",
+      sourceLabel: "Local project directory date",
+    },
     role: "Outlook paste workflow",
     methodStage: "breakage",
     schemaType: "SoftwareApplication",
@@ -2648,13 +2456,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Application capture",
         claimIds: ["signature-paste", "signature-outlook"],
         media: signatureCopierMedia,
-        sourcePath: "Downloads/steve/tmp",
+        sourcePath: "project/signature-copier",
         treatment: "hero",
       },
     ],
     links: [],
     status: "Utility project",
-    sourcePath: "Downloads/steve",
+    sourcePath: "project/signature-copier",
     tier: "specimen",
     story: {
       signal:
@@ -2694,8 +2502,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
   {
     slug: "printer-scripts",
-    code: "W08",
+    code: "W10",
     title: "Printer Scripts",
+    started: {
+      label: "Apr 2025",
+      sortKey: "2025-04-04",
+      sourceLabel: "Local project directory date",
+    },
     role: "Cross-platform provisioning utility",
     methodStage: "breakage",
     schemaType: "SoftwareApplication",
@@ -2710,7 +2523,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     assets: [],
     links: [],
     status: "Automation utility",
-    sourcePath: "Downloads/Printers",
+    sourcePath: "project/printer-scripts",
     tier: "specimen",
     story: {
       signal:
@@ -2752,8 +2565,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
   {
     slug: "chesslm",
-    code: "W09",
+    code: "W05",
     title: "ChessLM",
+    started: {
+      label: "Feb 2026",
+      sortKey: "2026-02-10",
+      sourceLabel: "Repository created",
+    },
     role: "Chess training product and Unity client",
     methodStage: "signals",
     schemaType: "SoftwareApplication",
@@ -2773,7 +2591,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Unity board",
         claimIds: ["chesslm-unity", "chesslm-board"],
         media: chessLmUnityMedia,
-        sourcePath: "Downloads/chess/output/playwright",
+        sourcePath: "project/chesslm",
         treatment: "hero",
       },
       {
@@ -2782,13 +2600,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Training workspace",
         claimIds: ["chesslm-web", "chesslm-training"],
         media: chessLmWorkspaceMedia,
-        sourcePath: "Downloads/chess/public/preview",
+        sourcePath: "project/chesslm",
         treatment: "supporting",
       },
     ],
     links: [],
-    status: "Product project",
-    sourcePath: "Downloads/chess",
+    status: "Training product",
+    sourcePath: "project/chesslm",
     tier: "case",
     story: {
       signal:
@@ -2904,6 +2722,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     homepageFeature: {
       rank: 4,
       mediaAssetIds: ["chesslm-workspace", "chesslm-unity"],
+      thumbnailMedia: chessLmWorkThumbMedia,
       treatment: "training-strip",
     },
   },
@@ -2918,6 +2737,23 @@ export const projectCaseStudiesPublic: PublicProjectCaseStudy[] =
     })),
     sourceLabel: publicSourceLabel(sourcePath),
   }));
+
+export const homepageProjectSlugs = [
+  "astrosimo",
+  "chesslm",
+  "garden0",
+  "love-presentation",
+  "next-flights",
+  "sim0",
+] as const;
+
+const homepageProjectSlugSet = new Set<string>(homepageProjectSlugs);
+
+export function isHomepageProject(
+  project: Pick<PublicProjectCaseStudy, "slug">,
+) {
+  return homepageProjectSlugSet.has(project.slug);
+}
 
 type StoryboardSourceProject = Pick<
   ProjectCaseStudy,
@@ -3040,44 +2876,6 @@ export function getProjectCaseStudy(slug: string) {
   return projectCaseStudies.find((project) => project.slug === slug);
 }
 
-export const writingFragments: WritingFragment[] = [
-  {
-    code: "F1",
-    title: "The interface starts before the screen.",
-    body:
-      "The first interface is the explanation a person gives when something breaks. If that explanation is unclear, the product work starts there.",
-    source: "Method",
-  },
-  {
-    code: "F2",
-    title: "Visible state is a form of respect.",
-    body:
-      "A working interface should not make people guess what the system is doing. State belongs close to the decision it affects.",
-    source: "Systems",
-  },
-  {
-    code: "F3",
-    title: "The next action should feel inevitable.",
-    body:
-      "A good control does not only look available. It explains why this is the right moment to use it.",
-    source: "Interface",
-  },
-  {
-    code: "F4",
-    title: "Small public work should stay named.",
-    body:
-      "If the public project is small, it should stay small and named.",
-    source: "Work",
-  },
-  {
-    code: "F5",
-    title: "The sky keeps the scale honest.",
-    body:
-      "Stargazing and independent physics study sit behind the same habit: follow the system, respect the limits, and say exactly what is known.",
-    source: "Universe",
-  },
-];
-
 export const archiveArtifacts: ArchiveArtifact[] = [
   {
     code: "A1",
@@ -3187,7 +2985,7 @@ export const communityArtifacts: CommunityArtifact[] =
       code,
       title,
       body:
-        "Owned React Miami 2026 frame from Joe's developer community.",
+        "React Miami 2026 photo from Joe's developer community.",
       sourceLabel: "Owned event photo",
       media: {
         kind: "artifact",
@@ -3205,7 +3003,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R00",
     title: "React Miami room",
     body:
-      "Owned React Miami 2026 room frame before the individual photos.",
+      "React Miami 2026 room photo before the individual photos.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3220,7 +3018,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R01",
     title: "ThePrimeagen",
     body:
-      "Owned React Miami 2026 photo with ThePrimeagen.",
+      "React Miami 2026 photo with ThePrimeagen.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3235,7 +3033,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R02",
     title: "Builder table",
     body:
-      "Owned React Miami 2026 table frame from the same event.",
+      "React Miami 2026 table photo from the same event.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3250,7 +3048,7 @@ export const communityHighlights: CommunityArtifact[] = [
     code: "R03",
     title: "Audience frame",
     body:
-      "Owned React Miami 2026 audience frame showing the room around the work.",
+      "React Miami 2026 audience photo showing the room around the work.",
     sourceLabel: "Owned event photo",
     media: {
       kind: "artifact",
@@ -3264,474 +3062,42 @@ export const communityHighlights: CommunityArtifact[] = [
   ...communityArtifacts.slice(0, 2),
 ];
 
-export const productReportArtifacts: ProductReportArtifact[] = [
-  {
-    code: "P1",
-    title: "Vercel v0 billing report",
-    body:
-      "Reported a v0 API billing issue with a repro video and written recommendations. Vercel connected Joe with the v0 team to investigate.",
-    outcome:
-      "The team identified the cause and marked the issue fixed. This page keeps the claim modest: reported, documented, and helped verify.",
-    sourceLabel: "Private report and team thread",
-  },
-];
-
-export const worldArtifacts: WorldArtifact[] = [
-  {
-    id: "origin",
-    code: "W0",
-    label: "Origin",
-    source: "Joe",
-    title: "Joe Simo.",
-    detail:
-      "Designer/developer, FL.",
-    stage: "origin",
-    media: profileMedia,
-  },
-  {
-    id: "breakage",
-    code: "W1",
-    label: "Breakage",
-    source: "Support",
-    title: "The failure path becomes the brief.",
-    detail:
-      "Support work is the first artifact: what broke, where it broke, and what a person needed next.",
-    stage: "breakage",
-  },
-  {
-    id: "signal",
-    code: "W2",
-    label: "Signals",
-    source: "Telematics",
-    title: "Signals, timing, and handoff shape the interface.",
-    detail:
-      "Telematics Engineering gives the method its bias toward readable state, routing, and consequence.",
-    stage: "signal",
-  },
-  {
-    id: "surface",
-    code: "W3",
-    label: "Surface",
-    source: "sim0",
-    title: "sim0 is the current work.",
-    detail:
-      "The sim0 interface shows preview state, local context, shipping, and staged changes in one workspace.",
-    stage: "surface",
-    href: sim0Link.href,
-    actionLabel: "Open sim0",
-    media: sim0Media,
-  },
-  {
-    id: "code",
-    code: "W4",
-    label: "Code",
-    source: "GitHub",
-    title: "Public code stays small and named.",
-    detail:
-      "The visible public repository record is the profile plus a named public fork.",
-    stage: "trail",
-    href: "https://github.com/joe-simo/openai-agents-js",
-    actionLabel: "View repo",
-  },
-  {
-    id: "contact",
-    code: "W5",
-    label: "Contact",
-    source: "LinkedIn",
-    title: "The exit stays public.",
-    detail:
-      "For support, systems, web projects, sim0, or interface work, use the public profile links.",
-    stage: "contact",
-    href: linkedinChannel.href,
-    actionLabel: "Open LinkedIn",
-  },
-];
-
-export const publicDepthItems: PublicDepthItem[] = [
-  {
-    code: "D1",
-    label: "Personal",
-    title: "Joe is the subject.",
-    detail:
-      "Portrait, name, FL, Devsigner, English and Spanish.",
-    source: "Joe",
-    media: profileMedia,
-    meta: ["portrait", "identity", "FL"],
-  },
-  {
-    code: "D2",
-    label: "Current work",
-    title: "sim0 is the current working artifact.",
-    detail:
-      "The interface gives the page a real product artifact: preview state, local API context, ship action, and change state.",
-    source: "sim0.com",
-    href: sim0Link.href,
-    actionLabel: "Open sim0",
-    media: sim0Media,
-    meta: ["product", "artifact", "workflow"],
-  },
-  {
-    code: "D3",
-    label: "Process",
-    title: "The work starts from support problems.",
-    detail:
-      "Support problems, telematics context, and interface decisions shape the work.",
-    source: "Method",
-    meta: ["support", "systems", "interfaces"],
-  },
-  {
-    code: "D4",
-    label: "Code",
-    title: "Public code stays named.",
-    detail:
-      "The visible GitHub record is the public profile and the openai-agents-js fork.",
-    source: "GitHub",
-    href: "https://github.com/joe-simo/openai-agents-js",
-    actionLabel: "View repo",
-    meta: ["github", "public repo", "agents"],
-  },
-  {
-    code: "D5",
-    label: "Writing",
-    title: "Notes live on the page until there is a larger archive.",
-    detail:
-      "The writing here is short, direct, and tied to support, systems, state, and public work.",
-    source: "Notebook",
-    meta: ["field notes", "method", "authored"],
-  },
-  {
-    code: "D6",
-    label: "Video",
-    title: "The video exit is public and simple.",
-    detail:
-      "YouTube stays as a direct public video link instead of an embedded feed wall.",
-    source: "YouTube",
-    href: "https://www.youtube.com/user/jos007",
-    actionLabel: "Open YouTube",
-    meta: ["@jos007", "video", "public exit"],
-  },
-];
-
-export const siteRecords: SiteRecord[] = [
-  {
-    id: "joe",
-    label: "Joe",
-    shortLabel: "Joe",
-    kind: "origin",
-    status: "Joe Simo in FL.",
-    detail:
-      "Florida devsigner working from support failures, systems work, telematics, and interface clarity.",
-    proof: "Joe Simo / Devsigner / FL",
-    primaryAction: {
-      id: "view-public-trail-work",
-      label: "View Work",
-      href: "#work",
-      kind: "primary",
-    },
-    secondaryActions: [
-      {
-        id: "view-work",
-        label: "View Work",
-        href: "#work",
-        kind: "section",
-      },
-    ],
-    iconKey: "home",
-    accent: "ink",
-    sceneMode: "origin",
-    scene: {
-      code: "00",
-      eyebrow: "Origin",
-      coordinate: "FL / Joe",
-      tone: "origin",
-      scrollRange: [0, 0.16],
-    },
-    route: {
-      from: "joe",
-      tension: 0,
-      depth: 0,
-    },
-    sectionAnchor: "#joe",
-    readActionLabel: "Read Joe",
-    media: profileMedia,
-    map: {
-      desktopPoint: { x: 62, y: 42 },
-      mobilePoint: { x: 50, y: 50 },
-    },
-  },
-  {
-    id: "method",
-    label: "Method",
-    shortLabel: "method",
-    kind: "method",
-    status: "Support problems to readable interfaces.",
-    detail:
-      "I start from the broken path a person can describe, trace the signal or system state behind it, then design the interface so the next action is obvious.",
-    proof: "support / telematics / interfaces",
-    primaryAction: {
-      id: "view-work-method",
-      label: "View Work",
-      href: "#work",
-      kind: "section",
-    },
-    secondaryActions: [
-      {
-        id: "open-linkedin",
-        label: "LinkedIn",
-        href: linkedinChannel.href,
-        external: true,
-        ariaLabel: "Open Joe Simo on LinkedIn in a new tab",
-        kind: "secondary",
-      },
-    ],
-    iconKey: "briefcase",
-    accent: "fault",
-    sceneMode: "method",
-    scene: {
-      code: "01",
-      eyebrow: "Method",
-      coordinate: "support / systems / interfaces",
-      tone: "method",
-      scrollRange: [0.16, 0.38],
-    },
-    route: {
-      from: "joe",
-      tension: 0.66,
-      depth: 0.58,
-    },
-    sectionAnchor: "#work",
-    readActionLabel: "Read Method",
-    map: {
-      desktopPoint: { x: 69, y: 23 },
-      mobilePoint: { x: 25, y: 16 },
-    },
-  },
-  {
-    id: "work",
-    label: "Work",
-    shortLabel: "work",
-    kind: "work",
-    status: "Current work: sim0.com.",
-    detail:
-      "sim0 is the current public product: a browser-first workflow where system state and interface decisions stay visible.",
-    proof: "sim0.com / workflow product",
-    primaryAction: sim0Link,
-    secondaryActions: [
-      {
-        id: "open-linkedin-work",
-        label: "LinkedIn",
-        href: linkedinChannel.href,
-        external: true,
-        ariaLabel: "Open Joe Simo on LinkedIn in a new tab",
-        kind: "secondary",
-      },
-    ],
-    iconKey: "appWindow",
-    accent: "signal",
-    sceneMode: "work",
-    scene: {
-      code: "02",
-      eyebrow: "Work",
-      coordinate: "sim0 / product",
-      tone: "work",
-      scrollRange: [0.38, 0.58],
-    },
-    route: {
-      from: "joe",
-      tension: 0.72,
-      depth: 0.78,
-    },
-    sectionAnchor: "#work",
-    readActionLabel: "View Work",
-    media: sim0Media,
-    map: {
-      desktopPoint: { x: 87, y: 28 },
-      mobilePoint: { x: 75, y: 16 },
-    },
-  },
-  {
-    id: "trail",
-    label: "Community",
-    shortLabel: "community",
-    kind: "trail",
-    status: "GitHub, X, Instagram, LinkedIn, and YouTube.",
-    detail:
-      "Public profiles, community photos, professional context, and video stay close.",
-    proof: "GitHub / X / Instagram / LinkedIn / YouTube",
-    primaryAction: {
-      id: "open-github",
-      label: "GitHub",
-      href: githubChannel.href,
-      external: true,
-      ariaLabel: "Open Joe Simo on GitHub in a new tab",
-      kind: "primary",
-    },
-    secondaryActions: [
-      {
-        id: "open-x",
-        label: "X",
-        href: xChannel.href,
-        external: true,
-        ariaLabel: "Open Joe Simo on X in a new tab",
-        kind: "secondary",
-      },
-      {
-        id: "open-instagram",
-        label: "Instagram",
-        href: instagramChannel.href,
-        external: true,
-        ariaLabel: "Open Joe Simo on Instagram in a new tab",
-        kind: "secondary",
-      },
-    ],
-    iconKey: "code",
-    accent: "ink",
-    sceneMode: "trail",
-    scene: {
-      code: "03",
-      eyebrow: "Community",
-      coordinate: "community",
-      tone: "trail",
-      scrollRange: [0.58, 0.78],
-    },
-    route: {
-      from: "joe",
-      tension: 0.36,
-      depth: 0.32,
-    },
-    sectionAnchor: "#community",
-    readActionLabel: "View Community",
-    map: {
-      desktopPoint: { x: 62, y: 74 },
-      mobilePoint: { x: 25, y: 50 },
-    },
-  },
-  {
-    id: "contact",
-    label: "Contact",
-    shortLabel: "contact",
-    kind: "contact",
-    status: "Public profiles are best.",
-    detail:
-      "Reach out through public profiles about support, systems, web projects, sim0, interface work, or a useful introduction.",
-    proof: "LinkedIn / X / GitHub",
-    primaryAction: {
-      id: "open-linkedin-contact",
-      label: "LinkedIn",
-      href: linkedinChannel.href,
-      external: true,
-      ariaLabel: "Open Joe Simo on LinkedIn in a new tab",
-      kind: "primary",
-    },
-    secondaryActions: [
-      {
-        id: "open-x-contact",
-        label: "X",
-        href: xChannel.href,
-        external: true,
-        ariaLabel: "Open Joe Simo on X in a new tab",
-        kind: "secondary",
-      },
-      sim0Link,
-    ],
-    iconKey: "arrowUpRight",
-    accent: "live",
-    sceneMode: "contact",
-    scene: {
-      code: "04",
-      eyebrow: "Contact",
-      coordinate: "public profiles",
-      tone: "contact",
-      scrollRange: [0.78, 1],
-    },
-    route: {
-      from: "joe",
-      tension: 0.54,
-      depth: 0.18,
-    },
-    sectionAnchor: "#contact",
-    readActionLabel: "Open Public Profiles",
-    map: {
-      desktopPoint: { x: 76, y: 78 },
-      mobilePoint: { x: 50, y: 84 },
-    },
-  },
-];
-
 export const navItems = [
   {
     label: "Work",
     href: "#work",
     iconKey: "appWindow",
-    recordId: "work",
   },
   {
     label: "Systems",
     href: "#systems",
     iconKey: "briefcase",
-    recordId: "method",
   },
   {
     label: "Credentials",
     href: "#credentials",
     iconKey: "bookOpen",
-    recordId: "method",
   },
   {
     label: "Community",
     href: "#community",
     iconKey: "camera",
-    recordId: "trail",
+  },
+  {
+    label: "Blog",
+    href: "#blog",
+    iconKey: "bookOpen",
   },
   {
     label: "Contact",
     href: "#contact",
     iconKey: "arrowUpRight",
-    recordId: "contact",
   },
 ] as const satisfies readonly {
   label: string;
   href: `#${string}`;
   iconKey: IconKey;
-  recordId: SiteNodeId;
 }[];
 
+export type NavItem = (typeof navItems)[number];
 export type NavHref = (typeof navItems)[number]["href"];
-
-function recordsForCanvas(ids: readonly SiteNodeId[]): SiteCanvasRecord[] {
-  return ids.map((id) => {
-    const record = siteRecords.find((candidate) => candidate.id === id);
-
-    if (!record) {
-      throw new Error(`Missing canvas record: ${id}`);
-    }
-
-    return {
-      id: record.id,
-      label: record.label,
-      shortLabel: record.shortLabel,
-      kind: record.kind,
-      status: record.status,
-      detail: record.detail,
-      proof: record.proof,
-      primaryAction: record.primaryAction,
-      secondaryActions: record.secondaryActions,
-      iconKey: record.iconKey,
-      accent: record.accent,
-      sceneMode: record.sceneMode,
-      scene: record.scene,
-      route: record.route,
-      sectionAnchor: record.sectionAnchor,
-      readActionLabel: record.readActionLabel,
-      media: record.media,
-      map: record.map,
-    };
-  });
-}
-
-export const desktopCanvasRecords = recordsForCanvas([
-  originNodeId,
-  ...routeNodeIds,
-]);
-export const mobileCanvasRecords = recordsForCanvas(routeNodeIds);
-export const mobileCanvasOriginRecord = recordsForCanvas([originNodeId])[0];

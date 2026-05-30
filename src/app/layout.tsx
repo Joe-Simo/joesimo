@@ -6,6 +6,7 @@ import { GeistSans } from "geist/font/sans";
 import { ThemeMeta } from "@/components/site/theme-meta";
 import { ThemeProvider } from "@/components/site/theme-provider";
 import {
+  isHomepageProject,
   joeProfile,
   projectCaseStudies,
   siteDescription,
@@ -90,7 +91,7 @@ const personJsonLd = {
   name: personName,
   url: siteUrl,
   description: siteDescription,
-  jobTitle: "Devsigner",
+  jobTitle: "Designer/developer",
   mainEntityOfPage: siteUrl,
   knowsLanguage: ["English", "Spanish"],
   address: {
@@ -119,31 +120,33 @@ const websiteJsonLd = {
   description: siteDescription,
 };
 
-const creativeWorkJsonLd = projectCaseStudies.map((project) => ({
-  "@context": "https://schema.org",
-  "@type": project.schemaType,
-  "@id": `${siteUrl}/#work-${project.slug}`,
-  name: project.title,
-  url: `${siteUrl}/#work-${project.slug}`,
-  description: project.summary,
-  applicationCategory: project.applicationCategory,
-  image: project.assets[0]?.media.src
-    ? `${siteUrl}${project.assets[0].media.src}`
-    : undefined,
-  author: {
-    "@id": `${siteUrl}/#person`,
-  },
-  creator: {
-    "@id": `${siteUrl}/#person`,
-  },
-}));
+const creativeWorkJsonLd = projectCaseStudies
+  .filter(isHomepageProject)
+  .map((project) => ({
+    "@context": "https://schema.org",
+    "@type": project.schemaType,
+    "@id": `${siteUrl}/#work-${project.slug}`,
+    name: project.title,
+    url: `${siteUrl}/#work-${project.slug}`,
+    description: project.summary,
+    applicationCategory: project.applicationCategory,
+    image: project.assets[0]?.media.src
+      ? `${siteUrl}${project.assets[0].media.src}`
+      : undefined,
+    author: {
+      "@id": `${siteUrl}/#person`,
+    },
+    creator: {
+      "@id": `${siteUrl}/#person`,
+    },
+  }));
 
 const jsonLd = [personJsonLd, websiteJsonLd, ...creativeWorkJsonLd];
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfbfb" },
-    { media: "(prefers-color-scheme: dark)", color: "#08090a" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 
@@ -157,11 +160,20 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      data-language="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${GeistSans.variable} ${GeistMono.variable} ${geistPixelSquare.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          nonce={nonce}
+          suppressHydrationWarning
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -169,13 +181,6 @@ export default async function RootLayout({
           disableTransitionOnChange
           nonce={nonce}
         >
-          <script
-            nonce={nonce}
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-            }}
-          />
           <ThemeMeta />
           {children}
         </ThemeProvider>

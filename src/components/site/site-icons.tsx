@@ -47,21 +47,6 @@ function LinkedInMark(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function YouTubeMark(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      width="24"
-      height="24"
-      focusable="false"
-      {...props}
-    >
-      <path d="M21.58 7.19a2.62 2.62 0 0 0-1.85-1.86C18.1 4.9 12 4.9 12 4.9s-6.1 0-7.73.43a2.62 2.62 0 0 0-1.85 1.86C2 8.84 2 12.28 2 12.28s0 3.44.42 5.09c.24.91.96 1.63 1.85 1.87 1.63.43 7.73.43 7.73.43s6.1 0 7.73-.43a2.62 2.62 0 0 0 1.85-1.87c.42-1.65.42-5.09.42-5.09s0-3.44-.42-5.09Zm-11.6 8.14V9.22l5.23 3.06-5.23 3.05Z" />
-    </svg>
-  );
-}
-
 export const siteIcons: Record<IconKey, SiteIconComponent> = {
   appWindow: AppWindow,
   arrowUpRight: ArrowUpRight,
@@ -74,7 +59,6 @@ export const siteIcons: Record<IconKey, SiteIconComponent> = {
   linkedin: LinkedInMark,
   mail: Mail,
   menu: Menu,
-  video: YouTubeMark,
   x: X,
 };
 

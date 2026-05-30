@@ -25,6 +25,8 @@ test.describe("Joe Simo mobile homepage navigation", () => {
 
     await expectNoHorizontalOverflow(page);
     await expectInteractiveTextFits(page);
+    await expect(page.locator(".joe-hero-metadata")).toHaveCount(0);
+    await expect(page.locator(".joe-hero-work")).toHaveCount(0);
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const startingScrollY = await page.evaluate(() => window.scrollY);
@@ -57,9 +59,19 @@ test.describe("Joe Simo mobile homepage navigation", () => {
     const workSection = await expectHomeDestinationSection(page, "work");
     await expect(workSection).toBeInViewport();
     await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
+    await expect(workSection.locator(".joe-work-thumb").first()).toBeVisible();
     await expect(
-      workSection.getByRole("heading", { name: "sim0" }),
+      workSection.getByRole("heading", { exact: true, name: "sim0" }),
     ).toBeVisible();
+    await expect(
+      workSection.getByRole("heading", { name: "Love Presentation" }),
+    ).toBeVisible();
+
+    const firstWorkTitleBox = await workSection
+      .getByRole("heading", { name: "Love Presentation" })
+      .boundingBox();
+
+    expect(firstWorkTitleBox?.width ?? 0).toBeGreaterThan(120);
     await expectNoHorizontalOverflow(page);
 
     await expectPageHealthy(page, problems);

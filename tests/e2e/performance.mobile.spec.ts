@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 import {
   collectConsoleProblems,
-  expectJoeSignalFieldReady,
   expectPageHealthy,
 } from "./helpers";
 import {
@@ -15,15 +14,36 @@ test.describe("mobile performance budgets", () => {
     page,
   }) => {
     const problems = collectConsoleProblems(page);
+    const mobileHeroEffectRequests: string[] = [];
 
     await installPerformanceObservers(page);
+    page.on("request", (request) => {
+      const url = request.url();
+
+      if (
+        url.includes("node_modules_three") ||
+        url.includes("/media/joe-simo-headshot.webp") ||
+        url.includes("%2Fmedia%2Fjoe-simo-headshot.webp")
+      ) {
+        mobileHeroEffectRequests.push(url);
+      }
+    });
     await page.goto("/");
     await expectPageHealthy(page, problems);
 
     const snapshot = await readPerformanceSnapshot(page);
 
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
-    await expectJoeSignalFieldReady(page);
+    await expect(page.locator(".joe-signal-field")).toHaveCount(0);
+    await expect(page.locator(".joe-identity-field")).toBeHidden();
+    await expect(page.locator(".joe-identity-field")).toHaveAttribute(
+      "data-hero-webgl",
+      "disabled",
+    );
+    await expect
+      .poll(() => page.locator(".joe-identity-field canvas").count())
+      .toBe(0);
+    expect(mobileHeroEffectRequests).toEqual([]);
     expect(snapshot.decodedScriptBytes).toBeLessThan(2_800_000);
     expect(snapshot.decodedImageBytes).toBeLessThan(6_500_000);
     expect(snapshot.cumulativeLayoutShift).toBeLessThan(0.02);

@@ -38,8 +38,8 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
-    await expect(page.getByRole("button", { name: /jump/i })).toHaveCount(0);
-    await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }), 10);
+    await tabUntilFocused(page, page.getByRole("button", { name: /jump/i }), 10);
+    await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }), 4);
     await tabUntilFocused(
       page,
       page.locator('.joe-hero a[href="#work"]').first(),
@@ -69,14 +69,20 @@ test.describe("desktop accessibility quality gates", () => {
     await expectPageHealthy(page, problems);
 
     const githubLink = page.locator("#contact").getByRole("link", { name: /GitHub/i });
+    const instagramLink = page
+      .locator("#contact")
+      .getByRole("link", { name: /Instagram/i });
     const linkedinLink = page
       .locator("#contact")
       .getByRole("link", { name: /LinkedIn/i });
 
     await expect(githubLink).toBeVisible();
+    await expect(instagramLink).toBeVisible();
     await expect(linkedinLink).toBeVisible();
     await githubLink.focus();
     await expect(githubLink).toBeFocused();
+    await instagramLink.focus();
+    await expect(instagramLink).toBeFocused();
     await linkedinLink.focus();
     await expect(linkedinLink).toBeFocused();
   });

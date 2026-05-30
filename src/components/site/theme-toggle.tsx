@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -14,12 +14,14 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LocalizedText } from "@/components/site/localized-text";
+import { useSiteLanguage } from "@/components/site/use-site-language";
 import { cn } from "@/lib/utils";
 
 const themeOptions = [
-  { value: "light", label: "Light", icon: SunIcon },
-  { value: "dark", label: "Dark", icon: MoonIcon },
-  { value: "system", label: "System", icon: MonitorIcon },
+  { value: "light", label: "Light", labelEs: "Claro", icon: SunIcon },
+  { value: "dark", label: "Dark", labelEs: "Oscuro", icon: MoonIcon },
+  { value: "system", label: "System", labelEs: "Sistema", icon: MonitorIcon },
 ] as const;
 
 type ThemeValue = (typeof themeOptions)[number]["value"];
@@ -37,8 +39,10 @@ function getThemeOption(value: ThemeValue) {
   );
 }
 
-function subscribeToHydration() {
-  return () => {};
+function subscribeToHydration(callback: () => void) {
+  const frame = window.requestAnimationFrame(callback);
+
+  return () => window.cancelAnimationFrame(frame);
 }
 
 function getHydratedSnapshot() {
@@ -51,8 +55,8 @@ function getServerSnapshot() {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const language = useSiteLanguage();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const wipeTimeoutRef = useRef<number | null>(null);
   const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(
     subscribeToHydration,
@@ -64,34 +68,8 @@ export function ThemeToggle() {
   const displayTheme = mounted ? currentTheme : fallbackTheme;
   const currentOption = getThemeOption(displayTheme);
   const CurrentIcon = currentOption.icon;
-
-  useEffect(() => {
-    return () => {
-      if (wipeTimeoutRef.current) {
-        window.clearTimeout(wipeTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  function beginThemeTransition() {
-    const root = document.documentElement;
-    const rect = triggerRef.current?.getBoundingClientRect();
-    const x = rect ? rect.left + rect.width / 2 : window.innerWidth - 44;
-    const y = rect ? rect.top + rect.height / 2 : 44;
-
-    if (wipeTimeoutRef.current) {
-      window.clearTimeout(wipeTimeoutRef.current);
-    }
-
-    root.style.setProperty("--theme-wipe-x", `${x}px`);
-    root.style.setProperty("--theme-wipe-y", `${y}px`);
-    root.dataset.themeTransition = "active";
-
-    wipeTimeoutRef.current = window.setTimeout(() => {
-      delete root.dataset.themeTransition;
-      wipeTimeoutRef.current = null;
-    }, 720);
-  }
+  const themeLabel =
+    language === "es" ? currentOption.labelEs : currentOption.label;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -103,13 +81,17 @@ export function ThemeToggle() {
             size="icon-lg"
             className="size-11"
             disabled={!mounted}
-            aria-label={`Theme: ${currentOption.label}`}
+            aria-label={
+              language === "es" ? `Tema: ${themeLabel}` : `Theme: ${themeLabel}`
+            }
             ref={triggerRef}
           />
         }
       >
         <CurrentIcon aria-hidden />
-        <span className="sr-only">Theme</span>
+        <span className="sr-only">
+          <LocalizedText en="Theme" es="Tema" />
+        </span>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -118,13 +100,14 @@ export function ThemeToggle() {
         className="min-w-36 border border-border"
       >
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Theme</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            <LocalizedText en="Theme" es="Tema" />
+          </DropdownMenuLabel>
           <DropdownMenuRadioGroup
             value={displayTheme}
             onValueChange={(value) => {
               if (isThemeValue(value)) {
                 if (value !== displayTheme) {
-                  beginThemeTransition();
                   setTheme(value);
                 }
                 setOpen(false);
@@ -145,7 +128,7 @@ export function ThemeToggle() {
                   )}
                 >
                   <Icon aria-hidden />
-                  {option.label}
+                  <LocalizedText en={option.label} es={option.labelEs} />
                 </DropdownMenuRadioItem>
               );
             })}

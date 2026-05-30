@@ -1,29 +1,26 @@
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 import {
   archiveArtifacts,
   communityArtifacts,
   communityHighlights,
   credentialGroups,
-  defaultActiveNodeId,
   educationRecords,
   getProjectCaseStudy,
   heroCopy,
   joeProfile,
   learningCredentials,
   navItems,
-  originNodeId,
-  productReportArtifacts,
-  profileFacts,
   projectCaseStudies,
   projectCaseStudiesPublic,
+  profileMedia,
   proudSystemsRoles,
-  publicTrailSections,
+  portfolioSections,
   publicSourceLabel,
-  routeNodeIds,
   sim0InvestigationCase,
   sim0ProofPoints,
-  siteRecords,
   socialChannels,
   storyboardForProject,
 } from "../../src/lib/site-data";
@@ -36,8 +33,9 @@ const visibleSlopTerms =
 const privatePathTerms = /\/Users\/|Downloads\//;
 const requiredWorkSlugs = [
   "sim0",
+  "love-presentation",
   "astrosimo",
-  "antonetas-garden",
+  "garden0",
   "chesslm",
   "next-flights",
   "grimgreen-channel-watch",
@@ -47,25 +45,21 @@ const requiredWorkSlugs = [
 ] as const;
 const requiredStepIds = ["preview", "runtime", "api", "ship", "changes"] as const;
 const requiredSocials = {
-  GitHub: {
-    handle: "@joe-simo",
-    href: "https://github.com/joe-simo",
+  X: {
+    handle: "@joesimo",
+    href: "https://x.com/joesimo",
   },
-  Instagram: {
-    handle: "@joesimo_",
-    href: "https://www.instagram.com/joesimo_/",
+  GitHub: {
+    handle: "@Joe-Simo",
+    href: "https://github.com/Joe-Simo",
   },
   LinkedIn: {
     handle: "josephsimo",
     href: "https://www.linkedin.com/in/josephsimo/",
   },
-  X: {
-    handle: "@joesimo",
-    href: "https://x.com/joesimo",
-  },
-  YouTube: {
-    handle: "@jos007",
-    href: "https://www.youtube.com/user/jos007",
+  Instagram: {
+    handle: "@joesimo_",
+    href: "https://www.instagram.com/joesimo_/",
   },
 } as const;
 
@@ -87,19 +81,16 @@ function collectStringValues(value: unknown): string[] {
 
 describe("Joe Simo site data", () => {
   test("keeps the canonical homepage Joe-first", () => {
-    expect(originNodeId).toBe("joe");
-    expect(defaultActiveNodeId).toBe("joe");
     expect(heroCopy.title).toBe("Joe Simo");
     expect(heroCopy.intro).toBe(
       "Designer/developer, FL.",
     );
     expect(heroCopy.detail).toBe(
-      "Web products and interfaces shaped by support, recovery, and systems work.",
+      "I build practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.",
     );
     expect(joeProfile.kicker).toContain("FL");
     expect(joeProfile.kicker).toContain("Designer-developer");
-    expect(joeProfile.routeLabel).toBe("Work / Systems / Credentials / Community.");
-    expect(routeNodeIds).not.toContain("joe");
+    expect(joeProfile.routeLabel).toBe("Work / Systems / Credentials / Community / Blog.");
 
     const publicHeroCopy = [
       heroCopy.title,
@@ -115,14 +106,13 @@ describe("Joe Simo site data", () => {
     expect(publicHeroCopy).not.toMatch(forbiddenPublicTerms);
   });
 
-  test("keeps the primary navigation mapped to real chapters and records", () => {
-    const recordIds = new Set(siteRecords.map((record) => record.id));
-
+  test("keeps the primary navigation mapped to current homepage sections", () => {
     expect(navItems.map((item) => item.href)).toEqual([
       "#work",
       "#systems",
       "#credentials",
       "#community",
+      "#blog",
       "#contact",
     ]);
     expect(navItems.map((item) => item.label)).toEqual([
@@ -130,15 +120,12 @@ describe("Joe Simo site data", () => {
       "Systems",
       "Credentials",
       "Community",
+      "Blog",
       "Contact",
     ]);
 
-    for (const item of navItems) {
-      expect(recordIds.has(item.recordId)).toBe(true);
-    }
-
     const currentHomepageAnchors = new Set(
-      publicTrailSections.map((section) => section.anchor),
+      portfolioSections.map((section) => section.anchor),
     );
     const retiredAnchors = new Set([
       "#method",
@@ -146,7 +133,6 @@ describe("Joe Simo site data", () => {
       "#trail",
       "#notes",
       "#photos",
-      "#blog",
       "#social",
     ]);
 
@@ -154,22 +140,19 @@ describe("Joe Simo site data", () => {
       expect(currentHomepageAnchors.has(item.href)).toBe(true);
       expect(retiredAnchors.has(item.href)).toBe(false);
     }
-
-    for (const record of siteRecords) {
-      expect(retiredAnchors.has(record.sectionAnchor)).toBe(false);
-
-      for (const action of [
-        record.primaryAction,
-        ...record.secondaryActions,
-      ]) {
-        if (action.href.startsWith("#")) {
-          expect(retiredAnchors.has(action.href)).toBe(false);
-        }
-      }
-    }
   });
 
   test("keeps public contact handles exact", () => {
+    expect(socialChannels.map((channel) => channel.label)).toEqual([
+      "X",
+      "GitHub",
+      "LinkedIn",
+      "Instagram",
+    ]);
+    expect(socialChannels.map((channel) => channel.label)).not.toContain(
+      "YouTube",
+    );
+
     for (const [label, expected] of Object.entries(requiredSocials)) {
       const channel = socialChannels.find(
         (candidate) => candidate.label === label,
@@ -189,29 +172,13 @@ describe("Joe Simo site data", () => {
     ).toBe(false);
   });
 
-  test("keeps personal curiosity claims modest", () => {
-    const stargazing = profileFacts.find((fact) => fact.label === "Stargazing");
-    const physicsNote = profileFacts.find(
-      (fact) => fact.label === "Independent physics note",
-    );
-
-    expect(stargazing?.value).toBe("Universe study");
-    expect(stargazing?.detail).toContain("stargazing");
-    expect(physicsNote?.value).toBe("Acceleration and electromagnetic constants");
-    expect(physicsNote?.detail).toContain("could not get endorsement");
-    expect(physicsNote?.detail).toContain("not a credential");
-    expect(physicsNote?.detail).not.toMatch(
-      /published|peer-reviewed|endorsed|accepted/i,
-    );
-  });
-
   test("keeps education and certification proof visible", () => {
-    expect(educationRecords).toHaveLength(5);
+    expect(educationRecords).toHaveLength(7);
     expect(educationRecords[0]?.school).toBe(
       "Pontificia Universidad Católica Madre y Maestra",
     );
     expect(educationRecords[0]?.focus).toBe(
-      "Bachelor of Science - BS, Telematics Engineering",
+      "Bachelor of Science, Telematics Engineering",
     );
     expect(educationRecords[0]?.period).toBe("2006 - 2014");
     expect(educationRecords.slice(1).map((record) => record.focus)).toEqual([
@@ -219,16 +186,46 @@ describe("Joe Simo site data", () => {
       "CCNA 2, IT",
       "CCNA 3, IT",
       "CCNA 4, IT",
+      "IT 1, IT",
+      "IT 2, IT",
+    ]);
+    expect(educationRecords.slice(1).map((record) => record.detail)).toEqual([
+      "Networking Basics",
+      "Routers and Routing Basics",
+      "Switching Basics and Intermediate Routing",
+      "WAN Technologies",
+      "Hardware and Software",
+      "Servers and Network OS",
     ]);
 
     const credentialLabels = learningCredentials.map(
       (credential) => credential.label,
     );
 
+    expect(credentialLabels).toContain("Next.js Pages Router Fundamentals");
+    expect(credentialLabels).toContain("Next.js App Router Fundamentals");
     expect(credentialLabels).toContain("Next.js SEO Fundamentals");
     expect(credentialLabels).toContain("React Foundations for Next.js");
+    expect(credentialLabels).toContain("PPC Fundamentals Exam");
+    expect(credentialLabels).toContain("Content Marketing Fundamentals Exam");
+    expect(credentialLabels).toContain("Technical SEO Exam");
+    expect(credentialLabels).toContain("Local SEO Exam");
+    expect(credentialLabels).toContain("Mobile SEO Exam");
+    expect(credentialLabels).toContain("Backlink Management Exam");
+    expect(credentialLabels).toContain("Keyword Research Exam");
+    expect(credentialLabels).toContain("SEO Fundamentals Exam");
+    expect(credentialLabels).toContain(
+      "Content Marketing and SEO Fundamentals Exam",
+    );
+    expect(credentialLabels).toContain("Role of Content Exam");
     expect(credentialLabels).toContain(
       "Part 107 Small Unmanned Aircraft Systems Initial",
+    );
+    expect(credentialLabels).toContain(
+      "Part 107 Small Unmanned Aircraft Systems Recurrent",
+    );
+    expect(credentialLabels).toContain(
+      "Commercial Drone Pilot: CFR Part 107 Explained",
     );
     expect(credentialLabels).toContain(
       "Cert Prep: FAA Part 107 Commercial Drone License",
@@ -241,6 +238,7 @@ describe("Joe Simo site data", () => {
     expect(credentialLabels).toContain("CompTIA Network+");
     expect(credentialLabels).toContain("Datto Technical Specialist I");
     expect(credentialLabels).toContain("Datto Technical Specialist II");
+    expect(credentialLabels).toContain("Barracuda SignNow");
     expect(credentialLabels).toContain(
       "Barracuda Web Security Service Certified Engineer",
     );
@@ -249,7 +247,7 @@ describe("Joe Simo site data", () => {
     );
     expect(credentialLabels).not.toContain("What is SignNow");
     expect(credentialGroups.map((group) => group.label)).toEqual([
-      "Web",
+      "Web / Vercel / SEO",
       "Systems & Networking",
       "Vendor Tools",
       "Drone Operations",
@@ -258,7 +256,7 @@ describe("Joe Simo site data", () => {
     for (const credential of learningCredentials) {
       expect(credential.href).toBe(requiredSocials.LinkedIn.href);
       expect(credential.sourceLabel).toMatch(
-        /LinkedIn (profile export|certification)|Local certificate/,
+        /LinkedIn (profile export|certification)|Local certificate|User-provided LinkedIn certification/,
       );
     }
   });
@@ -280,7 +278,7 @@ describe("Joe Simo site data", () => {
     }
   });
 
-  test("keeps React Miami and product report artifacts local and modest", () => {
+  test("keeps React Miami artifacts local and modest", () => {
     expect(communityArtifacts).toHaveLength(19);
     expect(communityArtifacts[0]?.title).toBe("Hallway frame");
     expect(communityHighlights).toHaveLength(6);
@@ -308,24 +306,17 @@ describe("Joe Simo site data", () => {
       expect(artifact.body).not.toMatch(/famous|celebrity/i);
     }
 
-    expect(productReportArtifacts).toHaveLength(1);
-    expect(productReportArtifacts[0]?.title).toBe("Vercel v0 billing report");
-    expect(productReportArtifacts[0]?.body).toContain("Reported");
-    expect(productReportArtifacts[0]?.outcome).toContain("identified the cause");
-    expect(JSON.stringify(productReportArtifacts)).not.toMatch(
-      /YC|Y Combinator|equity|fundraising|revenue|Response ID|API key|\/Users\/|Downloads\//i,
-    );
   });
 
   test("keeps the proud systems roles visible", () => {
     expect(proudSystemsRoles.map((role) => role.title)).toEqual([
       "System Administrator",
       "Disaster Recovery Engineer",
-      "System Administrator",
+      "IT Systems Administrator",
     ]);
     expect(proudSystemsRoles.map((role) => role.organization)).toEqual([
-      "Macromedica",
-      "Neveroff Technology",
+      "Macromedica Dominicana",
+      "Never Off Technology",
       "Brox Industries",
     ]);
   });
@@ -370,7 +361,7 @@ describe("Joe Simo site data", () => {
     ]);
   });
 
-  test("keeps work range named, ranked, and honest", () => {
+  test("keeps work range named, dated, and honest", () => {
     const workBySlug = new Map(
       projectCaseStudies.map((project) => [project.slug, project]),
     );
@@ -382,20 +373,45 @@ describe("Joe Simo site data", () => {
     expect(workBySlug.get("sim0")?.tier).toBe("featured");
     expect(workBySlug.get("sim0")?.proofMode).toBe("operated");
 
-    const homepageFeatures = projectCaseStudies
-      .filter((project) => project.homepageFeature)
-      .map((project) => ({
-        rank: project.homepageFeature?.rank,
-        slug: project.slug,
-      }))
-      .sort((a, b) => Number(a.rank) - Number(b.rank));
+    const projectsByStartDate = [...projectCaseStudies]
+      .sort((left, right) =>
+        right.started.sortKey.localeCompare(left.started.sortKey),
+      )
+      .map((project) => project.slug);
 
-    expect(homepageFeatures).toEqual([
-      { rank: 1, slug: "sim0" },
-      { rank: 2, slug: "astrosimo" },
-      { rank: 3, slug: "antonetas-garden" },
-      { rank: 4, slug: "chesslm" },
+    expect(projectsByStartDate).toEqual([
+      "love-presentation",
+      "garden0",
+      "signature-copier",
+      "astrosimo",
+      "chesslm",
+      "grimgreen-channel-watch",
+      "sim0",
+      "printer-scripts",
+      "royal-shell",
+      "next-flights",
     ]);
+
+    for (const project of projectCaseStudies) {
+      expect(project.started.label, project.slug).toMatch(
+        /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/,
+      );
+      expect(project.started.sortKey, project.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(project.started.sourceLabel, project.slug).not.toBe("");
+    }
+
+    for (const project of projectCaseStudies.filter(
+      (candidate) => candidate.homepageFeature,
+    )) {
+      const thumbnail = project.homepageFeature?.thumbnailMedia;
+
+      expect(thumbnail, project.slug).toBeDefined();
+      expect(thumbnail?.width, project.slug).toBe(960);
+      expect(thumbnail?.height, project.slug).toBe(540);
+      expect(thumbnail?.src, project.slug).toMatch(
+        /^\/media\/work\/.+-work-thumb\.webp$/,
+      );
+    }
   });
 
   test("builds complete storyboards for every work page", () => {
@@ -423,8 +439,10 @@ describe("Joe Simo site data", () => {
   });
 
   test("sanitizes public project records and source labels", () => {
+    const rawProjectText = JSON.stringify(projectCaseStudies);
     const publicText = JSON.stringify(projectCaseStudiesPublic);
 
+    expect(rawProjectText).not.toMatch(privatePathTerms);
     expect(publicText).not.toMatch(privatePathTerms);
 
     for (const project of projectCaseStudiesPublic) {
@@ -437,10 +455,40 @@ describe("Joe Simo site data", () => {
       }
     }
 
-    expect(publicSourceLabel("Downloads/final/sim0")).toBe("Interface still");
-    expect(publicSourceLabel("Downloads/Printers")).toBe(
+    expect(publicSourceLabel("project/sim0")).toBe("Interface still");
+    expect(publicSourceLabel("project/printer-scripts")).toBe(
       "Redacted process trace",
     );
+  });
+
+  test("points public media records at files that exist locally", () => {
+    const mediaSources = new Set<string>();
+
+    mediaSources.add(profileMedia.src);
+
+    for (const artifact of [...archiveArtifacts, ...communityArtifacts, ...communityHighlights]) {
+      mediaSources.add(artifact.media.src);
+    }
+
+    for (const project of projectCaseStudies) {
+      for (const asset of project.assets) {
+        mediaSources.add(asset.media.src);
+      }
+
+      const thumbnail = project.homepageFeature?.thumbnailMedia;
+
+      if (thumbnail?.src) {
+        mediaSources.add(thumbnail.src);
+      }
+    }
+
+    const missingMedia = [...mediaSources]
+      .filter((source) => source.startsWith("/media/"))
+      .filter((source) =>
+        !existsSync(join(process.cwd(), "public", source.replace(/^\//, ""))),
+      );
+
+    expect(missingMedia).toEqual([]);
   });
 
   test("keeps visible public strings free of banned prompt language", () => {
@@ -461,7 +509,7 @@ describe("Joe Simo site data", () => {
       joeProfile,
       learningCredentials,
       proudSystemsRoles,
-      publicTrailSections: publicTrailSections.map((section) => section.copy),
+      portfolioSections: portfolioSections.map((section) => section.copy),
       socialChannels,
       visibleProjects,
     });
@@ -470,6 +518,12 @@ describe("Joe Simo site data", () => {
       expect(value).not.toMatch(forbiddenPublicTerms);
       expect(value).not.toMatch(visibleSlopTerms);
       expect(value).not.toMatch(privatePathTerms);
+    }
+
+    for (const project of visibleProjects) {
+      expect(
+        [project.role, project.status, project.summary, project.title].join(" "),
+      ).not.toMatch(/\bartifact\b/i);
     }
   });
 

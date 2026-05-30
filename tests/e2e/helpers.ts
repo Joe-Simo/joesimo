@@ -2,18 +2,36 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export const completedRoute = "preview,runtime,api,ship,changes";
 export const workRoutes = [
-  { heading: "sim0", path: "/work/sim0" },
-  { heading: "Astrosimo", path: "/work/astrosimo" },
-  { heading: "Antoneta's Garden", path: "/work/antonetas-garden" },
-  { heading: "Next Flights", path: "/work/next-flights" },
-  { heading: "GrimmGreen Channel Watch", path: "/work/grimgreen-channel-watch" },
-  { heading: "Royal Shell", path: "/work/royal-shell" },
-  { heading: "Signature Copier", path: "/work/signature-copier" },
-  { heading: "Printer Scripts", path: "/work/printer-scripts" },
-  { heading: "ChessLM", path: "/work/chesslm" },
+  { heading: "sim0", path: "/work/sim0", visibleOnHome: true },
+  {
+    heading: "Love Presentation",
+    path: "/work/love-presentation",
+    visibleOnHome: true,
+  },
+  { heading: "Astrosimo", path: "/work/astrosimo", visibleOnHome: true },
+  { heading: "garden0", path: "/work/garden0", visibleOnHome: true },
+  { heading: "Next Flights", path: "/work/next-flights", visibleOnHome: true },
+  {
+    heading: "GrimmGreen Channel Watch",
+    path: "/work/grimgreen-channel-watch",
+    visibleOnHome: false,
+  },
+  { heading: "Royal Shell", path: "/work/royal-shell", visibleOnHome: false },
+  {
+    heading: "Signature Copier",
+    path: "/work/signature-copier",
+    visibleOnHome: false,
+  },
+  {
+    heading: "Printer Scripts",
+    path: "/work/printer-scripts",
+    visibleOnHome: false,
+  },
+  { heading: "ChessLM", path: "/work/chesslm", visibleOnHome: true },
 ] as const;
 
 type HomeDestination =
+  | "blog"
   | "community"
   | "contact"
   | "credentials"
@@ -21,6 +39,7 @@ type HomeDestination =
   | "work";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
+  blog: 'header a[href="#blog"], a[href="#blog"], a[href="/#blog"]',
   community:
     'header a[href="#community"], a[href="#community"], a[href="/#community"]',
   contact: 'header a[href="#contact"], a[href="#contact"], a[href="/#contact"]',
@@ -31,6 +50,7 @@ const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
 };
 
 const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
+  blog: "#blog",
   community: "#community",
   contact: "#contact",
   credentials: "#credentials",
@@ -39,6 +59,7 @@ const homeDestinationSectionSelectors: Record<HomeDestination, string> = {
 };
 
 const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
+  blog: /blog/i,
   community: /community/i,
   contact: /contact|message|x/i,
   credentials: /credentials/i,
@@ -167,53 +188,22 @@ export async function expectPageHealthy(
   expect(problems).toEqual([]);
 }
 
-export async function expectJoeSignalFieldReady(page: Page) {
-  const signalField = page.locator(".joe-signal-field").first();
-  const canvas = signalField.locator("canvas");
-
-  await expect(signalField).toBeVisible();
-  await expect
-    .poll(() => signalField.getAttribute("data-webgl-ready"), {
-      timeout: 15_000,
-    })
-    .toBe("true");
-  await expect
-    .poll(() => signalField.getAttribute("data-webgl-painted"), {
-      timeout: 15_000,
-    })
-    .toBe("true");
-  await expect(canvas).toBeVisible();
-
-  const canvasMetrics = await canvas.evaluate((element) => {
-    const canvasElement = element as HTMLCanvasElement;
-    const rect = canvasElement.getBoundingClientRect();
-
-    return {
-      clientHeight: Math.round(rect.height),
-      clientWidth: Math.round(rect.width),
-      height: canvasElement.height,
-      width: canvasElement.width,
-    };
-  });
-
-  expect(canvasMetrics.clientHeight).toBeGreaterThan(0);
-  expect(canvasMetrics.clientWidth).toBeGreaterThan(0);
-  expect(canvasMetrics.height).toBeGreaterThan(0);
-  expect(canvasMetrics.width).toBeGreaterThan(0);
-}
-
 export async function loadLazyImages(page: Page) {
   const scrollHeight = await page.evaluate(
     () => document.documentElement.scrollHeight,
   );
   const scrollStep = 700;
-  const previousScrollBehavior = await page.evaluate(() => {
+  const previousState = await page.evaluate(() => {
     const currentScrollBehavior =
       document.documentElement.style.scrollBehavior;
 
     document.documentElement.style.scrollBehavior = "auto";
 
-    return currentScrollBehavior;
+    return {
+      scrollBehavior: currentScrollBehavior,
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    };
   });
 
   try {
@@ -226,15 +216,39 @@ export async function loadLazyImages(page: Page) {
       await page.waitForTimeout(20);
     }
 
-    await page.evaluate(() => {
-      window.scrollTo({ behavior: "instant", left: 0, top: 0 });
-    });
+    await page.evaluate(({ scrollX, scrollY }) => {
+      window.scrollTo({ behavior: "instant", left: scrollX, top: scrollY });
+    }, previousState);
   } finally {
-    await page.evaluate((scrollBehavior) => {
+    await page.evaluate(({ scrollBehavior }) => {
       document.documentElement.style.scrollBehavior = scrollBehavior;
-    }, previousScrollBehavior);
+    }, previousState);
   }
   await page.waitForTimeout(120);
+}
+
+export async function loadImagesInLocator(page: Page, selector: string) {
+  await page.locator(selector).evaluateAll((elements) => {
+    elements.forEach((element) => {
+      element
+        .querySelectorAll<HTMLImageElement>("img[loading='lazy']")
+        .forEach((image) => {
+          image.loading = "eager";
+        });
+    });
+  });
+
+  await expect
+    .poll(async () =>
+      page.locator(`${selector} img`).evaluateAll((images) =>
+        images.every((image) => {
+          const img = image as HTMLImageElement;
+
+          return img.complete && img.naturalWidth > 0;
+        }),
+      ),
+    )
+    .toBe(true);
 }
 
 export async function expectRenderedImagesHealthy(page: Page) {
@@ -261,8 +275,13 @@ export async function expectRenderedImagesHealthy(page: Page) {
 }
 
 export async function expectProjectMediaFramesContained(page: Page) {
-  const overflowingFrames = await page
-    .locator(".simo-work-media, .joe-work-media, .joe-current-media")
+  const mediaFrames = page.locator(
+    ".joe-work-thumb, .joe-dialog-media, .joe-photo-frame",
+  );
+
+  await expect(mediaFrames.first()).toBeVisible();
+
+  const overflowingFrames = await mediaFrames
     .evaluateAll((frames) =>
       frames
         .map((frame) => {
