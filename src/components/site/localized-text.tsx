@@ -15,6 +15,7 @@ export function LocalizedText({ en, es }: { en: string; es: string }) {
 
 export const navLabelTranslations = {
   Blog: "Blog",
+  Certifications: "Certificaciones",
   Community: "Comunidad",
   Contact: "Contacto",
   Credentials: "Credenciales",

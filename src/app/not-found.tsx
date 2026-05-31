@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteIcon } from "@/components/site/site-icons";
 
 const notFoundCopy =
-  "The direct paths are home, work, systems, credentials, community, and contact.";
+  "The direct paths are home, work, systems, certifications, community, and contact.";
 
 const featuredLinks = [
   {
@@ -23,10 +23,10 @@ const featuredLinks = [
     status: "Practical systems background",
   },
   {
-    detail: "Grouped web, systems, vendor, and drone credentials.",
+    detail: "Certification issuers and training records.",
     href: "/#credentials",
     iconKey: "bookOpen" as const,
-    label: "Credentials",
+    label: "Certifications",
     status: "Training record",
   },
   {
@@ -88,7 +88,7 @@ export default function NotFound() {
               className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-4 text-sm font-medium outline-none transition hover:border-[color:var(--signal-accent)] focus-visible:ring-3 focus-visible:ring-ring/35"
             >
               <SiteIcon iconKey="bookOpen" aria-hidden />
-              Credentials
+              Certifications
             </Link>
           </div>
 

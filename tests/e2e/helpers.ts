@@ -62,7 +62,7 @@ const homeDestinationNamePatterns: Record<HomeDestination, RegExp> = {
   blog: /blog/i,
   community: /community/i,
   contact: /contact|message|x/i,
-  credentials: /credentials/i,
+  credentials: /certifications|credentials/i,
   systems: /systems/i,
   work: /work/i,
 };

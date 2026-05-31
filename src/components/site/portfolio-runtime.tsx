@@ -304,7 +304,7 @@ function useStructuralMotion() {
           },
         );
         gsap.fromTo(
-          ".joe-proof-group",
+          ".joe-certification-logo-card",
           { autoAlpha: 0.88, y: 8 },
           {
             autoAlpha: 1,
@@ -319,7 +319,7 @@ function useStructuralMotion() {
           },
         );
         gsap.fromTo(
-          ".joe-photo-sheet figure",
+          ".joe-photo-card",
           { autoAlpha: 0.88, y: 8 },
           {
             autoAlpha: 1,
@@ -327,7 +327,7 @@ function useStructuralMotion() {
             ease: "power3.out",
             scrollTrigger: {
               start: "top 84%",
-              trigger: ".joe-photo-sheet",
+              trigger: ".joe-photo-marquee",
             },
             stagger: 0.045,
             y: 0,
@@ -425,8 +425,8 @@ function usePointerPolish() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const selector = [
       ".joe-work-table article",
-      ".joe-photo-sheet figure",
-      ".joe-proof-group summary",
+      ".joe-photo-card",
+      ".joe-certification-logo-card summary",
       ".joe-blog-row",
     ].join(",");
     let activeSurface: HTMLElement | null = null;

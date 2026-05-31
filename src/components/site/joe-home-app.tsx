@@ -1,4 +1,11 @@
 import Image from "next/image";
+import {
+  siComptia,
+  siDatto,
+  siSemrush,
+  siVercel,
+  type SimpleIcon,
+} from "simple-icons";
 
 import { HashFocus } from "@/components/site/hash-focus";
 import {
@@ -12,12 +19,11 @@ import {
 import { HeroNameParticles } from "@/components/site/hero-name-particles";
 import { SiteIcon } from "@/components/site/site-icons";
 import {
-  credentialGroups,
-  educationRecords,
+  credentialIssuers,
   isHomepageProject,
   portfolioSections,
   type CommunityArtifact,
-  type CredentialGroup,
+  type CredentialIssuerLogo,
   type JoeProfile,
   type LearningCredential,
   type ProudRole,
@@ -81,14 +87,18 @@ function portfolioSection(id: PortfolioSection["id"]) {
 function SectionLabel({ section }: { section: PortfolioSection }) {
   return (
     <p className="joe-section-label">
-      <span>{section.code}</span>
       <T en={section.label} es={navLabelEs(section.label)} />
     </p>
   );
 }
 
-function credentialMap(credentials: readonly LearningCredential[]) {
-  return new Map(credentials.map((credential) => [credential.label, credential]));
+function credentialIssuerCredentials(
+  credentials: readonly LearningCredential[],
+  issuer: CredentialIssuerLogo,
+) {
+  return credentials.filter(
+    (credential) => issuer.issuerNames.includes(credential.issuer),
+  );
 }
 
 function socialChannel(
@@ -199,35 +209,160 @@ function credentialMetaEs(meta: string) {
     .replaceAll("Completed", "Completado");
 }
 
-function educationFocusEs(focus: string) {
-  const translations: Record<string, string> = {
-    "Bachelor of Science, Telematics Engineering":
-      "Licenciatura en Ingeniería Telemática",
-    "CCNA 1, IT": "CCNA 1, TI",
-    "CCNA 2, IT": "CCNA 2, TI",
-    "CCNA 3, IT": "CCNA 3, TI",
-    "CCNA 4, IT": "CCNA 4, TI",
-    "IT 1, IT": "TI 1, TI",
-    "IT 2, IT": "TI 2, TI",
-  };
-
-  return translations[focus] ?? focus;
+function credentialIssuerLabelEs(label: string) {
+  return label === "FAA Safety Team"
+    ? "FAA Safety Team"
+    : label === "LinkedIn Learning"
+      ? "LinkedIn Learning"
+      : label;
 }
 
-function educationDetailEs(detail: string) {
-  const translations: Record<string, string> = {
-    "Reference degree for developing and programming networks and applications that make the Information Society possible.":
-      "Carrera orientada al desarrollo y programación de redes y aplicaciones para la sociedad de la información.",
-    "Networking Basics": "Fundamentos de redes",
-    "Routers and Routing Basics": "Routers y fundamentos de enrutamiento",
-    "Switching Basics and Intermediate Routing":
-      "Fundamentos de switching y enrutamiento intermedio",
-    "WAN Technologies": "Tecnologías WAN",
-    "Hardware and Software": "Hardware y software",
-    "Servers and Network OS": "Servidores y sistemas operativos de red",
+function CredentialLogoMark({
+  label,
+  mark,
+}: {
+  label: string;
+  mark: CredentialIssuerLogo["mark"];
+}) {
+  const simpleIconByMark: Partial<
+    Record<CredentialIssuerLogo["mark"], SimpleIcon>
+  > = {
+    comptia: siComptia,
+    datto: siDatto,
+    semrush: siSemrush,
+    vercel: siVercel,
   };
+  const simpleIcon = simpleIconByMark[mark];
 
-  return translations[detail] ?? detail;
+  return (
+    <span aria-hidden="true" className="joe-certification-logo-lockup">
+      <svg
+        className="joe-certification-logo-mark"
+        data-mark={mark}
+        focusable="false"
+        viewBox="0 0 260 88"
+      >
+        {simpleIcon ? (
+          <>
+            <path
+              className="joe-certification-logo-icon"
+              d={simpleIcon.path}
+              transform="translate(24 26) scale(1.7)"
+            />
+            <text className="joe-certification-logo-word" x="76" y="55">
+              {label}
+            </text>
+          </>
+        ) : (
+          <FallbackCertificationLogo label={label} mark={mark} />
+        )}
+      </svg>
+    </span>
+  );
+}
+
+function FallbackCertificationLogo({
+  label,
+  mark,
+}: {
+  label: string;
+  mark: CredentialIssuerLogo["mark"];
+}) {
+  if (mark === "microsoft") {
+    return (
+      <>
+        <g className="joe-certification-logo-symbol">
+          <rect height="17" width="17" x="24" y="27" />
+          <rect height="17" width="17" x="45" y="27" />
+          <rect height="17" width="17" x="24" y="48" />
+          <rect height="17" width="17" x="45" y="48" />
+        </g>
+        <text className="joe-certification-logo-word" x="76" y="55">
+          Microsoft
+        </text>
+      </>
+    );
+  }
+
+  if (mark === "linkedin") {
+    return (
+      <>
+        <rect
+          className="joe-certification-logo-symbol"
+          height="38"
+          rx="5"
+          width="38"
+          x="24"
+          y="25"
+        />
+        <text className="joe-certification-logo-inverse" x="35" y="52">
+          in
+        </text>
+        <text className="joe-certification-logo-word" x="76" y="47">
+          LinkedIn
+        </text>
+        <text className="joe-certification-logo-subword" x="78" y="65">
+          Learning
+        </text>
+      </>
+    );
+  }
+
+  if (mark === "faa") {
+    return (
+      <>
+        <text
+          className="joe-certification-logo-word joe-certification-logo-word-large"
+          x="24"
+          y="57"
+        >
+          FAA
+        </text>
+        <text className="joe-certification-logo-subword" x="92" y="41">
+          Safety
+        </text>
+        <text className="joe-certification-logo-subword" x="92" y="62">
+          Team
+        </text>
+      </>
+    );
+  }
+
+  if (mark === "unitrends") {
+    return (
+      <>
+        <g className="joe-certification-logo-symbol">
+          <rect height="8" width="8" x="25" y="39" />
+          <rect height="8" width="8" x="39" y="31" />
+          <rect height="8" width="8" x="39" y="47" />
+          <rect height="8" width="8" x="53" y="39" />
+        </g>
+        <text className="joe-certification-logo-word" x="76" y="55">
+          Unitrends
+        </text>
+      </>
+    );
+  }
+
+  if (mark === "barracuda") {
+    return (
+      <>
+        <path
+          className="joe-certification-logo-symbol"
+          d="M24 53h25c10 0 17-6 17-15 0-8-7-14-17-14H24v10h23c3 0 5 2 5 5s-2 5-5 5H24Z"
+        />
+        <text className="joe-certification-logo-word" x="76" y="55">
+          Barracuda
+        </text>
+      </>
+    );
+  }
+
+  return (
+    <text className="joe-certification-logo-word" textAnchor="middle" x="130" y="55">
+      {label}
+    </text>
+  );
 }
 
 function roleTitleEs(title: string) {
@@ -436,13 +571,21 @@ function SystemsSection({ roles }: { roles: readonly ProudRole[] }) {
 
 function CredentialsSection({
   credentials,
-  groups,
 }: {
   credentials: readonly LearningCredential[];
-  groups: readonly CredentialGroup[];
 }) {
   const section = portfolioSection("credentials");
-  const byLabel = credentialMap(credentials);
+  const issuerGroups = credentialIssuers
+    .map((issuer) => ({
+      issuer,
+      credentials: credentialIssuerCredentials(credentials, issuer),
+    }))
+    .filter((item) => item.credentials.length > 0);
+  const desktopColumnCount = 5;
+  const emptyDesktopCells =
+    (desktopColumnCount - (issuerGroups.length % desktopColumnCount)) %
+    desktopColumnCount;
+
   return (
     <section
       aria-labelledby="credentials-title"
@@ -455,131 +598,34 @@ function CredentialsSection({
         <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="credentials-title" tabIndex={-1}>
-            <T en="Credentials" es="Credenciales" />
+            <T en="Certifications" es="Certificaciones" />
           </h2>
-          <p>
-            <T
-              en={section.copy.detail}
-              es="Educación y certificaciones agrupadas por uso."
-            />
-          </p>
         </div>
-        <details className="joe-proof-group joe-education-list">
-          <summary>
-            <span>
-              <T en="Education" es="Educación" />
-            </span>
-            <div>
-              <h3>
-                <T en="Education" es="Educación" />
-              </h3>
-              <p>
-                <T
-                  en="Degree and Cisco Networking Academy courses."
-                  es="Título universitario y cursos de Cisco Networking Academy."
-                />
-              </p>
-            </div>
-            <small>
-              {educationRecords.length} <T en="records" es="registros" />
-            </small>
-          </summary>
-          <div className="joe-proof-group-body">
-            {educationRecords.map((education, index) => (
-              <article
-                className="joe-education-row"
-                key={`${education.school}-${education.focus}`}
-              >
-              <span>
-                {index === 0 ? (
-                  <T en="Education" es="Educación" />
-                ) : (
-                  <T en="Course" es="Curso" />
-                )}
-              </span>
-              <div>
-                <h3>
-                  <T
-                    en={education.focus}
-                    es={educationFocusEs(education.focus)}
-                  />
-                </h3>
-                <p>
-                  {education.school}
-                  {education.detail ? (
-                    <>
-                      {" / "}
-                      <T
-                        en={education.detail}
-                        es={educationDetailEs(education.detail)}
-                      />
-                    </>
-                  ) : null}
-                </p>
-              </div>
-              <small>{education.period}</small>
-              </article>
-            ))}
-          </div>
-        </details>
-        <div className="joe-credential-list">
-          {groups.map((group) => (
-            <details className="joe-proof-group" key={group.id}>
+        <div
+          aria-label="Certification issuers"
+          className="joe-certification-wall"
+        >
+          {issuerGroups.map(({ credentials: issuerCredentials, issuer }) => (
+            <details className="joe-certification-logo-card" key={issuer.id}>
               <summary>
-                <span>{String(group.credentialLabels.length).padStart(2, "0")}</span>
-                <div>
-                  <h3>
-                    <T
-                      en={group.label}
-                      es={
-                        group.id === "web"
-                          ? "Web, Vercel y SEO"
-                          : group.id === "systems-networking"
-                            ? "Sistemas y redes"
-                            : group.id === "vendor-tools"
-                              ? "Herramientas de proveedor"
-                              : "Operaciones con drones"
-                      }
-                    />
-                  </h3>
-                  <p>
-                    <T
-                      en={group.detail}
-                      es={
-                        group.id === "web"
-                          ? "Registros de formación web, Vercel y SEO."
-                          : group.id === "systems-networking"
-                            ? "Fundamentos de redes, hardware y sistemas."
-                            : group.id === "vendor-tools"
-                              ? "Formación en respaldo, recuperación y seguridad."
-                              : "Cursos FAA de drones completados en 2020."
-                      }
-                    />
-                  </p>
-                </div>
-                <small>
-                  {group.credentialLabels.length}{" "}
-                  <T en="credentials" es="credenciales" />
-                </small>
+                <CredentialLogoMark label={issuer.label} mark={issuer.mark} />
+                <span className="sr-only">
+                  <T
+                    en={`${issuer.label} credentials`}
+                    es={`${credentialIssuerLabelEs(issuer.label)} credenciales`}
+                  />
+                </span>
               </summary>
-              <div className="joe-proof-group-body">
+              <div className="joe-certification-logo-body">
                 <ul>
-                  {group.credentialLabels.map((label) => {
-                    const credential = byLabel.get(label);
-
-                    if (!credential) {
-                      return null;
-                    }
-
+                  {issuerCredentials.map((credential) => {
                     const credentialMeta = [
-                      credential.issuer,
                       credential.issued,
                       credential.period,
                     ]
                       .filter(Boolean)
                       .join(" / ");
                     const credentialMetaSpanish = [
-                      credential.issuer,
                       credential.issued
                         ? credentialMetaEs(credential.issued)
                         : undefined,
@@ -591,17 +637,26 @@ function CredentialsSection({
                       .join(" / ");
 
                     return (
-                      <li key={label}>
-                        <strong>{label}</strong>
-                        <span>
-                          <T en={credentialMeta} es={credentialMetaSpanish} />
-                        </span>
+                      <li key={credential.label}>
+                        <strong>{credential.label}</strong>
+                        {credentialMeta ? (
+                          <span>
+                            <T en={credentialMeta} es={credentialMetaSpanish} />
+                          </span>
+                        ) : null}
                       </li>
                     );
                   })}
                 </ul>
               </div>
             </details>
+          ))}
+          {Array.from({ length: emptyDesktopCells }, (_, index) => (
+            <span
+              aria-hidden="true"
+              className="joe-certification-logo-empty-cell"
+              key={`certification-empty-${index}`}
+            />
           ))}
         </div>
       </div>
@@ -614,8 +669,46 @@ function CommunitySection({
 }: {
   moments: readonly CommunityArtifact[];
 }) {
-  const section = portfolioSection("community");
-  const visibleMoments = moments.slice(0, 3);
+  const visibleMoments = moments.slice(0, 6);
+
+  const renderMoment = (
+    moment: CommunityArtifact,
+    index: number,
+    copyIndex: number,
+  ) => {
+    const isDuplicate = copyIndex > 0;
+    const isFeatured = moment.title === "ThePrimeagen";
+
+    return (
+      <figure
+        aria-hidden={isDuplicate || undefined}
+        className="joe-photo-card"
+        data-featured={isFeatured}
+        key={`${copyIndex}-${moment.code}-${moment.media.src}`}
+        role={isDuplicate ? undefined : "listitem"}
+      >
+        <span className="joe-photo-frame">
+          <Image
+            alt={isDuplicate ? "" : moment.media.alt}
+            className="joe-cover-image"
+            fill
+            sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
+            src={moment.media.src}
+          />
+        </span>
+        <figcaption>
+          {isFeatured ? (
+            <T
+              en="With ThePrimeagen at React Miami 2026."
+              es="Con ThePrimeagen en React Miami 2026."
+            />
+          ) : (
+            <T en={moment.title} es={communityTitleEs(moment.title)} />
+          )}
+        </figcaption>
+      </figure>
+    );
+  };
 
   return (
     <section
@@ -625,61 +718,31 @@ function CommunitySection({
       data-section-trace="product"
       id="community"
     >
+      <h2 className="sr-only" id="community-title" tabIndex={-1}>
+        <T en="Community" es="Comunidad" />
+      </h2>
       <div className="site-shell">
-        <div className="joe-section-head" data-joe-reveal>
-          <SectionLabel section={section} />
-          <h2 id="community-title" tabIndex={-1}>
-            <T en="Community" es="Comunidad" />
-          </h2>
-          <p>
-            <T
-              en={section.copy.detail}
-              es="Fotos de React Miami 2026."
-            />
-          </p>
-        </div>
         <div
-          aria-label="React Miami contact sheet"
-          className="joe-photo-sheet"
-          role="list"
+          aria-label="React Miami photo rail"
+          className="joe-photo-marquee"
+          role="region"
           tabIndex={0}
         >
-          {visibleMoments.map((moment, index) => (
-            <figure
-              data-featured={moment.title === "ThePrimeagen"}
-              key={`${moment.code}-${moment.media.src}`}
-              role="listitem"
+          <div className="joe-photo-marquee-track">
+            <div className="joe-photo-marquee-copy joe-photo-sheet" role="list">
+              {visibleMoments.map((moment, index) =>
+                renderMoment(moment, index, 0),
+              )}
+            </div>
+            <div
+              aria-hidden="true"
+              className="joe-photo-marquee-copy joe-photo-sheet"
             >
-              <span className="joe-photo-frame">
-                <Image
-                  alt={moment.media.alt}
-                  className="joe-cover-image"
-                  fetchPriority={index === 0 ? "high" : undefined}
-                  fill
-                  loading={index === 0 ? "eager" : undefined}
-                  sizes={
-                    moment.title === "ThePrimeagen"
-                      ? "(max-width: 760px) 82vw, 30vw"
-                      : "(max-width: 760px) 70vw, 18vw"
-                  }
-                  src={moment.media.src}
-                />
-              </span>
-              <figcaption>
-                <span className="joe-photo-code">{moment.code}</span>
-                {moment.title === "ThePrimeagen"
-                  ? (
-                    <T
-                      en="With ThePrimeagen at React Miami 2026."
-                      es="Con ThePrimeagen en React Miami 2026."
-                    />
-                  )
-                  : (
-                    <T en={moment.title} es={communityTitleEs(moment.title)} />
-                  )}
-              </figcaption>
-            </figure>
-          ))}
+              {visibleMoments.map((moment, index) =>
+                renderMoment(moment, index, 1),
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -805,10 +868,7 @@ export function JoeHomeApp(props: JoeHomeAppProps) {
       />
       <WorkSection projects={featuredProjects} />
       <SystemsSection roles={props.proudRoles} />
-      <CredentialsSection
-        credentials={props.learningCredentials}
-        groups={credentialGroups}
-      />
+      <CredentialsSection credentials={props.learningCredentials} />
       <CommunitySection moments={props.communityHighlights} />
       <BlogSection socialChannels={props.socialChannels} />
       <ContactSection socialChannels={props.socialChannels} />

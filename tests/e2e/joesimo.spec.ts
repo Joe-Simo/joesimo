@@ -154,30 +154,65 @@ test.describe("Joe Simo personal site", () => {
     await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "credentials");
     await expect(
-      page.getByRole("heading", { exact: true, name: "Credentials" }),
+      page.getByRole("heading", { exact: true, name: "Certifications" }),
     ).toBeVisible();
-    await expect(page.getByText("Web / Vercel / SEO", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Web / Vercel / SEO", { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByText("Systems & Networking", { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByText("Vendor Tools", { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByText("Drone Operations", { exact: true }),
+    ).toHaveCount(0);
     const credentialSection = page.locator("#credentials");
-    const educationGroup = credentialSection.locator(".joe-education-list");
-    const credentialGroups = credentialSection.locator(
-      ".joe-credential-list .joe-proof-group",
+    const certificationCards = credentialSection.locator(
+      ".joe-certification-logo-card",
     );
 
-    await credentialGroups.nth(0).locator("summary").click();
-    await expect(page.getByText("Next.js App Router Fundamentals")).toBeVisible();
+    await expect(credentialSection.locator(".joe-education-list")).toHaveCount(
+      0,
+    );
+    await expect(credentialSection.locator(".joe-section-head")).toHaveCount(1);
+    await expect(certificationCards).toHaveCount(9);
+    await expect(
+      credentialSection.locator(".joe-certification-logo-mark"),
+    ).toHaveCount(9);
+    await expect(
+      credentialSection
+        .locator(".joe-certification-logo-card")
+        .filter({ hasText: "Vercel" }),
+    ).toBeVisible();
+    await expect(
+      credentialSection
+        .locator(".joe-certification-logo-card")
+        .filter({ hasText: "Semrush" }),
+    ).toBeVisible();
+
+    await credentialSection
+      .locator(".joe-certification-logo-card")
+      .filter({ hasText: "Vercel" })
+      .locator("summary")
+      .click();
+    await expect(
+      page.getByText("Next.js App Router Fundamentals"),
+    ).toBeVisible();
+    await credentialSection
+      .locator(".joe-certification-logo-card")
+      .filter({ hasText: "Semrush" })
+      .locator("summary")
+      .click();
     await expect(page.getByText("PPC Fundamentals Exam")).toBeVisible();
     await expect(page.getByText("Role of Content Exam")).toBeVisible();
-    await expect(page.getByText("Systems & Networking")).toBeVisible();
 
-    await educationGroup.locator("summary").click();
-    await expect(page.getByText("CCNA 1, IT")).toBeVisible();
-    await expect(page.getByText("CCNA 4, IT")).toBeVisible();
-    await expect(page.getByText("IT 1, IT")).toBeVisible();
-    await expect(page.getByText("IT 2, IT")).toBeVisible();
-    await expect(page.getByText("Vendor Tools", { exact: true })).toBeVisible();
-    await expect(page.getByText("Drone Operations", { exact: true })).toBeVisible();
-
-    await credentialGroups.nth(3).locator("summary").click();
+    await credentialSection
+      .locator(".joe-certification-logo-card")
+      .filter({ hasText: "FAA Safety Team" })
+      .locator("summary")
+      .click();
     await expect(
       page.getByText("Part 107 Small Unmanned Aircraft Systems Recurrent"),
     ).toBeVisible();
@@ -240,12 +275,21 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/#community", { waitUntil: "domcontentloaded" });
     await expectHomeDestinationSection(page, "community");
+    await expect(page.locator("#community-title")).toContainText("Community");
+    await expect(page.locator("#community .joe-section-head")).toHaveCount(0);
+    await expect(page.locator("#community .joe-photo-marquee")).toBeVisible();
+    await expect(page.locator("#community .joe-photo-card")).toHaveCount(12);
     await expect(
-      page.getByRole("heading", {
-        name: "Community",
-      }),
+      page.locator('#community .joe-photo-marquee-copy[aria-hidden="true"]'),
+    ).toHaveCount(1);
+    await expect(
+      page.locator("#community .joe-photo-marquee-track"),
+    ).toHaveCSS("animation-name", "joe-photo-marquee-right");
+    await expect(
+      page
+        .locator('#community .joe-photo-marquee-copy[role="list"]')
+        .getByText("With ThePrimeagen at React Miami 2026."),
     ).toBeVisible();
-    await expect(page.getByText("With ThePrimeagen at React Miami 2026.")).toBeVisible();
     await expect(
       page.locator("#community").getByRole("img", {
         name: "Joe Simo with ThePrimeagen at React Miami 2026",
@@ -345,7 +389,7 @@ test.describe("Joe Simo personal site", () => {
     await expect(page.getByText("Diseñador/desarrollador, FL.")).toBeVisible();
     await expect(page.getByRole("link", { name: "Trabajo" }).first()).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Credenciales" }),
+      page.getByRole("heading", { name: "Certificaciones" }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: /language:|idioma:/i }).click();

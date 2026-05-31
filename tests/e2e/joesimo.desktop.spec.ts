@@ -42,8 +42,13 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       .locator(".joe-photo-frame img")
       .first();
 
-    await expect(firstCommunityImage).toHaveAttribute("loading", "eager");
-    await expect(firstCommunityImage).toHaveAttribute("fetchpriority", "high");
+    await expect(firstCommunityImage).toHaveAttribute("loading", "lazy");
+    await expect(firstCommunityImage).not.toHaveAttribute("fetchpriority", "high");
+    await expect(
+      page.locator(
+        'link[rel="preload"][as="image"][imagesrcset*="media%2Fcommunity"]',
+      ),
+    ).toHaveCount(0);
 
     await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
 
@@ -52,6 +57,9 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       "credentials",
     );
     await expect(credentialsSection).toBeInViewport();
+    await expect(credentialsSection.locator(".joe-certification-logo-card")).toHaveCount(9);
+    await expect(credentialsSection.locator(".joe-certification-logo-empty-cell")).toHaveCount(1);
+    await expect(credentialsSection.locator(".joe-certification-logo-mark")).toHaveCount(9);
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const workLink = await expectHomeDestinationLink(page, "work");

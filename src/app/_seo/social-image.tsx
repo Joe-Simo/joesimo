@@ -35,7 +35,7 @@ export async function createSocialImage(label: string) {
   const facts = [
     "Joe Simo",
     "FL",
-    "work / systems / credentials / community",
+    "work / systems / certifications / community",
   ];
 
   return new ImageResponse(
@@ -156,7 +156,7 @@ export async function createSocialImage(label: string) {
           {[
             ["Work", primaryWork?.title ?? "Selected work"],
             ["Systems", "Macromedica Dominicana / Never Off / Brox"],
-            ["Credentials", "web / systems / drone"],
+            ["Certifications", "web / systems / drone"],
             ["Contact", "X / GitHub / LinkedIn / Instagram"],
           ].map(([title, detail]) => (
             <div

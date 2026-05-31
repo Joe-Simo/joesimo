@@ -116,12 +116,19 @@ test.describe("responsive, theme, and fallback gates", () => {
     await blockHeavyMedia(page);
     await page.goto("/#community", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#community")).toBeInViewport();
-    await expect(page.getByRole("heading", { name: "Community" })).toBeVisible();
+    await expect(page.locator("#community-title")).toContainText("Community");
+    await expect(page.locator("#community .joe-section-head")).toHaveCount(0);
+    await expect(page.locator("#community .joe-photo-marquee")).toBeVisible();
+    await expect(
+      page.locator("#community .joe-photo-marquee-track"),
+    ).toHaveCSS("animation-name", "joe-photo-marquee-right");
     await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#credentials")).toBeInViewport();
     await expect(
-      page.getByRole("heading", { exact: true, name: "Credentials" }),
+      page.getByRole("heading", { exact: true, name: "Certifications" }),
     ).toBeVisible();
+    await expect(page.locator("#credentials .joe-certification-logo-card")).toHaveCount(9);
+    await expect(page.locator("#credentials .joe-certification-logo-mark")).toHaveCount(9);
     await expectPageHealthy(page, problems);
   });
 
@@ -170,6 +177,12 @@ test.describe("responsive, theme, and fallback gates", () => {
       "false",
     );
     await expect(page.locator(".joe-name-particles-canvas")).toBeHidden();
+    await expect(
+      page.locator("#community .joe-photo-marquee-track"),
+    ).toHaveCSS("animation-name", "none");
+    await expect(
+      page.locator('#community .joe-photo-marquee-copy[aria-hidden="true"]'),
+    ).toBeHidden();
     await expect
       .poll(() =>
         page.evaluate(

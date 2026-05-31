@@ -91,8 +91,33 @@ export type LearningCredential = {
   href?: string;
 };
 
+export type CredentialGroupId =
+  | "web"
+  | "systems-networking"
+  | "vendor-tools"
+  | "drone-operations";
+
+export type CredentialIssuerMark =
+  | "barracuda"
+  | "comptia"
+  | "datto"
+  | "faa"
+  | "linkedin"
+  | "microsoft"
+  | "semrush"
+  | "unitrends"
+  | "vercel";
+
+export type CredentialIssuerLogo = {
+  id: string;
+  label: string;
+  mark: CredentialIssuerMark;
+  issuerNames: readonly string[];
+  groupIds: readonly CredentialGroupId[];
+};
+
 export type CredentialGroup = {
-  id: "web" | "systems-networking" | "vendor-tools" | "drone-operations";
+  id: CredentialGroupId;
   label: string;
   detail: string;
   credentialLabels: readonly string[];
@@ -458,7 +483,7 @@ export const joeProfile: JoeProfile = {
   kicker: "FL / Designer-developer / systems background",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
-  routeLabel: "Work / Systems / Credentials / Community / Blog.",
+  routeLabel: "Work / Systems / Certifications / Community / Blog.",
   receiptTitle: "Support -> Recovery -> Interfaces",
   receiptDetail:
     "Practical work shaped by support rooms, disaster recovery, and product interfaces.",
@@ -500,11 +525,11 @@ export const portfolioSections = [
   {
     id: "credentials",
     code: "03",
-    label: "Credentials",
+    label: "Certifications",
     anchor: "#credentials",
     copy: {
-      title: "Credentials",
-      detail: "Training, certifications, and education grouped by use.",
+      title: "Certifications",
+      detail: "Certification issuers.",
     },
   },
   {
@@ -1166,6 +1191,72 @@ export const learningCredentials: LearningCredential[] = [
     issuer: "Datto, Inc.",
     sourceLabel: "LinkedIn certification",
     href: linkedinChannel.href,
+  },
+];
+
+export const credentialIssuers: CredentialIssuerLogo[] = [
+  {
+    id: "vercel",
+    label: "Vercel",
+    mark: "vercel",
+    issuerNames: ["Vercel"],
+    groupIds: ["web"],
+  },
+  {
+    id: "semrush",
+    label: "Semrush",
+    mark: "semrush",
+    issuerNames: ["Semrush"],
+    groupIds: ["web"],
+  },
+  {
+    id: "microsoft",
+    label: "Microsoft",
+    mark: "microsoft",
+    issuerNames: ["Microsoft"],
+    groupIds: ["systems-networking"],
+  },
+  {
+    id: "comptia",
+    label: "CompTIA",
+    mark: "comptia",
+    issuerNames: ["CompTIA"],
+    groupIds: ["systems-networking"],
+  },
+  {
+    id: "unitrends",
+    label: "Unitrends",
+    mark: "unitrends",
+    issuerNames: ["Unitrends"],
+    groupIds: ["vendor-tools"],
+  },
+  {
+    id: "datto",
+    label: "Datto",
+    mark: "datto",
+    issuerNames: ["Datto, Inc."],
+    groupIds: ["vendor-tools"],
+  },
+  {
+    id: "barracuda",
+    label: "Barracuda",
+    mark: "barracuda",
+    issuerNames: ["Barracuda"],
+    groupIds: ["vendor-tools"],
+  },
+  {
+    id: "faa",
+    label: "FAA Safety Team",
+    mark: "faa",
+    issuerNames: ["FAA Safety Team Aviation Learning Center"],
+    groupIds: ["drone-operations"],
+  },
+  {
+    id: "linkedin-learning",
+    label: "LinkedIn Learning",
+    mark: "linkedin",
+    issuerNames: ["LinkedIn"],
+    groupIds: ["drone-operations"],
   },
 ];
 
@@ -3063,7 +3154,7 @@ export const navItems = [
     iconKey: "briefcase",
   },
   {
-    label: "Credentials",
+    label: "Certifications",
     href: "#credentials",
     iconKey: "bookOpen",
   },

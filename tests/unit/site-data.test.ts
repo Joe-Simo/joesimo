@@ -7,6 +7,7 @@ import {
   communityArtifacts,
   communityHighlights,
   credentialGroups,
+  credentialIssuers,
   educationRecords,
   getProjectCaseStudy,
   heroCopy,
@@ -90,7 +91,7 @@ describe("Joe Simo site data", () => {
     );
     expect(joeProfile.kicker).toContain("FL");
     expect(joeProfile.kicker).toContain("Designer-developer");
-    expect(joeProfile.routeLabel).toBe("Work / Systems / Credentials / Community / Blog.");
+    expect(joeProfile.routeLabel).toBe("Work / Systems / Certifications / Community / Blog.");
 
     const publicHeroCopy = [
       heroCopy.title,
@@ -118,7 +119,7 @@ describe("Joe Simo site data", () => {
     expect(navItems.map((item) => item.label)).toEqual([
       "Work",
       "Systems",
-      "Credentials",
+      "Certifications",
       "Community",
       "Blog",
       "Contact",
@@ -252,6 +253,25 @@ describe("Joe Simo site data", () => {
       "Vendor Tools",
       "Drone Operations",
     ]);
+    expect(credentialIssuers.map((issuer) => issuer.label)).toEqual([
+      "Vercel",
+      "Semrush",
+      "Microsoft",
+      "CompTIA",
+      "Unitrends",
+      "Datto",
+      "Barracuda",
+      "FAA Safety Team",
+      "LinkedIn Learning",
+    ]);
+
+    for (const issuer of credentialIssuers) {
+      const matchingCredentials = learningCredentials.filter((credential) =>
+        issuer.issuerNames.includes(credential.issuer),
+      );
+
+      expect(matchingCredentials.length).toBeGreaterThan(0);
+    }
 
     for (const credential of learningCredentials) {
       expect(credential.href).toBe(requiredSocials.LinkedIn.href);
