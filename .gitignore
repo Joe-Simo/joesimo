@@ -15,7 +15,9 @@
 /playwright-report/
 /test-results/
 /output/
+.playwright-mcp/
 joesimo-review-*.png
+joesimo-credentials-*.png
 review-*.png
 
 # next.js

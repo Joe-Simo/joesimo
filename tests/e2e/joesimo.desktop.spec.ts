@@ -57,9 +57,24 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       "credentials",
     );
     await expect(credentialsSection).toBeInViewport();
-    await expect(credentialsSection.locator(".joe-certification-logo-card")).toHaveCount(9);
-    await expect(credentialsSection.locator(".joe-certification-logo-empty-cell")).toHaveCount(1);
-    await expect(credentialsSection.locator(".joe-certification-logo-mark")).toHaveCount(9);
+    await expect(
+      credentialsSection.locator(".joe-certification-grid"),
+    ).toBeVisible();
+    await expect(
+      credentialsSection.locator(".joe-certification-tile"),
+    ).toHaveCount(27);
+    await expect(
+      credentialsSection.locator(".joe-certification-badge-image"),
+    ).toHaveCount(27);
+    await expect(
+      credentialsSection.locator(".joe-certification-name"),
+    ).toHaveCount(27);
+    await expect(
+      credentialsSection.locator(".joe-certification-company-logo"),
+    ).toHaveCount(20);
+    await expect(
+      credentialsSection.getByText("Next.js App Router Fundamentals"),
+    ).toBeVisible();
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const workLink = await expectHomeDestinationLink(page, "work");

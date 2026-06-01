@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type RefObject,
 } from "react";
 
@@ -80,6 +81,9 @@ function getPreferredImageAsset(project: PublicProjectCaseStudy) {
 
 type SiteLanguage = "en" | "es";
 
+const PROJECT_QUERY_PARAM = "project";
+const projectUrlStateListeners = new Set<() => void>();
+
 function currentLanguage(): SiteLanguage {
   return document.documentElement.dataset.language === "es" ? "es" : "en";
 }
@@ -105,6 +109,96 @@ function localizedActionLabel(label: string, language: SiteLanguage) {
   }
 
   return label;
+}
+
+function currentRelativeUrl() {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
+
+function projectUrl(projectSlug: string | null) {
+  const url = new URL(window.location.href);
+
+  if (projectSlug) {
+    url.searchParams.set(PROJECT_QUERY_PARAM, projectSlug);
+  } else {
+    url.searchParams.delete(PROJECT_QUERY_PARAM);
+  }
+
+  const search = url.searchParams.toString();
+
+  return `${url.pathname}${search ? `?${search}` : ""}${url.hash}`;
+}
+
+function notifyProjectUrlStateListeners() {
+  projectUrlStateListeners.forEach((listener) => listener());
+}
+
+function subscribeToProjectUrlState(listener: () => void) {
+  projectUrlStateListeners.add(listener);
+  window.addEventListener("popstate", listener);
+
+  return () => {
+    projectUrlStateListeners.delete(listener);
+    window.removeEventListener("popstate", listener);
+  };
+}
+
+function readProjectSlugFromUrl(validProjectSlugs: ReadonlySet<string>) {
+  const url = new URL(window.location.href);
+  const projectSlug = url.searchParams.get(PROJECT_QUERY_PARAM);
+
+  return projectSlug && validProjectSlugs.has(projectSlug) ? projectSlug : null;
+}
+
+function hasInvalidProjectSlugInUrl(validProjectSlugs: ReadonlySet<string>) {
+  const url = new URL(window.location.href);
+  const projectSlug = url.searchParams.get(PROJECT_QUERY_PARAM);
+
+  return Boolean(projectSlug && !validProjectSlugs.has(projectSlug));
+}
+
+function useProjectDialogUrlState(projects: readonly PublicProjectCaseStudy[]) {
+  const validProjectSlugs = useMemo(
+    () => new Set(projects.map((project) => project.slug)),
+    [projects],
+  );
+  const selectedProjectSlug = useSyncExternalStore(
+    subscribeToProjectUrlState,
+    () => readProjectSlugFromUrl(validProjectSlugs),
+    () => null,
+  );
+
+  useEffect(() => {
+    if (hasInvalidProjectSlugInUrl(validProjectSlugs)) {
+      window.history.replaceState(null, "", projectUrl(null));
+      notifyProjectUrlStateListeners();
+    }
+  }, [validProjectSlugs]);
+
+  const setProjectSlugInUrl = useCallback(
+    (projectSlug: string | null, mode: "push" | "replace") => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const nextProjectSlug =
+        projectSlug && validProjectSlugs.has(projectSlug) ? projectSlug : null;
+      const nextUrl = projectUrl(nextProjectSlug);
+
+      if (nextUrl !== currentRelativeUrl()) {
+        window.history[mode === "push" ? "pushState" : "replaceState"](
+          null,
+          "",
+          nextUrl,
+        );
+      }
+
+      notifyProjectUrlStateListeners();
+    },
+    [validProjectSlugs],
+  );
+
+  return { selectedProjectSlug, setProjectSlugInUrl };
 }
 
 function useDialogFocusGuard(
@@ -304,7 +398,7 @@ function useStructuralMotion() {
           },
         );
         gsap.fromTo(
-          ".joe-certification-logo-card",
+          ".joe-certification-tile",
           { autoAlpha: 0.88, y: 8 },
           {
             autoAlpha: 1,
@@ -378,56 +472,17 @@ function useStructuralMotion() {
   }, []);
 }
 
-function useScrollMeter() {
-  useEffect(() => {
-    let animationFrame = 0;
-
-    function updateProgress() {
-      animationFrame = 0;
-
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
-
-      document.documentElement.style.setProperty(
-        "--joe-scroll-progress",
-        Math.min(1, Math.max(0, progress)).toFixed(4),
-      );
-    }
-
-    function requestUpdate() {
-      if (animationFrame) {
-        return;
-      }
-
-      animationFrame = window.requestAnimationFrame(updateProgress);
-    }
-
-    updateProgress();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
-
-    return () => {
-      if (animationFrame) {
-        window.cancelAnimationFrame(animationFrame);
-      }
-
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-      document.documentElement.style.removeProperty("--joe-scroll-progress");
-    };
-  }, []);
-}
-
 function usePointerPolish() {
   useEffect(() => {
     const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const selector = [
-      ".joe-work-table article",
+      ".joe-work-card",
+      ".joe-system-role-card",
       ".joe-photo-card",
-      ".joe-certification-logo-card summary",
+      ".joe-certification-tile",
       ".joe-blog-row",
+      ".joe-contact-actions a",
     ].join(",");
     let activeSurface: HTMLElement | null = null;
     let isListening = false;
@@ -522,6 +577,65 @@ function usePointerPolish() {
   }, []);
 }
 
+function usePhotoRailKeyboard() {
+  useEffect(() => {
+    const handledKeys = new Set(["ArrowLeft", "ArrowRight", "Home", "End"]);
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (!handledKeys.has(event.key)) {
+        return;
+      }
+
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const rail = target.closest<HTMLElement>("[data-photo-rail]");
+
+      if (!rail) {
+        return;
+      }
+
+      const card = rail.querySelector<HTMLElement>(
+        ".joe-photo-card:not([aria-hidden='true'])",
+      );
+      const cardWidth = card?.getBoundingClientRect().width ?? 0;
+      const scrollStep = Math.max(
+        Math.round(cardWidth),
+        Math.round(rail.clientWidth * 0.8),
+        240,
+      );
+      const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
+
+      event.preventDefault();
+
+      if (event.key === "Home") {
+        rail.scrollTo({ behavior, left: 0 });
+        return;
+      }
+
+      if (event.key === "End") {
+        rail.scrollTo({
+          behavior,
+          left: Math.max(0, rail.scrollWidth - rail.clientWidth),
+        });
+        return;
+      }
+
+      rail.scrollBy({
+        behavior,
+        left: event.key === "ArrowLeft" ? -scrollStep : scrollStep,
+      });
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+}
+
 function ProjectDialog({
   onClose,
   project,
@@ -542,6 +656,7 @@ function ProjectDialog({
     projectTranslations,
     language,
   );
+  const closeLabel = language === "es" ? "Cerrar proyecto" : "Close project";
 
   return (
     <Dialog.Root
@@ -565,14 +680,15 @@ function ProjectDialog({
             ref={dialogRef}
           >
             <Dialog.Close
-              aria-label={
-                language === "es" ? "Cerrar proyecto" : "Close project"
-              }
+              aria-keyshortcuts="Escape"
+              aria-label={closeLabel}
               className="joe-dialog-close"
               ref={closeButtonRef}
+              title={closeLabel}
               type="button"
             >
               <SiteIcon aria-hidden iconKey="x" />
+              <span className="sr-only">{closeLabel}</span>
             </Dialog.Close>
 
             {asset ? (
@@ -617,29 +733,31 @@ function ProjectDialog({
                 </ul>
               ) : null}
 
-              {actionLinks.length > 0 ? (
-                <div className="joe-dialog-actions">
-                  {actionLinks.map((link) => (
-                    <a
-                      href={link.href}
-                      key={`${project.slug}-${link.href}`}
-                      rel={link.external ? "noreferrer" : undefined}
-                      target={link.external ? "_blank" : undefined}
-                    >
-                      {localizedActionLabel(link.label, language)}
-                      <SiteIcon aria-hidden iconKey="arrowUpRight" />
-                      {link.external ? (
-                        <span className="sr-only">
-                          <LocalizedText
-                            en="opens in a new tab"
-                            es="abre en una pestaña nueva"
-                          />
-                        </span>
-                      ) : null}
-                    </a>
-                  ))}
-                </div>
-              ) : null}
+              <div className="joe-dialog-actions">
+                <a href={`/work/${project.slug}`}>
+                  <LocalizedText en="Open Case Study" es="Abrir caso" />
+                  <SiteIcon aria-hidden iconKey="bookOpen" />
+                </a>
+                {actionLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    key={`${project.slug}-${link.href}`}
+                    rel={link.external ? "noreferrer" : undefined}
+                    target={link.external ? "_blank" : undefined}
+                  >
+                    {localizedActionLabel(link.label, language)}
+                    <SiteIcon aria-hidden iconKey="arrowUpRight" />
+                    {link.external ? (
+                      <span className="sr-only">
+                        <LocalizedText
+                          en="opens in a new tab"
+                          es="abre en una pestaña nueva"
+                        />
+                      </span>
+                    ) : null}
+                  </a>
+                ))}
+              </div>
             </div>
           </Dialog.Popup>
         </Dialog.Viewport>
@@ -655,14 +773,14 @@ export function PortfolioRuntime({
 }: PortfolioRuntimeProps) {
   useStructuralMotion();
   usePointerPolish();
-  useScrollMeter();
+  usePhotoRailKeyboard();
 
   const [activeSectionId, setActiveSectionId] =
     useState<PortfolioSectionId>("joe");
-  const [selectedProjectSlug, setSelectedProjectSlug] = useState<string | null>(
-    null,
-  );
+  const { selectedProjectSlug, setProjectSlugInUrl } =
+    useProjectDialogUrlState(projects);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const previousSelectedProjectSlugRef = useRef<string | null>(null);
   const selectedProject = useMemo(
     () => projects.find((project) => project.slug === selectedProjectSlug),
     [projects, selectedProjectSlug],
@@ -677,21 +795,48 @@ export function PortfolioRuntime({
     };
   }, []);
 
-  const closeOverlay = useCallback(() => {
-    const focusTarget = previousFocusRef.current;
-
-    setSelectedProjectSlug(null);
+  const restorePreviousFocus = useCallback((projectSlug: string | null) => {
+    const explicitFocusTarget = previousFocusRef.current;
 
     window.requestAnimationFrame(() => {
+      const fallbackFocusTarget =
+        projectSlug
+          ? Array.from(
+              document.querySelectorAll<HTMLElement>("[data-project-open]"),
+            ).find((trigger) => trigger.dataset.projectOpen === projectSlug)
+          : null;
+      const sectionFocusTarget = document.getElementById("work-title");
+      const focusTarget =
+        explicitFocusTarget ?? fallbackFocusTarget ?? sectionFocusTarget;
+
       if (focusTarget?.isConnected) {
         focusTarget.focus({ preventScroll: true });
       }
 
-      if (previousFocusRef.current === focusTarget) {
+      if (previousFocusRef.current === explicitFocusTarget) {
         previousFocusRef.current = null;
       }
     });
   }, []);
+
+  const closeOverlay = useCallback(() => {
+    if (previousFocusRef.current && selectedProjectSlug) {
+      window.history.back();
+      return;
+    }
+
+    setProjectSlugInUrl(null, "replace");
+  }, [selectedProjectSlug, setProjectSlugInUrl]);
+
+  useEffect(() => {
+    const previousProjectSlug = previousSelectedProjectSlugRef.current;
+
+    if (previousProjectSlug && !selectedProjectSlug) {
+      restorePreviousFocus(previousProjectSlug);
+    }
+
+    previousSelectedProjectSlugRef.current = selectedProjectSlug;
+  }, [restorePreviousFocus, selectedProjectSlug]);
 
   useEffect(() => {
     const observedSections = sections
@@ -738,7 +883,7 @@ export function PortfolioRuntime({
 
       if (projectTrigger instanceof HTMLElement) {
         previousFocusRef.current = projectTrigger;
-        setSelectedProjectSlug(projectTrigger.dataset.projectOpen ?? null);
+        setProjectSlugInUrl(projectTrigger.dataset.projectOpen ?? null, "push");
       }
     }
 
@@ -755,11 +900,10 @@ export function PortfolioRuntime({
       document.removeEventListener("click", handleDocumentClick);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeOverlay, selectedProjectSlug]);
+  }, [closeOverlay, selectedProjectSlug, setProjectSlugInUrl]);
 
   return (
     <>
-      <span aria-hidden="true" className="joe-scroll-meter" />
       <span className="sr-only" data-active-section={activeSectionId}>
         {activeSectionId}
       </span>

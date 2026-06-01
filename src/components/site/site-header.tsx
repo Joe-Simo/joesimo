@@ -58,9 +58,7 @@ export function SiteHeader({
   surface?: "default" | "home";
 }) {
   const showPrimaryNavigation = true;
-  const primaryNavItems = navItems.filter((item) =>
-    item.label === "Work" || item.label === "Contact"
-  );
+  const primaryNavItems = navItems;
   const surfaceClassName =
     surface === "home"
       ? "site-header site-header-home sticky top-0 z-40 border-b border-border/70 bg-background/88 pt-[env(safe-area-inset-top)] backdrop-blur-xl"

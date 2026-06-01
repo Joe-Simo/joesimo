@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
 import { Languages } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,65 +13,23 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LocalizedText } from "@/components/site/localized-text";
 import {
-  LocalizedText,
-  type SiteLanguage,
-} from "@/components/site/localized-text";
+  isSiteLanguage,
+  setSiteLanguage,
+  useSiteLanguage,
+} from "@/components/site/use-site-language";
 import { cn } from "@/lib/utils";
-
-const languageKey = "joe-site-language";
 
 const languageOptions = [
   { value: "en", label: "English", shortLabel: "EN" },
   { value: "es", label: "Español", shortLabel: "ES" },
 ] as const;
 
-function isSiteLanguage(value: string | null): value is SiteLanguage {
-  return value === "en" || value === "es";
-}
-
-function applyLanguage(language: SiteLanguage) {
-  document.documentElement.dataset.language = language;
-  document.documentElement.lang = language;
-}
-
-function readLanguageSnapshot(): SiteLanguage {
-  if (typeof window === "undefined") {
-    return "en";
-  }
-
-  const storedLanguage = window.localStorage.getItem(languageKey);
-  const browserLanguage = window.navigator.language.toLowerCase();
-
-  if (isSiteLanguage(storedLanguage)) {
-    return storedLanguage;
-  }
-
-  return browserLanguage.startsWith("es") ? "es" : "en";
-}
-
-function getServerLanguageSnapshot(): SiteLanguage {
-  return "en";
-}
-
-function subscribeToLanguage(callback: () => void) {
-  window.addEventListener("storage", callback);
-  window.addEventListener("joe-language-change", callback);
-
-  return () => {
-    window.removeEventListener("storage", callback);
-    window.removeEventListener("joe-language-change", callback);
-  };
-}
-
 export function LanguageToggle() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
-  const language = useSyncExternalStore(
-    subscribeToLanguage,
-    readLanguageSnapshot,
-    getServerLanguageSnapshot,
-  );
+  const language = useSiteLanguage();
   const currentOption =
     languageOptions.find((option) => option.value === language) ??
     languageOptions[0];
@@ -79,10 +37,6 @@ export function LanguageToggle() {
     language === "es"
       ? `Idioma: ${currentOption.label}`
       : `Language: ${currentOption.label}`;
-
-  useEffect(() => {
-    applyLanguage(language);
-  }, [language]);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -116,9 +70,7 @@ export function LanguageToggle() {
           <DropdownMenuRadioGroup
             onValueChange={(value) => {
               if (isSiteLanguage(value)) {
-                window.localStorage.setItem(languageKey, value);
-                applyLanguage(value);
-                window.dispatchEvent(new Event("joe-language-change"));
+                setSiteLanguage(value);
                 setOpen(false);
               }
             }}

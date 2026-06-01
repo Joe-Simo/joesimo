@@ -89,6 +89,13 @@ export type LearningCredential = {
   period?: string;
   sourceLabel: string;
   href?: string;
+  badge?: {
+    alt: string;
+    height: number;
+    sourceLabel: string;
+    src: string;
+    width: number;
+  };
 };
 
 export type CredentialGroupId =
@@ -509,7 +516,7 @@ export const portfolioSections = [
     anchor: "#work",
     copy: {
       title: "Work",
-      detail: "Selected projects, ordered by start date.",
+      detail: "Selected projects, strongest evidence first.",
     },
   },
   {
@@ -585,7 +592,7 @@ export const lovePresentationLink: SiteAction = {
 
 export const lovePresentationRepoLink: SiteAction = {
   id: "open-love-presentation-repo",
-  label: "GitHub",
+  label: "View Love Presentation repo",
   href: "https://github.com/Joe-Simo/love-presentation",
   external: true,
   ariaLabel: "Open Love Presentation on GitHub in a new tab",
@@ -613,7 +620,7 @@ export const sim0Media: SiteMedia = {
 export const sim0HeroCropMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-hero-crop.webp",
-  alt: "sim0 editor workspace with preview state and ship panel",
+  alt: "Redacted sim0 editor workspace with preview and review state",
   width: 1600,
   height: 900,
   tone: "desaturated",
@@ -622,7 +629,7 @@ export const sim0HeroCropMedia: SiteMedia = {
 export const sim0WorkThumbMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-work-thumb.webp",
-  alt: "sim0 editor workspace thumbnail",
+  alt: "Redacted sim0 editor workspace thumbnail",
   width: 960,
   height: 540,
   tone: "desaturated",
@@ -631,7 +638,7 @@ export const sim0WorkThumbMedia: SiteMedia = {
 export const sim0CurrentEditorMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-current-editor.webp",
-  alt: "sim0 editor workspace capture",
+  alt: "Redacted sim0 editor workspace capture",
   width: 1710,
   height: 900,
   tone: "desaturated",
@@ -640,7 +647,7 @@ export const sim0CurrentEditorMedia: SiteMedia = {
 export const sim0ShipSurfaceMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/sim0-machine-ship.webp",
-  alt: "sim0 preview, local API, shipping, and staged changes",
+  alt: "Redacted sim0 review and shipping state",
   width: 1600,
   height: 900,
   tone: "desaturated",
@@ -766,7 +773,7 @@ export const nextFlightsCtaMedia: SiteMedia = {
 export const signatureCopierMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/signature-copier.webp",
-  alt: "Signature copier application capture",
+  alt: "Redacted signature copier application capture",
   width: 1440,
   height: 1200,
   tone: "desaturated",
@@ -813,7 +820,7 @@ export const sim0MachineProofMedia: ProofMedia[] = [
     id: "sim0-machine-find",
     kind: "image",
     src: "/media/work/sim0-machine-find.webp",
-    alt: "sim0 stuck preview state crop",
+    alt: "Redacted sim0 preview state crop",
     width: 1600,
     height: 900,
     label: "Stuck preview crop",
@@ -824,7 +831,7 @@ export const sim0MachineProofMedia: ProofMedia[] = [
     id: "sim0-machine-trace",
     kind: "image",
     src: "/media/work/sim0-machine-trace.webp",
-    alt: "sim0 runtime and local API trace crop",
+    alt: "Redacted sim0 runtime trace crop",
     width: 1600,
     height: 900,
     label: "Runtime trace crop",
@@ -835,7 +842,7 @@ export const sim0MachineProofMedia: ProofMedia[] = [
     id: "sim0-machine-ship",
     kind: "image",
     src: "/media/work/sim0-machine-ship.webp",
-    alt: "sim0 ship and changes state crop",
+    alt: "Redacted sim0 review and changes state crop",
     width: 1600,
     height: 900,
     label: "Ship state crop",
@@ -846,7 +853,7 @@ export const sim0MachineProofMedia: ProofMedia[] = [
     id: "sim0-machine-surface",
     kind: "image",
     src: "/media/work/sim0-machine-surface.webp",
-    alt: "sim0 completed surface crop",
+    alt: "Redacted sim0 completed surface crop",
     width: 1600,
     height: 900,
     label: "Completed surface crop",
@@ -858,7 +865,7 @@ export const sim0MachineProofMedia: ProofMedia[] = [
     kind: "video",
     src: "/media/work/sim0-route-replay.webm",
     posterSrc: "/media/work/sim0-machine-surface.webp",
-    alt: "sim0 route replay from stuck preview to shipped surface",
+    alt: "Redacted sim0 route replay from preview to shipped surface",
     width: 1600,
     height: 900,
     label: "Route replay",
@@ -1004,6 +1011,38 @@ export const educationRecords: EducationRecord[] = [
   },
 ];
 
+const unitrendsCertifiedAssociateBadge = {
+  alt: "Unitrends Certified Associate badge",
+  height: 199,
+  sourceLabel: "Unitrends partner training badge image",
+  src: "/media/credentials/unitrends-certified-associate.png",
+  width: 199,
+} satisfies NonNullable<LearningCredential["badge"]>;
+
+const semrushPpcFundamentalsExamBadge = {
+  alt: "PPC Fundamentals Exam badge",
+  height: 382,
+  sourceLabel: "Archived Semrush Academy exam artwork",
+  src: "/media/credentials/semrush-ppc-fundamentals-exam.svg",
+  width: 343,
+} satisfies NonNullable<LearningCredential["badge"]>;
+
+const semrushContentMarketingFundamentalsExamBadge = {
+  alt: "Content Marketing Fundamentals Exam badge",
+  height: 382,
+  sourceLabel: "Archived Semrush Academy exam artwork",
+  src: "/media/credentials/semrush-content-marketing-fundamentals-exam.svg",
+  width: 343,
+} satisfies NonNullable<LearningCredential["badge"]>;
+
+const semrushTechnicalSeoExamBadge = {
+  alt: "Technical SEO Exam badge",
+  height: 382,
+  sourceLabel: "Archived Semrush Academy exam artwork",
+  src: "/media/credentials/semrush-technical-seo-exam.svg",
+  width: 343,
+} satisfies NonNullable<LearningCredential["badge"]>;
+
 export const learningCredentials: LearningCredential[] = [
   {
     label: "Next.js Pages Router Fundamentals",
@@ -1039,6 +1078,7 @@ export const learningCredentials: LearningCredential[] = [
     period: "Issued Jan 2021 / Expired Jan 2022",
     sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
+    badge: semrushPpcFundamentalsExamBadge,
   },
   {
     label: "Content Marketing Fundamentals Exam",
@@ -1046,6 +1086,7 @@ export const learningCredentials: LearningCredential[] = [
     period: "Issued Jan 2021 / Expired Jan 2022",
     sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
+    badge: semrushContentMarketingFundamentalsExamBadge,
   },
   {
     label: "Technical SEO Exam",
@@ -1053,6 +1094,7 @@ export const learningCredentials: LearningCredential[] = [
     period: "Issued Dec 2020 / Expired Dec 2021",
     sourceLabel: "User-provided LinkedIn certification",
     href: linkedinChannel.href,
+    badge: semrushTechnicalSeoExamBadge,
   },
   {
     label: "Local SEO Exam",
@@ -1137,6 +1179,7 @@ export const learningCredentials: LearningCredential[] = [
     issued: "Issued Jun 2019",
     sourceLabel: "LinkedIn certification",
     href: linkedinChannel.href,
+    badge: unitrendsCertifiedAssociateBadge,
   },
   {
     label: "Microsoft Technology Associate: Networking Fundamentals",
@@ -1144,6 +1187,13 @@ export const learningCredentials: LearningCredential[] = [
     issued: "Issued Jun 2017",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
+    badge: {
+      alt: "MTA: Networking Fundamentals certified 2018 badge",
+      height: 352,
+      sourceLabel: "Credly badge image",
+      src: "/media/credentials/microsoft-mta-networking-fundamentals-2018.png",
+      width: 352,
+    },
   },
   {
     label: "CompTIA A+",
@@ -1151,6 +1201,13 @@ export const learningCredentials: LearningCredential[] = [
     issued: "Issued Jun 2007",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
+    badge: {
+      alt: "CompTIA A+ certification badge",
+      height: 600,
+      sourceLabel: "Credly badge image",
+      src: "/media/credentials/comptia-a-plus-certification.png",
+      width: 600,
+    },
   },
   {
     label: "CompTIA Network+",
@@ -1158,6 +1215,13 @@ export const learningCredentials: LearningCredential[] = [
     period: "Issued Sep 2017 / Expired Sep 2020",
     sourceLabel: "Local certificate",
     href: linkedinChannel.href,
+    badge: {
+      alt: "CompTIA Network+ CE certification badge",
+      height: 601,
+      sourceLabel: "Credly badge image",
+      src: "/media/credentials/comptia-network-plus-ce-certification.png",
+      width: 601,
+    },
   },
   {
     label: "Barracuda SignNow",
@@ -1445,21 +1509,21 @@ export const sim0ProofPoints = [
   {
     id: "api",
     code: "03",
-    label: "Local API",
-    visibleLabel: "Local API",
-    title: "Local context is visible.",
+    label: "Runtime context",
+    visibleLabel: "Runtime context",
+    title: "Runtime context is visible.",
     detail:
-      "The editor surface keeps local API context and preview state in the same working field.",
+      "The editor surface keeps runtime context and preview state in the same working field.",
     lens: "signals",
     action: "trace",
-    readout: "Keep local context visible while the work moves.",
+    readout: "Keep runtime context visible while the work moves.",
     sourceLabel: "Interface still",
     x: 25,
     y: 83,
     zoom: { x: 25, y: 83 },
     phase: "handoff",
-    prompt: "Trace local API context.",
-    finding: "Local API context stays in the same working field as preview state.",
+    prompt: "Trace runtime context.",
+    finding: "Runtime context stays in the same working field as preview state.",
     interfaceDecision:
       "Avoid hiding local state behind a second screen when the work depends on it.",
     completionLabel: "Local context traced",
@@ -1545,7 +1609,7 @@ export const sim0InvestigationCase = {
     {
       id: "trace",
       label: "Trace",
-      hook: "Trace runtime and local API context where the workspace can use it.",
+      hook: "Trace runtime context where the workspace can use it.",
       primaryProofPointId: "runtime",
       supportingProofPointIds: ["api"],
       completionLabel: "Signal traced",
@@ -1573,7 +1637,7 @@ export const sim0InvestigationCase = {
     {
       id: "trace",
       label: "Trace",
-      title: "Runtime and local API path",
+      title: "Runtime path",
       detail:
         "Follow the handoff states that explain why the preview is behaving that way.",
       proofPointIds: ["runtime", "api"],
@@ -1642,7 +1706,7 @@ export const proofItems: ProofItem[] = [
     label: "Product work",
     claim: "sim0.com is a public product surface.",
     detail:
-      "The interface still shows preview state, runtime context, local API context, ship action, and change staging.",
+      "The interface still shows preview state, runtime context, ship action, and change staging.",
     proofType: "artifact",
     sourceLabel: "Interface still",
     href: sim0Link.href,
@@ -1823,7 +1887,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     proofSummary:
       "Browser workspace for previewing an imported app, editing the UI, and reviewing source changes.",
     homepageFeature: {
-      rank: 5,
+      rank: 1,
       mediaAssetIds: ["sim0-hero-crop", "sim0-editor-artifact"],
       thumbnailMedia: sim0WorkThumbMedia,
       treatment: "operated-surface",
@@ -1870,7 +1934,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       problem:
         "The app needs to show the joke, the controls, and the output without making someone create an account.",
       constraint:
-        "The public case uses the live site, public repo metadata, and a local snapshot of the homepage.",
+        "The public case uses the live site, public repo metadata, and a public-safe homepage capture.",
       approach: [
         "Put the form and sample deck in the first screen.",
         "Keep the public flow account-free.",
@@ -1900,7 +1964,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     proofSummary:
       "Live homepage capture and public repo metadata show the slideshow app as a shipped public project.",
     homepageFeature: {
-      rank: 1,
+      rank: 5,
       mediaAssetIds: ["love-presentation-home"],
       thumbnailMedia: lovePresentationWorkThumbMedia,
       treatment: "site-snapshot",
@@ -2808,23 +2872,93 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   },
 ];
 
+const workTierOrder: Record<WorkTier, number> = {
+  featured: 0,
+  case: 1,
+  supporting: 2,
+  specimen: 3,
+};
+
+const projectProofModeOrder: Record<ProjectProofMode, number> = {
+  operated: 0,
+  reel: 1,
+  anatomy: 2,
+  specimen: 3,
+};
+
+function compareProjectProofOrder(
+  left: PublicProjectCaseStudy,
+  right: PublicProjectCaseStudy,
+) {
+  const tierOrder = workTierOrder[left.tier] - workTierOrder[right.tier];
+
+  if (tierOrder !== 0) {
+    return tierOrder;
+  }
+
+  const miniWorldOrder = Number(!left.miniWorld) - Number(!right.miniWorld);
+
+  if (miniWorldOrder !== 0) {
+    return miniWorldOrder;
+  }
+
+  const proofModeOrder =
+    projectProofModeOrder[left.proofMode] -
+    projectProofModeOrder[right.proofMode];
+
+  if (proofModeOrder !== 0) {
+    return proofModeOrder;
+  }
+
+  const homepageRankOrder =
+    (left.homepageFeature?.rank ?? Number.POSITIVE_INFINITY) -
+    (right.homepageFeature?.rank ?? Number.POSITIVE_INFINITY);
+
+  if (homepageRankOrder !== 0) {
+    return homepageRankOrder;
+  }
+
+  const assetOrder = right.assets.length - left.assets.length;
+
+  if (assetOrder !== 0) {
+    return assetOrder;
+  }
+
+  return (
+    right.started.sortKey.localeCompare(left.started.sortKey) ||
+    left.title.localeCompare(right.title)
+  );
+}
+
+export function orderPublicProjectCaseStudies(
+  projects: readonly PublicProjectCaseStudy[],
+) {
+  return [...projects].sort(compareProjectProofOrder);
+}
+
 export const projectCaseStudiesPublic: PublicProjectCaseStudy[] =
-  projectCaseStudies.map(({ assets, sourcePath, ...project }) => ({
-    ...project,
-    assets: assets.map(({ sourcePath: assetSourcePath, ...asset }) => ({
-      ...asset,
-      sourceLabel: publicSourceLabel(assetSourcePath),
+  orderPublicProjectCaseStudies(
+    projectCaseStudies.map(({ assets, sourcePath, ...project }) => ({
+      ...project,
+      assets: assets.map(({ sourcePath: assetSourcePath, ...asset }) => ({
+        ...asset,
+        sourceLabel: publicSourceLabel(assetSourcePath),
+      })),
+      sourceLabel: publicSourceLabel(sourcePath),
     })),
-    sourceLabel: publicSourceLabel(sourcePath),
-  }));
+  );
+
+export function getPublicProjectCaseStudy(slug: string) {
+  return projectCaseStudiesPublic.find((project) => project.slug === slug);
+}
 
 export const homepageProjectSlugs = [
+  "sim0",
+  "garden0",
   "astrosimo",
   "chesslm",
-  "garden0",
   "love-presentation",
   "next-flights",
-  "sim0",
 ] as const;
 
 const homepageProjectSlugSet = new Set<string>(homepageProjectSlugs);
@@ -2837,14 +2971,18 @@ export function isHomepageProject(
 
 type StoryboardSourceProject = Pick<
   ProjectCaseStudy,
-  | "assets"
   | "completedRoute"
   | "proofCaptions"
   | "safeClaimIds"
   | "story"
   | "storyboard"
   | "summary"
->;
+> & {
+  assets: readonly Pick<
+    EvidenceAsset,
+    "captionId" | "claimIds" | "id" | "treatment"
+  >[];
+};
 
 function buildStoryboardPanel(input: {
   id: ProjectStoryboardPanelId;
@@ -3165,7 +3303,7 @@ export const navItems = [
   },
   {
     label: "Blog",
-    href: "#blog",
+    href: "/blog",
     iconKey: "bookOpen",
   },
   {
@@ -3175,7 +3313,7 @@ export const navItems = [
   },
 ] as const satisfies readonly {
   label: string;
-  href: `#${string}`;
+  href: `#${string}` | `/${string}`;
   iconKey: IconKey;
 }[];
 

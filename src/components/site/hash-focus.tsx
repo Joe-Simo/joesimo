@@ -41,7 +41,9 @@ export function HashFocus() {
   useEffect(() => {
     const retryTimers = new Set<number>();
 
-    function focusHashTarget() {
+    let restoringHistory = false;
+
+    function focusHashTarget(shouldScroll: boolean) {
       window.requestAnimationFrame(() => {
         const targets = targetsForHash(window.location.hash);
 
@@ -51,16 +53,23 @@ export function HashFocus() {
 
         const { focusTarget, scrollTarget } = targets;
 
-        const rootScrollBehavior = document.documentElement.style.scrollBehavior;
-        const bodyScrollBehavior = document.body.style.scrollBehavior;
+        const scrollTargetRect = scrollTarget.getBoundingClientRect();
+        const targetIsVisible =
+          scrollTargetRect.bottom > 0 &&
+          scrollTargetRect.top < window.innerHeight;
 
-        document.documentElement.style.scrollBehavior = "auto";
-        document.body.style.scrollBehavior = "auto";
-        scrollTarget.scrollIntoView({ behavior: "auto", block: "start" });
-        window.requestAnimationFrame(() => {
-          document.documentElement.style.scrollBehavior = rootScrollBehavior;
-          document.body.style.scrollBehavior = bodyScrollBehavior;
-        });
+        if (shouldScroll || !targetIsVisible) {
+          const rootScrollBehavior = document.documentElement.style.scrollBehavior;
+          const bodyScrollBehavior = document.body.style.scrollBehavior;
+
+          document.documentElement.style.scrollBehavior = "auto";
+          document.body.style.scrollBehavior = "auto";
+          scrollTarget.scrollIntoView({ behavior: "auto", block: "start" });
+          window.requestAnimationFrame(() => {
+            document.documentElement.style.scrollBehavior = rootScrollBehavior;
+            document.body.style.scrollBehavior = bodyScrollBehavior;
+          });
+        }
 
         if (!focusTarget.hasAttribute("tabindex")) {
           focusTarget.tabIndex = -1;
@@ -86,23 +95,32 @@ export function HashFocus() {
     }
 
     function scheduleHashFocus() {
+      const shouldScroll = !restoringHistory;
+
       for (const timer of retryTimers) {
         window.clearTimeout(timer);
       }
 
       retryTimers.clear();
-      focusHashTarget();
+      focusHashTarget(shouldScroll);
 
       for (const delay of [120, 600, 1200, 2200]) {
         const timer = window.setTimeout(() => {
           retryTimers.delete(timer);
-          focusHashTarget();
+          focusHashTarget(shouldScroll);
         }, delay);
 
         retryTimers.add(timer);
       }
+
+      restoringHistory = false;
     }
 
+    function handlePopState() {
+      restoringHistory = true;
+    }
+
+    window.addEventListener("popstate", handlePopState);
     window.addEventListener("hashchange", scheduleHashFocus);
     window.addEventListener("load", scheduleHashFocus);
     scheduleHashFocus();
@@ -112,6 +130,7 @@ export function HashFocus() {
         window.clearTimeout(timer);
       }
 
+      window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("hashchange", scheduleHashFocus);
       window.removeEventListener("load", scheduleHashFocus);
     };

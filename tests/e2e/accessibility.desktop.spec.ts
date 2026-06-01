@@ -39,6 +39,11 @@ test.describe("desktop accessibility quality gates", () => {
 
     await tabUntilFocused(page, page.getByText("Skip to content"), 3);
     await tabUntilFocused(page, page.locator('header a[href="#work"]'), 10);
+    await tabUntilFocused(
+      page,
+      page.getByRole("button", { name: /language:/i }),
+      10,
+    );
     await tabUntilFocused(page, page.getByRole("button", { name: /theme:/i }), 4);
   });
 

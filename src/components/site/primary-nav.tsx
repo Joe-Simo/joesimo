@@ -2,8 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { MenuIcon } from "lucide-react";
 
 import { LocalizedText, navLabelEs } from "@/components/site/localized-text";
+import { useSiteLanguage } from "@/components/site/use-site-language";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { NavHref, NavItem } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +46,7 @@ export function PrimaryNav({
     initialActiveHref,
   );
   const [isDesktop, setIsDesktop] = useState(false);
+  const language = useSiteLanguage();
 
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 1024px)");
@@ -85,7 +96,15 @@ export function PrimaryNav({
         }
       }
 
-      const probeY = Math.min(window.innerHeight * 0.38, 320);
+      const maxScrollY = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+      const scrollY = Math.min(maxScrollY, Math.max(0, window.scrollY));
+      const atPageEnd = maxScrollY - scrollY <= 2;
+      const probeY = atPageEnd
+        ? window.innerHeight - 72
+        : Math.min(window.innerHeight * 0.38, 320);
       let active: HashNavHref | null = null;
 
       for (const { href, target } of targets) {
@@ -142,41 +161,87 @@ export function PrimaryNav({
   }, [isDesktop, items, sectionPrefix]);
 
   return (
-    <nav
-      aria-label="Primary navigation"
-      className="hidden items-center gap-1 lg:flex"
-    >
-      {items.map((item) => {
-        const active = item.href === activeHref;
+    <>
+      <nav
+        aria-label={
+          language === "es" ? "Navegación principal" : "Primary navigation"
+        }
+        className="hidden items-center gap-1 lg:flex"
+      >
+        {items.map((item) => {
+          const active = item.href === activeHref;
 
-        return (
-          isInternalRouteHref(item.href) ? (
-            <Link
-              key={item.href}
-              href={resolveNavHref(item.href, sectionPrefix)}
-              aria-current={active ? "location" : undefined}
-              className={cn(
-                "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
-                active && "text-foreground",
-              )}
-            >
-              <LocalizedText en={item.label} es={navLabelEs(item.label)} />
-            </Link>
-          ) : (
-            <a
-              key={item.href}
-              href={resolveNavHref(item.href, sectionPrefix)}
-              aria-current={active ? "location" : undefined}
-              className={cn(
-                "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
-                active && "text-foreground",
-              )}
-            >
-              <LocalizedText en={item.label} es={navLabelEs(item.label)} />
-            </a>
-          )
-        );
-      })}
-    </nav>
+          return (
+            isInternalRouteHref(item.href) ? (
+              <Link
+                key={item.href}
+                href={resolveNavHref(item.href, sectionPrefix)}
+                aria-current={active ? "location" : undefined}
+                className={cn(
+                  "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
+                  active && "text-foreground",
+                )}
+              >
+                <LocalizedText en={item.label} es={navLabelEs(item.label)} />
+              </Link>
+            ) : (
+              <a
+                key={item.href}
+                href={resolveNavHref(item.href, sectionPrefix)}
+                aria-current={active ? "location" : undefined}
+                className={cn(
+                  "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
+                  active && "text-foreground",
+                )}
+              >
+                <LocalizedText en={item.label} es={navLabelEs(item.label)} />
+              </a>
+            )
+          );
+        })}
+      </nav>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              aria-label={
+                language === "es" ? "Abrir navegación" : "Open navigation"
+              }
+              className="lg:hidden"
+              size="icon-lg"
+              type="button"
+              variant="outline"
+            />
+          }
+        >
+          <MenuIcon aria-hidden />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-48" sideOffset={8}>
+          <DropdownMenuGroup>
+            {items.map((item) => {
+              const active = item.href === activeHref;
+              const href = resolveNavHref(item.href, sectionPrefix);
+
+              return (
+                <DropdownMenuItem
+                  aria-current={active ? "location" : undefined}
+                  key={item.href}
+                  render={<a href={href} />}
+                >
+                  <span className="flex w-full items-center justify-between gap-4">
+                    <LocalizedText en={item.label} es={navLabelEs(item.label)} />
+                    {active ? (
+                      <span aria-hidden className="text-muted-foreground">
+                        -
+                      </span>
+                    ) : null}
+                  </span>
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

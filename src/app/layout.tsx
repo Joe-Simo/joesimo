@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/site/theme-provider";
 import {
   isHomepageProject,
   joeProfile,
-  projectCaseStudies,
+  projectCaseStudiesPublic,
   siteDescription,
   socialChannels,
 } from "@/lib/site-data";
@@ -120,14 +120,14 @@ const websiteJsonLd = {
   description: siteDescription,
 };
 
-const creativeWorkJsonLd = projectCaseStudies
+const creativeWorkJsonLd = projectCaseStudiesPublic
   .filter(isHomepageProject)
   .map((project) => ({
     "@context": "https://schema.org",
     "@type": project.schemaType,
-    "@id": `${siteUrl}/#work-${project.slug}`,
+    "@id": `${siteUrl}/work/${project.slug}`,
     name: project.title,
-    url: `${siteUrl}/#work-${project.slug}`,
+    url: `${siteUrl}/work/${project.slug}`,
     description: project.summary,
     applicationCategory: project.applicationCategory,
     image: project.assets[0]?.media.src
@@ -144,10 +144,7 @@ const creativeWorkJsonLd = projectCaseStudies
 const jsonLd = [personJsonLd, websiteJsonLd, ...creativeWorkJsonLd];
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
-  ],
+  themeColor: "#ffffff",
 };
 
 export default async function RootLayout({
@@ -176,7 +173,7 @@ export default async function RootLayout({
         />
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
           nonce={nonce}

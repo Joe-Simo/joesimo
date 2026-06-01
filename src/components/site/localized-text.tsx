@@ -1,16 +1,14 @@
+import { RenderedLocalizedText } from "@/components/site/use-site-language";
+
 export type SiteLanguage = "en" | "es";
 
-export function LocalizedText({ en, es }: { en: string; es: string }) {
-  return (
-    <>
-      <span className="i18n-text i18n-en" lang="en">
-        {en}
-      </span>
-      <span className="i18n-text i18n-es" lang="es">
-        {es}
-      </span>
-    </>
-  );
+export type LocalizedTextProps = {
+  en: string;
+  es: string;
+};
+
+export function LocalizedText(props: LocalizedTextProps) {
+  return <RenderedLocalizedText {...props} />;
 }
 
 export const navLabelTranslations = {

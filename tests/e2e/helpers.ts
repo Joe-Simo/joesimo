@@ -39,7 +39,7 @@ type HomeDestination =
   | "work";
 
 const homeDestinationLinkSelectors: Record<HomeDestination, string> = {
-  blog: 'header a[href="#blog"], a[href="#blog"], a[href="/#blog"]',
+  blog: 'header a[href="/blog"], a[href="/blog"]',
   community:
     'header a[href="#community"], a[href="#community"], a[href="/#community"]',
   contact: 'header a[href="#contact"], a[href="#contact"], a[href="/#contact"]',
@@ -171,6 +171,17 @@ export async function expectNoHorizontalOverflow(page: Page) {
       }),
     )
     .toBeLessThanOrEqual(1);
+}
+
+export async function expectNoVisibleScrollbar(locator: Locator) {
+  await expect(locator).toHaveCSS("scrollbar-width", "none");
+  await expect
+    .poll(() =>
+      locator.evaluate((element) =>
+        window.getComputedStyle(element, "::-webkit-scrollbar").display,
+      ),
+    )
+    .toBe("none");
 }
 
 export async function expectPageHealthy(

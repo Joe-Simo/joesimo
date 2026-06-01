@@ -7,6 +7,7 @@ import {
   expectHomeDestinationSection,
   expectInteractiveTextFits,
   expectNoHorizontalOverflow,
+  expectNoVisibleScrollbar,
   expectPageHealthy,
 } from "./helpers";
 
@@ -67,6 +68,10 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
     await expect(page.locator(".joe-identity-field")).toHaveCount(0);
     await expect(page.locator(".joe-name-particles")).toBeVisible();
+    await expect(page.locator(".joe-name-particles-canvas")).toHaveCSS(
+      "opacity",
+      "1",
+    );
     await expectPageHealthy(page, problems);
 
     await chooseTheme(page, "Dark");
@@ -116,9 +121,10 @@ test.describe("responsive, theme, and fallback gates", () => {
     await blockHeavyMedia(page);
     await page.goto("/#community", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#community")).toBeInViewport();
-    await expect(page.locator("#community-title")).toContainText("Community");
+    await expect(page.locator("#community-title")).toHaveCount(0);
     await expect(page.locator("#community .joe-section-head")).toHaveCount(0);
     await expect(page.locator("#community .joe-photo-marquee")).toBeVisible();
+    await expectNoVisibleScrollbar(page.locator("#community .joe-photo-marquee"));
     await expect(
       page.locator("#community .joe-photo-marquee-track"),
     ).toHaveCSS("animation-name", "joe-photo-marquee-right");
@@ -127,8 +133,18 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expect(
       page.getByRole("heading", { exact: true, name: "Certifications" }),
     ).toBeVisible();
-    await expect(page.locator("#credentials .joe-certification-logo-card")).toHaveCount(9);
-    await expect(page.locator("#credentials .joe-certification-logo-mark")).toHaveCount(9);
+    await expect(
+      page.locator("#credentials .joe-certification-grid"),
+    ).toBeVisible();
+    await expect(
+      page.locator("#credentials .joe-certification-tile"),
+    ).toHaveCount(27);
+    await expect(
+      page.locator("#credentials .joe-certification-badge-image"),
+    ).toHaveCount(27);
+    await expect(
+      page.locator("#credentials .joe-certification-name"),
+    ).toHaveCount(27);
     await expectPageHealthy(page, problems);
   });
 
@@ -213,6 +229,10 @@ test.describe("responsive, theme, and fallback gates", () => {
       { timeout: 20_000 },
     );
     await expect(page.locator(".joe-name-particles-canvas")).toBeVisible();
+    await expect(page.locator(".joe-name-particles-canvas")).toHaveCSS(
+      "opacity",
+      "1",
+    );
 
     await page.emulateMedia({ reducedMotion: "reduce" });
 
@@ -233,28 +253,36 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await blockHeavyMedia(page);
-    await page.goto("/#work", { waitUntil: "domcontentloaded" });
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
     await expect(page.locator("html")).toHaveAttribute(
       "data-portfolio-runtime",
       "ready",
     );
 
-    const firstWorkRow = page.locator(".joe-work-table article").first();
+    const polishedSurface = page.locator(".joe-photo-card").first();
 
-    await expect(firstWorkRow).toBeVisible();
+    await expect(polishedSurface).toBeVisible();
 
-    const rowBox = await firstWorkRow.boundingBox();
+    const surfaceBox = await polishedSurface.boundingBox();
 
-    expect(rowBox).not.toBeNull();
+    expect(surfaceBox).not.toBeNull();
 
-    if (!rowBox) {
+    if (!surfaceBox) {
       return;
     }
 
-    await page.mouse.move(rowBox.x + rowBox.width / 2, rowBox.y + rowBox.height / 2);
+    await polishedSurface.dispatchEvent(
+      "pointermove",
+      {
+        bubbles: true,
+        clientX: surfaceBox.x + surfaceBox.width / 2,
+        clientY: surfaceBox.y + surfaceBox.height / 2,
+        pointerType: "mouse",
+      },
+    );
     await expect
       .poll(() =>
-        firstWorkRow.evaluate((element) =>
+        polishedSurface.evaluate((element) =>
           (element as HTMLElement).style.getPropertyValue("--surface-x"),
         ),
       )
@@ -263,17 +291,25 @@ test.describe("responsive, theme, and fallback gates", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect
       .poll(() =>
-        firstWorkRow.evaluate((element) =>
+        polishedSurface.evaluate((element) =>
           (element as HTMLElement).style.getPropertyValue("--surface-x"),
         ),
       )
       .toBe("");
 
-    await page.mouse.move(rowBox.x + rowBox.width / 2 + 8, rowBox.y + rowBox.height / 2);
+    await polishedSurface.dispatchEvent(
+      "pointermove",
+      {
+        bubbles: true,
+        clientX: surfaceBox.x + surfaceBox.width / 2 + 8,
+        clientY: surfaceBox.y + surfaceBox.height / 2,
+        pointerType: "mouse",
+      },
+    );
     await page.waitForTimeout(120);
     await expect
       .poll(() =>
-        firstWorkRow.evaluate((element) =>
+        polishedSurface.evaluate((element) =>
           (element as HTMLElement).style.getPropertyValue("--surface-x"),
         ),
       )

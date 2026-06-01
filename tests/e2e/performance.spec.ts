@@ -25,7 +25,7 @@ test.describe("performance budgets", () => {
     expect(snapshot.totalDecodedResourceBytes).toBeLessThan(8_000_000);
   });
 
-  test("one-page portfolio media avoids autoplay", async ({
+  test("one-page portfolio does not render video playback surfaces", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
@@ -33,23 +33,21 @@ test.describe("performance budgets", () => {
     await page.goto("/#work");
     await expectPageHealthy(page, problems);
 
-    const mediaPolicy = await page.locator("video").evaluateAll((videos) =>
-      videos.map((node) => {
-        const video = node as HTMLVideoElement;
+    await expect(page.locator("video")).toHaveCount(0);
 
-        return {
-          autoplay: video.autoplay,
-          controls: video.controls,
-          loop: video.loop,
-          preload: video.preload,
-        };
-      }),
+    const projectButton = page.locator('[data-project-open="garden0"]');
+
+    await expect(projectButton).toBeVisible();
+    await projectButton.scrollIntoViewIfNeeded();
+    await projectButton.click();
+
+    const dialog = page.getByRole("dialog", { name: "garden0" });
+
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("video")).toHaveCount(0);
+    await expect(dialog.locator(".joe-dialog-media img")).toHaveAttribute(
+      "src",
+      /garden0.*\.webp/,
     );
-
-    for (const video of mediaPolicy) {
-      expect(video.autoplay).toBe(false);
-      expect(video.loop).toBe(false);
-      expect(video.controls).toBe(true);
-    }
   });
 });

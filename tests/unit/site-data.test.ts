@@ -32,6 +32,8 @@ const forbiddenPublicTerms =
 const visibleSlopTerms =
   /\b(surface|proof route|public trail|owned frames|readable product surface)\b/i;
 const privatePathTerms = /\/Users\/|Downloads\//;
+const unsafePublicMediaTerms =
+  /Local API|server\.ts|\/api\/|sim0-project|\.claude|\.local|Signature HTML|base64|9690 files|raw HTML/i;
 const requiredWorkSlugs = [
   "sim0",
   "love-presentation",
@@ -113,7 +115,7 @@ describe("Joe Simo site data", () => {
       "#systems",
       "#credentials",
       "#community",
-      "#blog",
+      "/blog",
       "#contact",
     ]);
     expect(navItems.map((item) => item.label)).toEqual([
@@ -138,8 +140,12 @@ describe("Joe Simo site data", () => {
     ]);
 
     for (const item of navItems) {
-      expect(currentHomepageAnchors.has(item.href)).toBe(true);
-      expect(retiredAnchors.has(item.href)).toBe(false);
+      if (item.href.startsWith("#")) {
+        const href = item.href as (typeof portfolioSections)[number]["anchor"];
+
+        expect(currentHomepageAnchors.has(href)).toBe(true);
+        expect(retiredAnchors.has(item.href)).toBe(false);
+      }
     }
   });
 
@@ -279,6 +285,122 @@ describe("Joe Simo site data", () => {
         /LinkedIn (profile export|certification)|Local certificate|User-provided LinkedIn certification/,
       );
     }
+
+    const badgeCredentials = learningCredentials.filter(
+      (credential) => credential.badge,
+    );
+
+    expect(badgeCredentials.map((credential) => credential.label)).toEqual(
+      [
+        "PPC Fundamentals Exam",
+        "Content Marketing Fundamentals Exam",
+        "Technical SEO Exam",
+        "Unitrends Certified Associate (UCA)",
+        "Microsoft Technology Associate: Networking Fundamentals",
+        "CompTIA A+",
+        "CompTIA Network+",
+      ],
+    );
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label === "Unitrends Certified Associate (UCA)",
+      )?.badge?.src,
+    ).toBe("/media/credentials/unitrends-certified-associate.png");
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label ===
+          "Microsoft Technology Associate: Networking Fundamentals",
+      )?.badge?.src,
+    ).toBe(
+      "/media/credentials/microsoft-mta-networking-fundamentals-2018.png",
+    );
+    expect(
+      learningCredentials.find(
+        (credential) => credential.label === "CompTIA A+",
+      )?.badge?.src,
+    ).toBe("/media/credentials/comptia-a-plus-certification.png");
+    expect(
+      learningCredentials.find(
+        (credential) => credential.label === "CompTIA Network+",
+      )?.badge?.src,
+    ).toBe("/media/credentials/comptia-network-plus-ce-certification.png");
+    expect(
+      learningCredentials.find(
+        (credential) => credential.label === "Datto Technical Specialist I",
+      )?.badge,
+    ).toBeUndefined();
+    expect(
+      learningCredentials.find(
+        (credential) => credential.label === "Datto Technical Specialist II",
+      )?.badge,
+    ).toBeUndefined();
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label === "Next.js App Router Fundamentals",
+      )?.badge,
+    ).toBeUndefined();
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.issuer === "Semrush" &&
+          credential.label === "PPC Fundamentals Exam",
+      )?.badge?.src,
+    ).toBe("/media/credentials/semrush-ppc-fundamentals-exam.svg");
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.issuer === "Semrush" &&
+          credential.label === "Content Marketing Fundamentals Exam",
+      )?.badge?.src,
+    ).toBe(
+      "/media/credentials/semrush-content-marketing-fundamentals-exam.svg",
+    );
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.issuer === "Semrush" &&
+          credential.label === "Technical SEO Exam",
+      )?.badge?.src,
+    ).toBe("/media/credentials/semrush-technical-seo-exam.svg");
+    for (const label of [
+      "Local SEO Exam",
+      "Mobile SEO Exam",
+      "Backlink Management Exam",
+      "Keyword Research Exam",
+      "SEO Fundamentals Exam",
+      "Content Marketing and SEO Fundamentals Exam",
+      "Role of Content Exam",
+    ]) {
+      expect(
+        learningCredentials.find(
+          (credential) =>
+            credential.issuer === "Semrush" && credential.label === label,
+        )?.badge,
+      ).toBeUndefined();
+    }
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label === "React Foundations for Next.js",
+      )?.badge,
+    ).toBeUndefined();
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label ===
+          "Part 107 Small Unmanned Aircraft Systems Initial",
+      )?.badge,
+    ).toBeUndefined();
+    expect(
+      learningCredentials.find(
+        (credential) =>
+          credential.label ===
+          "Barracuda Web Security Service Certified Engineer",
+      )?.badge,
+    ).toBeUndefined();
   });
 
   test("keeps the surviving web archive as local artifacts", () => {
@@ -502,6 +624,12 @@ describe("Joe Simo site data", () => {
       }
     }
 
+    for (const credential of learningCredentials) {
+      if (credential.badge) {
+        mediaSources.add(credential.badge.src);
+      }
+    }
+
     const missingMedia = [...mediaSources]
       .filter((source) => source.startsWith("/media/"))
       .filter((source) =>
@@ -547,14 +675,44 @@ describe("Joe Simo site data", () => {
     }
   });
 
-  test("sitemap keeps the public site one-page", () => {
+  test("keeps public media labels free of private implementation details", () => {
+    const publicMediaStrings = collectStringValues(
+      projectCaseStudiesPublic.map((project) => ({
+        assets: project.assets.map((asset) => ({
+          alt: asset.media.alt,
+          caption: project.proofCaptions[asset.captionId],
+          label: asset.label,
+          sourceLabel: asset.sourceLabel,
+        })),
+        miniWorld: project.miniWorld
+          ? {
+              media: project.miniWorld.media.map((media) => ({
+                alt: media.alt,
+                label: media.label,
+                sourceLabel: media.sourceLabel,
+              })),
+              panels: project.miniWorld.panels,
+            }
+          : undefined,
+      })),
+    );
+
+    for (const value of publicMediaStrings) {
+      expect(value).not.toMatch(unsafePublicMediaTerms);
+    }
+  });
+
+  test("sitemap exposes home, blog, and shareable work routes", () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    expect(urls).toEqual(["https://joesimo.com/"]);
+    expect(urls[0]).toBe("https://joesimo.com/");
+    expect(urls).toContain("https://joesimo.com/blog");
 
-    for (const project of projectCaseStudies) {
-      expect(urls).not.toContain(`https://joesimo.com/work/${project.slug}`);
+    for (const project of projectCaseStudiesPublic) {
+      expect(urls).toContain(`https://joesimo.com/work/${project.slug}`);
     }
+
+    expect(urls).toHaveLength(projectCaseStudiesPublic.length + 2);
   });
 
   test("lookup helper returns only real work slugs", () => {

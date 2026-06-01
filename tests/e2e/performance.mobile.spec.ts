@@ -42,6 +42,10 @@ test.describe("mobile performance budgets", () => {
       { timeout: 20_000 },
     );
     await expect(page.locator(".joe-name-particles-canvas")).toBeVisible();
+    await expect(page.locator(".joe-name-particles-canvas")).toHaveCSS(
+      "opacity",
+      "1",
+    );
     expect(mobileHeroEffectRequests).toEqual([]);
     expect(snapshot.decodedScriptBytes).toBeLessThan(2_800_000);
     expect(snapshot.decodedImageBytes).toBeLessThan(6_500_000);

@@ -18,18 +18,28 @@ export function ThemeMeta() {
   useEffect(() => {
     const selectedTheme = theme === "system" ? resolvedTheme : theme;
     const content = resolveThemeColor(selectedTheme);
-    let meta = document.querySelector<HTMLMetaElement>(
-      'meta[data-site-theme-color="true"]',
+    const metas = Array.from(
+      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
     );
+    const meta =
+      metas.find((candidate) => candidate.dataset.siteThemeColor === "true") ??
+      metas.find((candidate) => !candidate.media) ??
+      metas[0] ??
+      document.createElement("meta");
 
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "theme-color";
-      meta.dataset.siteThemeColor = "true";
-      document.head.appendChild(meta);
+    meta.name = "theme-color";
+    meta.dataset.siteThemeColor = "true";
+    meta.content = content;
+
+    for (const staleMeta of metas) {
+      if (staleMeta !== meta) {
+        staleMeta.remove();
+      }
     }
 
-    meta.content = content;
+    if (!meta.isConnected) {
+      document.head.appendChild(meta);
+    }
   }, [resolvedTheme, theme]);
 
   return null;
