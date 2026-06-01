@@ -4,15 +4,18 @@ import { join } from "node:path";
 
 import {
   archiveArtifacts,
+  blogPosts,
   communityArtifacts,
   communityHighlights,
   credentialGroups,
   credentialIssuers,
   educationRecords,
   getProjectCaseStudy,
+  githubRepositories,
   heroCopy,
   joeProfile,
   learningCredentials,
+  latestBlogPost,
   navItems,
   projectCaseStudies,
   projectCaseStudiesPublic,
@@ -56,6 +59,10 @@ const requiredSocials = {
     handle: "@Joe-Simo",
     href: "https://github.com/Joe-Simo",
   },
+  v0: {
+    handle: "@joesimo",
+    href: "https://v0.app/@joesimo",
+  },
   LinkedIn: {
     handle: "josephsimo",
     href: "https://www.linkedin.com/in/josephsimo/",
@@ -88,9 +95,7 @@ describe("Joe Simo site data", () => {
     expect(heroCopy.intro).toBe(
       "Designer/developer, FL.",
     );
-    expect(heroCopy.detail).toBe(
-      "I build practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.",
-    );
+    expect(heroCopy.detail).toBe("");
     expect(joeProfile.kicker).toContain("FL");
     expect(joeProfile.kicker).toContain("Designer-developer");
     expect(joeProfile.routeLabel).toBe("Work / Systems / Certifications / Community / Blog.");
@@ -153,12 +158,11 @@ describe("Joe Simo site data", () => {
     expect(socialChannels.map((channel) => channel.label)).toEqual([
       "X",
       "GitHub",
+      "v0",
       "LinkedIn",
       "Instagram",
-    ]);
-    expect(socialChannels.map((channel) => channel.label)).not.toContain(
       "YouTube",
-    );
+    ]);
 
     for (const [label, expected] of Object.entries(requiredSocials)) {
       const channel = socialChannels.find(
@@ -170,6 +174,19 @@ describe("Joe Simo site data", () => {
       expect(channel?.href).toBe(expected.href);
     }
 
+    expect(
+      Object.fromEntries(
+        socialChannels.map((channel) => [channel.label, channel.iconKey]),
+      ),
+    ).toMatchObject({
+      GitHub: "github",
+      Instagram: "instagram",
+      LinkedIn: "linkedin",
+      v0: "v0",
+      X: "xLogo",
+      YouTube: "youtube",
+    });
+
     const privateMessageScheme = ["mail", "to:"].join("");
 
     expect(
@@ -177,6 +194,73 @@ describe("Joe Simo site data", () => {
         channel.href.startsWith(privateMessageScheme),
       ),
     ).toBe(false);
+  });
+
+  test("publishes the first blog post without secrets", () => {
+    expect(blogPosts).toHaveLength(1);
+    expect(latestBlogPost.slug).toBe("vercel-v0-api-billing-bug-report");
+    expect(latestBlogPost.href).toBe("/blog/vercel-v0-api-billing-bug-report");
+    expect(latestBlogPost.videoHref).toBe(
+      "https://www.youtube.com/watch?v=XnmyF2lmCP4&feature=youtu.be",
+    );
+    expect(latestBlogPost.gallery).toHaveLength(3);
+
+    const publicBlogStrings = collectStringValues(blogPosts);
+
+    for (const value of publicBlogStrings) {
+      expect(value).not.toMatch(/REDACTEDAPIKEYHERE|YOUR_API_KEY|Bearer /i);
+      expect(value).not.toMatch(privatePathTerms);
+    }
+
+    for (const media of latestBlogPost.gallery) {
+      expect(existsSync(join(process.cwd(), "public", media.src))).toBe(true);
+    }
+  });
+
+  test("keeps GitHub project coverage public-safe", () => {
+    expect(githubRepositories.map((repository) => repository.name)).toEqual([
+      "joesimo",
+      "skills",
+      "love-presentation",
+      "sim0",
+      "astro",
+      "chesslm",
+      "garden0",
+      "website",
+      "platforms-starter-kit",
+      "joe-simo-pet",
+      "openai-agents-js",
+      "GitHub / @Joe-Simo",
+    ]);
+
+    const privateRepositories = githubRepositories.filter(
+      (repository) => repository.visibility === "private",
+    );
+
+    expect(privateRepositories.map((repository) => repository.name)).toEqual([
+      "sim0",
+      "astro",
+      "chesslm",
+      "garden0",
+      "website",
+      "platforms-starter-kit",
+    ]);
+
+    for (const repository of privateRepositories) {
+      expect(repository.href).toBeUndefined();
+      expect(repository.source).toBe("Private GitHub repository");
+      expect(repository.description).not.toMatch(
+        /api key|secret|token|credential|database|private endpoint/i,
+      );
+      expect(repository.meta).toContain("private repo");
+    }
+
+    for (const repository of githubRepositories.filter(
+      (candidate) => candidate.visibility === "public",
+    )) {
+      expect(repository.href).toMatch(/^https:\/\/github\.com\/Joe-Simo\//);
+      expect(repository.meta).toContain("public repo");
+    }
   });
 
   test("keeps education and certification proof visible", () => {
@@ -421,19 +505,18 @@ describe("Joe Simo site data", () => {
   });
 
   test("keeps React Miami artifacts local and modest", () => {
-    expect(communityArtifacts).toHaveLength(19);
-    expect(communityArtifacts[0]?.title).toBe("Hallway frame");
-    expect(communityHighlights).toHaveLength(6);
-    expect(communityHighlights[0]?.title).toBe("React Miami room");
-    expect(communityHighlights[1]?.title).toBe("ThePrimeagen");
-    expect(communityHighlights[1]?.media.src).toBe(
-      "/media/community/react-miami-primeagen.webp",
+    expect(communityArtifacts).toHaveLength(11);
+    expect(communityArtifacts[0]?.title).toBe("ThePrimeagen");
+    expect(communityHighlights).toHaveLength(11);
+    expect(communityHighlights[0]?.title).toBe("ThePrimeagen");
+    expect(communityHighlights[0]?.media.src).toBe(
+      "/media/community/joe-community-01.webp",
     );
 
     for (const artifact of communityArtifacts) {
       expect(artifact.sourceLabel).toBe("Owned event photo");
       expect(artifact.media.src).toMatch(
-        /^\/media\/community\/react-miami-developer-\d{2}\.webp$/,
+        /^\/media\/community\/joe-community-\d{2}\.webp$/,
       );
       expect(artifact.body).not.toMatch(privatePathTerms);
       expect(artifact.body).not.toMatch(forbiddenPublicTerms);
@@ -702,17 +785,20 @@ describe("Joe Simo site data", () => {
     }
   });
 
-  test("sitemap exposes home, blog, and shareable work routes", () => {
+  test("sitemap exposes home and shareable work routes", () => {
     const urls = sitemap().map((entry) => entry.url);
 
     expect(urls[0]).toBe("https://joesimo.com/");
     expect(urls).toContain("https://joesimo.com/blog");
+    expect(urls).toContain(
+      "https://joesimo.com/blog/vercel-v0-api-billing-bug-report",
+    );
 
     for (const project of projectCaseStudiesPublic) {
       expect(urls).toContain(`https://joesimo.com/work/${project.slug}`);
     }
 
-    expect(urls).toHaveLength(projectCaseStudiesPublic.length + 2);
+    expect(urls).toHaveLength(projectCaseStudiesPublic.length + blogPosts.length + 2);
   });
 
   test("lookup helper returns only real work slugs", () => {

@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteIcon } from "@/components/site/site-icons";
 import { LocalizedText as T } from "@/components/site/localized-text";
 import { ButtonLink } from "@/components/ui/button";
+import { socialChannels } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "404 / joesimo.com",
@@ -18,14 +19,14 @@ export const metadata: Metadata = {
 
 const featuredLinks = [
   {
-    detail: "Selected products and utilities.",
-    detailEs: "Productos y utilidades seleccionados.",
+    detail: "Public and private GitHub project signals.",
+    detailEs: "Señales de proyectos públicos y privados en GitHub.",
     href: "/#work",
     iconKey: "appWindow" as const,
     label: "Work",
     labelEs: "Trabajo",
-    status: "Selected work",
-    statusEs: "Trabajo seleccionado",
+    status: "GitHub projects",
+    statusEs: "Proyectos en GitHub",
   },
   {
     detail: "System administration and recovery roles that shaped the work.",
@@ -137,7 +138,11 @@ export default function NotFound() {
         </section>
       </main>
 
-      <SiteFooter homeHref="/" sectionPrefix="/" />
+      <SiteFooter
+        homeHref="/"
+        sectionPrefix="/"
+        socialChannels={socialChannels}
+      />
     </div>
   );
 }

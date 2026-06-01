@@ -10,7 +10,11 @@ export type IconKey =
   | "linkedin"
   | "mail"
   | "menu"
-  | "x";
+  | "v0"
+  | "instagram"
+  | "youtube"
+  | "x"
+  | "xLogo";
 
 export type AccentKey = "ink" | "signal" | "fault" | "live";
 
@@ -150,12 +154,13 @@ export type JoeProfile = {
 
 export type GithubRepository = {
   name: string;
-  href: string;
+  href?: string;
   description: string;
   kind: string;
   source: string;
   homepage?: string;
   meta: string[];
+  visibility: "private" | "profile" | "public";
 };
 
 export type WorkArtifact = {
@@ -475,15 +480,48 @@ export type CommunityArtifact = {
   media: SiteMedia;
 };
 
+export type BlogPostMedia = SiteMedia & {
+  caption: string;
+  sourceLabel: string;
+};
+
+export type BlogPostFact = {
+  label: string;
+  value: string;
+};
+
+export type BlogPostSection = {
+  heading: string;
+  body: readonly string[];
+};
+
+export type BlogPost = {
+  slug: string;
+  title: string;
+  kicker: string;
+  summary: string;
+  excerpt: string;
+  publishedAt: string;
+  dateLabel: string;
+  readingTime: string;
+  href: `/blog/${string}`;
+  videoHref: string;
+  videoLabel: string;
+  heroMedia: BlogPostMedia;
+  gallery: readonly BlogPostMedia[];
+  facts: readonly BlogPostFact[];
+  timeline: readonly BlogPostFact[];
+  sections: readonly BlogPostSection[];
+  tags: readonly string[];
+};
+
 export const heroCopy = {
   title: "Joe Simo",
   intro: "Designer/developer, FL.",
-  detail:
-    "I build practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.",
+  detail: "",
 };
 
-export const siteDescription =
-  "Joe Simo is a Florida designer/developer building practical web tools, product interfaces, and small systems grounded in support, systems, and recovery work.";
+export const siteDescription = "Joe Simo is a Florida designer/developer.";
 
 export const joeProfile: JoeProfile = {
   name: heroCopy.title,
@@ -516,7 +554,7 @@ export const portfolioSections = [
     anchor: "#work",
     copy: {
       title: "Work",
-      detail: "Selected projects, strongest evidence first.",
+      detail: "Public and private GitHub project signals.",
     },
   },
   {
@@ -918,7 +956,7 @@ export const socialChannels: SocialChannel[] = [
     label: "X",
     handle: "@joesimo",
     href: "https://x.com/joesimo",
-    iconKey: "x",
+    iconKey: "xLogo",
     description: "Public notes and short thinking.",
   },
   {
@@ -927,6 +965,13 @@ export const socialChannels: SocialChannel[] = [
     href: "https://github.com/Joe-Simo",
     iconKey: "github",
     description: "Code, systems, and experiments.",
+  },
+  {
+    label: "v0",
+    handle: "@joesimo",
+    href: "https://v0.app/@joesimo",
+    iconKey: "v0",
+    description: "v0 profile and UI experiments.",
   },
   {
     label: "LinkedIn",
@@ -939,8 +984,15 @@ export const socialChannels: SocialChannel[] = [
     label: "Instagram",
     handle: "@joesimo_",
     href: "https://www.instagram.com/joesimo_/",
-    iconKey: "camera",
+    iconKey: "instagram",
     description: "Moments, people, and rooms.",
+  },
+  {
+    label: "YouTube",
+    handle: "@JoeSimo",
+    href: "https://www.youtube.com/@JoeSimo",
+    iconKey: "youtube",
+    description: "Video and public channel updates.",
   },
 ];
 
@@ -1408,6 +1460,27 @@ export const proudSystemsRoles: ProudRole[] = [
 
 export const githubRepositories: GithubRepository[] = [
   {
+    name: "joesimo",
+    href: "https://github.com/Joe-Simo/joesimo",
+    description:
+      "Public TypeScript repository for joesimo.com and the current portfolio surface.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/joesimo",
+    meta: ["github", "public repo", "TypeScript", "Next.js"],
+    visibility: "public",
+  },
+  {
+    name: "skills",
+    href: "https://github.com/Joe-Simo/skills",
+    description:
+      "Community agent skills by Joe Simo, including the Vercel Geist design-system skill.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/skills",
+    homepage: "https://joesimo.com",
+    meta: ["github", "public repo", "agent skills", "Vercel Geist"],
+    visibility: "public",
+  },
+  {
     name: "love-presentation",
     href: "https://github.com/Joe-Simo/love-presentation",
     description:
@@ -1416,6 +1489,63 @@ export const githubRepositories: GithubRepository[] = [
     source: "github.com/Joe-Simo/love-presentation",
     homepage: "https://lovepresentation.com",
     meta: ["github", "public repo", "TypeScript", "Next.js"],
+    visibility: "public",
+  },
+  {
+    name: "sim0",
+    description:
+      "Private TypeScript product repository for the browser workspace at sim0.com.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    homepage: "https://sim0.com",
+    meta: ["github", "private repo", "TypeScript", "product"],
+    visibility: "private",
+  },
+  {
+    name: "astro",
+    description:
+      "Private Swift repository for the Astrosimo stargazing app and planning screens.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    meta: ["github", "private repo", "Swift", "iOS"],
+    visibility: "private",
+  },
+  {
+    name: "chesslm",
+    description:
+      "Private TypeScript repository for the ChessLM chess training product.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    meta: ["github", "private repo", "TypeScript", "training product"],
+    visibility: "private",
+  },
+  {
+    name: "garden0",
+    description:
+      "Private C# repository for the garden0 Unity iOS game and landing page.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    meta: ["github", "private repo", "C#", "Unity"],
+    visibility: "private",
+  },
+  {
+    name: "website",
+    description:
+      "Private TypeScript repository for earlier website work and portfolio iteration.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    meta: ["github", "private repo", "TypeScript", "website"],
+    visibility: "private",
+  },
+  {
+    name: "platforms-starter-kit",
+    description:
+      "Private TypeScript repository for a starter-kit experiment and deployment surface.",
+    kind: "Private repo",
+    source: "Private GitHub repository",
+    homepage: "https://platforms-starter-kit-simo-js.vercel.app",
+    meta: ["github", "private repo", "TypeScript", "starter kit"],
+    visibility: "private",
   },
   {
     name: "joe-simo-pet",
@@ -1425,6 +1555,7 @@ export const githubRepositories: GithubRepository[] = [
     kind: "Public repo",
     source: "github.com/Joe-Simo/joe-simo-pet",
     meta: ["github", "public repo", "MIT"],
+    visibility: "public",
   },
   {
     name: "openai-agents-js",
@@ -1435,6 +1566,7 @@ export const githubRepositories: GithubRepository[] = [
     source: "github.com/Joe-Simo/openai-agents-js",
     homepage: "https://openai.github.io/openai-agents-js/",
     meta: ["github", "public repo", "agent workflow"],
+    visibility: "public",
   },
   {
     name: "GitHub / @Joe-Simo",
@@ -1444,6 +1576,7 @@ export const githubRepositories: GithubRepository[] = [
     kind: "Profile",
     source: "github.com/Joe-Simo",
     meta: ["github", "@Joe-Simo", "public profile"],
+    visibility: "profile",
   },
 ];
 
@@ -3172,113 +3305,250 @@ export const archiveArtifacts: ArchiveArtifact[] = [
   },
 ];
 
-const reactMiamiDeveloperFrames = [
-  "Hallway frame",
-  "Builder table",
-  "Night conversation",
-  "Agentic infrastructure",
-  "La Tropical",
-  "Orange pocket",
-  "Conference room",
-  "Badge frame",
-  "Hallway frame",
-  "Front row",
-  "After-hours group",
-  "React Miami stage",
-  "React Miami still",
-  "React Miami motion",
-  "React Miami portrait",
-  "React Miami lockup",
-  "React Miami pair",
-  "React Miami profile",
-  "React Miami contact sheet",
+const communityPhotoFrames = [
+  {
+    alt: "Joe Simo with ThePrimeagen at React Miami 2026",
+    height: 2200,
+    title: "ThePrimeagen",
+    width: 1781,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee at La Tropical",
+    height: 2200,
+    title: "La Tropical",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee in Miami",
+    height: 2200,
+    title: "Miami frame",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee after hours",
+    height: 2200,
+    title: "After-hours frame",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee near the expo floor",
+    height: 2200,
+    title: "Expo floor",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee inside the conference room",
+    height: 2200,
+    title: "Conference selfie",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee holding a sticker",
+    height: 2200,
+    title: "Sticker frame",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee in a hallway",
+    height: 2200,
+    title: "Hallway frame",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with a React Miami attendee at the event backdrop",
+    height: 2200,
+    title: "Backdrop portrait",
+    width: 1650,
+  },
+  {
+    alt: "Joe Simo with React Miami attendees in the audience",
+    height: 2200,
+    title: "Audience selfie",
+    width: 1650,
+  },
+  {
+    alt: "React Miami attendees seated in the conference room",
+    height: 2200,
+    title: "Front row",
+    width: 1993,
+  },
 ] as const;
 
 export const communityArtifacts: CommunityArtifact[] =
-  reactMiamiDeveloperFrames.map((title, index) => {
+  communityPhotoFrames.map((frame, index) => {
     const frameNumber = index + 1;
-    const code = `R${String(frameNumber).padStart(2, "0")}`;
+    const paddedFrameNumber = String(frameNumber).padStart(2, "0");
 
     return {
-      code,
-      title,
-      body:
-        "React Miami 2026 photo from Joe's developer community.",
+      code: `R${paddedFrameNumber}`,
+      title: frame.title,
+      body: "React Miami 2026 community photo selected by Joe.",
       sourceLabel: "Owned event photo",
       media: {
         kind: "artifact",
-        src: `/media/community/react-miami-developer-${String(frameNumber).padStart(2, "0")}.webp`,
-        alt: `Joe Simo at React Miami 2026 developer community frame ${frameNumber}`,
-        width: 1200,
-        height: 1600,
+        src: `/media/community/joe-community-${paddedFrameNumber}.webp`,
+        alt: frame.alt,
+        width: frame.width,
+        height: frame.height,
         tone: "desaturated",
       },
     };
   });
 
-export const communityHighlights: CommunityArtifact[] = [
+export const communityHighlights: CommunityArtifact[] = communityArtifacts;
+
+export const blogPosts = [
   {
-    code: "R00",
-    title: "React Miami room",
-    body:
-      "React Miami 2026 room photo before the individual photos.",
-    sourceLabel: "Owned event photo",
-    media: {
+    slug: "vercel-v0-api-billing-bug-report",
+    title: "The time I found a v0 API billing bug",
+    kicker: "Responsible disclosure",
+    summary:
+      "A private report about successful v0 API calls missing from billing, the evidence I sent to Guillermo Rauch, and the v0 engineer who confirmed the fix.",
+    excerpt:
+      "I found successful v0 API calls through a custom MCP integration that were not showing up in my account billing. Instead of posting it publicly, I recorded proof, wrote a technical report, and sent it directly to Vercel.",
+    publishedAt: "2026-06-01",
+    dateLabel: "June 1, 2026",
+    readingTime: "5 min read",
+    href: "/blog/vercel-v0-api-billing-bug-report",
+    videoHref: "https://www.youtube.com/watch?v=XnmyF2lmCP4&feature=youtu.be",
+    videoLabel: "Open the private report video",
+    heroMedia: {
       kind: "artifact",
-      src: "/media/community/react-miami-room.webp",
-      alt: "React Miami 2026 builder room with Joe Simo community context",
-      width: 1199,
-      height: 800,
+      src: "/media/blog/v0-api-billing-bug/fix-confirmation.webp",
+      alt: "Message from Ido Pesok confirming the v0 billing issue cause was identified and should be fixed",
+      width: 1148,
+      height: 1716,
       tone: "desaturated",
+      caption:
+        "The outcome: Vercel's v0 engineer confirmed they identified the cause and that it should be fixed.",
+      sourceLabel: "Private disclosure thread",
     },
+    gallery: [
+      {
+        kind: "artifact",
+        src: "/media/blog/v0-api-billing-bug/private-video-followup.webp",
+        alt: "Private message to Guillermo Rauch with a private YouTube proof video about the v0 API billing bug",
+        width: 1290,
+        height: 2133,
+        tone: "desaturated",
+        caption:
+          "The proof video was kept private and shared with Vercel so the issue could be handled responsibly.",
+        sourceLabel: "Private disclosure thread",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/v0-api-billing-bug/guillermo-ido-intro.webp",
+        alt: "Guillermo Rauch connects Joe Simo with Ido Pesok from v0",
+        width: 1168,
+        height: 1726,
+        tone: "desaturated",
+        caption:
+          "Guillermo Rauch believed the report and connected me with Ido Pesok from v0.",
+        sourceLabel: "Private disclosure thread",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/v0-api-billing-bug/fix-confirmation.webp",
+        alt: "Vercel v0 engineer confirms the billing bug cause was identified",
+        width: 1148,
+        height: 1716,
+        tone: "desaturated",
+        caption:
+          "After I shared timestamps, usage evidence, and the MCP context, the v0 team identified the cause.",
+        sourceLabel: "Private disclosure thread",
+      },
+    ],
+    facts: [
+      {
+        label: "Report date",
+        value: "July 5, 2025",
+      },
+      {
+        label: "Surface",
+        value: "v0 API through a custom MCP integration",
+      },
+      {
+        label: "Model",
+        value: "v0-1.5-lg",
+      },
+      {
+        label: "Confirmed usage",
+        value: "3 successful API calls, 43KB+ generated code",
+      },
+      {
+        label: "Dashboard gap",
+        value: "API usage was missing from customer billing events",
+      },
+      {
+        label: "Outcome",
+        value: "Vercel identified the cause and said it should be fixed",
+      },
+    ],
+    timeline: [
+      {
+        label: "20:46 EDT",
+        value: "Generated a user profile component through the v0 API.",
+      },
+      {
+        label: "20:56 EDT",
+        value: "Generated a complete SaaS landing page through the same path.",
+      },
+      {
+        label: "20:57 EDT",
+        value: "Verified the API directly with a curl request and usage tokens.",
+      },
+      {
+        label: "23:45 EDT",
+        value: "Sent Guillermo a private proof video and written report.",
+      },
+      {
+        label: "01:52 EDT",
+        value: "Guillermo connected me with Ido Pesok from v0.",
+      },
+      {
+        label: "04:32 EDT",
+        value: "Ido confirmed the team identified the cause and expected the fix.",
+      },
+    ],
+    sections: [
+      {
+        heading: "The bug",
+        body: [
+          "I was experimenting with v0 through a custom MCP integration. The API calls worked. The model returned real React and TypeScript code. The usage metadata was present in the API response. The problem was that the calls were not appearing in my v0 billing dashboard.",
+          "That meant the product was doing paid work without the customer-facing billing records reflecting it. From a user point of view, it made budgets and limits unclear. From Vercel's point of view, it looked like potential revenue leakage.",
+        ],
+      },
+      {
+        heading: "The evidence",
+        body: [
+          "I documented three successful calls on July 5, 2025: one user profile component, one complete SaaS landing page, and one direct curl verification. The generated output was more than 43KB of code, and the direct API response included usage tokens.",
+          "The dashboard, however, only showed regular web usage events like messages and image generation. The API-based v0-1.5-lg calls were missing. That contrast made the report concrete enough to investigate.",
+        ],
+      },
+      {
+        heading: "The disclosure",
+        body: [
+          "I did not post the issue publicly while it was active. I recorded a private video, wrote a report with timestamps and reproduction context, and sent it directly to Guillermo Rauch.",
+          "Guillermo replied that they could not reproduce it yet, but that he believed me. Then he connected me with Ido Pesok from the v0 team. I shared the MCP context, the dashboard gap, the timestamps, and the successful API response details.",
+        ],
+      },
+      {
+        heading: "The fix",
+        body: [
+          "A few hours later, Ido wrote back: \"Thank you so much for reporting! We identified the cause and it should be fixed.\" That was the best possible outcome: the issue moved from a private report to an engineering fix without becoming public exploit material.",
+          "The main lesson for me was simple: if you find a billing, auth, quota, or infrastructure bug, the most useful thing you can do is bring evidence, stay calm, and help the team reproduce it safely.",
+        ],
+      },
+    ],
+    tags: ["v0", "Vercel", "MCP", "billing", "responsible disclosure"],
   },
-  {
-    code: "R01",
-    title: "ThePrimeagen",
-    body:
-      "React Miami 2026 photo with ThePrimeagen.",
-    sourceLabel: "Owned event photo",
-    media: {
-      kind: "artifact",
-      src: "/media/community/react-miami-primeagen.webp",
-      alt: "Joe Simo with ThePrimeagen at React Miami 2026",
-      width: 960,
-      height: 1186,
-      tone: "desaturated",
-    },
-  },
-  {
-    code: "R02",
-    title: "Builder table",
-    body:
-      "React Miami 2026 table photo from the same event.",
-    sourceLabel: "Owned event photo",
-    media: {
-      kind: "artifact",
-      src: "/media/community/react-miami-table.webp",
-      alt: "React Miami 2026 builder table community frame",
-      width: 1199,
-      height: 800,
-      tone: "desaturated",
-    },
-  },
-  {
-    code: "R03",
-    title: "Audience frame",
-    body:
-      "React Miami 2026 audience photo showing the room around the work.",
-    sourceLabel: "Owned event photo",
-    media: {
-      kind: "artifact",
-      src: "/media/community/react-miami-audience.webp",
-      alt: "React Miami 2026 audience community frame",
-      width: 900,
-      height: 993,
-      tone: "desaturated",
-    },
-  },
-  ...communityArtifacts.slice(0, 2),
-];
+] as const satisfies readonly BlogPost[];
+
+export const latestBlogPost = blogPosts[0];
+
+export function getBlogPost(slug: string) {
+  return blogPosts.find((post) => post.slug === slug);
+}
 
 export const navItems = [
   {

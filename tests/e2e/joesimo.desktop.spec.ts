@@ -64,8 +64,11 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       credentialsSection.locator(".joe-certification-tile"),
     ).toHaveCount(27);
     await expect(
-      credentialsSection.locator(".joe-certification-badge-image"),
+      credentialsSection.locator(".joe-certification-mark-image"),
     ).toHaveCount(27);
+    await expect(
+      credentialsSection.locator(".joe-certification-badge-image"),
+    ).toHaveCount(7);
     await expect(
       credentialsSection.locator(".joe-certification-name"),
     ).toHaveCount(27);
@@ -84,43 +87,20 @@ test.describe("Joe Simo desktop homepage navigation", () => {
 
     const workSection = await expectHomeDestinationSection(page, "work");
     await expect(workSection).toBeInViewport();
-    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
     await expect(
-      workSection.getByRole("heading", { exact: true, name: "sim0" }),
+      workSection.getByRole("heading", {
+        exact: true,
+        name: "GitHub projects",
+      }),
     ).toBeVisible();
+    await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
+    await expect(workSection.locator(".joe-github-card")).toHaveCount(11);
     await expect(
-      workSection.getByRole("heading", { name: "Love Presentation" }),
-    ).toBeVisible();
-    const firstWorkImage = workSection.locator(".joe-work-thumb img").first();
-
-    await expect(firstWorkImage).toHaveAttribute("loading", "eager");
-    await expect(firstWorkImage).toHaveAttribute("fetchpriority", "high");
-
-    const thumbMetrics = await workSection
-      .locator(".joe-work-thumb img")
-      .evaluateAll((images) =>
-        images.map((image) => {
-          const rect = image.getBoundingClientRect();
-          const img = image as HTMLImageElement;
-
-          return {
-            height: Math.round(rect.height),
-            naturalHeight: img.naturalHeight,
-            naturalWidth: img.naturalWidth,
-            width: Math.round(rect.width),
-          };
-        }),
-      );
-
-    expect(thumbMetrics).toHaveLength(6);
-    expect(new Set(thumbMetrics.map((metric) => metric.width)).size).toBe(1);
-    expect(new Set(thumbMetrics.map((metric) => metric.height)).size).toBe(1);
-
-    for (const metric of thumbMetrics) {
-      expect(metric.naturalWidth).toBeGreaterThan(0);
-      expect(metric.naturalHeight).toBeGreaterThan(0);
-      expect(metric.width / metric.height).toBeCloseTo(16 / 9, 1);
-    }
+      workSection.locator('.joe-github-card[data-visibility="public"]'),
+    ).toHaveCount(5);
+    await expect(
+      workSection.locator('article.joe-github-card[data-visibility="private"]'),
+    ).toHaveCount(6);
 
     await expectPageHealthy(page, problems);
   });

@@ -2,32 +2,28 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export const completedRoute = "preview,runtime,api,ship,changes";
 export const workRoutes = [
-  { heading: "sim0", path: "/work/sim0", visibleOnHome: true },
+  { heading: "sim0", path: "/work/sim0" },
   {
     heading: "Love Presentation",
     path: "/work/love-presentation",
-    visibleOnHome: true,
   },
-  { heading: "Astrosimo", path: "/work/astrosimo", visibleOnHome: true },
-  { heading: "garden0", path: "/work/garden0", visibleOnHome: true },
-  { heading: "Next Flights", path: "/work/next-flights", visibleOnHome: true },
+  { heading: "Astrosimo", path: "/work/astrosimo" },
+  { heading: "garden0", path: "/work/garden0" },
+  { heading: "Next Flights", path: "/work/next-flights" },
   {
     heading: "GrimmGreen Channel Watch",
     path: "/work/grimgreen-channel-watch",
-    visibleOnHome: false,
   },
-  { heading: "Royal Shell", path: "/work/royal-shell", visibleOnHome: false },
+  { heading: "Royal Shell", path: "/work/royal-shell" },
   {
     heading: "Signature Copier",
     path: "/work/signature-copier",
-    visibleOnHome: false,
   },
   {
     heading: "Printer Scripts",
     path: "/work/printer-scripts",
-    visibleOnHome: false,
   },
-  { heading: "ChessLM", path: "/work/chesslm", visibleOnHome: true },
+  { heading: "ChessLM", path: "/work/chesslm" },
 ] as const;
 
 type HomeDestination =

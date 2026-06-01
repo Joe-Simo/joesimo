@@ -108,7 +108,7 @@ test.describe("responsive, theme, and fallback gates", () => {
 
     await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
     await expect(
-      workSection.getByRole("heading", { name: "Love Presentation" }),
+      workSection.getByRole("heading", { name: "GitHub projects" }),
     ).toBeVisible();
     await expectPageHealthy(page, problems);
   });
@@ -140,8 +140,11 @@ test.describe("responsive, theme, and fallback gates", () => {
       page.locator("#credentials .joe-certification-tile"),
     ).toHaveCount(27);
     await expect(
-      page.locator("#credentials .joe-certification-badge-image"),
+      page.locator("#credentials .joe-certification-mark-image"),
     ).toHaveCount(27);
+    await expect(
+      page.locator("#credentials .joe-certification-badge-image"),
+    ).toHaveCount(7);
     await expect(
       page.locator("#credentials .joe-certification-name"),
     ).toHaveCount(27);
@@ -197,7 +200,7 @@ test.describe("responsive, theme, and fallback gates", () => {
       page.locator("#community .joe-photo-marquee-track"),
     ).toHaveCSS("animation-name", "none");
     await expect(
-      page.locator('#community .joe-photo-marquee-copy[aria-hidden="true"]'),
+      page.locator('#community .joe-photo-marquee-copy[data-photo-copy="visual"]'),
     ).toBeHidden();
     await expect
       .poll(() =>
@@ -245,6 +248,36 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectPageHealthy(page, problems);
   });
 
+  test("name particle hero starts when reduced motion becomes inactive", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "false",
+    );
+    await expect(page.locator(".joe-name-particles-canvas")).toBeHidden();
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+
+    await expect(page.locator(".joe-name-particles")).toHaveAttribute(
+      "data-particles-ready",
+      "true",
+      { timeout: 20_000 },
+    );
+    await expect(page.locator(".joe-name-particles-canvas")).toBeVisible();
+    await expect(page.locator(".joe-name-particles-canvas")).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    await expectHomeDestinationLink(page, "work");
+    await expectPageHealthy(page, problems);
+  });
+
   test("pointer surface polish follows live reduced motion preference", async ({
     page,
   }) => {
@@ -259,7 +292,7 @@ test.describe("responsive, theme, and fallback gates", () => {
       "ready",
     );
 
-    const polishedSurface = page.locator(".joe-photo-card").first();
+    const polishedSurface = page.locator(".joe-github-card").first();
 
     await expect(polishedSurface).toBeVisible();
 

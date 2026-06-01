@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { projectCaseStudiesPublic } from "@/lib/site-data";
+import { blogPosts, projectCaseStudiesPublic } from "@/lib/site-data";
 
 const siteUrl = "https://joesimo.com";
 type SitemapEntry = {
@@ -24,6 +24,13 @@ const projectRoutes = projectCaseStudiesPublic.map((project) => ({
   priority: project.tier === "featured" ? 0.8 : 0.6,
 }));
 
+const blogPostRoutes = blogPosts.map((post) => ({
+  path: post.href,
+  changeFrequency: monthly,
+  lastModified: dateFromSortKey(post.publishedAt),
+  priority: 0.7,
+}));
+
 const homeLastModified = projectRoutes.reduce(
   (latest, route) =>
     route.lastModified > latest ? route.lastModified : latest,
@@ -41,9 +48,10 @@ const canonicalRoutes = [
   {
     path: "/blog",
     changeFrequency: monthly,
-    lastModified: homeLastModified,
+    lastModified: blogPostRoutes[0]?.lastModified ?? homeLastModified,
     priority: 0.7,
   },
+  ...blogPostRoutes,
   ...projectRoutes,
 ] satisfies SitemapEntry[];
 

@@ -66,7 +66,7 @@ test.describe("desktop visual regression", () => {
     await page.locator("#work").scrollIntoViewIfNeeded();
     await expectPageHealthy(page, problems);
     await expect(
-      page.locator("#work").getByRole("heading", { name: "Love Presentation" }),
+      page.locator("#work").getByRole("heading", { name: "love-presentation" }),
     ).toBeVisible();
     await loadImagesInLocator(page, "#work");
 

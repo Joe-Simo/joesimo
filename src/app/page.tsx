@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
   communityHighlights,
+  githubRepositories,
   joeProfile,
   learningCredentials,
   projectCaseStudiesPublic,
@@ -32,15 +33,15 @@ export default function Home() {
       >
         <JoeHomeStage
           communityHighlights={communityHighlights}
+          githubRepositories={githubRepositories}
           joeProfile={joeProfile}
           learningCredentials={learningCredentials}
           projects={projectCaseStudiesPublic}
           proudRoles={proudSystemsRoles}
-          socialChannels={socialChannels}
         />
       </main>
 
-      <SiteFooter />
+      <SiteFooter socialChannels={socialChannels} />
     </div>
   );
 }

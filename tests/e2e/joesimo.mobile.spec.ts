@@ -53,17 +53,19 @@ test.describe("Joe Simo mobile homepage navigation", () => {
 
     const workSection = await expectHomeDestinationSection(page, "work");
     await expect(workSection).toBeInViewport();
-    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
-    await expect(workSection.locator(".joe-work-thumb").first()).toBeVisible();
     await expect(
-      workSection.getByRole("heading", { exact: true, name: "sim0" }),
+      workSection.getByRole("heading", {
+        exact: true,
+        name: "GitHub projects",
+      }),
     ).toBeVisible();
-    await expect(
-      workSection.getByRole("heading", { name: "Love Presentation" }),
-    ).toBeVisible();
+    await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
+    await expect(workSection.locator(".joe-github-card")).toHaveCount(11);
+    await expect(workSection.getByText("sim0", { exact: true })).toBeVisible();
+    await expect(workSection.getByText("love-presentation")).toBeVisible();
 
     const firstWorkTitleBox = await workSection
-      .getByRole("heading", { name: "Love Presentation" })
+      .getByRole("heading", { name: "GitHub projects" })
       .boundingBox();
 
     expect(firstWorkTitleBox?.width ?? 0).toBeGreaterThan(120);

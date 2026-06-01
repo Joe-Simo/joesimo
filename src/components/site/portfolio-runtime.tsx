@@ -14,6 +14,7 @@ import {
 
 import { LocalizedText } from "@/components/site/localized-text";
 import { SiteIcon } from "@/components/site/site-icons";
+import { useSiteLanguage } from "@/components/site/use-site-language";
 import type {
   PortfolioSection,
   PortfolioSectionId,
@@ -83,10 +84,6 @@ type SiteLanguage = "en" | "es";
 
 const PROJECT_QUERY_PARAM = "project";
 const projectUrlStateListeners = new Set<() => void>();
-
-function currentLanguage(): SiteLanguage {
-  return document.documentElement.dataset.language === "es" ? "es" : "en";
-}
 
 function localizedProjectCopy(
   project: PublicProjectCaseStudy,
@@ -368,7 +365,7 @@ function useStructuralMotion() {
             );
           });
         gsap.fromTo(
-          ".joe-work-table article",
+          ".joe-github-card",
           { autoAlpha: 0.88, y: 8 },
           {
             autoAlpha: 1,
@@ -376,7 +373,7 @@ function useStructuralMotion() {
             ease: "power3.out",
             scrollTrigger: {
               start: "top 84%",
-              trigger: ".joe-work-table",
+              trigger: ".joe-github-grid",
             },
             stagger: 0.035,
             y: 0,
@@ -478,11 +475,11 @@ function usePointerPolish() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const selector = [
       ".joe-work-card",
+      ".joe-github-card",
       ".joe-system-role-card",
       ".joe-photo-card",
       ".joe-certification-tile",
       ".joe-blog-row",
-      ".joe-contact-actions a",
     ].join(",");
     let activeSurface: HTMLElement | null = null;
     let isListening = false;
@@ -577,6 +574,247 @@ function usePointerPolish() {
   }, []);
 }
 
+type PhotoDialogState = {
+  alt: string;
+  height: number;
+  src: string;
+  title: string;
+  width: number;
+};
+
+const photoRailResumeTimers = new WeakMap<HTMLElement, number>();
+
+function pausePhotoRailTemporarily(rail: HTMLElement, delay = 1_400) {
+  rail.dataset.userInteracting = "true";
+
+  const existingTimer = photoRailResumeTimers.get(rail);
+
+  if (existingTimer) {
+    window.clearTimeout(existingTimer);
+  }
+
+  const timer = window.setTimeout(() => {
+    delete rail.dataset.userInteracting;
+    photoRailResumeTimers.delete(rail);
+  }, delay);
+
+  photoRailResumeTimers.set(rail, timer);
+}
+
+function photoFromOpener(opener: HTMLElement): PhotoDialogState | null {
+  const { photoAlt, photoHeight, photoSrc, photoTitle, photoWidth } =
+    opener.dataset;
+  const width = Number(photoWidth);
+  const height = Number(photoHeight);
+
+  if (!photoSrc || !photoAlt || !Number.isFinite(width) || !Number.isFinite(height)) {
+    return null;
+  }
+
+  return {
+    alt: photoAlt,
+    height,
+    src: photoSrc,
+    title: photoTitle || photoAlt,
+    width,
+  };
+}
+
+function usePhotoRailInteraction(
+  onOpenPhoto: (photo: PhotoDialogState) => void,
+) {
+  useEffect(() => {
+    let dragState:
+      | {
+          opener: HTMLElement | null;
+          pointerId: number;
+          rail: HTMLElement;
+          startScrollLeft: number;
+          startX: number;
+          wasDragging: boolean;
+        }
+      | null = null;
+    let lastDragEndAt = 0;
+    let lastPointerUpAt = 0;
+    let pendingClickOpener: HTMLElement | null = null;
+
+    function railFromEvent(event: Event) {
+      const target = event.target;
+
+      return target instanceof Element
+        ? target.closest<HTMLElement>("[data-photo-rail]")
+        : null;
+    }
+
+    function handleWheel(event: WheelEvent) {
+      const rail = railFromEvent(event);
+
+      if (!rail) {
+        return;
+      }
+
+      const horizontalDelta =
+        Math.abs(event.deltaX) >= Math.abs(event.deltaY) || event.shiftKey
+          ? event.deltaX || event.deltaY
+          : 0;
+
+      if (!horizontalDelta) {
+        return;
+      }
+
+      event.preventDefault();
+      rail.scrollLeft += horizontalDelta;
+      pausePhotoRailTemporarily(rail);
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (event.button !== 0) {
+        return;
+      }
+
+      const rail = railFromEvent(event);
+
+      if (!rail) {
+        return;
+      }
+
+      dragState = {
+        opener:
+          event.target instanceof Element
+            ? event.target.closest<HTMLElement>("[data-photo-open]")
+            : null,
+        pointerId: event.pointerId,
+        rail,
+        startScrollLeft: rail.scrollLeft,
+        startX: event.clientX,
+        wasDragging: false,
+      };
+    }
+
+    function handlePointerMove(event: PointerEvent) {
+      if (!dragState || event.pointerId !== dragState.pointerId) {
+        return;
+      }
+
+      const deltaX = event.clientX - dragState.startX;
+
+      if (!dragState.wasDragging && Math.abs(deltaX) < 5) {
+        return;
+      }
+
+      if (!dragState.wasDragging) {
+        dragState.wasDragging = true;
+        dragState.rail.dataset.dragging = "true";
+        dragState.rail.setPointerCapture(event.pointerId);
+      }
+
+      dragState.rail.scrollLeft = dragState.startScrollLeft - deltaX;
+      pausePhotoRailTemporarily(dragState.rail);
+      event.preventDefault();
+    }
+
+    function finishDrag(event: PointerEvent) {
+      if (!dragState || event.pointerId !== dragState.pointerId) {
+        return;
+      }
+
+      const { opener, rail, wasDragging } = dragState;
+
+      if (rail.hasPointerCapture(event.pointerId)) {
+        rail.releasePointerCapture(event.pointerId);
+      }
+
+      delete rail.dataset.dragging;
+      pausePhotoRailTemporarily(rail, wasDragging ? 900 : 240);
+
+      if (wasDragging) {
+        lastDragEndAt = performance.now();
+      } else {
+        pendingClickOpener = opener;
+        lastPointerUpAt = performance.now();
+      }
+
+      dragState = null;
+    }
+
+    function handleClick(event: MouseEvent) {
+      const target = event.target;
+      const opener =
+        target instanceof Element
+          ? target.closest<HTMLElement>("[data-photo-open]")
+          : null;
+      const fallbackOpener =
+        performance.now() - lastPointerUpAt < 320 ? pendingClickOpener : null;
+      const photoOpener = opener ?? fallbackOpener;
+
+      pendingClickOpener = null;
+
+      if (!photoOpener) {
+        return;
+      }
+
+      if (performance.now() - lastDragEndAt < 220) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      const photo = photoFromOpener(photoOpener);
+
+      if (!photo) {
+        return;
+      }
+
+      const rail = photoOpener.closest<HTMLElement>("[data-photo-rail]");
+
+      if (rail) {
+        rail.dataset.photoDialogOpen = "true";
+      }
+
+      event.preventDefault();
+      onOpenPhoto(photo);
+    }
+
+    document.addEventListener("wheel", handleWheel, { passive: false });
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", finishDrag);
+    document.addEventListener("pointercancel", finishDrag);
+    document.addEventListener("click", handleClick, true);
+
+    return () => {
+      document.removeEventListener("wheel", handleWheel);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", finishDrag);
+      document.removeEventListener("pointercancel", finishDrag);
+      document.removeEventListener("click", handleClick, true);
+    };
+  }, [onOpenPhoto]);
+}
+
+function usePhotoDialogRailPause(open: boolean) {
+  useEffect(() => {
+    const rails = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-photo-rail]"),
+    );
+
+    for (const rail of rails) {
+      if (open) {
+        rail.dataset.photoDialogOpen = "true";
+      } else {
+        delete rail.dataset.photoDialogOpen;
+      }
+    }
+
+    return () => {
+      for (const rail of rails) {
+        delete rail.dataset.photoDialogOpen;
+      }
+    };
+  }, [open]);
+}
+
 function usePhotoRailKeyboard() {
   useEffect(() => {
     const handledKeys = new Set(["ArrowLeft", "ArrowRight", "Home", "End"]);
@@ -598,9 +836,7 @@ function usePhotoRailKeyboard() {
         return;
       }
 
-      const card = rail.querySelector<HTMLElement>(
-        ".joe-photo-card:not([aria-hidden='true'])",
-      );
+      const card = rail.querySelector<HTMLElement>(".joe-photo-card");
       const cardWidth = card?.getBoundingClientRect().width ?? 0;
       const scrollStep = Math.max(
         Math.round(cardWidth),
@@ -610,6 +846,7 @@ function usePhotoRailKeyboard() {
       const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
 
       event.preventDefault();
+      pausePhotoRailTemporarily(rail);
 
       if (event.key === "Home") {
         rail.scrollTo({ behavior, left: 0 });
@@ -650,7 +887,7 @@ function ProjectDialog({
   const dialogRef = useDialogFocusGuard(open, closeButtonRef);
   const asset = getPreferredImageAsset(project);
   const actionLinks = project.links.filter((link) => link.href);
-  const language = currentLanguage();
+  const language = useSiteLanguage();
   const localizedCopy = localizedProjectCopy(
     project,
     projectTranslations,
@@ -766,14 +1003,90 @@ function ProjectDialog({
   );
 }
 
+function PhotoDialog({
+  onClose,
+  photo,
+}: {
+  onClose: () => void;
+  photo: PhotoDialogState;
+}) {
+  const [open, setOpen] = useState(true);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useDialogFocusGuard(open, closeButtonRef);
+  const language = useSiteLanguage();
+  const closeLabel = language === "es" ? "Cerrar foto" : "Close Photo";
+
+  return (
+    <Dialog.Root
+      modal
+      onOpenChange={setOpen}
+      onOpenChangeComplete={(nextOpen) => {
+        if (!nextOpen) {
+          onClose();
+        }
+      }}
+      open={open}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="joe-dialog-backdrop" />
+        <Dialog.Viewport className="joe-dialog-layer">
+          <Dialog.Popup
+            aria-label={photo.title}
+            className="joe-photo-dialog"
+            finalFocus={false}
+            initialFocus={closeButtonRef}
+            ref={dialogRef}
+          >
+            <Dialog.Close
+              aria-keyshortcuts="Escape"
+              aria-label={closeLabel}
+              className="joe-dialog-close"
+              ref={closeButtonRef}
+              title={closeLabel}
+              type="button"
+            >
+              <SiteIcon aria-hidden iconKey="x" />
+              <span className="sr-only">{closeLabel}</span>
+            </Dialog.Close>
+            <Dialog.Title className="sr-only">{photo.title}</Dialog.Title>
+            <div className="joe-photo-dialog-scroll">
+              <figure className="joe-photo-dialog-media">
+                <Image
+                  alt={photo.alt}
+                  className="joe-photo-dialog-image"
+                  fetchPriority="high"
+                  height={photo.height}
+                  loading="eager"
+                  sizes="(max-width: 760px) 165vw, 78vw"
+                  src={photo.src}
+                  width={photo.width}
+                />
+              </figure>
+            </div>
+          </Dialog.Popup>
+        </Dialog.Viewport>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+
 export function PortfolioRuntime({
   projectTranslations,
   projects,
   sections,
 }: PortfolioRuntimeProps) {
+  const [selectedPhoto, setSelectedPhoto] = useState<PhotoDialogState | null>(
+    null,
+  );
+  const openPhoto = useCallback((photo: PhotoDialogState) => {
+    setSelectedPhoto(photo);
+  }, []);
+
   useStructuralMotion();
   usePointerPolish();
   usePhotoRailKeyboard();
+  usePhotoRailInteraction(openPhoto);
+  usePhotoDialogRailPause(Boolean(selectedPhoto));
 
   const [activeSectionId, setActiveSectionId] =
     useState<PortfolioSectionId>("joe");
@@ -913,6 +1226,13 @@ export function PortfolioRuntime({
           onClose={closeOverlay}
           project={selectedProject}
           projectTranslations={projectTranslations}
+        />
+      ) : null}
+      {selectedPhoto ? (
+        <PhotoDialog
+          key={selectedPhoto.src}
+          onClose={() => setSelectedPhoto(null)}
+          photo={selectedPhoto}
         />
       ) : null}
     </>

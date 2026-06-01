@@ -20,30 +20,30 @@ import {
 } from "@/components/site/portfolio-runtime";
 import { HeroNameParticles } from "@/components/site/hero-name-particles";
 import { SiteIcon } from "@/components/site/site-icons";
-import { Button } from "@/components/ui/button";
 import {
   credentialIssuers,
   credentialGroups,
   isHomepageProject,
+  latestBlogPost,
   portfolioSections,
   type CommunityArtifact,
   type CredentialIssuerLogo,
+  type GithubRepository,
   type JoeProfile,
   type LearningCredential,
   type ProudRole,
   type PublicEvidenceAsset,
   type PublicProjectCaseStudy,
   type PortfolioSection,
-  type SocialChannel,
 } from "@/lib/site-data";
 
 type JoeHomeAppProps = {
   communityHighlights: CommunityArtifact[];
+  githubRepositories: GithubRepository[];
   joeProfile: JoeProfile;
   learningCredentials: LearningCredential[];
   projects: PublicProjectCaseStudy[];
   proudRoles: ProudRole[];
-  socialChannels: SocialChannel[];
 };
 
 function ExternalCue({ show }: { show?: boolean }) {
@@ -89,10 +89,6 @@ function orderedProjects(projects: readonly PublicProjectCaseStudy[]) {
     });
 }
 
-function projectStartedYear(project: PublicProjectCaseStudy) {
-  return project.started.sortKey.slice(0, 4);
-}
-
 function portfolioSection(id: PortfolioSection["id"]) {
   const section = portfolioSections.find((item) => item.id === id);
 
@@ -133,7 +129,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         style={{ color: `#${simpleIcon.hex}` }}
@@ -148,7 +144,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         viewBox="0 0 24 24"
@@ -165,7 +161,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         viewBox="0 0 24 24"
@@ -182,7 +178,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         viewBox="0 0 96 64"
@@ -203,7 +199,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         viewBox="0 0 64 64"
@@ -220,7 +216,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
     return (
       <svg
         aria-hidden="true"
-        className="joe-certification-badge-image joe-certification-company-logo"
+        className="joe-certification-mark-image joe-certification-company-logo"
         data-mark={issuer.mark}
         focusable="false"
         viewBox="0 0 88 88"
@@ -236,7 +232,7 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
   return (
     <svg
       aria-hidden="true"
-      className="joe-certification-badge-image joe-certification-company-logo"
+      className="joe-certification-mark-image joe-certification-company-logo"
       data-mark={issuer.mark}
       focusable="false"
       viewBox="0 0 24 24"
@@ -244,13 +240,6 @@ function CompanyLogoFallback({ issuer }: { issuer: CredentialIssuerLogo }) {
       <circle cx="12" cy="12" fill="currentColor" r="10" />
     </svg>
   );
-}
-
-function socialChannel(
-  channels: readonly SocialChannel[],
-  label: SocialChannel["label"],
-) {
-  return channels.find((channel) => channel.label === label);
 }
 
 const projectTranslations: ProjectTranslationMap = {
@@ -336,17 +325,6 @@ const projectTranslations: ProjectTranslationMap = {
   },
 };
 
-function projectCopy(project: PublicProjectCaseStudy) {
-  const es = projectTranslations[project.slug]?.es;
-
-  return {
-    evidenceEs: es?.evidence ?? project.evidence,
-    roleEs: es?.role ?? project.role,
-    statusEs: es?.status ?? project.status,
-    summaryEs: es?.summary ?? project.summary,
-  };
-}
-
 function roleTitleEs(title: string) {
   const translations: Record<string, string> = {
     "Disaster Recovery Engineer": "Ingeniero de recuperación ante desastres",
@@ -370,14 +348,14 @@ function HeroSection({
       id="joe"
     >
       <div className="site-shell">
-        <Link className="joe-hero-news" href="/blog">
+        <Link className="joe-hero-news" href={latestBlogPost.href}>
           <span className="joe-hero-news-label">
             <T en="Latest blog" es="Blog reciente" />
           </span>
           <span className="joe-hero-news-copy">
             <T
-              en="Writing belongs on joesimo.com/blog"
-              es="La escritura vive en joesimo.com/blog"
+              en={latestBlogPost.title}
+              es="Cuando encontre un bug de billing en v0"
             />
           </span>
           <ArrowRight aria-hidden className="joe-hero-news-icon" />
@@ -391,12 +369,6 @@ function HeroSection({
                   <T en={joeProfile.headline} es="Diseñador/desarrollador, FL." />
                 </p>
               </div>
-              <p className="joe-hero-body">
-                <T
-                  en={joeProfile.detail}
-                  es="Creo herramientas web prácticas, interfaces de producto y sistemas pequeños basados en soporte, sistemas y recuperación."
-                />
-              </p>
               <p className="joe-hero-stack">
                 React / Next.js / TypeScript / JavaScript / Tailwind CSS / shadcn/ui
               </p>
@@ -408,124 +380,95 @@ function HeroSection({
   );
 }
 
-function WorkSection({
-  projects,
+function GitHubSection({
+  repositories,
 }: {
-  projects: readonly PublicProjectCaseStudy[];
+  repositories: readonly GithubRepository[];
 }) {
   const section = portfolioSection("work");
-  const featuredProjects = projects.slice(0, 6);
+  const projectRepositories = repositories.filter(
+    (repository) => repository.kind !== "Profile",
+  );
+
+  const renderRepositoryCard = (repository: GithubRepository) => {
+    const cardContent = (
+      <>
+        <span className="joe-github-card-mark">
+          <SiteIcon aria-hidden iconKey="github" />
+        </span>
+        <div className="joe-github-card-copy">
+          <h3>{repository.name}</h3>
+          <p>{repository.description}</p>
+        </div>
+        <span className="joe-github-card-meta">
+          {repository.meta.slice(1, 4).join(" / ")}
+        </span>
+        {repository.visibility === "public" ? (
+          <>
+            <ArrowRight aria-hidden className="joe-github-card-icon" />
+            <ExternalCue show />
+          </>
+        ) : (
+          <span className="joe-github-card-private">
+            <T en="Private" es="Privado" />
+          </span>
+        )}
+      </>
+    );
+
+    if (repository.visibility === "public" && repository.href) {
+      return (
+        <a
+          aria-label={`${repository.name} GitHub repository, opens in a new tab`}
+          className="joe-github-card"
+          data-visibility={repository.visibility}
+          href={repository.href}
+          key={repository.name}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {cardContent}
+        </a>
+      );
+    }
+
+    return (
+      <article
+        aria-label={`${repository.name} private GitHub repository`}
+        className="joe-github-card"
+        data-visibility={repository.visibility}
+        key={repository.name}
+      >
+        {cardContent}
+      </article>
+    );
+  };
 
   return (
     <section
       aria-labelledby="work-title"
-      className="joe-section joe-work"
+      className="joe-section joe-github"
       data-section-id="work"
       data-section-trace="product"
       id="work"
     >
       <div className="site-shell">
-        <div className="joe-section-head joe-section-head-minimal" data-joe-reveal>
+        <div className="joe-section-head" data-joe-reveal>
           <SectionLabel section={section} />
           <h2 id="work-title" tabIndex={-1}>
-            <T en="Work" es="Trabajo" />
+            <T en="GitHub projects" es="Proyectos en GitHub" />
           </h2>
           <p>
             <T
-              en={section.copy.detail}
-              es="Proyectos seleccionados, con la evidencia más fuerte primero."
+              en={`${projectRepositories.length} public and private repositories, shown without private implementation details.`}
+              es={`${projectRepositories.length} repositorios públicos y privados, sin detalles privados de implementación.`}
             />
           </p>
         </div>
-
-        <div className="joe-work-table">
-          <div className="joe-work-table-head" data-joe-reveal>
-            <SectionLabel section={section} />
-            <h2 id="work-title-grid">
-              <T en="Selected work" es="Trabajo seleccionado" />
-            </h2>
-            <p>
-              <T
-                en="Product interfaces, prototypes, and shipped public surfaces."
-                es="Interfaces de producto, prototipos y superficies públicas entregadas."
-              />
-            </p>
-          </div>
-          {featuredProjects.map((project, index) => {
-            const asset = getPreferredImageAsset(project);
-            const media = project.homepageFeature?.thumbnailMedia ?? asset?.media;
-            const copy = projectCopy(project);
-            const shouldEagerLoadMedia = index === 0;
-
-            return (
-              <article
-                className="joe-work-card"
-                data-featured={index === 0 ? "true" : undefined}
-                data-section-trace="product"
-                id={`work-${project.slug}`}
-                key={project.slug}
-              >
-                <span className="joe-work-index">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="joe-work-title">
-                  <div>
-                    <h3>{project.title}</h3>
-                    <p className="joe-work-summary">{project.summary}</p>
-                    <p className="joe-work-meta">
-                      <T en={project.role} es={copy.roleEs} />
-                      {" / "}
-                      <T en="Started" es="Inicio" /> {project.started.label}
-                      {" / "}
-                      <T en={project.status} es={copy.statusEs} />
-                    </p>
-                  </div>
-                </div>
-                <span className="joe-work-started">
-                  {project.started.label}
-                  <span aria-hidden="true">{projectStartedYear(project)}</span>
-                </span>
-                <span className="joe-work-status">
-                  <T en={project.status} es={copy.statusEs} />
-                </span>
-                {media ? (
-                  <span className="joe-work-thumb">
-                    <Image
-                      alt={media.alt}
-                      className="joe-cover-image"
-                      fetchPriority={shouldEagerLoadMedia ? "high" : undefined}
-                      fill
-                      loading={shouldEagerLoadMedia ? "eager" : undefined}
-                      sizes={
-                        index === 0
-                          ? "(max-width: 980px) calc(100vw - 4rem), (max-width: 1180px) calc(100vw - 9rem), 38rem"
-                          : "(max-width: 980px) calc(100vw - 4rem), (max-width: 1180px) calc(50vw - 5rem), 20rem"
-                      }
-                      src={media.src}
-                    />
-                  </span>
-                ) : (
-                  <span aria-hidden="true" className="joe-work-thumb joe-work-thumb-empty" />
-                )}
-                <Button
-                  aria-haspopup="dialog"
-                  className="joe-work-card-action"
-                  data-project-open={project.slug}
-                  size="icon"
-                  type="button"
-                  variant="outline"
-                >
-                  <ArrowRight aria-hidden />
-                  <span className="sr-only">
-                    <T
-                      en={`View case study for ${project.title}`}
-                      es={`Ver caso de ${project.title}`}
-                    />
-                  </span>
-                </Button>
-              </article>
-            );
-          })}
+        <div aria-label="GitHub repositories" className="joe-github-grid">
+          {projectRepositories.map((repository) =>
+            renderRepositoryCard(repository),
+          )}
         </div>
       </div>
     </section>
@@ -668,13 +611,14 @@ function CredentialsSection({
             <article
               aria-label={credential.label}
               className="joe-certification-tile"
+              data-artwork={credential.badge ? "certification-badge" : "issuer-logo"}
               key={credential.label}
             >
               <div className="joe-certification-tile-mark">
                 {credential.badge ? (
                   <Image
                     alt={credential.badge.alt}
-                    className="joe-certification-badge-image"
+                    className="joe-certification-mark-image joe-certification-badge-image"
                     height={credential.badge.height}
                     sizes="2.75rem"
                     src={credential.badge.src}
@@ -706,31 +650,64 @@ function CommunitySection({
   const supportingMoments = moments.filter(
     (moment) => moment.title !== "ThePrimeagen",
   );
-  const visibleMoments = [...featuredMoments, ...supportingMoments].slice(0, 6);
+  const visibleMoments = [...featuredMoments, ...supportingMoments];
 
   const renderMoment = (
     moment: CommunityArtifact,
     copyIndex: number,
   ) => {
     const isDuplicate = copyIndex > 0;
+    const photoData = {
+      "data-photo-alt": moment.media.alt,
+      "data-photo-height": String(moment.media.height),
+      "data-photo-src": moment.media.src,
+      "data-photo-title": moment.title,
+      "data-photo-width": String(moment.media.width),
+    };
 
     return (
       <figure
-        aria-hidden={isDuplicate || undefined}
         className="joe-photo-card"
+        data-photo-copy={isDuplicate ? "visual" : "accessible"}
         data-featured={moment.title === "ThePrimeagen"}
         key={`${copyIndex}-${moment.code}-${moment.media.src}`}
-        role={isDuplicate ? undefined : "listitem"}
+        role={isDuplicate ? "presentation" : "listitem"}
       >
-        <span className="joe-photo-frame">
-          <Image
-            alt={isDuplicate ? "" : moment.media.alt}
-            className="joe-cover-image"
-            fill
-            sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
-            src={moment.media.src}
-          />
-        </span>
+        {isDuplicate ? (
+          <span
+            className="joe-photo-card-trigger"
+            data-photo-open
+            {...photoData}
+          >
+            <span className="joe-photo-frame">
+              <Image
+                alt=""
+                className="joe-cover-image"
+                fill
+                sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
+                src={moment.media.src}
+              />
+            </span>
+          </span>
+        ) : (
+          <button
+            aria-label={moment.media.alt}
+            className="joe-photo-card-trigger"
+            data-photo-open
+            type="button"
+            {...photoData}
+          >
+            <span className="joe-photo-frame">
+              <Image
+                alt={moment.media.alt}
+                className="joe-cover-image"
+                fill
+                sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
+                src={moment.media.src}
+              />
+            </span>
+          </button>
+        )}
       </figure>
     );
   };
@@ -761,14 +738,18 @@ function CommunitySection({
           tabIndex={0}
         >
           <div className="joe-photo-marquee-track">
-            <div className="joe-photo-marquee-copy joe-photo-sheet" role="list">
+            <div
+              className="joe-photo-marquee-copy joe-photo-sheet"
+              data-photo-copy="accessible"
+              role="list"
+            >
               {visibleMoments.map((moment) =>
                 renderMoment(moment, 0),
               )}
             </div>
             <div
-              aria-hidden="true"
               className="joe-photo-marquee-copy joe-photo-sheet"
+              data-photo-copy="visual"
             >
               {visibleMoments.map((moment) =>
                 renderMoment(moment, 1),
@@ -804,67 +785,26 @@ function BlogSection() {
         </div>
         <article className="joe-blog-row">
           <span>
-            <T en="Notes" es="Notas" />
+            <T en={latestBlogPost.kicker} es="Reporte" />
           </span>
           <div>
             <h3>
-              <T en="Short writing" es="Escritura breve" />
+              <T
+                en={latestBlogPost.title}
+                es="Cuando encontre un bug de billing en v0"
+              />
             </h3>
             <p>
               <T
-                en="Writing lives on joesimo.com/blog as the canonical route."
-                es="La escritura vive en joesimo.com/blog como su ruta canónica."
+                en={latestBlogPost.summary}
+                es="Reporte privado, evidencia tecnica y confirmacion del equipo de v0."
               />
             </p>
           </div>
-          <Link href="/blog">
-            <T en="Read blog" es="Leer blog" />
+          <Link href={latestBlogPost.href}>
+            <T en="Read post" es="Leer post" />
           </Link>
         </article>
-      </div>
-    </section>
-  );
-}
-
-function ContactSection({
-  socialChannels,
-}: {
-  socialChannels: readonly SocialChannel[];
-}) {
-  const xChannel = socialChannel(socialChannels, "X");
-  const secondaryChannels = (["GitHub", "LinkedIn", "Instagram"] as const)
-    .map((label) => socialChannel(socialChannels, label))
-    .filter((channel): channel is SocialChannel => Boolean(channel));
-
-  return (
-    <section
-      aria-label="Contact links"
-      className="joe-section joe-contact"
-      data-section-id="contact"
-      data-section-trace="product"
-      id="contact"
-    >
-      <div className="site-shell joe-contact-shell">
-        <div className="joe-contact-actions" data-joe-reveal>
-          {xChannel ? (
-            <a className="joe-action-primary" href={xChannel.href} rel="noreferrer" target="_blank">
-              X {xChannel.handle}
-              <ExternalCue show />
-            </a>
-          ) : null}
-          {secondaryChannels.map((channel) => (
-            <a
-              href={channel.href}
-              key={channel.label}
-              rel="noreferrer"
-              target="_blank"
-            >
-              <SiteIcon aria-hidden iconKey={channel.iconKey} />
-              {channel.label}
-              <ExternalCue show />
-            </a>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -881,12 +821,11 @@ export function JoeHomeApp(props: JoeHomeAppProps) {
       />
       <div className="site-shell joe-grid-shell">
         <div className="joe-page-grid">
-          <WorkSection projects={featuredProjects} />
+          <GitHubSection repositories={props.githubRepositories} />
           <SystemsSection roles={props.proudRoles} />
           <CredentialsSection credentials={props.learningCredentials} />
           <CommunitySection moments={props.communityHighlights} />
           <BlogSection />
-          <ContactSection socialChannels={props.socialChannels} />
         </div>
       </div>
       <PortfolioRuntime

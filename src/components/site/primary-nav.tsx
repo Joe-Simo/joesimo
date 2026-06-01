@@ -170,12 +170,13 @@ export function PrimaryNav({
       >
         {items.map((item) => {
           const active = item.href === activeHref;
+          const href = resolveNavHref(item.href, sectionPrefix);
 
           return (
-            isInternalRouteHref(item.href) ? (
+            isInternalRouteHref(href) ? (
               <Link
                 key={item.href}
-                href={resolveNavHref(item.href, sectionPrefix)}
+                href={href}
                 aria-current={active ? "location" : undefined}
                 className={cn(
                   "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
@@ -187,7 +188,7 @@ export function PrimaryNav({
             ) : (
               <a
                 key={item.href}
-                href={resolveNavHref(item.href, sectionPrefix)}
+                href={href}
                 aria-current={active ? "location" : undefined}
                 className={cn(
                   "inline-flex min-h-11 items-center rounded-md px-3 font-mono text-xs text-muted-foreground outline-none transition hover:text-foreground focus-visible:text-foreground focus-visible:ring-3 focus-visible:ring-ring/30",
@@ -226,7 +227,13 @@ export function PrimaryNav({
                 <DropdownMenuItem
                   aria-current={active ? "location" : undefined}
                   key={item.href}
-                  render={<a href={href} />}
+                  render={
+                    isInternalRouteHref(href) ? (
+                      <Link href={href} />
+                    ) : (
+                      <a href={href} />
+                    )
+                  }
                 >
                   <span className="flex w-full items-center justify-between gap-4">
                     <LocalizedText en={item.label} es={navLabelEs(item.label)} />

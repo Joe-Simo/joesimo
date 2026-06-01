@@ -5,18 +5,8 @@ import { ImageResponse } from "next/og";
 
 import {
   heroCopy,
-  isHomepageProject,
-  projectCaseStudiesPublic,
   siteDescription,
 } from "@/lib/site-data";
-
-const primaryWork = [...projectCaseStudiesPublic]
-  .filter(isHomepageProject)
-  .sort((left, right) => {
-    const dateOrder = right.started.sortKey.localeCompare(left.started.sortKey);
-
-    return dateOrder || left.title.localeCompare(right.title);
-  })[0];
 
 export async function createSocialImage(label: string) {
   const geistSans = await readFile(
@@ -154,7 +144,7 @@ export async function createSocialImage(label: string) {
           }}
         >
           {[
-            ["Work", primaryWork?.title ?? "Selected work"],
+            ["Work", "GitHub projects"],
             ["Systems", "Macromedica Dominicana / Never Off / Brox"],
             ["Certifications", "web / systems / drone"],
             ["Contact", "X / GitHub / LinkedIn / Instagram"],

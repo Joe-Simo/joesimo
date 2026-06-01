@@ -1,24 +1,29 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
-import { LocalizedText as T } from "@/components/site/localized-text";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { ButtonLink } from "@/components/ui/button";
+import { SiteIcon } from "@/components/site/site-icons";
+import { blogPosts, socialChannels, type BlogPost } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Short writing from Joe Simo on joesimo.com.",
+  description: "Writing from Joe Simo on joesimo.com.",
   alternates: {
     canonical: "/blog",
   },
   openGraph: {
     title: "Blog / joesimo.com",
-    description: "Short writing from Joe Simo on joesimo.com.",
+    description: "Writing from Joe Simo on joesimo.com.",
     url: "/blog",
   },
 };
 
 export default function BlogPage() {
+  const posts: readonly BlogPost[] = blogPosts;
+  const [featuredPost, ...supportingPosts] = posts;
+
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
       <a
@@ -38,39 +43,55 @@ export default function BlogPage() {
         <section className="site-page-shell blog-page-shell">
           <div className="blog-page-heading">
             <p className="text-label-12-mono uppercase text-muted-foreground">
-              <T en="Blog" es="Blog" />
+              Blog
             </p>
-            <h1>
-              <T en="Blog" es="Blog" />
-            </h1>
+            <h1>Writing from the work.</h1>
             <p>
-              <T
-                en="Writing belongs here on joesimo.com. External channels can point back here, but the canonical home for posts is this route."
-                es="La escritura pertenece aquí, en joesimo.com. Los canales externos pueden apuntar aquí, pero la casa canónica de los posts es esta ruta."
-              />
+              Notes about product bugs, interface work, systems thinking, and
+              the real traces behind shipped projects.
             </p>
           </div>
 
-          <div className="blog-empty-state" role="status">
-            <div>
-              <h2>
-                <T en="No public posts yet" es="Todavía no hay posts públicos" />
-              </h2>
-              <p>
-                <T
-                  en="The next real note will appear here before it is linked elsewhere."
-                  es="La próxima nota real aparecerá aquí antes de enlazarse en otro lugar."
+          {featuredPost ? (
+            <Link className="blog-feature-card" href={featuredPost.href}>
+              <figure>
+                <Image
+                  alt={featuredPost.heroMedia.alt}
+                  className="joe-cover-image"
+                  fill
+                  sizes="(max-width: 900px) calc(100vw - 2rem), 42vw"
+                  src={featuredPost.heroMedia.src}
                 />
-              </p>
+              </figure>
+              <div>
+                <p>{featuredPost.kicker}</p>
+                <h2>{featuredPost.title}</h2>
+                <p>{featuredPost.excerpt}</p>
+                <span>
+                  Read post
+                  <SiteIcon aria-hidden iconKey="arrowUpRight" />
+                </span>
+              </div>
+            </Link>
+          ) : null}
+
+          {supportingPosts.length ? (
+            <div className="blog-list" aria-label="All posts">
+              {supportingPosts.map((post) => (
+                <Link className="blog-list-row" href={post.href} key={post.slug}>
+                  <div>
+                    <p>{post.dateLabel}</p>
+                    <h2>{post.title}</h2>
+                  </div>
+                  <span>{post.readingTime}</span>
+                </Link>
+              ))}
             </div>
-            <ButtonLink href="/#work" variant="outline">
-              <T en="View work" es="Ver trabajo" />
-            </ButtonLink>
-          </div>
+          ) : null}
         </section>
       </main>
 
-      <SiteFooter homeHref="/" />
+      <SiteFooter homeHref="/" socialChannels={socialChannels} />
     </div>
   );
 }

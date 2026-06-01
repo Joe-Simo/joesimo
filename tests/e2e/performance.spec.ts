@@ -35,11 +35,7 @@ test.describe("performance budgets", () => {
 
     await expect(page.locator("video")).toHaveCount(0);
 
-    const projectButton = page.locator('[data-project-open="garden0"]');
-
-    await expect(projectButton).toBeVisible();
-    await projectButton.scrollIntoViewIfNeeded();
-    await projectButton.click();
+    await page.goto("/?project=garden0#work", { waitUntil: "domcontentloaded" });
 
     const dialog = page.getByRole("dialog", { name: "garden0" });
 

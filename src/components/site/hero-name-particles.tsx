@@ -77,6 +77,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
   const pointerRef = useRef({ active: false, x: 0, y: 0 });
   const touchActiveRef = useRef(false);
   const [ready, setReady] = useState(false);
+  const [motionPreferenceRevision, setMotionPreferenceRevision] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -91,7 +92,17 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     if (motionQuery.matches) {
-      return;
+      function handleReducedMotionChange(event: MediaQueryListEvent) {
+        if (!event.matches) {
+          setMotionPreferenceRevision((revision) => revision + 1);
+        }
+      }
+
+      motionQuery.addEventListener("change", handleReducedMotionChange);
+
+      return () => {
+        motionQuery.removeEventListener("change", handleReducedMotionChange);
+      };
     }
 
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -109,6 +120,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
     let disposed = false;
     let dpr = 1;
     let height = 0;
+    let particleColor = cssVar("--foreground", "#000000");
     let particles: Particle[] = [];
     let textImageData: ImageData | null = null;
     let width = 0;
@@ -169,14 +181,13 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
         if (alpha > 128) {
           const x = imageX / dpr;
           const y = imageY / dpr;
-          const color = cssVar("--foreground", "#000000");
 
           return {
             baseX: x,
             baseY: y,
-            color,
+            color: particleColor,
             life: Math.random() * 100 + 50,
-            scatteredColor: color,
+            scatteredColor: particleColor,
             size: Math.random() + 0.5,
             x,
             y,
@@ -288,6 +299,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
       }
 
       stop(false);
+      particleColor = cssVar("--foreground", "#000000");
       createTextImage();
       createInitialParticles();
       draw();
@@ -346,15 +358,15 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
     });
     window.addEventListener("resize", start);
     motionQuery.addEventListener("change", handleMotionChange);
-    canvasElement.addEventListener("mousemove", handleMouseMove);
-    canvasElement.addEventListener("mouseleave", handleMouseLeave);
-    canvasElement.addEventListener("touchstart", handleTouchStart, {
+    containerElement.addEventListener("mousemove", handleMouseMove);
+    containerElement.addEventListener("mouseleave", handleMouseLeave);
+    containerElement.addEventListener("touchstart", handleTouchStart, {
       passive: true,
     });
-    canvasElement.addEventListener("touchmove", handleTouchMove, {
+    containerElement.addEventListener("touchmove", handleTouchMove, {
       passive: true,
     });
-    canvasElement.addEventListener("touchend", handleTouchEnd);
+    containerElement.addEventListener("touchend", handleTouchEnd);
     void document.fonts?.ready.then(() => {
       if (!disposed) {
         start();
@@ -368,14 +380,14 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
       themeObserver.disconnect();
       window.removeEventListener("resize", start);
       motionQuery.removeEventListener("change", handleMotionChange);
-      canvasElement.removeEventListener("mousemove", handleMouseMove);
-      canvasElement.removeEventListener("mouseleave", handleMouseLeave);
-      canvasElement.removeEventListener("touchstart", handleTouchStart);
-      canvasElement.removeEventListener("touchmove", handleTouchMove);
-      canvasElement.removeEventListener("touchend", handleTouchEnd);
+      containerElement.removeEventListener("mousemove", handleMouseMove);
+      containerElement.removeEventListener("mouseleave", handleMouseLeave);
+      containerElement.removeEventListener("touchstart", handleTouchStart);
+      containerElement.removeEventListener("touchmove", handleTouchMove);
+      containerElement.removeEventListener("touchend", handleTouchEnd);
       stop(false);
     };
-  }, [text]);
+  }, [motionPreferenceRevision, text]);
 
   return (
     <div
@@ -384,7 +396,7 @@ export function HeroNameParticles({ id, text }: HeroNameParticlesProps) {
       ref={containerRef}
     >
       <canvas
-        aria-label={`${text} interactive particle effect`}
+        aria-hidden="true"
         className="joe-name-particles-canvas"
         ref={canvasRef}
       />

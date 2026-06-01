@@ -1,20 +1,20 @@
 import { JoeHomeApp } from "@/components/site/joe-home-app";
 import type {
   CommunityArtifact,
+  GithubRepository,
   JoeProfile,
   PublicProjectCaseStudy,
   LearningCredential,
   ProudRole,
-  SocialChannel,
 } from "@/lib/site-data";
 
 type JoeHomeStageProps = {
   communityHighlights: CommunityArtifact[];
+  githubRepositories: GithubRepository[];
   joeProfile: JoeProfile;
   learningCredentials: LearningCredential[];
   projects: PublicProjectCaseStudy[];
   proudRoles: ProudRole[];
-  socialChannels: SocialChannel[];
 };
 
 export function JoeHomeStage(props: JoeHomeStageProps) {

@@ -9,8 +9,8 @@ import { SiteIcon } from "@/components/site/site-icons";
 import { ButtonLink } from "@/components/ui/button";
 import {
   getPublicProjectCaseStudy,
-  isHomepageProject,
   projectCaseStudiesPublic,
+  socialChannels,
   type EvidenceStatus,
   type ProofMedia,
   type ProjectStoryboardPanel,
@@ -45,12 +45,33 @@ function findProject(slug: string) {
   return getPublicProjectCaseStudy(slug);
 }
 
+function isImageAsset(
+  asset: PublicEvidenceAsset | undefined,
+): asset is PublicEvidenceAsset {
+  return Boolean(asset && !asset.media.src.endsWith(".webm"));
+}
+
 function primaryAsset(project: PublicProjectCaseStudy) {
   const requestedAsset = project.homepageFeature?.mediaAssetIds
     .map((assetId) => project.assets.find((asset) => asset.id === assetId))
-    .find(Boolean);
+    .find(isImageAsset);
 
-  return requestedAsset ?? project.assets[0];
+  return requestedAsset ?? project.assets.find(isImageAsset);
+}
+
+function projectSocialImage(project: PublicProjectCaseStudy) {
+  const asset = primaryAsset(project);
+
+  if (!asset) {
+    return undefined;
+  }
+
+  return {
+    url: new URL(asset.media.src, siteUrl).toString(),
+    width: asset.media.width,
+    height: asset.media.height,
+    alt: asset.media.alt || `${project.title} preview`,
+  };
 }
 
 export async function generateMetadata({
@@ -63,14 +84,15 @@ export async function generateMetadata({
     notFound();
   }
 
-  const twitterImageUrl = fallbackTwitterImage;
+  const socialImage = projectSocialImage(project);
+  const twitterImageUrl = socialImage?.url ?? fallbackTwitterImage;
   const title =
     project.tier === "featured"
       ? `${project.title} case study`
       : `${project.title} work specimen`;
   const description = project.story.outcome || project.summary;
   const path = `/work/${project.slug}`;
-  const openGraphImages = [fallbackOpenGraphImage];
+  const openGraphImages = [socialImage ?? fallbackOpenGraphImage];
 
   return {
     alternates: {
@@ -186,13 +208,22 @@ function mediaForPanel(
   return project.miniWorld?.media.find((media) => media.id === panel.mediaId);
 }
 
-function CaseImage({ asset }: { asset: PublicEvidenceAsset }) {
+function CaseImage({
+  asset,
+  priority = false,
+}: {
+  asset: PublicEvidenceAsset;
+  priority?: boolean;
+}) {
   return (
     <figure className="work-case-media">
       <Image
         alt={asset.media.alt}
         className="joe-cover-image"
+        fetchPriority={priority ? "high" : undefined}
         fill
+        loading={priority ? "eager" : undefined}
+        preload={priority}
         sizes="(max-width: 900px) calc(100vw - 2rem), 52vw"
         src={asset.media.src}
       />
@@ -266,12 +297,6 @@ export default async function WorkPage({ params }: WorkPageProps) {
   const heroAsset = primaryAsset(project);
   const panels = panelsForProject(project);
   const stake = project.humanStake ?? project.miniWorld?.humanStake;
-  const hasHomepageCard = isHomepageProject(project);
-  const activeHref = hasHomepageCard ? "#work" : undefined;
-  const homeWorkHref = hasHomepageCard ? `/#work-${project.slug}` : "/#work";
-  const homeWorkLabel = hasHomepageCard
-    ? `Review ${project.title} on the homepage`
-    : "Back to selected work";
 
   return (
     <div id="top" className="min-h-screen bg-background text-foreground">
@@ -282,7 +307,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
         Skip to content
       </a>
 
-      <SiteHeader activeHref={activeHref} homeHref="/" sectionPrefix="/" />
+      <SiteHeader activeHref="#work" homeHref="/" sectionPrefix="/" />
 
       <main className="work-case" id="main-content" tabIndex={-1}>
         <section className="work-case-hero site-page-shell">
@@ -325,8 +350,8 @@ export default async function WorkPage({ params }: WorkPageProps) {
                   ) : null}
                 </ButtonLink>
               ))}
-              <ButtonLink data-kind="section" href={homeWorkHref} variant="outline">
-                {homeWorkLabel}
+              <ButtonLink data-kind="section" href="/#work" variant="outline">
+                Back to GitHub projects
                 <SiteIcon aria-hidden iconKey="appWindow" />
               </ButtonLink>
               <ButtonLink data-kind="section" href="/#contact" variant="outline">
@@ -336,7 +361,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
             </div>
           </div>
 
-          {heroAsset ? <CaseImage asset={heroAsset} /> : null}
+          {heroAsset ? <CaseImage asset={heroAsset} priority /> : null}
         </section>
 
         <section className="work-case-section site-page-shell">
@@ -450,7 +475,11 @@ export default async function WorkPage({ params }: WorkPageProps) {
         </section>
       </main>
 
-      <SiteFooter homeHref="/" sectionPrefix="/" />
+      <SiteFooter
+        homeHref="/"
+        sectionPrefix="/"
+        socialChannels={socialChannels}
+      />
     </div>
   );
 }

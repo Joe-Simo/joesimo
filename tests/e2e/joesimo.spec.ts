@@ -20,7 +20,9 @@ async function expectHeroNameParticlesReady(page: Page) {
   });
   await expect(canvas).toHaveCount(1);
   await expect(canvas).toBeVisible();
+  await expect(canvas).toHaveAttribute("aria-hidden", "true");
   await expect(canvas).toHaveCSS("opacity", "1");
+  await expect(canvas).toHaveCSS("pointer-events", "none");
 
   const canvasBox = await canvas.boundingBox();
 
@@ -122,7 +124,10 @@ test.describe("Joe Simo personal site", () => {
       await expectHomeDestinationLink(page, "contact");
     }
     await expect(page.locator(".joe-hero")).toBeVisible();
-    await expect(page.locator(".joe-hero a")).toHaveCount(0);
+    await expect(page.locator(".joe-hero a")).toHaveCount(1);
+    await expect(
+      page.locator(".joe-hero").getByRole("link", { name: /latest blog/i }),
+    ).toHaveAttribute("href", "/blog/vercel-v0-api-billing-bug-report");
     await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
@@ -145,7 +150,6 @@ test.describe("Joe Simo personal site", () => {
     expect(pageText).not.toMatch(
       /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|AI-native|public trail|famous developers|Three\.js|GSAP|WebGL|proof route|owned frames|readable product surface/i,
     );
-    expect(pageText).not.toMatch(/\bYouTube\b/i);
     expect(pageText).not.toMatch(/\bID (#|\w)/i);
     const privateMessageAction = ["Email", "Joe"].join(" ");
     const privateMessageHandlePrefix = ["hello", "@"].join("");
@@ -225,11 +229,12 @@ test.describe("Joe Simo personal site", () => {
       ),
     ).toHaveCount(0);
     await expect(certificationTiles).toHaveCount(27);
-    const badgeImages = credentialSection.locator(
-      ".joe-certification-badge-image",
-    );
+    const markImages = credentialSection.locator(".joe-certification-mark-image");
 
-    await expect(badgeImages).toHaveCount(27);
+    await expect(markImages).toHaveCount(27);
+    await expect(
+      credentialSection.locator(".joe-certification-badge-image"),
+    ).toHaveCount(7);
     await expect(
       credentialSection.locator(".joe-certification-name"),
     ).toHaveCount(27);
@@ -237,7 +242,7 @@ test.describe("Joe Simo personal site", () => {
     for (let index = 0; index < 27; index += 1) {
       await expect
         .poll(() =>
-          badgeImages
+          markImages
             .nth(index)
             .evaluate((image) => getComputedStyle(image).filter),
         )
@@ -250,7 +255,7 @@ test.describe("Joe Simo personal site", () => {
         await certificationTiles.nth(index).hover();
         await expect
           .poll(() =>
-            badgeImages
+            markImages
               .nth(index)
               .evaluate((image) => getComputedStyle(image).filter),
           )
@@ -281,45 +286,31 @@ test.describe("Joe Simo personal site", () => {
     }
 
     const workSection = await expectHomeDestinationSection(page, "work");
-    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
     await expect(
-      workSection.getByRole("heading", { name: "Love Presentation" }),
+      workSection.getByRole("heading", {
+        exact: true,
+        name: "GitHub projects",
+      }),
+    ).toBeVisible();
+    await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
+    await expect(workSection.locator(".joe-github-card")).toHaveCount(11);
+    await expect(
+      workSection.locator('.joe-github-card[data-visibility="public"]'),
+    ).toHaveCount(5);
+    await expect(
+      workSection.getByRole("link", {
+        exact: true,
+        name: "joesimo GitHub repository, opens in a new tab",
+      }),
     ).toBeVisible();
     await expect(
-      workSection.getByRole("heading", { exact: true, name: "sim0" }),
-    ).toBeVisible();
-    const workStartLabels = await workSection
-      .locator(".joe-work-meta")
-      .evaluateAll((items) =>
-        items.map((item) => item.textContent?.replace(/\s+/g, " ").trim()),
-      );
-
-    expect(
-      workStartLabels.filter((label) => label?.includes("May 2026")),
-    ).toHaveLength(2);
-    expect(workStartLabels.some((label) => label?.includes("Sep 2025"))).toBe(
-      true,
-    );
-
-    const workHeadings = await workSection
-      .locator(".joe-work-table article h3")
-      .evaluateAll((headings) =>
-        headings.map((heading) => heading.textContent?.trim()),
-      );
-
-    expect(workHeadings).toEqual([
-      "sim0",
-      "garden0",
-      "Astrosimo",
-      "ChessLM",
-      "Love Presentation",
-      "Next Flights",
-    ]);
-    const workNumbers = await workSection
-      .locator(".joe-work-index")
-      .evaluateAll((items) => items.map((item) => item.textContent?.trim()));
-
-    expect(workNumbers).toEqual(["01", "02", "03", "04", "05", "06"]);
+      workSection.locator('article.joe-github-card[data-visibility="private"]'),
+    ).toHaveCount(6);
+    await expect(workSection.getByText("sim0", { exact: true })).toBeVisible();
+    await expect(workSection.getByText("garden0", { exact: true })).toBeVisible();
+    await expect(
+      workSection.locator('a[href="https://github.com/Joe-Simo/sim0"]'),
+    ).toHaveCount(0);
 
     const systemsSection = await expectHomeDestinationSection(page, "systems");
 
@@ -338,21 +329,26 @@ test.describe("Joe Simo personal site", () => {
     ).toHaveCount(0);
     await expect(page.locator("#community .joe-photo-marquee")).toBeVisible();
     await expectNoVisibleScrollbar(page.locator("#community .joe-photo-marquee"));
-    await expect(page.locator("#community .joe-photo-card")).toHaveCount(12);
+    await expect(page.locator("#community .joe-photo-card")).toHaveCount(22);
+    await expect(
+      page.locator('#community .joe-photo-marquee-copy[data-photo-copy="visual"]'),
+    ).toHaveCount(1);
     await expect(
       page.locator('#community .joe-photo-marquee-copy[aria-hidden="true"]'),
-    ).toHaveCount(1);
+    ).toHaveCount(0);
+    await expect(
+      page.locator('#community .joe-photo-card[data-photo-copy="accessible"]'),
+    ).toHaveCount(11);
+    await expect(
+      page.locator('#community .joe-photo-card[data-photo-copy="visual"]'),
+    ).toHaveCount(11);
     await expect(
       page.locator("#community .joe-photo-marquee-track"),
     ).toHaveCSS("animation-name", "joe-photo-marquee-right");
     await expect(
       page.locator("#community .joe-photo-card figcaption"),
     ).toHaveCount(0);
-    await expect(
-      page.locator("#community").getByRole("img", {
-        name: "Joe Simo with ThePrimeagen at React Miami 2026",
-      }),
-    ).toBeVisible();
+    await expect(page.locator("#community .joe-cover-image").first()).toBeAttached();
     await expectRenderedImagesHealthy(page);
     await expectProjectMediaFramesContained(page);
 
@@ -360,13 +356,32 @@ test.describe("Joe Simo personal site", () => {
     await expect(page).toHaveURL(/\/blog$/);
     await expect(
       page.getByRole("heading", { exact: true, name: "Blog" }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: /Writing from the work/i }),
     ).toBeVisible();
-    await expect(page.getByText("No public posts yet")).toBeVisible();
+    await expect(
+      page.getByRole("link", {
+        name: /The time I found a v0 API billing bug/i,
+      }),
+    ).toBeVisible();
+
+    await page.goto("/blog/vercel-v0-api-billing-bug-report", {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(
+      page.getByRole("heading", {
+        name: "The time I found a v0 API billing bug",
+      }),
+    ).toBeVisible();
+    await expect(page.getByText("Private proof, public story.")).toBeVisible();
 
     const footer = page.locator("footer");
 
-    await expect(footer.locator("nav")).toHaveCount(0);
-    await expect(footer.getByRole("link", { name: /github/i })).toHaveCount(0);
+    await expect(footer.locator('nav[aria-label="Social links"]')).toHaveCount(1);
+    await expect(footer.getByRole("link", { name: /github/i })).toBeVisible();
+    await expect(footer.getByRole("link", { name: /youtube/i })).toBeVisible();
+    await expect(footer.getByRole("link", { name: /v0/i })).toBeVisible();
     await expect(footer.getByRole("link", { name: /contact/i })).toHaveCount(0);
     await page.goto("/#contact", { waitUntil: "domcontentloaded" });
     await expect(
@@ -376,8 +391,11 @@ test.describe("Joe Simo personal site", () => {
     await expect(
       page.locator("#contact").getByRole("link", { name: /Instagram/i }),
     ).toBeVisible();
+    await expect(
+      page.locator("#contact .joe-contact-actions"),
+    ).toHaveCount(0);
     const contactLinks = await page
-      .locator("#contact .joe-contact-actions a")
+      .locator('#contact nav[aria-label="Social links"] a')
       .evaluateAll((links) =>
         links.map((link) => link.getAttribute("href")),
       );
@@ -385,8 +403,10 @@ test.describe("Joe Simo personal site", () => {
     expect(contactLinks).toEqual([
       "https://x.com/joesimo",
       "https://github.com/Joe-Simo",
+      "https://v0.app/@joesimo",
       "https://www.linkedin.com/in/josephsimo/",
       "https://www.instagram.com/joesimo_/",
+      "https://www.youtube.com/@JoeSimo",
     ]);
     await expect(page.locator("#contact")).toBeInViewport();
 
@@ -419,6 +439,175 @@ test.describe("Joe Simo personal site", () => {
     await expect(track).toHaveCSS("animation-name", "joe-photo-marquee-right");
     await expectNoVisibleScrollbar(rail);
     await expect(track).toHaveCSS("animation-play-state", "running");
+
+    const railBox = await rail.boundingBox();
+
+    expect(railBox).toBeTruthy();
+    if (railBox) {
+      const startScrollLeft = await rail.evaluate((element) => element.scrollLeft);
+      const center = {
+        x: railBox.x + railBox.width / 2,
+        y: railBox.y + railBox.height / 2,
+      };
+
+      await page.mouse.move(center.x, center.y);
+      await page.mouse.down();
+      await page.mouse.move(center.x - 120, center.y, {
+        steps: 4,
+      });
+      await page.mouse.up();
+      await expect
+        .poll(() => rail.evaluate((element) => element.scrollLeft))
+        .toBeGreaterThan(startScrollLeft);
+    }
+
+    await expect(track).toHaveCSS("animation-play-state", "paused");
+    await expect
+      .poll(() =>
+        track.evaluate((element) => getComputedStyle(element).animationPlayState),
+      )
+      .toBe("running");
+
+    const visiblePhotoPoint = await page.evaluate(() => {
+      const rail = document.querySelector<HTMLElement>(
+        "#community .joe-photo-marquee",
+      );
+
+      if (!rail) {
+        return null;
+      }
+
+      const railRect = rail.getBoundingClientRect();
+      const openers = Array.from(
+        document.querySelectorAll<HTMLElement>("#community [data-photo-open]"),
+      );
+
+      for (const opener of openers) {
+        const rect = opener.getBoundingClientRect();
+        const left = Math.max(rect.left, railRect.left);
+        const right = Math.min(rect.right, railRect.right);
+        const top = Math.max(rect.top, railRect.top);
+        const bottom = Math.min(rect.bottom, railRect.bottom);
+
+        if (right - left >= 48 && bottom - top >= 48) {
+          return {
+            x: left + (right - left) / 2,
+            y: top + (bottom - top) / 2,
+          };
+        }
+      }
+
+      return null;
+    });
+
+    expect(visiblePhotoPoint).toBeTruthy();
+    if (visiblePhotoPoint) {
+      await page.mouse.click(visiblePhotoPoint.x, visiblePhotoPoint.y);
+    }
+    const photoDialog = page.getByRole("dialog").first();
+
+    await expect(photoDialog).toBeVisible();
+    await expect(photoDialog.locator(".joe-photo-dialog-image")).toBeVisible();
+    if (railBox) {
+      const dialogImageBox = await photoDialog
+        .locator(".joe-photo-dialog-image")
+        .boundingBox();
+
+      expect(dialogImageBox?.width ?? 0).toBeGreaterThan(railBox.width);
+    }
+    await page.keyboard.press("Escape");
+    await expect(photoDialog).toHaveCount(0);
+    await expect(rail).not.toHaveAttribute("data-photo-dialog-open", /.+/);
+    await expect(track).toHaveCSS("animation-play-state", "running");
+    await expectPageHealthy(page, problems);
+  });
+
+  test("keeps photo zoom dialog inside small browser windows", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.setViewportSize({ width: 360, height: 480 });
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
+    await expect(page.locator('html[data-portfolio-runtime="ready"]')).toHaveCount(
+      1,
+    );
+
+    const rail = page.locator("#community .joe-photo-marquee");
+
+    await expect(rail).toBeVisible();
+    const openedPhoto = await page.evaluate(() => {
+      const rail = document.querySelector<HTMLElement>(
+        "#community .joe-photo-marquee",
+      );
+
+      if (!rail) {
+        return false;
+      }
+
+      const railRect = rail.getBoundingClientRect();
+      const openers = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#community [data-photo-open]",
+        ),
+      );
+
+      for (const opener of openers) {
+        const rect = opener.getBoundingClientRect();
+        const visibleWidth =
+          Math.min(rect.right, railRect.right) - Math.max(rect.left, railRect.left);
+        const visibleHeight =
+          Math.min(rect.bottom, railRect.bottom) - Math.max(rect.top, railRect.top);
+
+        if (visibleWidth >= 48 && visibleHeight >= 48) {
+          opener.click();
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    expect(openedPhoto).toBe(true);
+
+    const photoDialog = page.getByRole("dialog").first();
+
+    await expect(photoDialog).toBeVisible();
+    await expect(photoDialog.locator(".joe-photo-dialog-scroll")).toBeVisible();
+    const metrics = await photoDialog.evaluate((dialog) => {
+      const rect = dialog.getBoundingClientRect();
+      const scroll = dialog.querySelector<HTMLElement>(
+        ".joe-photo-dialog-scroll",
+      );
+
+      return {
+        bottom: rect.bottom,
+        documentOverflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+        height: rect.height,
+        left: rect.left,
+        right: rect.right,
+        scrollClientWidth: scroll?.clientWidth ?? 0,
+        scrollWidth: scroll?.scrollWidth ?? 0,
+        top: rect.top,
+        viewportHeight: window.innerHeight,
+        viewportWidth: window.innerWidth,
+        width: rect.width,
+      };
+    });
+
+    expect(metrics.left).toBeGreaterThanOrEqual(0);
+    expect(metrics.top).toBeGreaterThanOrEqual(0);
+    expect(metrics.right).toBeLessThanOrEqual(metrics.viewportWidth);
+    expect(metrics.bottom).toBeLessThanOrEqual(metrics.viewportHeight);
+    expect(metrics.width).toBeLessThanOrEqual(metrics.viewportWidth - 24);
+    expect(metrics.height).toBeLessThanOrEqual(metrics.viewportHeight - 24);
+    expect(metrics.documentOverflow).toBe(0);
+    expect(metrics.scrollWidth).toBeGreaterThan(metrics.scrollClientWidth);
+
+    await page.keyboard.press("Escape");
+    await expect(photoDialog).toHaveCount(0);
     await expectPageHealthy(page, problems);
   });
 
@@ -433,7 +622,7 @@ test.describe("Joe Simo personal site", () => {
     await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page.locator(".simo-command-nav")).toHaveCount(0);
-    await expect(page.locator(".joe-hero a")).toHaveCount(0);
+    await expect(page.locator(".joe-hero a")).toHaveCount(1);
 
     if (isMobile) {
       await expect(page.getByRole("button", { name: /open navigation/i })).toBeVisible();
@@ -471,16 +660,57 @@ test.describe("Joe Simo personal site", () => {
       footer.getByRole("link", { exact: true, name: "Joe Simo" }),
       "footer home link",
     ).toHaveAttribute("href", "/");
-    await expect(footer.locator("nav")).toHaveCount(0);
+    const socialNav = footer.locator('nav[aria-label="Social links"]');
+
+    await expect(socialNav).toHaveCount(1);
+    await expect(socialNav.locator("a")).toHaveCount(6);
     await expect(footer.getByRole("link", { name: /work/i })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: /systems/i })).toHaveCount(0);
-    await expect(footer.getByRole("link", { name: /certifications/i })).toHaveCount(0);
+    await expect(
+      footer.getByRole("link", { name: /certifications/i }),
+    ).toHaveCount(0);
     await expect(footer.getByRole("link", { name: /community/i })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: /blog/i })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: /contact/i })).toHaveCount(0);
-    await expect(footer.getByRole("link", { name: /github|linkedin|instagram|x/i })).toHaveCount(0);
+    await expect(
+      footer.getByRole("link", {
+        name: /github|linkedin|instagram|youtube|v0|x/i,
+      }),
+    ).toHaveCount(6);
 
     const problems = collectConsoleProblems(page);
+    await expectPageHealthy(page, problems);
+  });
+
+  test("uses browser language until the user selects a preference", async ({
+    page,
+  }) => {
+    const problems = collectConsoleProblems(page);
+
+    await page.addInitScript(() => {
+      Object.defineProperty(window.navigator, "languages", {
+        configurable: true,
+        get: () => ["es-DO", "en-US"],
+      });
+      Object.defineProperty(window.navigator, "language", {
+        configurable: true,
+        get: () => "es-DO",
+      });
+    });
+
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("html")).toHaveAttribute("lang", "es");
+    await expect(page.getByText("Diseñador/desarrollador, FL.")).toBeVisible();
+
+    await page.getByRole("button", { name: /idioma:/i }).click();
+    await page.getByRole("menuitemradio", { name: "English" }).click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+
     await expectPageHealthy(page, problems);
   });
 
@@ -561,12 +791,7 @@ test.describe("Joe Simo personal site", () => {
       "ready",
     );
 
-    const projectRow = page.locator("#work-love-presentation");
-
-    await expect(projectRow.getByRole("heading", { name: "Love Presentation" })).toBeVisible();
-    await projectRow
-      .getByRole("button", { name: /view case study for Love Presentation/i })
-      .click();
+    await page.goto(selectedProjectUrl.toString(), { waitUntil: "domcontentloaded" });
 
     const projectDialog = page.getByRole("dialog", { name: /Love Presentation/i });
 
@@ -580,15 +805,10 @@ test.describe("Joe Simo personal site", () => {
     await page.keyboard.press("Escape");
     await expect(projectDialog).toHaveCount(0);
     await expect(page).toHaveURL(workUrl);
-    await expect(
-      projectRow.getByRole("button", {
-        name: /view case study for Love Presentation/i,
-      }),
-    ).toBeFocused();
     await expect(page.locator("#community [data-project-open]")).toHaveCount(0);
     await expect(
       page.locator("#community").getByRole("button", { name: /pause photos/i }),
-    ).toHaveCount(1);
+    ).toHaveCount(0);
 
     await page.goto("/?project=love-presentation#work", {
       waitUntil: "domcontentloaded",
@@ -624,29 +844,44 @@ test.describe("Joe Simo personal site", () => {
     );
     const problems = collectConsoleProblems(page);
 
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/#community", { waitUntil: "domcontentloaded" });
 
-    const workRow = page.locator("#work-sim0");
-    const workImage = workRow.locator(".joe-cover-image").first();
+    const rail = page.locator("#community .joe-photo-marquee");
 
-    await workRow.evaluate((row) =>
-      row.scrollIntoView({ behavior: "instant", block: "center" }),
+    await rail.evaluate((element) =>
+      element.scrollIntoView({ behavior: "instant", block: "center" }),
     );
     await page.waitForTimeout(120);
 
-    await expect(workImage).toBeVisible();
+    const railBox = await rail.boundingBox();
+
+    expect(railBox).toBeTruthy();
+    const hoverPoint = railBox
+      ? {
+          x: railBox.x + railBox.width / 2,
+          y: railBox.y + railBox.height / 2,
+        }
+      : { x: 0, y: 0 };
+    const visiblePhotoFilter = () =>
+      page.evaluate(({ x, y }) => {
+        const target = document.elementFromPoint(x, y);
+        const image = target
+          ?.closest(".joe-photo-card")
+          ?.querySelector<HTMLElement>(".joe-cover-image");
+
+        return image ? getComputedStyle(image).filter : "";
+      }, hoverPoint);
+
     await expect
-      .poll(() => workImage.evaluate((image) => getComputedStyle(image).filter))
+      .poll(visiblePhotoFilter)
       .toMatch(/grayscale\((1|100%)\)/);
 
-    await workRow.hover();
+    await page.mouse.move(hoverPoint.x, hoverPoint.y);
     await expect
-      .poll(() => workImage.evaluate((image) => getComputedStyle(image).filter))
-      .toMatch(/grayscale\((1|100%)\)/);
+      .poll(visiblePhotoFilter)
+      .not.toMatch(/grayscale\((1|100%)\)/);
 
-    await workRow
-      .getByRole("button", { name: /view case study for sim0/i })
-      .click();
+    await page.goto("/?project=sim0#work", { waitUntil: "domcontentloaded" });
 
     const dialog = page.getByRole("dialog", { name: /sim0/i });
     const dialogImage = dialog.locator(".joe-dialog-media .joe-cover-image").first();
@@ -664,29 +899,24 @@ test.describe("Joe Simo personal site", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("names each project details control with its project context", async ({
+  test("keeps GitHub project cards public-safe on the work surface", async ({
     page,
   }) => {
     const problems = collectConsoleProblems(page);
 
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
 
-    const detailButtonNames = [
-      "View case study for sim0",
-      "View case study for Love Presentation",
-      "View case study for garden0",
-      "View case study for Astrosimo",
-      "View case study for ChessLM",
-      "View case study for Next Flights",
-    ];
-
-    for (const name of detailButtonNames) {
-      await expect(page.getByRole("button", { name })).toBeVisible();
-    }
-
-    await expect(page.locator("[data-project-open]")).toHaveCount(
-      detailButtonNames.length,
-    );
+    await expect(page.locator("#work .joe-github-card")).toHaveCount(11);
+    await expect(page.locator("#work [data-project-open]")).toHaveCount(0);
+    await expect(
+      page.locator('#work article.joe-github-card[data-visibility="private"]'),
+    ).toHaveCount(6);
+    await expect(
+      page.locator('#work a[href="https://github.com/Joe-Simo/sim0"]'),
+    ).toHaveCount(0);
+    await expect(
+      page.locator('#work a[href="https://github.com/Joe-Simo/garden0"]'),
+    ).toHaveCount(0);
     await expectPageHealthy(page, problems);
   });
 
@@ -714,22 +944,43 @@ test.describe("Joe Simo personal site", () => {
     expect(contentSecurityPolicy).toContain("default-src 'self'");
     expect(contentSecurityPolicy).toContain("frame-ancestors 'none'");
     expect(contentSecurityPolicy).toMatch(/script-src[^;]*'nonce-[^']+'/);
+    expect(homeHtml).toContain('id="work"');
+    expect(homeHtml).toContain("GitHub projects");
 
     for (const route of workRoutes) {
       const slug = route.path.replace("/work/", "");
       const workAnchor = `id="work-${slug}"`;
 
-      if (route.visibleOnHome) {
-        expect(homeHtml, workAnchor).toContain(workAnchor);
-      } else {
-        expect(homeHtml, workAnchor).not.toContain(workAnchor);
-      }
+      expect(homeHtml, workAnchor).not.toContain(workAnchor);
     }
 
     const blogResponse = await request.get("/blog", { maxRedirects: 0 });
     expect(blogResponse.status()).toBe(200);
     expect(blogResponse.headers().location).toBeUndefined();
-    expect(await blogResponse.text()).toContain("No public posts yet");
+    const blogHtml = await blogResponse.text();
+
+    expect(blogHtml).toContain("The time I found a v0 API billing bug");
+    expect(blogHtml).not.toContain('name="robots" content="noindex, follow"');
+
+    const blogPostResponse = await request.get(
+      "/blog/vercel-v0-api-billing-bug-report",
+      { maxRedirects: 0 },
+    );
+    expect(blogPostResponse.status()).toBe(200);
+    const blogPostHtml = await blogPostResponse.text();
+
+    expect(blogPostHtml).toContain("Responsible disclosure");
+    expect(blogPostHtml).not.toContain("REDACTEDAPIKEYHERE");
+    expect(blogPostHtml).not.toContain("YOUR_API_KEY");
+    expect(blogPostHtml).not.toContain("Bearer ");
+
+    const sitemapResponse = await request.get("/sitemap.xml");
+    const sitemapXml = await sitemapResponse.text();
+
+    expect(sitemapXml).toContain("https://joesimo.com/blog");
+    expect(sitemapXml).toContain(
+      "https://joesimo.com/blog/vercel-v0-api-billing-bug-report",
+    );
 
     for (const route of workRoutes) {
       const response = await request.get(route.path, { maxRedirects: 0 });
@@ -737,6 +988,11 @@ test.describe("Joe Simo personal site", () => {
 
       expect(response.status(), route.path).toBe(200);
       expect(html, route.path).toContain(route.heading);
+      expect(html, route.path).toContain('href="/#work"');
+      expect(html, route.path).toContain("Back to GitHub projects");
+      expect(html, route.path).not.toContain(
+        `href="/#work-${route.path.replace("/work/", "")}"`,
+      );
     }
 
     for (const route of noAssetWorkRouteMetadata) {

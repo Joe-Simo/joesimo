@@ -28,6 +28,30 @@ function writeStoredLanguage(language: SiteLanguage) {
   }
 }
 
+function siteLanguageFromLocale(locale: string | undefined): SiteLanguage | null {
+  const normalizedLocale = locale?.toLowerCase().replace("_", "-") ?? "";
+  const languageCode = normalizedLocale.split("-")[0];
+
+  return isSiteLanguage(languageCode) ? languageCode : null;
+}
+
+function detectBrowserLanguage(): SiteLanguage {
+  const languageCandidates = [
+    ...Array.from(window.navigator.languages ?? []),
+    window.navigator.language,
+  ];
+
+  for (const locale of languageCandidates) {
+    const language = siteLanguageFromLocale(locale);
+
+    if (language) {
+      return language;
+    }
+  }
+
+  return "en";
+}
+
 function readLanguageSnapshot(): SiteLanguage {
   if (typeof window === "undefined") {
     return "en";
@@ -47,7 +71,7 @@ function readLanguageSnapshot(): SiteLanguage {
     return storedLanguage;
   }
 
-  return window.navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+  return detectBrowserLanguage();
 }
 
 function getServerLanguageSnapshot(): SiteLanguage {
