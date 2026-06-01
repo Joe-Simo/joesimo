@@ -112,7 +112,7 @@ test.describe("Joe Simo personal site", () => {
     ).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
     await expect(
-      page.getByText("React / Next.js / TypeScript / JavaScript"),
+      page.getByText("React / Next.js / TypeScript / JavaScript / Tailwind CSS / shadcn/ui / Three.js / Motion"),
     ).toBeVisible();
     await expect(page.locator(".joe-identity-field")).toHaveCount(0);
     await expectHeroNameParticlesReady(page);
@@ -148,7 +148,7 @@ test.describe("Joe Simo personal site", () => {
     const pageText = await page.locator("body").innerText();
 
     expect(pageText).not.toMatch(
-      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|AI-native|public trail|famous developers|Three\.js|GSAP|WebGL|proof route|owned frames|readable product surface/i,
+      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|AI-native|public trail|famous developers|GSAP|WebGL|proof route|owned frames|readable product surface/i,
     );
     expect(pageText).not.toMatch(/\bID (#|\w)/i);
     const privateMessageAction = ["Email", "Joe"].join(" ");
@@ -329,10 +329,10 @@ test.describe("Joe Simo personal site", () => {
     ).toHaveCount(0);
     await expect(page.locator("#community .joe-photo-marquee")).toBeVisible();
     await expectNoVisibleScrollbar(page.locator("#community .joe-photo-marquee"));
-    await expect(page.locator("#community .joe-photo-card")).toHaveCount(22);
+    await expect(page.locator("#community .joe-photo-card")).toHaveCount(11);
     await expect(
       page.locator('#community .joe-photo-marquee-copy[data-photo-copy="visual"]'),
-    ).toHaveCount(1);
+    ).toHaveCount(0);
     await expect(
       page.locator('#community .joe-photo-marquee-copy[aria-hidden="true"]'),
     ).toHaveCount(0);
@@ -341,10 +341,10 @@ test.describe("Joe Simo personal site", () => {
     ).toHaveCount(11);
     await expect(
       page.locator('#community .joe-photo-card[data-photo-copy="visual"]'),
-    ).toHaveCount(11);
+    ).toHaveCount(0);
     await expect(
       page.locator("#community .joe-photo-marquee-track"),
-    ).toHaveCSS("animation-name", "joe-photo-marquee-right");
+    ).toHaveCSS("animation-name", "none");
     await expect(
       page.locator("#community .joe-photo-card figcaption"),
     ).toHaveCount(0);
@@ -421,6 +421,7 @@ test.describe("Joe Simo personal site", () => {
   test("keeps the community photo rail focused on photos only", async ({
     page,
   }) => {
+    const isMobile = test.info().project.name.includes("mobile");
     const problems = collectConsoleProblems(page);
 
     await page.goto("/#community", { waitUntil: "domcontentloaded" });
@@ -436,74 +437,103 @@ test.describe("Joe Simo personal site", () => {
     ).toHaveCount(0);
     await expect(page.locator("#community .joe-photo-card figcaption")).toHaveCount(0);
     await expect(rail).not.toHaveAttribute("data-paused", /.+/);
-    await expect(track).toHaveCSS("animation-name", "joe-photo-marquee-right");
+    await expect(page.locator("#community .joe-photo-card")).toHaveCount(11);
+    await expect(
+      page.locator('#community .joe-photo-marquee-copy[data-photo-copy="visual"]'),
+    ).toHaveCount(0);
+    await expect(track).toHaveCSS("animation-name", "none");
     await expectNoVisibleScrollbar(rail);
-    await expect(track).toHaveCSS("animation-play-state", "running");
+    await expect
+      .poll(() =>
+        rail.evaluate((element) => element.scrollWidth > element.clientWidth),
+      )
+      .toBe(true);
 
     const railBox = await rail.boundingBox();
 
     expect(railBox).toBeTruthy();
     if (railBox) {
-      const startScrollLeft = await rail.evaluate((element) => element.scrollLeft);
+      const wheelPoint = {
+        x: railBox.x + railBox.width / 2,
+        y: railBox.y + railBox.height / 2,
+      };
       const center = {
         x: railBox.x + railBox.width / 2,
         y: railBox.y + railBox.height / 2,
       };
 
-      await page.mouse.move(center.x, center.y);
-      await page.mouse.down();
-      await page.mouse.move(center.x - 120, center.y, {
-        steps: 4,
-      });
-      await page.mouse.up();
-      await expect
-        .poll(() => rail.evaluate((element) => element.scrollLeft))
-        .toBeGreaterThan(startScrollLeft);
+      if (!isMobile) {
+        const wheelStartScrollLeft = await rail.evaluate((element) => {
+          element.scrollLeft = 0;
+          return element.scrollLeft;
+        });
+
+        await page.mouse.move(wheelPoint.x, wheelPoint.y);
+        await page.mouse.wheel(180, 0);
+        await expect
+          .poll(() => rail.evaluate((element) => element.scrollLeft))
+          .toBeGreaterThan(wheelStartScrollLeft);
+      }
+
+      if (!isMobile) {
+        const startScrollLeft = await rail.evaluate((element) => {
+          element.scrollLeft = 0;
+          return element.scrollLeft;
+        });
+
+        await page.mouse.move(center.x, center.y);
+        await page.mouse.down();
+        await page.mouse.move(center.x - 220, center.y, {
+          steps: 4,
+        });
+        await page.mouse.up();
+        await expect
+          .poll(() => rail.evaluate((element) => element.scrollLeft))
+          .toBeGreaterThan(startScrollLeft);
+      }
+
+      if (isMobile) {
+        await rail.evaluate((element) => {
+          element.scrollLeft = 0;
+        });
+
+        const mobileSwipeStart = await rail.evaluate(
+          (element) => element.scrollLeft,
+        );
+        const touch = await page.context().newCDPSession(page);
+
+        await touch.send("Input.dispatchTouchEvent", {
+          touchPoints: [{ x: center.x, y: center.y }],
+          type: "touchStart",
+        });
+        await touch.send("Input.dispatchTouchEvent", {
+          touchPoints: [{ x: center.x - 160, y: center.y }],
+          type: "touchMove",
+        });
+        await touch.send("Input.dispatchTouchEvent", {
+          touchPoints: [],
+          type: "touchEnd",
+        });
+        await expect
+          .poll(() => rail.evaluate((element) => element.scrollLeft))
+          .toBeGreaterThan(mobileSwipeStart);
+      }
     }
 
-    await expect(track).toHaveCSS("animation-play-state", "paused");
-    await expect
-      .poll(() =>
-        track.evaluate((element) => getComputedStyle(element).animationPlayState),
-      )
-      .toBe("running");
-
-    const visiblePhotoPoint = await page.evaluate(() => {
-      const rail = document.querySelector<HTMLElement>(
-        "#community .joe-photo-marquee",
-      );
-
-      if (!rail) {
-        return null;
-      }
-
-      const railRect = rail.getBoundingClientRect();
-      const openers = Array.from(
-        document.querySelectorAll<HTMLElement>("#community [data-photo-open]"),
-      );
-
-      for (const opener of openers) {
-        const rect = opener.getBoundingClientRect();
-        const left = Math.max(rect.left, railRect.left);
-        const right = Math.min(rect.right, railRect.right);
-        const top = Math.max(rect.top, railRect.top);
-        const bottom = Math.min(rect.bottom, railRect.bottom);
-
-        if (right - left >= 48 && bottom - top >= 48) {
-          return {
-            x: left + (right - left) / 2,
-            y: top + (bottom - top) / 2,
-          };
-        }
-      }
-
-      return null;
+    await rail.evaluate((element) => {
+      element.scrollLeft = 0;
     });
+    await page.waitForTimeout(260);
 
-    expect(visiblePhotoPoint).toBeTruthy();
-    if (visiblePhotoPoint) {
-      await page.mouse.click(visiblePhotoPoint.x, visiblePhotoPoint.y);
+    const firstPhotoButton = page.locator("#community [data-photo-open]").first();
+
+    await expect(firstPhotoButton).toBeVisible();
+    if (isMobile) {
+      await firstPhotoButton.tap();
+    } else {
+      await firstPhotoButton.click();
     }
+
     const photoDialog = page.getByRole("dialog").first();
 
     await expect(photoDialog).toBeVisible();
@@ -518,13 +548,13 @@ test.describe("Joe Simo personal site", () => {
     await page.keyboard.press("Escape");
     await expect(photoDialog).toHaveCount(0);
     await expect(rail).not.toHaveAttribute("data-photo-dialog-open", /.+/);
-    await expect(track).toHaveCSS("animation-play-state", "running");
     await expectPageHealthy(page, problems);
   });
 
   test("keeps photo zoom dialog inside small browser windows", async ({
     page,
   }) => {
+    const isMobile = test.info().project.name.includes("mobile");
     const problems = collectConsoleProblems(page);
 
     await page.setViewportSize({ width: 360, height: 480 });
@@ -536,39 +566,18 @@ test.describe("Joe Simo personal site", () => {
     const rail = page.locator("#community .joe-photo-marquee");
 
     await expect(rail).toBeVisible();
-    const openedPhoto = await page.evaluate(() => {
-      const rail = document.querySelector<HTMLElement>(
-        "#community .joe-photo-marquee",
-      );
-
-      if (!rail) {
-        return false;
-      }
-
-      const railRect = rail.getBoundingClientRect();
-      const openers = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          "#community [data-photo-open]",
-        ),
-      );
-
-      for (const opener of openers) {
-        const rect = opener.getBoundingClientRect();
-        const visibleWidth =
-          Math.min(rect.right, railRect.right) - Math.max(rect.left, railRect.left);
-        const visibleHeight =
-          Math.min(rect.bottom, railRect.bottom) - Math.max(rect.top, railRect.top);
-
-        if (visibleWidth >= 48 && visibleHeight >= 48) {
-          opener.click();
-          return true;
-        }
-      }
-
-      return false;
+    await rail.evaluate((element) => {
+      element.scrollLeft = 0;
     });
 
-    expect(openedPhoto).toBe(true);
+    const firstPhotoButton = page.locator("#community [data-photo-open]").first();
+
+    await expect(firstPhotoButton).toBeVisible();
+    if (isMobile) {
+      await firstPhotoButton.tap();
+    } else {
+      await firstPhotoButton.click();
+    }
 
     const photoDialog = page.getByRole("dialog").first();
 

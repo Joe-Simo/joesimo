@@ -2171,6 +2171,7 @@ header nav a[aria-current="location"]::after {
 }
 
 .joe-photo-marquee {
+  -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--joe-line);
   border-left: 1px solid var(--joe-line);
   border-right: 1px solid var(--joe-line);
@@ -2179,8 +2180,10 @@ header nav a[aria-current="location"]::after {
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
   margin-top: 0;
 }
 
@@ -2200,17 +2203,9 @@ header nav a[aria-current="location"]::after {
 }
 
 .joe-photo-marquee-track {
-  animation: joe-photo-marquee-right 58s linear infinite;
   display: flex;
+  transform: none;
   width: max-content;
-  will-change: transform;
-}
-
-.joe-photo-marquee[data-dragging="true"] .joe-photo-marquee-track,
-.joe-photo-marquee[data-paused="true"] .joe-photo-marquee-track,
-.joe-photo-marquee[data-photo-dialog-open="true"] .joe-photo-marquee-track,
-.joe-photo-marquee[data-user-interacting="true"] .joe-photo-marquee-track {
-  animation-play-state: paused;
 }
 
 .joe-photo-sheet {
@@ -2227,6 +2222,7 @@ header nav a[aria-current="location"]::after {
   gap: 0;
   margin: 0;
   overflow: hidden;
+  scroll-snap-align: start;
   transition: border-color 160ms ease, background-color 160ms ease;
 }
 
@@ -2242,6 +2238,7 @@ header nav a[aria-current="location"]::after {
   outline: none;
   padding: 0;
   text-align: inherit;
+  touch-action: manipulation;
   width: 100%;
 }
 
@@ -2319,16 +2316,6 @@ header nav a[aria-current="location"]::after {
 @media (max-width: 760px) {
   .joe-photo-dialog-image {
     width: clamp(34rem, 165vw, 54rem);
-  }
-}
-
-@keyframes joe-photo-marquee-right {
-  from {
-    transform: translate3d(-50%, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -3955,10 +3942,6 @@ header nav a[aria-current="location"]::after {
     transform: none;
   }
 
-  .joe-photo-marquee-copy[data-photo-copy="visual"] {
-    display: none;
-  }
-
   .joe-photo-card {
     scroll-snap-align: start;
   }
@@ -4844,7 +4827,8 @@ header nav a[aria-current="location"]::after {
     transparent
   );
   min-height: 100%;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .joe-photo-card {

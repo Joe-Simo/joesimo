@@ -127,7 +127,7 @@ test.describe("responsive, theme, and fallback gates", () => {
     await expectNoVisibleScrollbar(page.locator("#community .joe-photo-marquee"));
     await expect(
       page.locator("#community .joe-photo-marquee-track"),
-    ).toHaveCSS("animation-name", "joe-photo-marquee-right");
+    ).toHaveCSS("animation-name", "none");
     await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#credentials")).toBeInViewport();
     await expect(
@@ -201,7 +201,7 @@ test.describe("responsive, theme, and fallback gates", () => {
     ).toHaveCSS("animation-name", "none");
     await expect(
       page.locator('#community .joe-photo-marquee-copy[data-photo-copy="visual"]'),
-    ).toBeHidden();
+    ).toHaveCount(0);
     await expect
       .poll(() =>
         page.evaluate(

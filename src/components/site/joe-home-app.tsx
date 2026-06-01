@@ -370,7 +370,7 @@ function HeroSection({
                 </p>
               </div>
               <p className="joe-hero-stack">
-                React / Next.js / TypeScript / JavaScript / Tailwind CSS / shadcn/ui
+                React / Next.js / TypeScript / JavaScript / Tailwind CSS / shadcn/ui / Three.js / Motion
               </p>
             </div>
           </div>
@@ -652,11 +652,7 @@ function CommunitySection({
   );
   const visibleMoments = [...featuredMoments, ...supportingMoments];
 
-  const renderMoment = (
-    moment: CommunityArtifact,
-    copyIndex: number,
-  ) => {
-    const isDuplicate = copyIndex > 0;
+  const renderMoment = (moment: CommunityArtifact) => {
     const photoData = {
       "data-photo-alt": moment.media.alt,
       "data-photo-height": String(moment.media.height),
@@ -668,46 +664,28 @@ function CommunitySection({
     return (
       <figure
         className="joe-photo-card"
-        data-photo-copy={isDuplicate ? "visual" : "accessible"}
+        data-photo-copy="accessible"
         data-featured={moment.title === "ThePrimeagen"}
-        key={`${copyIndex}-${moment.code}-${moment.media.src}`}
-        role={isDuplicate ? "presentation" : "listitem"}
+        key={`${moment.code}-${moment.media.src}`}
+        role="listitem"
       >
-        {isDuplicate ? (
-          <span
-            className="joe-photo-card-trigger"
-            data-photo-open
-            {...photoData}
-          >
-            <span className="joe-photo-frame">
-              <Image
-                alt=""
-                className="joe-cover-image"
-                fill
-                sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
-                src={moment.media.src}
-              />
-            </span>
+        <button
+          aria-label={moment.media.alt}
+          className="joe-photo-card-trigger"
+          data-photo-open
+          type="button"
+          {...photoData}
+        >
+          <span className="joe-photo-frame">
+            <Image
+              alt={moment.media.alt}
+              className="joe-cover-image"
+              fill
+              sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
+              src={moment.media.src}
+            />
           </span>
-        ) : (
-          <button
-            aria-label={moment.media.alt}
-            className="joe-photo-card-trigger"
-            data-photo-open
-            type="button"
-            {...photoData}
-          >
-            <span className="joe-photo-frame">
-              <Image
-                alt={moment.media.alt}
-                className="joe-cover-image"
-                fill
-                sizes="(max-width: 760px) 82vw, (max-width: 1180px) 34vw, 25vw"
-                src={moment.media.src}
-              />
-            </span>
-          </button>
-        )}
+        </button>
       </figure>
     );
   };
@@ -743,17 +721,7 @@ function CommunitySection({
               data-photo-copy="accessible"
               role="list"
             >
-              {visibleMoments.map((moment) =>
-                renderMoment(moment, 0),
-              )}
-            </div>
-            <div
-              className="joe-photo-marquee-copy joe-photo-sheet"
-              data-photo-copy="visual"
-            >
-              {visibleMoments.map((moment) =>
-                renderMoment(moment, 1),
-              )}
+              {visibleMoments.map((moment) => renderMoment(moment))}
             </div>
           </div>
         </div>

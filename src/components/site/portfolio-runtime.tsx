@@ -668,7 +668,7 @@ function usePhotoRailInteraction(
     }
 
     function handlePointerDown(event: PointerEvent) {
-      if (event.button !== 0) {
+      if (event.button !== 0 || event.pointerType === "touch") {
         return;
       }
 
