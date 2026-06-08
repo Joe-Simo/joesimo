@@ -482,16 +482,27 @@ test.describe("Joe Simo personal site", () => {
       }
 
       if (!isMobile) {
+        // Neutralize smooth scrolling and scroll-snap on the rail while we
+        // measure the pointer drag. The drag scrolls the native container, but
+        // `scroll-behavior: smooth` + `scroll-snap-type: x proximity` then
+        // animate and settle the final position non-deterministically (it can
+        // snap back to 0), which is what made this assertion flaky. This does
+        // not change whether the drag scrolls — only that the readout is stable.
         const startScrollLeft = await rail.evaluate((element) => {
+          element.style.scrollBehavior = "auto";
+          element.style.scrollSnapType = "none";
           element.scrollLeft = 0;
           return element.scrollLeft;
         });
 
         await page.mouse.move(center.x, center.y);
         await page.mouse.down();
-        await page.mouse.move(center.x - 220, center.y, {
-          steps: 4,
-        });
+        // Drag in increments so at least one pointermove crosses the rail's 5px
+        // drag threshold and is delivered before release (a single large move
+        // can be coalesced past the threshold).
+        for (const offset of [40, 90, 150, 220]) {
+          await page.mouse.move(center.x - offset, center.y, { steps: 6 });
+        }
         await page.mouse.up();
         await expect
           .poll(() => rail.evaluate((element) => element.scrollLeft))
