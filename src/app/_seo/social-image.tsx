@@ -144,7 +144,7 @@ export async function createSocialImage(label: string) {
           }}
         >
           {[
-            ["Work", "GitHub projects"],
+            ["Work", "public repos / live products"],
             ["Systems", "Macromedica Dominicana / Never Off / Brox"],
             ["Certifications", "web / systems / drone"],
             ["Contact", "X / GitHub / LinkedIn / Instagram"],

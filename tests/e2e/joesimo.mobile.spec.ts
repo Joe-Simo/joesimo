@@ -60,8 +60,15 @@ test.describe("Joe Simo mobile homepage navigation", () => {
       }),
     ).toBeVisible();
     await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
-    await expect(workSection.locator(".joe-github-card")).toHaveCount(11);
+    await expect(workSection.locator(".joe-github-card")).toHaveCount(5);
+    await expect(
+      workSection.locator('article.joe-github-card[data-visibility="private"]'),
+    ).toHaveCount(0);
+    await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
     await expect(workSection.getByText("sim0", { exact: true })).toBeVisible();
+    await expect(
+      workSection.locator('a[href="https://signature0.com"]'),
+    ).toBeVisible();
     await expect(workSection.getByText("love-presentation")).toBeVisible();
 
     const firstWorkTitleBox = await workSection

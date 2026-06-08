@@ -293,7 +293,7 @@ test.describe("Joe Simo personal site", () => {
       }),
     ).toBeVisible();
     await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
-    await expect(workSection.locator(".joe-github-card")).toHaveCount(11);
+    await expect(workSection.locator(".joe-github-card")).toHaveCount(5);
     await expect(
       workSection.locator('.joe-github-card[data-visibility="public"]'),
     ).toHaveCount(5);
@@ -305,9 +305,15 @@ test.describe("Joe Simo personal site", () => {
     ).toBeVisible();
     await expect(
       workSection.locator('article.joe-github-card[data-visibility="private"]'),
-    ).toHaveCount(6);
+    ).toHaveCount(0);
+    await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
     await expect(workSection.getByText("sim0", { exact: true })).toBeVisible();
-    await expect(workSection.getByText("garden0", { exact: true })).toBeVisible();
+    await expect(
+      workSection.locator('a[href="https://signature0.com"]'),
+    ).toBeVisible();
+    await expect(
+      workSection.locator('a[href="https://chesslm.com"]'),
+    ).toBeVisible();
     await expect(
       workSection.locator('a[href="https://github.com/Joe-Simo/sim0"]'),
     ).toHaveCount(0);
@@ -915,16 +921,23 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#work .joe-github-card")).toHaveCount(11);
+    await expect(page.locator("#work .joe-github-card")).toHaveCount(5);
     await expect(page.locator("#work [data-project-open]")).toHaveCount(0);
     await expect(
       page.locator('#work article.joe-github-card[data-visibility="private"]'),
-    ).toHaveCount(6);
+    ).toHaveCount(0);
+    await expect(page.locator("#work .joe-product-card")).toHaveCount(4);
     await expect(
       page.locator('#work a[href="https://github.com/Joe-Simo/sim0"]'),
     ).toHaveCount(0);
     await expect(
       page.locator('#work a[href="https://github.com/Joe-Simo/garden0"]'),
+    ).toHaveCount(0);
+    await expect(
+      page.locator('#work a[href="https://sim0.com"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('#work a[href="https://garden0.com"]'),
     ).toHaveCount(0);
     await expectPageHealthy(page, problems);
   });
@@ -998,7 +1011,7 @@ test.describe("Joe Simo personal site", () => {
       expect(response.status(), route.path).toBe(200);
       expect(html, route.path).toContain(route.heading);
       expect(html, route.path).toContain('href="/#work"');
-      expect(html, route.path).toContain("Back to GitHub projects");
+      expect(html, route.path).toContain("Back to work");
       expect(html, route.path).not.toContain(
         `href="/#work-${route.path.replace("/work/", "")}"`,
       );

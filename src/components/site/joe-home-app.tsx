@@ -23,6 +23,7 @@ import { SiteIcon } from "@/components/site/site-icons";
 import {
   credentialIssuers,
   credentialGroups,
+  finishedPrivateProductSlugs,
   isHomepageProject,
   latestBlogPost,
   portfolioSections,
@@ -277,6 +278,7 @@ const projectTranslations: ProjectTranslationMap = {
       summary:
         "Una app de observación del cielo con planificación nocturna, captura verificada y guía en vivo.",
       evidence: [
+        "Sitio oficial en astrosimo.com",
         "Flujo de captura verificada",
         "Pantalla de planificación nocturna",
         "Pantalla de guía del cielo en vivo",
@@ -290,6 +292,7 @@ const projectTranslations: ProjectTranslationMap = {
       summary:
         "Un producto de entrenamiento de ajedrez con app web/backend en Next.js y cliente Unity para navegador, iPhone y iPad.",
       evidence: [
+        "Sitio oficial en chesslm.com",
         "App web/backend en Next.js y espacio clásico de entrenamiento",
         "Cliente Unity para navegador, iPhone y iPad",
         "Límite de API de producción primero en servidor",
@@ -380,67 +383,104 @@ function HeroSection({
   );
 }
 
+function isPublicGithubRepository(
+  repository: GithubRepository,
+): repository is GithubRepository & { href: string } {
+  return (
+    repository.kind !== "Profile" &&
+    repository.visibility === "public" &&
+    Boolean(repository.href)
+  );
+}
+
+function primaryProductLink(project: PublicProjectCaseStudy) {
+  return project.links.find((link) => link.kind === "primary" && link.external);
+}
+
+function domainLabel(href: string) {
+  try {
+    return new URL(href).hostname.replace(/^www\./, "");
+  } catch {
+    return href;
+  }
+}
+
+function actionTitle(label: string) {
+  return label.replace(/^Open\s+/, "");
+}
+
+function orderedFinishedProducts(projects: readonly PublicProjectCaseStudy[]) {
+  const projectsBySlug = new Map(projects.map((project) => [project.slug, project]));
+
+  return finishedPrivateProductSlugs
+    .map((slug) => projectsBySlug.get(slug))
+    .filter((project): project is PublicProjectCaseStudy => Boolean(project));
+}
+
 function GitHubSection({
+  projects,
   repositories,
 }: {
+  projects: readonly PublicProjectCaseStudy[];
   repositories: readonly GithubRepository[];
 }) {
   const section = portfolioSection("work");
-  const projectRepositories = repositories.filter(
-    (repository) => repository.kind !== "Profile",
+  const publicRepositories = repositories.filter(isPublicGithubRepository);
+  const liveProducts = orderedFinishedProducts(projects);
+
+  const renderRepositoryCard = (repository: GithubRepository & { href: string }) => (
+    <a
+      aria-label={`${repository.name} GitHub repository, opens in a new tab`}
+      className="joe-github-card"
+      data-visibility={repository.visibility}
+      href={repository.href}
+      key={repository.name}
+      rel="noreferrer"
+      target="_blank"
+    >
+      <span className="joe-github-card-mark">
+        <SiteIcon aria-hidden iconKey="github" />
+      </span>
+      <div className="joe-github-card-copy">
+        <h3>{repository.name}</h3>
+        <p>{repository.description}</p>
+      </div>
+      <span className="joe-github-card-meta">
+        {repository.meta.slice(1, 4).join(" / ")}
+      </span>
+      <ArrowRight aria-hidden className="joe-github-card-icon" />
+      <ExternalCue show />
+    </a>
   );
 
-  const renderRepositoryCard = (repository: GithubRepository) => {
-    const cardContent = (
-      <>
-        <span className="joe-github-card-mark">
-          <SiteIcon aria-hidden iconKey="github" />
-        </span>
-        <div className="joe-github-card-copy">
-          <h3>{repository.name}</h3>
-          <p>{repository.description}</p>
-        </div>
-        <span className="joe-github-card-meta">
-          {repository.meta.slice(1, 4).join(" / ")}
-        </span>
-        {repository.visibility === "public" ? (
-          <>
-            <ArrowRight aria-hidden className="joe-github-card-icon" />
-            <ExternalCue show />
-          </>
-        ) : (
-          <span className="joe-github-card-private">
-            <T en="Private" es="Privado" />
-          </span>
-        )}
-      </>
-    );
+  const renderProductCard = (project: PublicProjectCaseStudy) => {
+    const link = primaryProductLink(project);
 
-    if (repository.visibility === "public" && repository.href) {
-      return (
-        <a
-          aria-label={`${repository.name} GitHub repository, opens in a new tab`}
-          className="joe-github-card"
-          data-visibility={repository.visibility}
-          href={repository.href}
-          key={repository.name}
-          rel="noreferrer"
-          target="_blank"
-        >
-          {cardContent}
-        </a>
-      );
+    if (!link) {
+      return null;
     }
 
     return (
-      <article
-        aria-label={`${repository.name} private GitHub repository`}
-        className="joe-github-card"
-        data-visibility={repository.visibility}
-        key={repository.name}
+      <a
+        aria-label={link.ariaLabel ?? `${link.label} in a new tab`}
+        className="joe-product-card"
+        data-product-slug={project.slug}
+        href={link.href}
+        key={project.slug}
+        rel="noreferrer"
+        target="_blank"
       >
-        {cardContent}
-      </article>
+        <span className="joe-product-card-mark">
+          <SiteIcon aria-hidden iconKey="appWindow" />
+        </span>
+        <div className="joe-product-card-copy">
+          <h3>{actionTitle(link.label)}</h3>
+          <p>{project.summary}</p>
+        </div>
+        <span className="joe-product-card-meta">{domainLabel(link.href)}</span>
+        <ArrowRight aria-hidden className="joe-product-card-icon" />
+        <ExternalCue show={link.external} />
+      </a>
     );
   };
 
@@ -453,22 +493,35 @@ function GitHubSection({
       id="work"
     >
       <div className="site-shell">
-        <div className="joe-section-head" data-joe-reveal>
+        <div
+          className="joe-section-head joe-section-head-compact"
+          data-joe-reveal
+        >
           <SectionLabel section={section} />
           <h2 id="work-title" tabIndex={-1}>
             <T en="GitHub projects" es="Proyectos en GitHub" />
           </h2>
-          <p>
-            <T
-              en={`${projectRepositories.length} public and private repositories, shown without private implementation details.`}
-              es={`${projectRepositories.length} repositorios públicos y privados, sin detalles privados de implementación.`}
-            />
-          </p>
         </div>
         <div aria-label="GitHub repositories" className="joe-github-grid">
-          {projectRepositories.map((repository) =>
+          {publicRepositories.map((repository) =>
             renderRepositoryCard(repository),
           )}
+        </div>
+        <div className="joe-product-block">
+          <div className="joe-product-block-head joe-product-block-head-compact">
+            <p className="joe-section-label">
+              <T en="Live products" es="Productos activos" />
+            </p>
+            <h3 id="work-products-title">
+              <T en="Official product links" es="Enlaces oficiales" />
+            </h3>
+          </div>
+          <div
+            aria-labelledby="work-products-title"
+            className="joe-product-grid"
+          >
+            {liveProducts.map((project) => renderProductCard(project))}
+          </div>
         </div>
       </div>
     </section>
@@ -493,17 +546,14 @@ function SystemsSection({ roles }: { roles: readonly ProudRole[] }) {
       id="systems"
     >
       <div className="site-shell">
-        <div className="joe-section-head" data-joe-reveal>
+        <div
+          className="joe-section-head joe-section-head-compact"
+          data-joe-reveal
+        >
           <SectionLabel section={section} />
           <h2 id="systems-title" tabIndex={-1}>
             <T en="Systems that keep moving." es="Sistemas que siguen moviéndose." />
           </h2>
-          <p>
-            <T
-              en="Support, recovery, infrastructure, and operational work across production environments."
-              es="Soporte, recuperación, infraestructura y trabajo operacional en entornos de producción."
-            />
-          </p>
         </div>
         <div className="joe-timeline">
           <article aria-label="Systems capability diagram" className="joe-systems-diagram">
@@ -594,17 +644,14 @@ function CredentialsSection({
       id="credentials"
     >
       <div className="site-shell">
-        <div className="joe-section-head" data-joe-reveal>
+        <div
+          className="joe-section-head joe-section-head-compact"
+          data-joe-reveal
+        >
           <SectionLabel section={section} />
           <h2 id="credentials-title" tabIndex={-1}>
             <T en="Certifications" es="Certificaciones" />
           </h2>
-          <p>
-            <T
-              en={`${certificationTiles.length} credentials`}
-              es={`${certificationTiles.length} certificaciones`}
-            />
-          </p>
         </div>
         <div aria-label="Certifications" className="joe-certification-grid">
           {certificationTiles.map(({ credential, issuer }) => (
@@ -789,7 +836,10 @@ export function JoeHomeApp(props: JoeHomeAppProps) {
       />
       <div className="site-shell joe-grid-shell">
         <div className="joe-page-grid">
-          <GitHubSection repositories={props.githubRepositories} />
+          <GitHubSection
+            projects={props.projects}
+            repositories={props.githubRepositories}
+          />
           <SystemsSection roles={props.proudRoles} />
           <CredentialsSection credentials={props.learningCredentials} />
           <CommunitySection moments={props.communityHighlights} />

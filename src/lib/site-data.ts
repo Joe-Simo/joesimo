@@ -554,7 +554,7 @@ export const portfolioSections = [
     anchor: "#work",
     copy: {
       title: "Work",
-      detail: "Public and private GitHub project signals.",
+      detail: "Public GitHub projects and live product surfaces.",
     },
   },
   {
@@ -636,6 +636,40 @@ export const lovePresentationRepoLink: SiteAction = {
   ariaLabel: "Open Love Presentation on GitHub in a new tab",
   kind: "secondary",
 };
+
+export const signature0Link: SiteAction = {
+  id: "open-signature0",
+  label: "Open signature0",
+  href: "https://signature0.com",
+  external: true,
+  ariaLabel: "Open signature0 in a new tab",
+  kind: "primary",
+};
+
+export const chessLmLink: SiteAction = {
+  id: "open-chesslm",
+  label: "Open ChessLM",
+  href: "https://chesslm.com",
+  external: true,
+  ariaLabel: "Open ChessLM in a new tab",
+  kind: "primary",
+};
+
+export const astrosimoLink: SiteAction = {
+  id: "open-astrosimo",
+  label: "Open Astrosimo",
+  href: "https://astrosimo.com",
+  external: true,
+  ariaLabel: "Open Astrosimo in a new tab",
+  kind: "primary",
+};
+
+export const finishedPrivateProductSlugs = [
+  "sim0",
+  "signature-copier",
+  "chesslm",
+  "astrosimo",
+] as const;
 
 export const profileMedia: SiteMedia = {
   kind: "portrait",
@@ -1492,62 +1526,6 @@ export const githubRepositories: GithubRepository[] = [
     visibility: "public",
   },
   {
-    name: "sim0",
-    description:
-      "Private TypeScript product repository for the browser workspace at sim0.com.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    homepage: "https://sim0.com",
-    meta: ["github", "private repo", "TypeScript", "product"],
-    visibility: "private",
-  },
-  {
-    name: "astro",
-    description:
-      "Private Swift repository for the Astrosimo stargazing app and planning screens.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    meta: ["github", "private repo", "Swift", "iOS"],
-    visibility: "private",
-  },
-  {
-    name: "chesslm",
-    description:
-      "Private TypeScript repository for the ChessLM chess training product.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    meta: ["github", "private repo", "TypeScript", "training product"],
-    visibility: "private",
-  },
-  {
-    name: "garden0",
-    description:
-      "Private C# repository for the garden0 Unity iOS game and landing page.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    meta: ["github", "private repo", "C#", "Unity"],
-    visibility: "private",
-  },
-  {
-    name: "website",
-    description:
-      "Private TypeScript repository for earlier website work and portfolio iteration.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    meta: ["github", "private repo", "TypeScript", "website"],
-    visibility: "private",
-  },
-  {
-    name: "platforms-starter-kit",
-    description:
-      "Private TypeScript repository for a starter-kit experiment and deployment surface.",
-    kind: "Private repo",
-    source: "Private GitHub repository",
-    homepage: "https://platforms-starter-kit-simo-js.vercel.app",
-    meta: ["github", "private repo", "TypeScript", "starter kit"],
-    visibility: "private",
-  },
-  {
     name: "joe-simo-pet",
     href: "https://github.com/Joe-Simo/joe-simo-pet",
     description:
@@ -2119,6 +2097,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     summary:
       "An iOS stargazing app with night planning, verified capture, and live sky guidance screens.",
     evidence: [
+      "Official product site at astrosimo.com",
       "Verified capture flow",
       "Night planner screen",
       "Live sky guidance screen",
@@ -2161,7 +2140,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         treatment: "strip",
       },
     ],
-    links: [],
+    links: [astrosimoLink],
     status: "iOS app",
     sourcePath: "project/astrosimo",
     tier: "case",
@@ -2722,6 +2701,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     summary:
       "A focused utility for preparing signature-copying workflows that survive real email paste behavior.",
     evidence: [
+      "Official product site at signature0.com",
       "App capture",
       "Outlook-oriented image and paste workflow assets",
       "Mobile and desktop review captures",
@@ -2737,7 +2717,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         treatment: "hero",
       },
     ],
-    links: [],
+    links: [signature0Link],
     status: "Utility project",
     sourcePath: "project/signature-copier",
     tier: "specimen",
@@ -2856,6 +2836,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     summary:
       "A chess training product with a Next.js web/backend app and a Unity client for browser, iPhone, and iPad.",
     evidence: [
+      "Official product site at chesslm.com",
       "Next.js web/backend and classic training workspace",
       "Unity client for browser, iPhone, and iPad",
       "Gateway-first production API boundary",
@@ -2881,7 +2862,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         treatment: "supporting",
       },
     ],
-    links: [],
+    links: [chessLmLink],
     status: "Training product",
     sourcePath: "project/chesslm",
     tier: "case",

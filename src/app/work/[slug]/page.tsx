@@ -351,7 +351,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
                 </ButtonLink>
               ))}
               <ButtonLink data-kind="section" href="/#work" variant="outline">
-                Back to GitHub projects
+                Back to work
                 <SiteIcon aria-hidden iconKey="appWindow" />
               </ButtonLink>
               <ButtonLink data-kind="section" href="/#contact" variant="outline">

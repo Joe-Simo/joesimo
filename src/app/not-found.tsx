@@ -19,14 +19,14 @@ export const metadata: Metadata = {
 
 const featuredLinks = [
   {
-    detail: "Public and private GitHub project signals.",
-    detailEs: "Señales de proyectos públicos y privados en GitHub.",
+    detail: "Public GitHub projects and official product links.",
+    detailEs: "Proyectos públicos en GitHub y enlaces oficiales de producto.",
     href: "/#work",
     iconKey: "appWindow" as const,
     label: "Work",
     labelEs: "Trabajo",
-    status: "GitHub projects",
-    statusEs: "Proyectos en GitHub",
+    status: "Work surface",
+    statusEs: "Superficie de trabajo",
   },
   {
     detail: "System administration and recovery roles that shaped the work.",

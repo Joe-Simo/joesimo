@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { headers } from "next/headers";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
+import { BotIdVerifier } from "@/components/site/bot-id-verifier";
 import { ThemeMeta } from "@/components/site/theme-meta";
 import { ThemeProvider } from "@/components/site/theme-provider";
 import {
@@ -142,6 +143,7 @@ const creativeWorkJsonLd = projectCaseStudiesPublic
   }));
 
 const jsonLd = [personJsonLd, websiteJsonLd, ...creativeWorkJsonLd];
+const shouldVerifyBotId = process.env.VERCEL === "1";
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
@@ -179,6 +181,7 @@ export default async function RootLayout({
           nonce={nonce}
         >
           <ThemeMeta />
+          {shouldVerifyBotId ? <BotIdVerifier /> : null}
           {children}
         </ThemeProvider>
       </body>

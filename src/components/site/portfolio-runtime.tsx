@@ -365,7 +365,7 @@ function useStructuralMotion() {
             );
           });
         gsap.fromTo(
-          ".joe-github-card",
+          ".joe-github-card, .joe-product-card",
           { autoAlpha: 0.88, y: 8 },
           {
             autoAlpha: 1,
@@ -476,6 +476,7 @@ function usePointerPolish() {
     const selector = [
       ".joe-work-card",
       ".joe-github-card",
+      ".joe-product-card",
       ".joe-system-role-card",
       ".joe-photo-card",
       ".joe-certification-tile",

@@ -4548,6 +4548,14 @@ header nav a[aria-current="location"]::after {
   padding: clamp(1.35rem, 2.8vw, 2.45rem);
 }
 
+.joe-page-grid .joe-github .joe-section-head-compact,
+.joe-page-grid .joe-systems .joe-section-head-compact,
+.joe-page-grid .joe-credentials .joe-section-head-compact {
+  grid-template-areas: "label title";
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+  min-height: clamp(7.25rem, 11vw, 9.5rem);
+}
+
 .joe-page-grid .joe-github .joe-section-head .joe-section-label,
 .joe-page-grid .joe-systems .joe-section-head .joe-section-label,
 .joe-page-grid .joe-credentials .joe-section-head .joe-section-label {
@@ -4570,28 +4578,16 @@ header nav a[aria-current="location"]::after {
   max-width: 12ch;
 }
 
-.joe-page-grid .joe-github .joe-section-head p:not(.joe-section-label),
-.joe-page-grid .joe-systems .joe-section-head p:not(.joe-section-label),
-.joe-page-grid .joe-credentials .joe-section-head p:not(.joe-section-label) {
-  align-self: end;
-  color: var(--joe-muted);
-  font-size: 0.95rem;
-  grid-area: copy;
-  justify-self: end;
-  line-height: 1.55;
-  margin: 0;
-  max-width: 24rem;
-  text-align: right;
-}
-
-.joe-page-grid .joe-github-grid {
+.joe-page-grid .joe-github-grid,
+.joe-page-grid .joe-product-grid {
   background: var(--joe-bg);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   overflow: hidden;
 }
 
-.joe-page-grid .joe-github-card {
+.joe-page-grid .joe-github-card,
+.joe-page-grid .joe-product-card {
   align-content: start;
   background: var(--joe-bg);
   border-bottom: 1px solid var(--joe-line);
@@ -4614,7 +4610,9 @@ header nav a[aria-current="location"]::after {
 }
 
 .joe-page-grid .joe-github-card:hover,
-.joe-page-grid .joe-github-card:focus-visible {
+.joe-page-grid .joe-github-card:focus-visible,
+.joe-page-grid .joe-product-card:hover,
+.joe-page-grid .joe-product-card:focus-visible {
   background:
     radial-gradient(
       circle at var(--surface-x, 50%) var(--surface-y, 0%),
@@ -4625,13 +4623,42 @@ header nav a[aria-current="location"]::after {
   border-color: var(--joe-line-strong);
 }
 
-.joe-page-grid .joe-github-card[data-visibility="private"] {
-  grid-template-areas:
-    "mark copy copy"
-    "meta meta private";
+.joe-page-grid .joe-product-block {
+  background: var(--joe-bg);
+  border-top: 1px solid var(--joe-line);
 }
 
-.joe-page-grid .joe-github-card-mark {
+.joe-page-grid .joe-product-block-head {
+  align-items: end;
+  border-bottom: 1px solid var(--joe-line);
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: "label title";
+  grid-template-columns: 0.7fr minmax(12rem, 1.1fr);
+  min-height: clamp(9rem, 13vw, 11rem);
+  padding: clamp(1.1rem, 2.2vw, 1.7rem);
+}
+
+.joe-page-grid .joe-product-block-head-compact {
+  grid-template-areas: "label title";
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+  min-height: clamp(6.5rem, 9vw, 8.5rem);
+}
+
+.joe-page-grid .joe-product-block-head .joe-section-label {
+  grid-area: label;
+}
+
+.joe-page-grid .joe-product-block-head h3 {
+  font-size: clamp(1.35rem, 3.2vw, 2.85rem);
+  font-weight: 520;
+  grid-area: title;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.joe-page-grid .joe-github-card-mark,
+.joe-page-grid .joe-product-card-mark {
   align-items: center;
   background: color-mix(in oklab, var(--foreground) 1.6%, var(--joe-bg));
   border: 1px solid color-mix(in oklab, var(--joe-line) 88%, transparent);
@@ -4643,14 +4670,16 @@ header nav a[aria-current="location"]::after {
   width: 2rem;
 }
 
-.joe-page-grid .joe-github-card-copy {
+.joe-page-grid .joe-github-card-copy,
+.joe-page-grid .joe-product-card-copy {
   display: grid;
   gap: 0.48rem;
   grid-area: copy;
   min-width: 0;
 }
 
-.joe-page-grid .joe-github-card-copy h3 {
+.joe-page-grid .joe-github-card-copy h3,
+.joe-page-grid .joe-product-card-copy h3 {
   font-size: clamp(1.08rem, 1.65vw, 1.42rem);
   font-weight: 560;
   line-height: 1.08;
@@ -4658,7 +4687,8 @@ header nav a[aria-current="location"]::after {
   overflow-wrap: anywhere;
 }
 
-.joe-page-grid .joe-github-card-copy p {
+.joe-page-grid .joe-github-card-copy p,
+.joe-page-grid .joe-product-card-copy p {
   color: var(--joe-muted);
   display: -webkit-box;
   font-size: 0.82rem;
@@ -4670,39 +4700,27 @@ header nav a[aria-current="location"]::after {
 }
 
 .joe-page-grid .joe-github-card-meta,
-.joe-page-grid .joe-github-card-private {
+.joe-page-grid .joe-product-card-meta {
   align-self: end;
   color: var(--joe-muted);
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.68rem;
+  grid-area: meta;
   line-height: 1.35;
   text-transform: uppercase;
 }
 
-.joe-page-grid .joe-github-card-meta {
-  grid-area: meta;
-}
-
-.joe-page-grid .joe-github-card-private {
-  align-items: center;
-  background: color-mix(in oklab, var(--foreground) 1.6%, var(--joe-bg));
-  border: 1px solid color-mix(in oklab, var(--joe-line) 88%, transparent);
-  border-radius: 999px;
-  display: inline-flex;
-  grid-area: private;
-  justify-self: end;
-  min-height: 2rem;
-  padding: 0 0.72rem;
-}
-
-.joe-page-grid .joe-github-card-icon {
+.joe-page-grid .joe-github-card-icon,
+.joe-page-grid .joe-product-card-icon {
   grid-area: icon;
   justify-self: end;
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .joe-page-grid .joe-github-card:hover .joe-github-card-icon,
-.joe-page-grid .joe-github-card:focus-visible .joe-github-card-icon {
+.joe-page-grid .joe-github-card:focus-visible .joe-github-card-icon,
+.joe-page-grid .joe-product-card:hover .joe-product-card-icon,
+.joe-page-grid .joe-product-card:focus-visible .joe-product-card-icon {
   transform: translateX(2px);
 }
 
@@ -4883,6 +4901,7 @@ header nav a[aria-current="location"]::after {
   .joe-page-grid .joe-system-role-card:hover,
   .joe-page-grid .joe-certification-tile:hover,
   .joe-page-grid .joe-github-card:hover,
+  .joe-page-grid .joe-product-card:hover,
   .joe-page-grid .joe-blog-row:hover {
     transform: translateY(-1px);
   }
@@ -4903,7 +4922,8 @@ header nav a[aria-current="location"]::after {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .joe-page-grid .joe-github-grid {
+  .joe-page-grid .joe-github-grid,
+  .joe-page-grid .joe-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -4982,6 +5002,7 @@ header nav a[aria-current="location"]::after {
   }
 
   .joe-page-grid .joe-github .joe-section-head,
+  .joe-page-grid .joe-product-block-head,
   .joe-page-grid .joe-systems .joe-section-head,
   .joe-page-grid .joe-credentials .joe-section-head {
     grid-template-areas:
@@ -4993,6 +5014,16 @@ header nav a[aria-current="location"]::after {
     padding: 1rem;
   }
 
+  .joe-page-grid .joe-github .joe-section-head-compact,
+  .joe-page-grid .joe-product-block-head-compact,
+  .joe-page-grid .joe-systems .joe-section-head-compact,
+  .joe-page-grid .joe-credentials .joe-section-head-compact {
+    grid-template-areas:
+      "label"
+      "title";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .joe-page-grid .joe-work-table-head h2 {
     font-size: clamp(1.75rem, 10vw, 2.35rem);
   }
@@ -5002,15 +5033,9 @@ header nav a[aria-current="location"]::after {
     text-align: left;
   }
 
-  .joe-page-grid .joe-github .joe-section-head p:not(.joe-section-label),
-  .joe-page-grid .joe-systems .joe-section-head p:not(.joe-section-label),
-  .joe-page-grid .joe-credentials .joe-section-head p:not(.joe-section-label) {
-    justify-self: start;
-    text-align: left;
-  }
-
   .joe-page-grid .joe-work-card,
   .joe-page-grid .joe-github-card,
+  .joe-page-grid .joe-product-card,
   .joe-page-grid .joe-work-card[data-featured="true"],
   .joe-page-grid .joe-work-card:last-of-type:not([data-featured="true"]),
   .joe-page-grid .joe-systems-copy-cell,
@@ -5042,7 +5067,8 @@ header nav a[aria-current="location"]::after {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .joe-page-grid .joe-github-grid {
+  .joe-page-grid .joe-github-grid,
+  .joe-page-grid .joe-product-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 

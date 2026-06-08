@@ -222,38 +222,14 @@ describe("Joe Simo site data", () => {
       "joesimo",
       "skills",
       "love-presentation",
-      "sim0",
-      "astro",
-      "chesslm",
-      "garden0",
-      "website",
-      "platforms-starter-kit",
       "joe-simo-pet",
       "openai-agents-js",
       "GitHub / @Joe-Simo",
     ]);
 
-    const privateRepositories = githubRepositories.filter(
-      (repository) => repository.visibility === "private",
-    );
-
-    expect(privateRepositories.map((repository) => repository.name)).toEqual([
-      "sim0",
-      "astro",
-      "chesslm",
-      "garden0",
-      "website",
-      "platforms-starter-kit",
-    ]);
-
-    for (const repository of privateRepositories) {
-      expect(repository.href).toBeUndefined();
-      expect(repository.source).toBe("Private GitHub repository");
-      expect(repository.description).not.toMatch(
-        /api key|secret|token|credential|database|private endpoint/i,
-      );
-      expect(repository.meta).toContain("private repo");
-    }
+    expect(
+      githubRepositories.filter((repository) => repository.visibility === "private"),
+    ).toHaveLength(0);
 
     for (const repository of githubRepositories.filter(
       (candidate) => candidate.visibility === "public",
@@ -261,6 +237,21 @@ describe("Joe Simo site data", () => {
       expect(repository.href).toMatch(/^https:\/\/github\.com\/Joe-Simo\//);
       expect(repository.meta).toContain("public repo");
     }
+  });
+
+  test("keeps private product work linked through official product surfaces", () => {
+    const linksBySlug = new Map(
+      projectCaseStudies.map((project) => [
+        project.slug,
+        project.links.map((link) => link.href),
+      ]),
+    );
+
+    expect(linksBySlug.get("sim0")).toContain("https://sim0.com");
+    expect(linksBySlug.get("signature-copier")).toContain("https://signature0.com");
+    expect(linksBySlug.get("garden0")).not.toContain("https://garden0.com");
+    expect(linksBySlug.get("chesslm")).toContain("https://chesslm.com");
+    expect(linksBySlug.get("astrosimo")).toContain("https://astrosimo.com");
   });
 
   test("keeps education and certification proof visible", () => {
