@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import {
   siGithub,
-  siInstagram,
   siV0,
   siX,
   siYoutube,
@@ -64,10 +63,6 @@ function LinkedInMark(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function InstagramMark(props: SVGProps<SVGSVGElement>) {
-  return <SimpleIconMark icon={siInstagram} {...props} />;
-}
-
 function V0Mark(props: SVGProps<SVGSVGElement>) {
   return <SimpleIconMark icon={siV0} {...props} />;
 }
@@ -89,7 +84,6 @@ export const siteIcons: Record<IconKey, SiteIconComponent> = {
   code: Code2,
   github: GitHubMark,
   home: Home,
-  instagram: InstagramMark,
   linkedin: LinkedInMark,
   mail: Mail,
   menu: Menu,

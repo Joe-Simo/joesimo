@@ -9,6 +9,7 @@ import {
   expectNoHorizontalOverflow,
   expectNoVisibleScrollbar,
   expectPageHealthy,
+  workRoutes,
 } from "./helpers";
 
 const responsiveViewports = [
@@ -106,7 +107,9 @@ test.describe("responsive, theme, and fallback gates", () => {
     await workLink.click();
     const workSection = await expectHomeDestinationSection(page, "work");
 
-    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(0);
+    await expect(workSection.locator('a[href^="/work/"]')).toHaveCount(
+      workRoutes.length,
+    );
     await expect(
       workSection.getByRole("heading", { name: "GitHub projects" }),
     ).toBeVisible();

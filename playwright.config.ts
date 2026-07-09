@@ -34,7 +34,7 @@ export default defineConfig({
     baseURL: e2eBaseURL,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
-    video: "retain-on-failure",
+    video: "off",
   },
   webServer: {
     command: `PORT=${e2ePort} bun run start`,

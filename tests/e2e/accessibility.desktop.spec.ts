@@ -69,21 +69,19 @@ test.describe("desktop accessibility quality gates", () => {
     await page.goto("/#contact", { waitUntil: "domcontentloaded" });
     await expectPageHealthy(page, problems);
 
+    const xLink = page.locator("#contact").getByRole("link", { name: /X @joesimo/i });
     const githubLink = page.locator("#contact").getByRole("link", { name: /GitHub/i });
-    const instagramLink = page
-      .locator("#contact")
-      .getByRole("link", { name: /Instagram/i });
     const linkedinLink = page
       .locator("#contact")
       .getByRole("link", { name: /LinkedIn/i });
 
+    await expect(xLink).toBeVisible();
     await expect(githubLink).toBeVisible();
-    await expect(instagramLink).toBeVisible();
     await expect(linkedinLink).toBeVisible();
+    await xLink.focus();
+    await expect(xLink).toBeFocused();
     await githubLink.focus();
     await expect(githubLink).toBeFocused();
-    await instagramLink.focus();
-    await expect(instagramLink).toBeFocused();
     await linkedinLink.focus();
     await expect(linkedinLink).toBeFocused();
   });

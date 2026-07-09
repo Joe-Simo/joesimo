@@ -3,15 +3,17 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
   communityHighlights,
-  githubRepositories,
   joeProfile,
   learningCredentials,
   projectCaseStudiesPublic,
   proudSystemsRoles,
   socialChannels,
 } from "@/lib/site-data";
+import { getGithubRepositories } from "@/lib/github-repositories";
 
-export default function Home() {
+export default async function Home() {
+  const githubRepositories = await getGithubRepositories();
+
   return (
     <div
       id="top"

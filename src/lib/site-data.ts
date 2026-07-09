@@ -11,7 +11,6 @@ export type IconKey =
   | "mail"
   | "menu"
   | "v0"
-  | "instagram"
   | "youtube"
   | "x"
   | "xLogo";
@@ -605,7 +604,7 @@ export const portfolioSections = [
     copy: {
       title: "Contact",
       detail:
-        "Message me on X. LinkedIn, GitHub, and Instagram are public ways to reach or review my work.",
+        "Message me on X. LinkedIn, GitHub, v0, and YouTube are public ways to reach or review my work.",
     },
   },
 ] as const satisfies readonly PortfolioSection[];
@@ -1013,13 +1012,6 @@ export const socialChannels: SocialChannel[] = [
     href: "https://www.linkedin.com/in/josephsimo/",
     iconKey: "linkedin",
     description: "Work graph and public context.",
-  },
-  {
-    label: "Instagram",
-    handle: "@joesimo_",
-    href: "https://www.instagram.com/joesimo_/",
-    iconKey: "instagram",
-    description: "Moments, people, and rooms.",
   },
   {
     label: "YouTube",
@@ -1494,6 +1486,51 @@ export const proudSystemsRoles: ProudRole[] = [
 
 export const githubRepositories: GithubRepository[] = [
   {
+    name: "goblins-os",
+    href: "https://github.com/Joe-Simo/goblins-os",
+    description:
+      "Goblins OS - all-Rust Fedora-bootc, macOS-quality Linux desktop",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/goblins-os",
+    meta: ["github", "public repo", "Rust"],
+    visibility: "public",
+  },
+  {
+    name: "skills",
+    href: "https://github.com/Joe-Simo/skills",
+    description:
+      "Community Agent Skills by joe-simo, including a Vercel Geist design-system skill for polished UI and companion routing.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/skills",
+    homepage: "https://joesimo.com",
+    meta: [
+      "github",
+      "public repo",
+      "agent skills",
+      "Vercel Geist",
+    ],
+    visibility: "public",
+  },
+  {
+    name: "grok-financial-services",
+    href: "https://github.com/Joe-Simo/grok-financial-services",
+    description:
+      "Grok-adapted Anthropic financial services skills, agents, and tools with FMP/Robinhood integration. Includes skill-creator for custom Grok finance skills.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/grok-financial-services",
+    meta: ["github", "public repo"],
+    visibility: "public",
+  },
+  {
+    name: "financial-services",
+    href: "https://github.com/Joe-Simo/financial-services",
+    description: "Public GitHub fork visible on Joe Simo's GitHub profile.",
+    kind: "Public fork",
+    source: "github.com/Joe-Simo/financial-services",
+    meta: ["github", "public fork"],
+    visibility: "public",
+  },
+  {
     name: "joesimo",
     href: "https://github.com/Joe-Simo/joesimo",
     description:
@@ -1504,21 +1541,10 @@ export const githubRepositories: GithubRepository[] = [
     visibility: "public",
   },
   {
-    name: "skills",
-    href: "https://github.com/Joe-Simo/skills",
-    description:
-      "Community agent skills by Joe Simo, including the Vercel Geist design-system skill.",
-    kind: "Public repo",
-    source: "github.com/Joe-Simo/skills",
-    homepage: "https://joesimo.com",
-    meta: ["github", "public repo", "agent skills", "Vercel Geist"],
-    visibility: "public",
-  },
-  {
     name: "love-presentation",
     href: "https://github.com/Joe-Simo/love-presentation",
     description:
-      "Public TypeScript project for lightweight private slideshow links.",
+      "Funny private slideshow links for suspiciously perfect couples.",
     kind: "Public repo",
     source: "github.com/Joe-Simo/love-presentation",
     homepage: "https://lovepresentation.com",
@@ -1543,18 +1569,8 @@ export const githubRepositories: GithubRepository[] = [
     kind: "Public fork",
     source: "github.com/Joe-Simo/openai-agents-js",
     homepage: "https://openai.github.io/openai-agents-js/",
-    meta: ["github", "public repo", "agent workflow"],
+    meta: ["github", "public fork", "agent workflow"],
     visibility: "public",
-  },
-  {
-    name: "GitHub / @Joe-Simo",
-    href: githubChannel.href,
-    description:
-      "Public GitHub profile for Joe Simo: Devsigner. One more thing.",
-    kind: "Profile",
-    source: "github.com/Joe-Simo",
-    meta: ["github", "@Joe-Simo", "public profile"],
-    visibility: "profile",
   },
 ];
 

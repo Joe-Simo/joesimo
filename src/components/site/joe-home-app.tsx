@@ -523,6 +523,34 @@ function GitHubSection({
             {liveProducts.map((project) => renderProductCard(project))}
           </div>
         </div>
+        <div className="joe-case-study-block">
+          <div className="joe-case-study-block-head">
+            <p className="joe-section-label">
+              <T en="Case studies" es="Casos" />
+            </p>
+            <h3 id="work-case-studies-title">
+              <T en="Proof pages" es="Páginas de prueba" />
+            </h3>
+          </div>
+          <div
+            aria-labelledby="work-case-studies-title"
+            className="joe-case-study-grid"
+          >
+            {projects.map((project) => (
+              <Link
+                className="joe-case-study-link"
+                href={`/work/${project.slug}`}
+                key={project.slug}
+              >
+                <span>
+                  <strong>{project.title}</strong>
+                  <small>{project.role}</small>
+                </span>
+                <ArrowRight aria-hidden />
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

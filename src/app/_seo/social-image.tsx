@@ -147,7 +147,7 @@ export async function createSocialImage(label: string) {
             ["Work", "public repos / live products"],
             ["Systems", "Macromedica Dominicana / Never Off / Brox"],
             ["Certifications", "web / systems / drone"],
-            ["Contact", "X / GitHub / LinkedIn / Instagram"],
+            ["Contact", "X / GitHub / LinkedIn / YouTube"],
           ].map(([title, detail]) => (
             <div
               key={title}

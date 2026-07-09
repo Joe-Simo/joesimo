@@ -6,6 +6,7 @@ import {
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectPageHealthy,
+  workRoutes,
 } from "./helpers";
 
 test.describe("Joe Simo desktop homepage navigation", () => {
@@ -94,14 +95,23 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       }),
     ).toBeVisible();
     await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
-    await expect(workSection.locator(".joe-github-card")).toHaveCount(5);
+    const githubCards = workSection.locator(".joe-github-card");
+    await expect(githubCards.first()).toBeVisible();
+    const githubCardCount = await githubCards.count();
+    expect(githubCardCount).toBeGreaterThanOrEqual(5);
     await expect(
       workSection.locator('.joe-github-card[data-visibility="public"]'),
-    ).toHaveCount(5);
+    ).toHaveCount(githubCardCount);
     await expect(
-      workSection.locator('article.joe-github-card[data-visibility="private"]'),
+      workSection.locator('.joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
+    await expect(workSection.locator(".joe-case-study-link")).toHaveCount(
+      workRoutes.length,
+    );
+    await expect(
+      workSection.locator('.joe-case-study-link[href="/work/chesslm"]'),
+    ).toBeVisible();
     await expect(
       workSection.locator('a[href="https://astrosimo.com"]'),
     ).toBeVisible();

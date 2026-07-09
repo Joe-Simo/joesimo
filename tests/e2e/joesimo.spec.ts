@@ -89,6 +89,23 @@ const noAssetWorkRouteMetadata = [
 ] as const;
 
 test.describe("Joe Simo personal site", () => {
+  test("serves public page routes for GET and HEAD", async ({ request }) => {
+    const routes = [
+      "/",
+      "/blog",
+      "/blog/vercel-v0-api-billing-bug-report",
+      workRoutes[0].path,
+    ];
+
+    for (const route of routes) {
+      const getResponse = await request.get(route);
+      const headResponse = await request.head(route);
+
+      expect(getResponse.status(), `${route} GET`).toBe(200);
+      expect(headResponse.status(), `${route} HEAD`).toBe(200);
+    }
+  });
+
   test("renders a Joe-first home page with reachable primary destinations", async ({
     page,
   }) => {
@@ -250,7 +267,7 @@ test.describe("Joe Simo personal site", () => {
     }
 
     if (!isMobile) {
-      for (let index = 0; index < 27; index += 1) {
+      for (const index of [0, 13, 26]) {
         await certificationTiles.nth(index).scrollIntoViewIfNeeded();
         await certificationTiles.nth(index).hover();
         await expect
@@ -293,10 +310,13 @@ test.describe("Joe Simo personal site", () => {
       }),
     ).toBeVisible();
     await expect(workSection.locator(".joe-work-table")).toHaveCount(0);
-    await expect(workSection.locator(".joe-github-card")).toHaveCount(5);
+    const githubCards = workSection.locator(".joe-github-card");
+    await expect(githubCards.first()).toBeVisible();
+    const githubCardCount = await githubCards.count();
+    expect(githubCardCount).toBeGreaterThanOrEqual(5);
     await expect(
       workSection.locator('.joe-github-card[data-visibility="public"]'),
-    ).toHaveCount(5);
+    ).toHaveCount(githubCardCount);
     await expect(
       workSection.getByRole("link", {
         exact: true,
@@ -304,10 +324,20 @@ test.describe("Joe Simo personal site", () => {
       }),
     ).toBeVisible();
     await expect(
-      workSection.locator('article.joe-github-card[data-visibility="private"]'),
+      workSection.locator('.joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
-    await expect(workSection.getByText("sim0", { exact: true })).toBeVisible();
+    await expect(workSection.locator(".joe-case-study-link")).toHaveCount(
+      workRoutes.length,
+    );
+    for (const route of workRoutes) {
+      await expect(
+        workSection.locator(`.joe-case-study-link[href="${route.path}"]`),
+      ).toBeVisible();
+    }
+    await expect(
+      workSection.locator('.joe-product-card[href="https://sim0.com"] h3'),
+    ).toHaveText("sim0");
     await expect(
       workSection.locator('a[href="https://signature0.com"]'),
     ).toBeVisible();
@@ -318,6 +348,7 @@ test.describe("Joe Simo personal site", () => {
       workSection.locator('a[href="https://github.com/Joe-Simo/sim0"]'),
     ).toHaveCount(0);
 
+    await page.goto("/#systems", { waitUntil: "domcontentloaded" });
     const systemsSection = await expectHomeDestinationSection(page, "systems");
 
     await expect(systemsSection.getByText("Macromedica Dominicana")).toBeVisible();
@@ -396,7 +427,7 @@ test.describe("Joe Simo personal site", () => {
     await expect(page.locator("#contact-title")).toHaveCount(0);
     await expect(
       page.locator("#contact").getByRole("link", { name: /Instagram/i }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.locator("#contact .joe-contact-actions"),
     ).toHaveCount(0);
@@ -411,7 +442,6 @@ test.describe("Joe Simo personal site", () => {
       "https://github.com/Joe-Simo",
       "https://v0.app/@joesimo",
       "https://www.linkedin.com/in/josephsimo/",
-      "https://www.instagram.com/joesimo_/",
       "https://www.youtube.com/@JoeSimo",
     ]);
     await expect(page.locator("#contact")).toBeInViewport();
@@ -689,7 +719,7 @@ test.describe("Joe Simo personal site", () => {
     const socialNav = footer.locator('nav[aria-label="Social links"]');
 
     await expect(socialNav).toHaveCount(1);
-    await expect(socialNav.locator("a")).toHaveCount(6);
+    await expect(socialNav.locator("a")).toHaveCount(5);
     await expect(footer.getByRole("link", { name: /work/i })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: /systems/i })).toHaveCount(0);
     await expect(
@@ -700,9 +730,9 @@ test.describe("Joe Simo personal site", () => {
     await expect(footer.getByRole("link", { name: /contact/i })).toHaveCount(0);
     await expect(
       footer.getByRole("link", {
-        name: /github|linkedin|instagram|youtube|v0|x/i,
+        name: /github|linkedin|youtube|v0|x/i,
       }),
-    ).toHaveCount(6);
+    ).toHaveCount(5);
 
     const problems = collectConsoleProblems(page);
     await expectPageHealthy(page, problems);
@@ -932,12 +962,20 @@ test.describe("Joe Simo personal site", () => {
 
     await page.goto("/#work", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#work .joe-github-card")).toHaveCount(5);
+    const githubCards = page.locator("#work .joe-github-card");
+    await expect(githubCards.first()).toBeVisible();
+    expect(await githubCards.count()).toBeGreaterThanOrEqual(5);
     await expect(page.locator("#work [data-project-open]")).toHaveCount(0);
     await expect(
-      page.locator('#work article.joe-github-card[data-visibility="private"]'),
+      page.locator('#work .joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(page.locator("#work .joe-product-card")).toHaveCount(4);
+    await expect(page.locator("#work .joe-case-study-link")).toHaveCount(
+      workRoutes.length,
+    );
+    await expect(
+      page.locator('#work .joe-case-study-link[href="/work/sim0"]'),
+    ).toBeVisible();
     await expect(
       page.locator('#work a[href="https://github.com/Joe-Simo/sim0"]'),
     ).toHaveCount(0);

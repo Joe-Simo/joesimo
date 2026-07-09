@@ -10,8 +10,8 @@
     "test": "bun test tests/unit",
     "test:unit": "bun test tests/unit",
     "check:fast": "bun run lint && bun run typecheck && bun run test && bun run build",
-    "test:e2e:install": "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright playwright install chromium",
-    "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bun run build && PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright playwright test",
+    "test:e2e:install": "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright PATH=/usr/local/bin:/opt/homebrew/bin:$PATH node node_modules/@playwright/test/cli.js install chromium",
+    "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright bun run build && PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright PATH=/usr/local/bin:/opt/homebrew/bin:$PATH node node_modules/@playwright/test/cli.js test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

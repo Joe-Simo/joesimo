@@ -67,10 +67,6 @@ const requiredSocials = {
     handle: "josephsimo",
     href: "https://www.linkedin.com/in/josephsimo/",
   },
-  Instagram: {
-    handle: "@joesimo_",
-    href: "https://www.instagram.com/joesimo_/",
-  },
 } as const;
 
 function collectStringValues(value: unknown): string[] {
@@ -160,7 +156,6 @@ describe("Joe Simo site data", () => {
       "GitHub",
       "v0",
       "LinkedIn",
-      "Instagram",
       "YouTube",
     ]);
 
@@ -180,7 +175,6 @@ describe("Joe Simo site data", () => {
       ),
     ).toMatchObject({
       GitHub: "github",
-      Instagram: "instagram",
       LinkedIn: "linkedin",
       v0: "v0",
       X: "xLogo",
@@ -218,14 +212,16 @@ describe("Joe Simo site data", () => {
   });
 
   test("keeps GitHub project coverage public-safe", () => {
-    expect(githubRepositories.map((repository) => repository.name)).toEqual([
+    expect(githubRepositories.length).toBeGreaterThanOrEqual(5);
+    expect(githubRepositories.map((repository) => repository.name)).toContain(
       "joesimo",
+    );
+    expect(githubRepositories.map((repository) => repository.name)).toContain(
       "skills",
-      "love-presentation",
-      "joe-simo-pet",
-      "openai-agents-js",
+    );
+    expect(githubRepositories.map((repository) => repository.name)).not.toContain(
       "GitHub / @Joe-Simo",
-    ]);
+    );
 
     expect(
       githubRepositories.filter((repository) => repository.visibility === "private"),
@@ -235,7 +231,9 @@ describe("Joe Simo site data", () => {
       (candidate) => candidate.visibility === "public",
     )) {
       expect(repository.href).toMatch(/^https:\/\/github\.com\/Joe-Simo\//);
-      expect(repository.meta).toContain("public repo");
+      expect(repository.meta).toContain(
+        repository.kind === "Public fork" ? "public fork" : "public repo",
+      );
     }
   });
 
