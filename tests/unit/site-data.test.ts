@@ -89,11 +89,11 @@ describe("Joe Simo site data", () => {
   test("keeps the canonical homepage Joe-first", () => {
     expect(heroCopy.title).toBe("Joe Simo");
     expect(heroCopy.intro).toBe(
-      "Designer/developer, FL.",
+      "AI-Native Full-Stack Product Engineer, FL.",
     );
-    expect(heroCopy.detail).toBe("");
+    expect(heroCopy.detail).toContain("10+ years operating production systems");
     expect(joeProfile.kicker).toContain("FL");
-    expect(joeProfile.kicker).toContain("Designer-developer");
+    expect(joeProfile.kicker).toContain("AI-native product engineer");
     expect(joeProfile.routeLabel).toBe("Work / Systems / Certifications / Community / Blog.");
 
     const publicHeroCopy = [
@@ -245,7 +245,9 @@ describe("Joe Simo site data", () => {
       ]),
     );
 
-    expect(linksBySlug.get("sim0")).toContain("https://sim0.com");
+    // sim0's external link is intentionally absent while sim0.com is down;
+    // the case study stays published without a crashing CTA.
+    expect(linksBySlug.get("sim0")).toEqual([]);
     expect(linksBySlug.get("signature-copier")).toContain("https://signature0.com");
     expect(linksBySlug.get("garden0")).not.toContain("https://garden0.com");
     expect(linksBySlug.get("chesslm")).toContain("https://chesslm.com");
@@ -787,7 +789,9 @@ describe("Joe Simo site data", () => {
       expect(urls).toContain(`https://joesimo.com/work/${project.slug}`);
     }
 
-    expect(urls).toHaveLength(projectCaseStudiesPublic.length + blogPosts.length + 2);
+    // home + /blog + /work index + every post and case study
+    expect(urls).toContain("https://joesimo.com/work");
+    expect(urls).toHaveLength(projectCaseStudiesPublic.length + blogPosts.length + 3);
   });
 
   test("lookup helper returns only real work slugs", () => {

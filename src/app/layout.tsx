@@ -33,7 +33,7 @@ const geistPixelSquare = localFont({
 const siteUrl = "https://joesimo.com";
 const siteName = "joesimo.com";
 const personName = joeProfile.name;
-const siteTitle = `${personName} / ${siteName}`;
+const siteTitle = `${personName} — AI-Native Full-Stack Product Engineer`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -92,7 +92,7 @@ const personJsonLd = {
   name: personName,
   url: siteUrl,
   description: siteDescription,
-  jobTitle: "Designer/developer",
+  jobTitle: "AI-Native Full-Stack Product Engineer",
   mainEntityOfPage: siteUrl,
   knowsLanguage: ["English", "Spanish"],
   address: {

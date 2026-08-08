@@ -17,6 +17,13 @@ function dateFromSortKey(sortKey: string) {
   return new Date(`${sortKey}T00:00:00.000Z`);
 }
 
+const workIndexRoute: SitemapEntry = {
+  path: "/work",
+  changeFrequency: monthly,
+  lastModified: new Date("2026-08-07T00:00:00.000Z"),
+  priority: 0.8,
+};
+
 const projectRoutes = projectCaseStudiesPublic.map((project) => ({
   path: `/work/${project.slug}`,
   changeFrequency: monthly,
@@ -52,6 +59,7 @@ const canonicalRoutes = [
     priority: 0.7,
   },
   ...blogPostRoutes,
+  workIndexRoute,
   ...projectRoutes,
 ] satisfies SitemapEntry[];
 

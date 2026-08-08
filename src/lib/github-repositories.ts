@@ -129,6 +129,32 @@ async function fetchGithubRepositoryPage(page: number) {
   return payload.filter(isGithubApiRepository);
 }
 
+// Flagship-first ordering for the homepage rail. Forks and asset-only
+// packages stay off the rail so every visible slot argues for engineering
+// depth; goblins-os leads because it is the strongest public artifact.
+const curatedRepositoryOrder = [
+  "goblins-os",
+  "joesimo",
+  "skills",
+  "love-presentation",
+];
+const excludedRepositoryNames = new Set(["joe-simo-pet"]);
+
+function curateRepositories(
+  entries: { repository: GithubRepository; fork: boolean }[],
+): GithubRepository[] {
+  const kept = entries.filter(
+    ({ repository, fork }) => !fork && !excludedRepositoryNames.has(repository.name),
+  );
+  const rank = (name: string) => {
+    const index = curatedRepositoryOrder.indexOf(name);
+    return index === -1 ? curatedRepositoryOrder.length : index;
+  };
+  return kept
+    .map(({ repository }) => repository)
+    .sort((a, b) => rank(a.name) - rank(b.name));
+}
+
 export async function getGithubRepositories(): Promise<GithubRepository[]> {
   try {
     const repositories: GithubApiRepository[] = [];
@@ -142,9 +168,14 @@ export async function getGithubRepositories(): Promise<GithubRepository[]> {
       }
     }
 
-    const publicRepositories = repositories
-      .filter((repository) => !repository.private && !repository.archived)
-      .map(toPublicGithubRepository);
+    const publicRepositories = curateRepositories(
+      repositories
+        .filter((repository) => !repository.private && !repository.archived)
+        .map((repository) => ({
+          repository: toPublicGithubRepository(repository),
+          fork: repository.fork,
+        })),
+    );
 
     if (publicRepositories.length > 0) {
       return publicRepositories;

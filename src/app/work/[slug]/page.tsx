@@ -312,7 +312,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
       <main className="work-case" id="main-content" tabIndex={-1}>
         <section className="work-case-hero site-page-shell">
           <div className="work-case-hero-copy">
-            <Link className="work-case-back" href="/#work">
+            <Link className="work-case-back" href="/work">
               <SiteIcon aria-hidden iconKey="arrowUpRight" />
               Work
             </Link>
@@ -350,7 +350,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
                   ) : null}
                 </ButtonLink>
               ))}
-              <ButtonLink data-kind="section" href="/#work" variant="outline">
+              <ButtonLink data-kind="section" href="/work" variant="outline">
                 Back to work
                 <SiteIcon aria-hidden iconKey="appWindow" />
               </ButtonLink>

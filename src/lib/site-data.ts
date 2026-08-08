@@ -516,15 +516,17 @@ export type BlogPost = {
 
 export const heroCopy = {
   title: "Joe Simo",
-  intro: "Designer/developer, FL.",
-  detail: "",
+  intro: "AI-Native Full-Stack Product Engineer, FL.",
+  detail:
+    "TypeScript, Next.js & React products / an open-source Rust OS / 10+ years operating production systems.",
 };
 
-export const siteDescription = "Joe Simo is a Florida designer/developer.";
+export const siteDescription =
+  "Joe Simo is an AI-native full-stack product engineer in Florida building TypeScript/Next.js products and an open-source Rust operating system, backed by 10+ years operating production systems.";
 
 export const joeProfile: JoeProfile = {
   name: heroCopy.title,
-  kicker: "FL / Designer-developer / systems background",
+  kicker: "FL / AI-native product engineer / systems background",
   headline: heroCopy.intro,
   detail: heroCopy.detail,
   routeLabel: "Work / Systems / Certifications / Community / Blog.",
@@ -543,7 +545,7 @@ export const portfolioSections = [
     anchor: "#joe",
     copy: {
       title: "Joe Simo",
-      detail: "Designer/developer, FL.",
+      detail: "AI-Native Full-Stack Product Engineer, FL.",
     },
   },
   {
@@ -663,8 +665,11 @@ export const astrosimoLink: SiteAction = {
   kind: "primary",
 };
 
+// sim0 is temporarily off the live-product rail: sim0.com currently throws a
+// client-side application error, and a crashing "live product" link hurts more
+// than no link. Restore the slug once production sim0 renders again; the
+// /work/sim0 case study stays published throughout.
 export const finishedPrivateProductSlugs = [
-  "sim0",
   "signature-copier",
   "chesslm",
   "astrosimo",
@@ -1904,8 +1909,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         treatment: "hero",
       },
     ],
-    links: [sim0Link],
-    status: "Active product",
+    links: [],
+    status: "Pre-launch product",
     sourcePath: "project/sim0",
     tier: "featured",
     story: {

@@ -45,6 +45,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        // Single canonical host: www previously served a duplicate site.
+        source: "/:path*",
+        has: [{ type: "host", value: "www.joesimo.com" }],
+        destination: "https://joesimo.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   devIndicators: false,
   poweredByHeader: false,
 };
