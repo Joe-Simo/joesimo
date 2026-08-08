@@ -245,9 +245,7 @@ describe("Joe Simo site data", () => {
       ]),
     );
 
-    // sim0's external link is intentionally absent while sim0.com is down;
-    // the case study stays published without a crashing CTA.
-    expect(linksBySlug.get("sim0")).toEqual([]);
+    expect(linksBySlug.get("sim0")).toContain("https://sim0.com");
     expect(linksBySlug.get("signature-copier")).toContain("https://signature0.com");
     expect(linksBySlug.get("garden0")).not.toContain("https://garden0.com");
     expect(linksBySlug.get("chesslm")).toContain("https://chesslm.com");

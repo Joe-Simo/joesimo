@@ -665,11 +665,12 @@ export const astrosimoLink: SiteAction = {
   kind: "primary",
 };
 
-// sim0 is temporarily off the live-product rail: sim0.com currently throws a
-// client-side application error, and a crashing "live product" link hurts more
-// than no link. Restore the slug once production sim0 renders again; the
-// /work/sim0 case study stays published throughout.
+// sim0.com serves a coming-soon page. Note: the page's particle canvas
+// throws an uncaught IndexSizeError (getImageData on a zero-width canvas) in
+// automated/headless Chromium contexts, though interactive browsers render
+// fine — worth a one-line width guard whenever the sim0 landing is touched.
 export const finishedPrivateProductSlugs = [
+  "sim0",
   "signature-copier",
   "chesslm",
   "astrosimo",
@@ -1909,7 +1910,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         treatment: "hero",
       },
     ],
-    links: [],
+    links: [sim0Link],
     status: "Pre-launch product",
     sourcePath: "project/sim0",
     tier: "featured",
