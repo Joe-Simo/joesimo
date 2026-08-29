@@ -3402,6 +3402,172 @@ export const communityHighlights: CommunityArtifact[] = communityArtifacts;
 
 export const blogPosts = [
   {
+    slug: "webmcp-challenge-paradox",
+    title: "Building Paradox for OpenAI's WebMCP Challenge",
+    kicker: "Hackathon build log",
+    summary:
+      "Ten days, one entry: a testing tool for WebMCP apps that finds the race a human and an AI agent ship together — and proves the fix. How Paradox was built, filmed, reviewed by 22 agents, and submitted five days early.",
+    excerpt:
+      "OpenAI ran a 10-day WebMCP hackathon on Devpost. Instead of adding agent tools to an app, I built the testing tool every other entry would need: Paradox explores every ordering of a human-agent session and proves whether the fix survives all of them.",
+    publishedAt: "2026-08-29",
+    dateLabel: "August 29, 2026",
+    readingTime: "7 min read",
+    href: "/blog/webmcp-challenge-paradox",
+    videoHref: "https://youtu.be/mBkLOa7VWFw",
+    videoLabel: "Watch the 2-minute demo",
+    heroMedia: {
+      kind: "artifact",
+      src: "/media/blog/webmcp-challenge-paradox/05-counterexample-focus.webp",
+      alt: "Paradox counterexample view: the app approved a state nobody reviewed — $2,399 reviewed, $23,999 changed, $23,999 committed",
+      width: 1440,
+      height: 900,
+      tone: "desaturated",
+      caption:
+        "The counterexample in focus: the agent reviewed $2,399, the human changed it to $23,999, and the unsafe tool committed it anyway.",
+      sourceLabel: "paradoxwebmcp.com",
+    },
+    gallery: [
+      {
+        kind: "artifact",
+        src: "/media/blog/webmcp-challenge-paradox/01-paradox-landing.webp",
+        alt: "Paradox landing page: a WebGPU black hole behind the headline 'Your app will approve what nobody reviewed'",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "The landing at the moment the race commits — the only color that ever enters the WebGPU universe.",
+        sourceLabel: "paradoxwebmcp.com",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/webmcp-challenge-paradox/04-multiverse-finding.webp",
+        alt: "Paradox exploration view showing 36 schedules, 27 counterexamples, and the shortest computed failure",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "Explore Futures: 36 schedules, 27 violating futures, and the shortest failure minimized to three operations.",
+        sourceLabel: "paradoxwebmcp.com",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/webmcp-challenge-paradox/06-verified-repair.webp",
+        alt: "Paradox verification view: exact counterexample replay blocked with STATE_CHANGED and zero surviving counterexamples",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "Verify: the exact counterexample replayed against the guarded contract — blocked, STATE_CHANGED, zero survivors.",
+        sourceLabel: "paradoxwebmcp.com",
+      },
+    ],
+    facts: [
+      {
+        label: "Event",
+        value: "The WebMCP Challenge — OpenAI, on Devpost",
+      },
+      {
+        label: "Entry",
+        value: "Paradox — a testing tool for WebMCP apps",
+      },
+      {
+        label: "Live product",
+        value: "paradoxwebmcp.com",
+      },
+      {
+        label: "Engine result",
+        value: "36 schedules, 27 counterexamples, 9 → 3 minimization",
+      },
+      {
+        label: "Repair proof",
+        value: "Exact replay blocked with STATE_CHANGED, 0 survivors",
+      },
+      {
+        label: "Demo film",
+        value: "2:00, 4K60, rendered entirely from the live product",
+      },
+      {
+        label: "Submitted",
+        value: "August 29, 2026 — five days before the deadline",
+      },
+    ],
+    timeline: [
+      {
+        label: "Day 1",
+        value: "Challenge opens. I commit to a testing tool, not another agent demo.",
+      },
+      {
+        label: "Days 2-3",
+        value: "The Ledger lab and the deterministic explorer land: every number computed live.",
+      },
+      {
+        label: "Days 4-5",
+        value: "The observatory redesign — a WebGPU black hole where color only enters when the race commits.",
+      },
+      {
+        label: "Day 6",
+        value: "ChatGPT clean-room pass on production, including an improvised amount the site had never seen.",
+      },
+      {
+        label: "Days 6-7",
+        value: "The SDK ships with a fully automatic tier; the 4K60 film renders from a virtual clock.",
+      },
+      {
+        label: "Final night",
+        value: "A 22-agent adversarial review across nine dimensions; every confirmed finding fixed.",
+      },
+      {
+        label: "Aug 29",
+        value: "Video public, Devpost submitted, repo tagged and frozen for judging.",
+      },
+    ],
+    sections: [
+      {
+        heading: "The challenge",
+        body: [
+          "OpenAI ran a 10-day hackathon on Devpost around WebMCP — the emerging W3C standard that lets a website register structured tools directly on the page, so an agent like ChatGPT can operate the same live application a human is using. Thousands of participants, judged on WebMCP leverage, execution, impact, and creativity.",
+          "Most entries would add tools to an app. I went the other way: WebMCP creates a brand-new class of bug the moment two operators share one live state, and nobody had built the tool for it. Playwright tests your pages; agent evals test your prompts. Paradox tests what happens when a human and an AI agent act on the same state at the same time.",
+        ],
+      },
+      {
+        heading: "The race",
+        body: [
+          "The demo scenario is a real expense app. An agent inspects expense 481 at $2,399, version 7, and gets a version-bound review token. A human edits the amount to $23,999, version 8. The agent completes its review — and the intentionally unsafe implementation approves $23,999 against a review of $2,399. The agent was never wrong; the application's tool contract was.",
+          "Paradox records those operations as semantic events and explores every ordering: 36 schedules, 27 of which violate the invariant, with the shortest failure minimized from 9 machine steps to 3 essential operations. Then it proves the fix — a version guard on the tool contract — by replaying the exact counterexample (blocked with STATE_CHANGED) and re-exploring the full model to zero surviving counterexamples. Every number on screen comes from a deterministic TypeScript model checker. No LLM decides what is safe.",
+        ],
+      },
+      {
+        heading: "Building with an AI trio",
+        body: [
+          "I directed three AI systems with different jobs. Codex was the primary engineering collaborator for the architecture, the domain model, and the original explorer. ChatGPT operated the product live through its real WebMCP surface — including a clean-room judging pass on production where I improvised an amount the site had never seen, proving the results are computed, not canned. Claude Code drove the observatory redesign, generalized the engine into an installable SDK with a fully automatic analysis tier, produced the film, and ran verification loops after every change.",
+          "The division that mattered most was between the AI collaborators and the product itself: Paradox uses no model API at runtime. Agents built the tool; deterministic code decides correctness.",
+        ],
+      },
+      {
+        heading: "Filming a product that renders itself",
+        body: [
+          "The 2-minute demo is not a screen recording. The site runs under a virtual clock — requestAnimationFrame, timers, and Date.now all faked — advanced 16.67 milliseconds at a time, with a 4K screenshot captured on every tick and piped straight into ffmpeg. The result is a perfectly smooth 60fps film of the real product, regardless of how fast the machine renders WebGPU.",
+          "The first cut ran 2:40 with long silent holds and whooshy transitions. I hated it, so it became a 2:00 keynote-style cut: narration nearly wall-to-wall, quiet dip-to-black act changes, a score built from Apple-licensed Final Cut Pro sound effects, and a QC gate that literally fails the build if any silence exceeds 3.5 seconds.",
+        ],
+      },
+      {
+        heading: "The 22-agent review",
+        body: [
+          "Before submitting, I turned the same adversarial mindset on my own project. Twenty-two review agents swept nine dimensions — the live site, WebMCP spec conformance, the SDK install path, every published code sample, the submission document, all six screenshots, repo hygiene, the test pipeline, and the video frame by frame — and every finding had to survive an independent verifier prompted to refute it.",
+          "Twelve findings were confirmed and fixed, from a committed SDK bundle that would not load under Node ESM to an unstyled status label in the capability rail. The best catch was not even a finding: a stale dev server had been silently serving an old build to the end-to-end tests, which meant hours of green checkmarks had been validating yesterday's code. The whole suite was re-run against reality before the tag went on.",
+        ],
+      },
+      {
+        heading: "Submitted",
+        body: [
+          "Paradox went in on August 29 — five days before the deadline. The video is public, the Devpost page is live, the repo is tagged webmcp-challenge-v1.0, and everything is frozen through judging. The entry closes on the sentence the whole project stands on: the agent is never the culprit — the tool contract is.",
+          "Whatever the judges decide, the category feels real. The stale-read race ships in carts, bookings, refunds, and permissions the moment agents and humans share live state. Next up: more automatic hazard classes, broader invariant libraries, and CI integration — so any WebMCP app can explore its futures before its users do.",
+        ],
+      },
+    ],
+    tags: ["WebMCP", "OpenAI", "Devpost", "model checking", "Next.js", "hackathon"],
+  },
+  {
     slug: "vercel-v0-api-billing-bug-report",
     title: "The time I found a v0 API billing bug",
     kicker: "Responsible disclosure",

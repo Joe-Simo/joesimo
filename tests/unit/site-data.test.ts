@@ -190,14 +190,15 @@ describe("Joe Simo site data", () => {
     ).toBe(false);
   });
 
-  test("publishes the first blog post without secrets", () => {
-    expect(blogPosts).toHaveLength(1);
-    expect(latestBlogPost.slug).toBe("vercel-v0-api-billing-bug-report");
-    expect(latestBlogPost.href).toBe("/blog/vercel-v0-api-billing-bug-report");
-    expect(latestBlogPost.videoHref).toBe(
-      "https://www.youtube.com/watch?v=XnmyF2lmCP4&feature=youtu.be",
-    );
+  test("publishes the blog posts without secrets", () => {
+    expect(blogPosts).toHaveLength(2);
+    expect(latestBlogPost.slug).toBe("webmcp-challenge-paradox");
+    expect(latestBlogPost.href).toBe("/blog/webmcp-challenge-paradox");
+    expect(latestBlogPost.videoHref).toBe("https://youtu.be/mBkLOa7VWFw");
     expect(latestBlogPost.gallery).toHaveLength(3);
+    expect(blogPosts.map((post) => post.slug)).toContain(
+      "vercel-v0-api-billing-bug-report",
+    );
 
     const publicBlogStrings = collectStringValues(blogPosts);
 
@@ -206,8 +207,13 @@ describe("Joe Simo site data", () => {
       expect(value).not.toMatch(privatePathTerms);
     }
 
-    for (const media of latestBlogPost.gallery) {
-      expect(existsSync(join(process.cwd(), "public", media.src))).toBe(true);
+    for (const post of blogPosts) {
+      expect(existsSync(join(process.cwd(), "public", post.heroMedia.src))).toBe(
+        true,
+      );
+      for (const media of post.gallery) {
+        expect(existsSync(join(process.cwd(), "public", media.src))).toBe(true);
+      }
     }
   });
 
