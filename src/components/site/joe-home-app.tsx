@@ -23,11 +23,13 @@ import { SiteIcon } from "@/components/site/site-icons";
 import {
   credentialIssuers,
   credentialGroups,
+  blogPosts,
   finishedPrivateProductSlugs,
   isHomepageProject,
   latestBlogPost,
   portfolioSections,
   type CommunityArtifact,
+  type BlogPost,
   type CredentialIssuerLogo,
   type GithubRepository,
   type JoeProfile,
@@ -417,6 +419,12 @@ function orderedFinishedProducts(projects: readonly PublicProjectCaseStudy[]) {
     .filter((project): project is PublicProjectCaseStudy => Boolean(project));
 }
 
+function hasPublicRepository(
+  post: BlogPost,
+): post is BlogPost & { repository: NonNullable<BlogPost["repository"]> } {
+  return Boolean(post.repository);
+}
+
 function GitHubSection({
   projects,
   repositories,
@@ -427,6 +435,7 @@ function GitHubSection({
   const section = portfolioSection("work");
   const publicRepositories = repositories.filter(isPublicGithubRepository);
   const liveProducts = orderedFinishedProducts(projects);
+  const repositoryBuildStories = blogPosts.filter(hasPublicRepository);
 
   const renderRepositoryCard = (repository: GithubRepository & { href: string }) => (
     <a
@@ -545,6 +554,19 @@ function GitHubSection({
                 <span>
                   <strong>{project.title}</strong>
                   <small>{project.role}</small>
+                </span>
+                <ArrowRight aria-hidden />
+              </Link>
+            ))}
+            {repositoryBuildStories.map((post) => (
+              <Link
+                className="joe-case-study-link"
+                href={post.href}
+                key={post.slug}
+              >
+                <span>
+                  <strong>{post.title}</strong>
+                  <small>{post.kicker} — public repository</small>
                 </span>
                 <ArrowRight aria-hidden />
               </Link>

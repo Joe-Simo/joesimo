@@ -134,6 +134,9 @@ async function fetchGithubRepositoryPage(page: number) {
 // depth; goblins-os leads because it is the strongest public artifact.
 const curatedRepositoryOrder = [
   "goblins-os",
+  "world-of-vanilla",
+  "get-it-in-writing",
+  "paradox-webmcp",
   "joesimo",
   "skills",
   "love-presentation",

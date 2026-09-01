@@ -150,16 +150,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
               </dl>
               <div className="work-case-actions">
-                <ButtonLink
-                  href={post.videoHref}
-                  rel="noreferrer"
-                  target="_blank"
-                  variant="default"
-                >
-                  {post.videoLabel}
-                  <SiteIcon aria-hidden iconKey="youtube" />
-                  <span className="sr-only">opens in a new tab</span>
-                </ButtonLink>
+                {post.videoHref && post.videoLabel ? (
+                  <ButtonLink
+                    href={post.videoHref}
+                    rel="noreferrer"
+                    target="_blank"
+                    variant="default"
+                  >
+                    {post.videoLabel}
+                    <SiteIcon aria-hidden iconKey="youtube" />
+                    <span className="sr-only">opens in a new tab</span>
+                  </ButtonLink>
+                ) : null}
+                {post.repository ? (
+                  <ButtonLink
+                    href={post.repository.href}
+                    rel="noreferrer"
+                    target="_blank"
+                    variant="outline"
+                  >
+                    {post.repository.label}
+                    <SiteIcon aria-hidden iconKey="github" />
+                    <span className="sr-only">opens in a new tab</span>
+                  </ButtonLink>
+                ) : null}
               </div>
             </div>
             <BlogEvidenceFigure media={post.heroMedia} />
@@ -209,7 +223,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <section className="blog-article-section site-page-shell">
             <div className="blog-article-section-head">
               <p>Evidence</p>
-              <h2>Private proof, public story.</h2>
+              <h2>{post.evidenceTitle ?? "The interface, verified."}</h2>
             </div>
             <div className="blog-gallery">
               {post.gallery.map((media) => (
@@ -218,17 +232,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           </section>
 
-          <section className="blog-article-section blog-disclosure-note site-page-shell">
-            <div>
-              <h2>Disclosure note</h2>
-              <p>
-                This post intentionally leaves out active credentials and avoids
-                turning the report into a step-by-step exploit guide. The public
-                point is the responsible disclosure process and the confirmed
-                fix path, not the abuse path.
-              </p>
-            </div>
-          </section>
+          {post.disclosure ? (
+            <section className="blog-article-section blog-disclosure-note site-page-shell">
+              <div>
+                <h2>{post.disclosure.title}</h2>
+                <p>{post.disclosure.body}</p>
+              </div>
+            </section>
+          ) : null}
         </article>
       </main>
 

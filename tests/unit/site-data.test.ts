@@ -191,17 +191,33 @@ describe("Joe Simo site data", () => {
   });
 
   test("publishes the blog posts without secrets", () => {
-    expect(blogPosts).toHaveLength(3);
-    expect(latestBlogPost.slug).toBe("all-gas-get-it-in-writing");
-    expect(latestBlogPost.href).toBe("/blog/all-gas-get-it-in-writing");
-    expect(latestBlogPost.videoHref).toBe("https://youtu.be/aXTCeEUKq5Q");
-    expect(latestBlogPost.gallery).toHaveLength(3);
+    expect(blogPosts).toHaveLength(4);
+    expect(latestBlogPost.slug).toBe("world-of-vanilla-2019-restored");
+    expect(latestBlogPost.href).toBe("/blog/world-of-vanilla-2019-restored");
+    expect(latestBlogPost.repository?.href).toBe(
+      "https://github.com/Joe-Simo/world-of-vanilla",
+    );
+    expect(latestBlogPost.gallery).toHaveLength(2);
+    expect(blogPosts.map((post) => post.slug)).toContain(
+      "all-gas-get-it-in-writing",
+    );
     expect(blogPosts.map((post) => post.slug)).toContain(
       "webmcp-challenge-paradox",
     );
     expect(blogPosts.map((post) => post.slug)).toContain(
       "vercel-v0-api-billing-bug-report",
     );
+
+    const repositoryBackedPosts = blogPosts.filter(
+      (post) => post.repository,
+    );
+
+    expect(repositoryBackedPosts).toHaveLength(3);
+    expect(repositoryBackedPosts.map((post) => post.repository?.href)).toEqual([
+      "https://github.com/Joe-Simo/world-of-vanilla",
+      "https://github.com/Joe-Simo/get-it-in-writing",
+      "https://github.com/Joe-Simo/paradox-webmcp",
+    ]);
 
     const publicBlogStrings = collectStringValues(blogPosts);
 

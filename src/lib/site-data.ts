@@ -504,14 +504,23 @@ export type BlogPost = {
   dateLabel: string;
   readingTime: string;
   href: `/blog/${string}`;
-  videoHref: string;
-  videoLabel: string;
+  videoHref?: string;
+  videoLabel?: string;
+  repository?: {
+    href: `https://github.com/${string}`;
+    label: string;
+  };
   heroMedia: BlogPostMedia;
   gallery: readonly BlogPostMedia[];
   facts: readonly BlogPostFact[];
   timeline: readonly BlogPostFact[];
   sections: readonly BlogPostSection[];
   tags: readonly string[];
+  evidenceTitle?: string;
+  disclosure?: {
+    title: string;
+    body: string;
+  };
 };
 
 export const heroCopy = {
@@ -1491,6 +1500,39 @@ export const proudSystemsRoles: ProudRole[] = [
 ];
 
 export const githubRepositories: GithubRepository[] = [
+  {
+    name: "world-of-vanilla",
+    href: "https://github.com/Joe-Simo/world-of-vanilla",
+    description:
+      "Archival Next.js reconstruction of World of Vanilla, a World of Warcraft community site originally built in 2019.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/world-of-vanilla",
+    homepage: "https://joesimo.com/blog/world-of-vanilla-2019-restored",
+    meta: ["github", "public repo", "TypeScript", "Next.js"],
+    visibility: "public",
+  },
+  {
+    name: "get-it-in-writing",
+    href: "https://github.com/Joe-Simo/get-it-in-writing",
+    description:
+      "Checks what an official page actually promises and gets the gap confirmed in writing.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/get-it-in-writing",
+    homepage: "https://resilient-salamander-937.convex.site",
+    meta: ["github", "public repo", "TypeScript", "Convex"],
+    visibility: "public",
+  },
+  {
+    name: "paradox-webmcp",
+    href: "https://github.com/Joe-Simo/paradox-webmcp",
+    description:
+      "Deterministic temporal correctness testing for human-agent WebMCP applications.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/paradox-webmcp",
+    homepage: "https://www.paradoxwebmcp.com",
+    meta: ["github", "public repo", "TypeScript", "WebMCP"],
+    visibility: "public",
+  },
   {
     name: "goblins-os",
     href: "https://github.com/Joe-Simo/goblins-os",
@@ -3400,7 +3442,159 @@ export const communityArtifacts: CommunityArtifact[] =
 
 export const communityHighlights: CommunityArtifact[] = communityArtifacts;
 
-export const blogPosts = [
+export const blogPosts: readonly BlogPost[] = [
+  {
+    slug: "world-of-vanilla-2019-restored",
+    title: "Rebuilding World of Vanilla: a 2019 WordPress site, restored in Next.js",
+    kicker: "Archive restoration",
+    summary:
+      "I reopened a World of Warcraft community site I built in 2019 and reconstructed it as a production-quality Next.js archive—keeping its steel, gold, and Azeroth character while replacing the broken WordPress surface underneath.",
+    excerpt:
+      "World of Vanilla began as a WordPress community site during the road to WoW Classic. Seven years later, its backup still held the visual identity but not a working product. This is how I restored the archive, made every surviving route honest and usable, and gave it a modern local account system.",
+    publishedAt: "2026-09-01",
+    dateLabel: "September 1, 2026",
+    readingTime: "6 min read",
+    href: "/blog/world-of-vanilla-2019-restored",
+    repository: {
+      href: "https://github.com/Joe-Simo/world-of-vanilla",
+      label: "Open the World of Vanilla repository",
+    },
+    heroMedia: {
+      kind: "artifact",
+      src: "/media/blog/world-of-vanilla/01-restored-home.jpg",
+      alt: "Restored World of Vanilla homepage with a gryphon hero, steel archive panels, and gold interface accents",
+      width: 1440,
+      height: 1000,
+      tone: "desaturated",
+      caption:
+        "The restored homepage at desktop width: the old identity survived, but the interface underneath is now a typed, responsive Next.js application.",
+      sourceLabel: "World of Vanilla restoration",
+    },
+    gallery: [
+      {
+        kind: "artifact",
+        src: "/media/blog/world-of-vanilla/02-mobile-home.jpg",
+        alt: "World of Vanilla homepage adapted to a narrow mobile screen without horizontal overflow",
+        width: 375,
+        height: 812,
+        tone: "desaturated",
+        caption:
+          "At phone width, the gryphon composition, headline, archive call to action, and section hierarchy remain intact.",
+        sourceLabel: "Responsive browser verification",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/world-of-vanilla/03-mobile-navigation.jpg",
+        alt: "World of Vanilla mobile navigation drawer with archive routes and local account actions",
+        width: 390,
+        height: 844,
+        tone: "desaturated",
+        caption:
+          "The mobile drawer keeps every archive route and the local account entry points accessible without flattening the site's personality.",
+        sourceLabel: "Responsive browser verification",
+      },
+    ],
+    facts: [
+      {
+        label: "Original project",
+        value: "World of Vanilla — WordPress community site, 2019",
+      },
+      {
+        label: "Restoration",
+        value: "Next.js 16, React 19, TypeScript, Tailwind CSS 4",
+      },
+      {
+        label: "Interface",
+        value: "Customized shadcn/ui and Radix primitives",
+      },
+      {
+        label: "Accounts",
+        value: "Local email/password auth with secure sessions and SQLite",
+      },
+      {
+        label: "Recovered",
+        value: "News, guides, forum index, ClassiCast, artwork, and navigation",
+      },
+      {
+        label: "Verification",
+        value: "Lint, types, tests, production build, desktop and mobile browser QA",
+      },
+      {
+        label: "Repository",
+        value: "github.com/Joe-Simo/world-of-vanilla",
+      },
+    ],
+    timeline: [
+      {
+        label: "2019",
+        value:
+          "Built World of Vanilla in WordPress while the community counted down to World of Warcraft Classic.",
+      },
+      {
+        label: "Archive",
+        value:
+          "The backup preserved the logo, imagery, category structure, and visual direction, but not a dependable modern application.",
+      },
+      {
+        label: "Rebuild",
+        value:
+          "Recreated the site in Next.js and TypeScript, preserving the original composition instead of turning it into a generic portfolio template.",
+      },
+      {
+        label: "Repair",
+        value:
+          "Replaced dead archive affordances with real destinations or explicit recovered-summary and index-only states.",
+      },
+      {
+        label: "Accounts",
+        value:
+          "Added a local Better Auth service, SQLite persistence, secure sessions, and complete signup, login, and logout states.",
+      },
+      {
+        label: "Release",
+        value:
+          "Verified the production build at desktop, mobile, and 320-pixel widths, then published the reconstruction as a public archive repository.",
+      },
+    ],
+    sections: [
+      {
+        heading: "A site from the road to Classic",
+        body: [
+          "World of Vanilla came from a very specific moment. In 2019, World of Warcraft Classic was still an approaching event, and the site was meant to feel like a community outpost on the road there: dark steel panels, warm gold signals, condensed headlines, guild chatter, guides, news, and ClassiCast episodes. It was not designed to disappear into WordPress defaults.",
+          "When I reopened the backup years later, that identity was still visible in the assets. The working product was not. Templates, content records, and old platform assumptions no longer added up to a site someone could reliably navigate. The right restoration was not to imitate every broken edge of the backup. It was to preserve what made the site recognizable and rebuild the experience around it.",
+        ],
+      },
+      {
+        heading: "Preserving the visual argument",
+        body: [
+          "The rebuild keeps the parts that made World of Vanilla itself: the near-black texture, steel dividers, amber highlights, Warcraft-scale artwork, and typography that reads like a field report rather than a startup dashboard. The gryphon remains the first impression. News still feels like dispatches, ClassiCast still reads as a media rail, and community activity still looks like an index from a living forum.",
+          "The implementation uses Next.js, TypeScript, Tailwind CSS, and customized shadcn/ui primitives. Those tools provide accessible behavior and production structure, but they stay subordinate to the old art direction. A generic component-library finish would have erased the reason to restore the site in the first place.",
+        ],
+      },
+      {
+        heading: "An honest archive instead of invented history",
+        body: [
+          "The backup did not include a complete post database, so the restoration does not pretend it did. Recovered news entries lead to real summary sections. Guide categories are labeled as recovered categories. Forum rows are clearly marked index only instead of masquerading as live discussions. Surviving ClassiCast episodes still open their original YouTube destinations.",
+          "That distinction matters. A reconstruction should make the surviving material easier to experience without manufacturing content that never came back. Every visible affordance now either reaches a real route, reaches an existing anchor, or explains the archival limitation directly.",
+        ],
+      },
+      {
+        heading: "Local accounts, built as a real system",
+        body: [
+          "The original community framing needed account states, but a fake sign-in success screen would only reproduce the appearance of a product. The new version uses Better Auth on the Next.js server with email and password accounts, secure cookies, and a local SQLite database. The header, mobile drawer, dialogs, validation, pending states, errors, account menu, and logout path all share that real session state.",
+          "Account data stays on the machine in an ignored .data directory. The repository contains an environment template, not credentials, and the server generates a persistent local secret when one is not configured. It is intentionally useful as a local archive without pretending to be a hosted community service.",
+        ],
+      },
+      {
+        heading: "Finishing means checking the interface",
+        body: [
+          "The last pass was not just a successful compile. I exercised signup, login, logout, invalid credentials, account menus, archive navigation, internal anchors, the mobile drawer, and the narrowest supported layout in a real browser. The 320-pixel view has no horizontal overflow, notification toasts no longer cover account controls, and the console finishes without warnings or errors.",
+          "The repository is public now as an archive of two moments: the community site I wanted to make in 2019, and the product-engineering standard I expect from myself in 2026. I may not play World of Warcraft anymore, but this old site was worth finishing properly.",
+        ],
+      },
+    ],
+    tags: ["World of Warcraft", "WordPress", "Next.js", "TypeScript", "shadcn/ui", "archive"],
+  },
   {
     slug: "all-gas-get-it-in-writing",
     title: "Get It in Writing: my Convex All Gas Hackathon entry",
@@ -3413,6 +3607,10 @@ export const blogPosts = [
     dateLabel: "August 31, 2026",
     readingTime: "7 min read",
     href: "/blog/all-gas-get-it-in-writing",
+    repository: {
+      href: "https://github.com/Joe-Simo/get-it-in-writing",
+      label: "Open the Get It in Writing repository",
+    },
     videoHref: "https://youtu.be/aXTCeEUKq5Q",
     videoLabel: "Watch the 90-second demo",
     heroMedia: {
@@ -3585,6 +3783,10 @@ export const blogPosts = [
     dateLabel: "August 29, 2026",
     readingTime: "7 min read",
     href: "/blog/webmcp-challenge-paradox",
+    repository: {
+      href: "https://github.com/Joe-Simo/paradox-webmcp",
+      label: "Open the Paradox repository",
+    },
     videoHref: "https://youtu.be/mBkLOa7VWFw",
     videoLabel: "Watch the 2-minute demo",
     heroMedia: {
@@ -3882,8 +4084,14 @@ export const blogPosts = [
       },
     ],
     tags: ["v0", "Vercel", "MCP", "billing", "responsible disclosure"],
+    evidenceTitle: "Private proof, public story.",
+    disclosure: {
+      title: "Disclosure note",
+      body:
+        "This post intentionally leaves out active credentials and avoids turning the report into a step-by-step exploit guide. The public point is the responsible disclosure process and the confirmed fix path, not the abuse path.",
+    },
   },
-] as const satisfies readonly BlogPost[];
+];
 
 export const latestBlogPost = blogPosts[0];
 
