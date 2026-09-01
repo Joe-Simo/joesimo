@@ -143,19 +143,43 @@ const curatedRepositoryOrder = [
 ];
 const excludedRepositoryNames = new Set(["joe-simo-pet"]);
 
+function repositoryRank(name: string) {
+  const index = curatedRepositoryOrder.indexOf(name);
+  return index === -1 ? curatedRepositoryOrder.length : index;
+}
+
 function curateRepositories(
   entries: { repository: GithubRepository; fork: boolean }[],
 ): GithubRepository[] {
   const kept = entries.filter(
     ({ repository, fork }) => !fork && !excludedRepositoryNames.has(repository.name),
   );
-  const rank = (name: string) => {
-    const index = curatedRepositoryOrder.indexOf(name);
-    return index === -1 ? curatedRepositoryOrder.length : index;
-  };
   return kept
     .map(({ repository }) => repository)
-    .sort((a, b) => rank(a.name) - rank(b.name));
+    .sort((a, b) => repositoryRank(a.name) - repositoryRank(b.name));
+}
+
+function mergeFallbackRepositories(
+  repositories: readonly GithubRepository[],
+): GithubRepository[] {
+  const mergedByName = new Map(
+    fallbackGithubRepositories
+      .filter(
+        (repository) =>
+          repository.visibility === "public" &&
+          repository.href &&
+          !excludedRepositoryNames.has(repository.name),
+      )
+      .map((repository) => [repository.name, repository]),
+  );
+
+  for (const repository of repositories) {
+    mergedByName.set(repository.name, repository);
+  }
+
+  return [...mergedByName.values()].sort(
+    (a, b) => repositoryRank(a.name) - repositoryRank(b.name),
+  );
 }
 
 export async function getGithubRepositories(): Promise<GithubRepository[]> {
@@ -181,13 +205,11 @@ export async function getGithubRepositories(): Promise<GithubRepository[]> {
     );
 
     if (publicRepositories.length > 0) {
-      return publicRepositories;
+      return mergeFallbackRepositories(publicRepositories);
     }
   } catch (error) {
     console.warn(error);
   }
 
-  return fallbackGithubRepositories.filter(
-    (repository) => repository.visibility === "public" && repository.href,
-  );
+  return mergeFallbackRepositories([]);
 }
