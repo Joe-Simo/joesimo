@@ -1,0 +1,26 @@
+# Local dependencies and build artifacts
+node_modules
+node_modules.nosync
+.next
+out
+build
+coverage
+
+# Generated browser and review evidence
+playwright-report
+test-results
+output
+.playwright-mcp
+joesimo-review-*.png
+joesimo-credentials-*.png
+review-*.png
+
+# Local configuration and secrets
+.vercel
+.env*
+*.pem
+*.tsbuildinfo
+.DS_Store
+
+# Source-control metadata
+.git
