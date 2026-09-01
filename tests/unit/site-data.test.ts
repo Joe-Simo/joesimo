@@ -191,11 +191,14 @@ describe("Joe Simo site data", () => {
   });
 
   test("publishes the blog posts without secrets", () => {
-    expect(blogPosts).toHaveLength(2);
-    expect(latestBlogPost.slug).toBe("webmcp-challenge-paradox");
-    expect(latestBlogPost.href).toBe("/blog/webmcp-challenge-paradox");
-    expect(latestBlogPost.videoHref).toBe("https://youtu.be/mBkLOa7VWFw");
+    expect(blogPosts).toHaveLength(3);
+    expect(latestBlogPost.slug).toBe("all-gas-get-it-in-writing");
+    expect(latestBlogPost.href).toBe("/blog/all-gas-get-it-in-writing");
+    expect(latestBlogPost.videoHref).toBe("https://youtu.be/aXTCeEUKq5Q");
     expect(latestBlogPost.gallery).toHaveLength(3);
+    expect(blogPosts.map((post) => post.slug)).toContain(
+      "webmcp-challenge-paradox",
+    );
     expect(blogPosts.map((post) => post.slug)).toContain(
       "vercel-v0-api-billing-bug-report",
     );

@@ -3402,6 +3402,178 @@ export const communityHighlights: CommunityArtifact[] = communityArtifacts;
 
 export const blogPosts = [
   {
+    slug: "all-gas-get-it-in-writing",
+    title: "Get It in Writing: my Convex All Gas Hackathon entry",
+    kicker: "Hackathon build log",
+    summary:
+      "Three days, one consumer app: paste the official page you're about to rely on, see what it actually promises, and get the gap confirmed in writing — by a real business, over real email. How it was built, filmed against production, and submitted.",
+    excerpt:
+      "Convex ran a hackathon with OpenAI, Firecrawl, and AgentMail: build an everyday app, not a developer tool. I built Get It in Writing — it reads a provider's official pages, separates real promises from reassuring language, and emails one precise question so the answer becomes proof you keep.",
+    publishedAt: "2026-08-31",
+    dateLabel: "August 31, 2026",
+    readingTime: "7 min read",
+    href: "/blog/all-gas-get-it-in-writing",
+    videoHref: "https://youtu.be/aXTCeEUKq5Q",
+    videoLabel: "Watch the 90-second demo",
+    heroMedia: {
+      kind: "artifact",
+      src: "/media/blog/all-gas-get-it-in-writing/04-proof-card.webp",
+      alt: "Get It in Writing Proof Card reading 'Confirmed—with conditions' with a WRITTEN REPLY seal and both promises listed with their exact conditions",
+      width: 1440,
+      height: 900,
+      tone: "desaturated",
+      caption:
+        "The artifact the whole product exists for: a written reply interpreted into a Proof Card — confirmed, with the sender's own hedge preserved as a condition.",
+      sourceLabel: "resilient-salamander-937.convex.site",
+    },
+    gallery: [
+      {
+        kind: "artifact",
+        src: "/media/blog/all-gas-get-it-in-writing/01-landing-ink.webp",
+        alt: "Get It in Writing landing page: ink bleeding from the word 'probably.' in the headline Don't rely on probably, beside a private beta waitlist card",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "The landing: a WebGPU fluid sim rebuilt as ink that bleeds from the one word the product distrusts.",
+        sourceLabel: "resilient-salamander-937.convex.site",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/all-gas-get-it-in-writing/02-live-research.webp",
+        alt: "A decision case titled Abode Malua Bay showing 'Your approval needed' after live research, with two decision boundaries extracted as critical requirements",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "The end of a real two-minute research run, filmed live: sources read, boundaries extracted, approval requested.",
+        sourceLabel: "resilient-salamander-937.convex.site",
+      },
+      {
+        kind: "artifact",
+        src: "/media/blog/all-gas-get-it-in-writing/03-approval-gate.webp",
+        alt: "The approval gate: a source-checked recipient, the exact drafted email, a checked review checkbox, and an armed Send this request button",
+        width: 1440,
+        height: 900,
+        tone: "desaturated",
+        caption:
+          "The approval gate: one source-verified recipient, one exact message, and a send button that only the owner can arm.",
+        sourceLabel: "resilient-salamander-937.convex.site",
+      },
+    ],
+    facts: [
+      {
+        label: "Event",
+        value: "Convex All Gas Hackathon — with OpenAI, Firecrawl & AgentMail",
+      },
+      {
+        label: "Entry",
+        value: "Get It in Writing — decision protection for everyday life",
+      },
+      {
+        label: "Live product",
+        value: "resilient-salamander-937.convex.site",
+      },
+      {
+        label: "Realness",
+        value: "A real hotel case, and a written reply that became a Proof Card",
+      },
+      {
+        label: "Demo film",
+        value: "92 seconds, 4K60, filmed entirely against production",
+      },
+      {
+        label: "Submitted",
+        value: "August 31, 2026 — three weeks before the deadline",
+      },
+      {
+        label: "Winners",
+        value: "September 25, 2026",
+      },
+    ],
+    timeline: [
+      {
+        label: "Aug 29",
+        value:
+          "Kickoff. The brief says everyday apps, not developer tools — I commit to the sentence 'Don't rely on probably.'",
+      },
+      {
+        label: "Aug 30",
+        value:
+          "The pipeline goes real: Firecrawl reads official pages, OpenAI classifies against captured passages, AgentMail sends one approved email to a real hotel.",
+      },
+      {
+        label: "Aug 30",
+        value:
+          "The ink stage lands — a WebGPU fluid solver reworked until ink bleeds from the word 'probably.' itself.",
+      },
+      {
+        label: "Aug 31",
+        value:
+          "My own reply exposes an ingestion bug: HTML-only email arrived textless. Fixed by hydrating the stored thread before interpretation.",
+      },
+      {
+        label: "Aug 31",
+        value:
+          "Public sign-ups close behind a waitlist; a shared demo wallet gives judges real cases without touching my API budgets.",
+      },
+      {
+        label: "Aug 31",
+        value:
+          "The film: a virtual-clock rig renders 4K60 from production, narration rewritten twice until a stranger could follow it.",
+      },
+      {
+        label: "Aug 31",
+        value: "Submitted on vibeapps.dev — on the third attempt, after two opaque server errors.",
+      },
+    ],
+    sections: [
+      {
+        heading: "The contest",
+        body: [
+          "Convex ran a three-week hackathon with OpenAI, Firecrawl, and AgentMail as sponsors: build a new full-stack app where Convex runs it, Firecrawl feeds it data, and AgentMail gives it an inbox. The judging criteria were refreshingly opinionated — everyday apps, not developer tools; sponsors doing real work, not sitting in the README; a live URL judges can open; and a demo video under three minutes that clicks through the real product.",
+          "After Paradox — a testing tool for other developers — the constraint I gave myself was the opposite: build something my mom could need. The prize pool is $25,000 in cash and Codex credits, with winners announced September 25.",
+        ],
+      },
+      {
+        heading: "Don't rely on \"probably.\"",
+        body: [
+          "Websites are full of sentences that sound like promises. 'Free cancellation.' 'Pet friendly.' 'Connecting rooms available upon request.' People book, buy, and rent believing them, and discover at check-in that a feature listing is not a guarantee. Get It in Writing takes the page you're about to rely on and the things that must be true, then does what a careful person would do with an hour to spare: reads the provider's own site, marks each requirement as established, conditional, conflicting, or simply never promised — every verdict pinned to a verbatim quote — and, for the gap that matters, drafts one precise email to a source-verified official address.",
+          "Nothing sends without the owner approving the exact recipient and wording. When the written answer comes back, it's interpreted requirement by requirement into a private Proof Card that preserves the answer, its exact conditions, and the original message. The sources stay monitored afterward: if the official page changes, both versions stay visible. Under the hood it's a fully reactive Convex app — realtime queries on every screen, a state machine on mutations and crons, HTTP actions receiving AgentMail webhooks.",
+        ],
+      },
+      {
+        heading: "A real hotel, a real reply",
+        body: [
+          "The rule I set on day one: nothing simulated. The demo wallet's cases are actual pipeline runs against a real hotel's website, and one case carries a genuine written reply. That honesty cost me repeatedly, in ways that turned into the best parts of the product. When I tried to seed a source-backed Proof Card, the classifier refused three of my phrasings because the official page didn't actually say what I claimed — scope mismatch, not established. I was being fact-checked by my own product, and it was right every time.",
+          "The reply exposed a real bug, too. It was sent from Apple Mail as HTML-only, arrived with an empty text body, and got scored as unresponsive. The fix — converting HTML to readable text and hydrating the stored thread over the AgentMail API before interpretation — landed because I insisted on a real correspondent instead of a fixture. The re-interpreted verdict preserved the sender's own hedge as a condition: confirmed, 'as long as the service runs.'",
+        ],
+      },
+      {
+        heading: "Ink that bleeds from a word",
+        body: [
+          "The judging bar for design was my own: the landing had to feel inevitable, not templated. I started from an open-source WebGPU fluid solver and rebuilt it into something unrecognizable — a compute-shader ink simulation whose emitter is the rasterized mask of the word 'probably.' in the headline. The ink seeps out of the one word the product exists to distrust, and the cursor stirs it. Reduced motion gets a static seal, forced colors get a readable layout, and no-WebGPU browsers get a fallback chain that ends in a visible glyph.",
+          "The same restraint shaped the product surfaces: paper tones, one cobalt accent, status stamps that read like a passport, and a Proof Card designed to feel like a document you'd keep — because that's the entire pitch.",
+        ],
+      },
+      {
+        heading: "Filming against production, again",
+        body: [
+          "The film rig from Paradox came back: the site runs under a virtual clock — requestAnimationFrame, timers, and Date.now all faked — advanced one tick per frame with a 4K screenshot piped into ffmpeg, so the film is a perfectly smooth 60fps recording of the real product. The research scene creates an actual case on camera and compresses a two-minute live pipeline run into eight seconds of timelapse. Nothing is a mockup; the wallet, the verdicts, and the reply on screen are all production data.",
+          "The rig taught me two new lessons. Framer-motion entrances never finish under a fake clock, so every wallet card filmed as an invisible blank until I shot those scenes with prefers-reduced-motion emulated — a fallback the app already supported properly. And my first two narrations were wrong in ways only a viewer could tell me: the first listed everything the product doesn't do, the second described a process without ever saying what the app is. The final cut opens like a person talking: 'You're about to book a hotel. The website says free cancellation… probably.' My personal email appeared in one frame; it shipped blurred at the DOM level.",
+        ],
+      },
+      {
+        heading: "Locked doors, an open demo, and a stubborn submit button",
+        body: [
+          "A live app wired to my OpenAI, Firecrawl, and AgentMail accounts can't offer public sign-ups during judging, so account creation is refused at the server and the landing card became a rate-limited waitlist. Judges get a shared demo wallet instead — real cases, real Proof Cards, and the ability to run live research inside shared budgets, while sending, editing, and deleting stay with the owner. The wallet's meta case is my favorite flourish: I used the product on itself, asking the maker — me — to confirm in writing that cases stay private and nothing sends without approval.",
+          "Submission was the only cliffhanger. The hackathon form threw two opaque server errors and one browser upload failure before the identical payload sailed through on the third complete attempt — an evening spent reading the judging platform's open-source code to prove my entry wasn't the problem. It's live now, attached to judging, with the video, the repo, and the judge credentials inside. Winners on September 25. Whatever happens, somewhere in a hotel's inbox there's a precise little email that turned 'probably' into proof — and that was the point.",
+        ],
+      },
+    ],
+    tags: ["Convex", "OpenAI", "Firecrawl", "AgentMail", "WebGPU", "hackathon"],
+  },
+  {
     slug: "webmcp-challenge-paradox",
     title: "Building Paradox for OpenAI's WebMCP Challenge",
     kicker: "Hackathon build log",

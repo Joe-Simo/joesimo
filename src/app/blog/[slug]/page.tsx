@@ -183,7 +183,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <section className="blog-article-section site-page-shell">
             <div className="blog-article-section-head">
               <p>Timeline</p>
-              <h2>From proof to fix confirmation.</h2>
+              <h2>How it unfolded, day by day.</h2>
             </div>
             <ol className="blog-timeline">
               {post.timeline.map((item) => (
