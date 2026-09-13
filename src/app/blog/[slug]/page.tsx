@@ -89,8 +89,8 @@ export async function generateMetadata({
 
 function BlogEvidenceFigure({ media }: { media: BlogPostMedia }) {
   return (
-    <figure className="blog-evidence-figure">
-      <div>
+    <figure className="blog-evidence-figure" style={media.naturalAspect ? { alignSelf: "start" } : undefined}>
+      <div style={media.naturalAspect ? { aspectRatio: `${media.width} / ${media.height}` } : undefined}>
         <Image
           alt={media.alt}
           className="joe-cover-image"
@@ -162,6 +162,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <span className="sr-only">opens in a new tab</span>
                   </ButtonLink>
                 ) : null}
+                {post.links?.map((link) => (
+                  <ButtonLink key={link.href} href={link.href} rel="noreferrer" target="_blank" variant="outline">
+                    {link.label}
+                    <SiteIcon aria-hidden iconKey="arrowUpRight" />
+                    <span className="sr-only">opens in a new tab</span>
+                  </ButtonLink>
+                ))}
                 {post.repository ? (
                   <ButtonLink
                     href={post.repository.href}

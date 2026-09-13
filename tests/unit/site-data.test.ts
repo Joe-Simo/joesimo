@@ -10,6 +10,7 @@ import {
   credentialGroups,
   credentialIssuers,
   educationRecords,
+  getBlogPost,
   getProjectCaseStudy,
   githubRepositories,
   heroCopy,
@@ -191,13 +192,14 @@ describe("Joe Simo site data", () => {
   });
 
   test("publishes the blog posts without secrets", () => {
-    expect(blogPosts).toHaveLength(4);
-    expect(latestBlogPost.slug).toBe("world-of-vanilla-2019-restored");
-    expect(latestBlogPost.href).toBe("/blog/world-of-vanilla-2019-restored");
-    expect(latestBlogPost.repository?.href).toBe(
-      "https://github.com/Joe-Simo/world-of-vanilla",
+    expect(new Set(blogPosts.map((post) => post.slug)).size).toBe(blogPosts.length);
+    expect(latestBlogPost.publishedAt).toBe(
+      [...blogPosts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0].publishedAt,
     );
-    expect(latestBlogPost.gallery).toHaveLength(2);
+    const rivetport = getBlogPost("introducing-rivetport");
+    expect(rivetport?.repository).toBeUndefined();
+    expect(rivetport?.links?.map((link) => link.href)).toContain("https://rivetport.com");
+    expect(rivetport?.videoHref).toBe("https://youtu.be/O4DIuY28o1o");
     expect(blogPosts.map((post) => post.slug)).toContain(
       "all-gas-get-it-in-writing",
     );

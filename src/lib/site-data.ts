@@ -480,6 +480,7 @@ export type CommunityArtifact = {
 };
 
 export type BlogPostMedia = SiteMedia & {
+  naturalAspect?: boolean;
   caption: string;
   sourceLabel: string;
 };
@@ -504,6 +505,7 @@ export type BlogPost = {
   dateLabel: string;
   readingTime: string;
   href: `/blog/${string}`;
+  links?: readonly { href: `https://${string}`; label: string }[];
   videoHref?: string;
   videoLabel?: string;
   repository?: {
@@ -3443,6 +3445,151 @@ export const communityArtifacts: CommunityArtifact[] =
 export const communityHighlights: CommunityArtifact[] = communityArtifacts;
 
 export const blogPosts: readonly BlogPost[] = [
+{
+  "slug": "introducing-rivetport",
+  "title": "Introducing Rivetport: keep your API contract, move your backend",
+  "kicker": "Product launch",
+  "summary": "Rivetport is my SaaS for teams moving to a new API while preserving the contract their existing integrations depend on. It brings review, testing, publication, and ongoing control into one workspace.",
+  "excerpt": "A backend change can ripple through years of integrations. Rivetport helps teams manage that transition with clear decisions, testing before launch, and a way back. Here is the product, who it is for, and its upcoming Product Hunt challenge launch.",
+  "publishedAt": "2026-09-13",
+  "dateLabel": "September 13, 2026",
+  "readingTime": "3 min read",
+  "href": "/blog/introducing-rivetport",
+  "videoHref": "https://youtu.be/O4DIuY28o1o",
+  "videoLabel": "Watch the 58-second overview",
+  "links": [
+    {
+      "href": "https://rivetport.com",
+      "label": "Explore Rivetport"
+    },
+    {
+      "href": "https://www.producthunt.com/products/rivetport?launch=rivetport",
+      "label": "View the Product Hunt entry"
+    }
+  ],
+  "heroMedia": {
+    "kind": "artifact",
+    "naturalAspect": true,
+    "src": "/media/blog/introducing-rivetport/overview.png",
+    "alt": "Rivetport product overview: keep the contract, make room for change.",
+    "width": 1920,
+    "height": 1080,
+    "tone": "desaturated",
+    "caption": "Preserve compatibility, manage the transition, and stay in control.",
+    "sourceLabel": "Rivetport product overview"
+  },
+  "gallery": [
+    {
+      "kind": "artifact",
+    "naturalAspect": true,
+      "src": "/media/blog/introducing-rivetport/review.png",
+      "alt": "Rivetport review overview: clear decisions and your approval.",
+      "width": 1920,
+      "height": 1080,
+      "tone": "desaturated",
+      "caption": "Bring API specifications together and review what needs to change.",
+      "sourceLabel": "Rivetport product overview"
+    },
+    {
+      "kind": "artifact",
+    "naturalAspect": true,
+      "src": "/media/blog/introducing-rivetport/control.png",
+      "alt": "Rivetport operations overview: track requests, pause a connection, and return to a previous release.",
+      "width": 1920,
+      "height": 1080,
+      "tone": "desaturated",
+      "caption": "The transition continues after publication. Visibility and recovery remain part of the product.",
+      "sourceLabel": "Rivetport product overview"
+    }
+  ],
+  "facts": [
+    {
+      "label": "Product",
+      "value": "Rivetport — API compatibility, managed."
+    },
+    {
+      "label": "For",
+      "value": "Teams modernizing read-only JSON APIs."
+    },
+    {
+      "label": "Website",
+      "value": "rivetport.com"
+    },
+    {
+      "label": "Challenge",
+      "value": "Entry submitted to the Product Hunt GPT-6 Astra Challenge."
+    },
+    {
+      "label": "Launch date",
+      "value": "September 18, 2026, at 12:01 a.m. Pacific / 3:01 a.m. Eastern."
+    }
+  ],
+  "timeline": [
+    {
+      "label": "September 13, 2026",
+      "value": "Submitted Rivetport to the GPT-6 Astra Challenge with a customer-focused product overview."
+    },
+    {
+      "label": "September 18, 2026",
+      "value": "Scheduled Product Hunt launch. Voting opens when the listing goes live."
+    }
+  ],
+  "sections": [
+    {
+      "heading": "The backend changes. The integrations still matter.",
+      "body": [
+        "Replacing a backend is rarely just a decision about the backend. Other products, internal workflows, and customer integrations may already depend on the interface it exposes. A change that looks straightforward in one system can create work for every team connected to it.",
+        "I created Rivetport around that problem. The goal is to help teams move forward while preserving the API contract their integrations rely on. Those existing connections represent time, trust, and working business processes. They deserve a deliberate transition."
+      ]
+    },
+    {
+      "heading": "A workspace for the transition",
+      "body": [
+        "Rivetport brings the current and replacement API specifications into one workspace. Teams can review compatibility changes, check the result, and decide what they are ready to publish.",
+        "The customer stays in control of approval. The experience is organized around the decisions a team needs to make: what changes, whether the result meets expectations, and when to put it into use. It gives that work a shared home instead of leaving the transition scattered across disconnected steps."
+      ]
+    },
+    {
+      "heading": "Confidence before launch. Control afterward.",
+      "body": [
+        "Testing before publication is central to the workflow. A proposed change should be something a team can examine and check before relying on it.",
+        "After launch, Rivetport provides request visibility, the ability to pause a connection, and a way to return to a previous release. Plans change, and upstream systems do too. Managing an API transition means keeping useful controls available after the initial release."
+      ]
+    },
+    {
+      "heading": "A focused starting point",
+      "body": [
+        "Rivetport is built for read-only JSON APIs, including catalog and reference-data use cases. It is not a promise to migrate every kind of API or automatically resolve every compatibility problem.",
+        "Preserving a contract also depends on how a team connects its existing integrations. Using a new managed endpoint can require a configuration change. Teams should review the supported scope and connection requirements against their own situation before planning a migration."
+      ]
+    },
+    {
+      "heading": "Rivetport is entering the GPT-6 Astra Challenge",
+      "body": [
+        "I submitted Rivetport to the Product Hunt GPT-6 Astra Challenge. Its launch is scheduled for September 18, 2026, at 12:01 a.m. Pacific, which is 3:01 a.m. Eastern. This is a submitted entry and an upcoming launch, not a competition result.",
+        "The short video introduces the SaaS through the customer problem, the workflow, and the benefits. You can watch it above, explore Rivetport, or open the Product Hunt entry to see the scheduled launch."
+      ]
+    },
+    {
+      "heading": "Keep the contract. Move forward.",
+      "body": [
+        "If your team is planning a backend change, start with the integrations you cannot afford to overlook. Which contracts matter? What needs to stay compatible? What would make the transition easier to review and safer to operate?",
+        "That is the work I want Rivetport to help with: less disruption, clearer decisions, and more control over the move to your next backend."
+      ]
+    }
+  ],
+  "tags": [
+    "Rivetport",
+    "SaaS",
+    "API compatibility",
+    "Product Hunt"
+  ],
+  "evidenceTitle": "The Rivetport product story.",
+  "disclosure": {
+    "title": "About the visuals",
+    "body": "These are product-benefit graphics from the Rivetport overview video, not screenshots of customer activity. The video includes narration by elevenlabs.io."
+  }
+},
   {
     slug: "world-of-vanilla-2019-restored",
     title: "Rebuilding World of Vanilla: a 2019 WordPress site, restored in Next.js",
