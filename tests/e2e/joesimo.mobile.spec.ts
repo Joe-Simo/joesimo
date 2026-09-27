@@ -3,11 +3,11 @@ import { expect, test } from "@playwright/test";
 import {
   blockHeavyMedia,
   collectConsoleProblems,
+  expectHomeCaseStudyLinks,
   expectHomeDestinationSection,
   expectInteractiveTextFits,
   expectNoHorizontalOverflow,
   expectPageHealthy,
-  workRoutes,
 } from "./helpers";
 
 test.describe("Joe Simo mobile homepage navigation", () => {
@@ -41,6 +41,11 @@ test.describe("Joe Simo mobile homepage navigation", () => {
       "community",
     );
     await expect(communitySection).toBeInViewport();
+    await page.getByRole("button", { name: /open navigation/i }).click();
+    await expect(
+      page.getByRole("menuitem", { name: /community/i }),
+    ).toHaveAttribute("aria-current", "location");
+    await page.keyboard.press("Escape");
     await expectNoHorizontalOverflow(page);
 
     await page.goto("/#credentials", { waitUntil: "domcontentloaded" });
@@ -68,9 +73,7 @@ test.describe("Joe Simo mobile homepage navigation", () => {
       workSection.locator('.joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
-    await expect(workSection.locator(".joe-case-study-link")).toHaveCount(
-      workRoutes.length,
-    );
+    await expectHomeCaseStudyLinks(workSection);
     await expect(
       workSection.locator('.joe-case-study-link[href="/work/garden0"]'),
     ).toBeVisible();

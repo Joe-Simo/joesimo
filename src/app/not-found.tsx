@@ -9,7 +9,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { socialChannels } from "@/lib/site-data";
 
 export const metadata: Metadata = {
-  title: "404 / joesimo.com",
+  title: "404",
   description: "The requested joesimo.com path does not resolve.",
   robots: {
     index: false,

@@ -17,6 +17,24 @@ export const metadata: Metadata = {
     title: "Blog / joesimo.com",
     description: "Writing from Joe Simo on joesimo.com.",
     url: "/blog",
+    siteName: "joesimo.com",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Joe Simo / joesimo.com",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@joesimo",
+    title: "Blog / joesimo.com",
+    description: "Writing from Joe Simo on joesimo.com.",
+    images: ["/twitter-image"],
   },
 };
 
@@ -76,17 +94,19 @@ export default function BlogPage() {
           ) : null}
 
           {supportingPosts.length ? (
-            <div className="blog-list" aria-label="All posts">
+            <ul aria-label="More posts" className="blog-list">
               {supportingPosts.map((post) => (
-                <Link className="blog-list-row" href={post.href} key={post.slug}>
-                  <div>
-                    <p>{post.dateLabel}</p>
-                    <h2>{post.title}</h2>
-                  </div>
-                  <span>{post.readingTime}</span>
-                </Link>
+                <li key={post.slug}>
+                  <Link className="blog-list-row" href={post.href}>
+                    <div>
+                      <p>{post.dateLabel}</p>
+                      <h2>{post.title}</h2>
+                    </div>
+                    <span>{post.readingTime}</span>
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : null}
         </section>
       </main>

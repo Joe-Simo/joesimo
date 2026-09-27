@@ -3,10 +3,10 @@ import { expect, test } from "@playwright/test";
 import {
   blockHeavyMedia,
   collectConsoleProblems,
+  expectHomeCaseStudyLinks,
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectPageHealthy,
-  workRoutes,
 } from "./helpers";
 
 test.describe("Joe Simo desktop homepage navigation", () => {
@@ -106,9 +106,7 @@ test.describe("Joe Simo desktop homepage navigation", () => {
       workSection.locator('.joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
-    await expect(workSection.locator(".joe-case-study-link")).toHaveCount(
-      workRoutes.length,
-    );
+    await expectHomeCaseStudyLinks(workSection);
     await expect(
       workSection.locator('.joe-case-study-link[href="/work/chesslm"]'),
     ).toBeVisible();

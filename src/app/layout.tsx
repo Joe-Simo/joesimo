@@ -37,9 +37,6 @@ const siteTitle = `${personName} — AI-Native Full-Stack Product Engineer`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  alternates: {
-    canonical: "/",
-  },
   applicationName: siteName,
   authors: [{ name: personName, url: siteUrl }],
   creator: personName,

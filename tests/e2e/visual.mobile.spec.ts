@@ -5,7 +5,6 @@ import {
   collectConsoleProblems,
   expectPageHealthy,
   installStableVisualStyles,
-  loadImagesInLocator,
   setTheme,
 } from "./helpers";
 
@@ -47,9 +46,13 @@ test.describe("mobile visual regression", () => {
     await expect(
       page.locator("#work").getByRole("heading", { name: "love-presentation" }),
     ).toBeVisible();
-    await loadImagesInLocator(page, "#work");
+    const productBlock = page.locator("#work .joe-product-block");
 
-    await expect(page).toHaveScreenshot("work-mobile-dark.png", {
+    await productBlock.scrollIntoViewIfNeeded();
+    await expect(
+      productBlock.getByRole("heading", { name: "Official product links" }),
+    ).toBeVisible();
+    await expect(productBlock).toHaveScreenshot("work-mobile-dark.png", {
       maxDiffPixelRatio: 0.02,
     });
   });

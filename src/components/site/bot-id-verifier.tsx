@@ -38,8 +38,10 @@ export function BotIdVerifier() {
       method: "POST",
       signal: controller.signal,
     })
-      .then(() => {
-        markVerified();
+      .then((response) => {
+        if (response.ok) {
+          markVerified();
+        }
       })
       .catch(() => {
         // BotID verification failures are enforced by the server endpoint.

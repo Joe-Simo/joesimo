@@ -3450,7 +3450,7 @@ export const blogPosts: readonly BlogPost[] = [
   "title": "Introducing Rivetport: keep your API contract, move your backend",
   "kicker": "Product launch",
   "summary": "Rivetport is my SaaS for teams moving to a new API while preserving the contract their existing integrations depend on. It brings review, testing, publication, and ongoing control into one workspace.",
-  "excerpt": "A backend change can ripple through years of integrations. Rivetport helps teams manage that transition with clear decisions, testing before launch, and a way back. Here is the product, who it is for, and its upcoming Product Hunt challenge launch.",
+  "excerpt": "A backend change can ripple through years of integrations. Rivetport helps teams manage that transition with clear decisions, testing before launch, and a way back. Here is the product, who it is for, and its Product Hunt GPT-6 Astra Challenge entry.",
   "publishedAt": "2026-09-13",
   "dateLabel": "September 13, 2026",
   "readingTime": "3 min read",
@@ -3521,7 +3521,7 @@ export const blogPosts: readonly BlogPost[] = [
     },
     {
       "label": "Launch date",
-      "value": "September 18, 2026, at 12:01 a.m. Pacific / 3:01 a.m. Eastern."
+      "value": "Scheduled for September 18, 2026, at 12:01 a.m. Pacific / 3:01 a.m. Eastern."
     }
   ],
   "timeline": [
@@ -3531,7 +3531,7 @@ export const blogPosts: readonly BlogPost[] = [
     },
     {
       "label": "September 18, 2026",
-      "value": "Scheduled Product Hunt launch. Voting opens when the listing goes live."
+      "value": "The Product Hunt launch was scheduled to open at 12:01 a.m. Pacific / 3:01 a.m. Eastern."
     }
   ],
   "sections": [
@@ -3564,10 +3564,10 @@ export const blogPosts: readonly BlogPost[] = [
       ]
     },
     {
-      "heading": "Rivetport is entering the GPT-6 Astra Challenge",
+      "heading": "Rivetport in the GPT-6 Astra Challenge",
       "body": [
-        "I submitted Rivetport to the Product Hunt GPT-6 Astra Challenge. Its launch is scheduled for September 18, 2026, at 12:01 a.m. Pacific, which is 3:01 a.m. Eastern. This is a submitted entry and an upcoming launch, not a competition result.",
-        "The short video introduces the SaaS through the customer problem, the workflow, and the benefits. You can watch it above, explore Rivetport, or open the Product Hunt entry to see the scheduled launch."
+        "I submitted Rivetport to the Product Hunt GPT-6 Astra Challenge on September 13. Its launch was scheduled for September 18, 2026, at 12:01 a.m. Pacific / 3:01 a.m. Eastern. This article records the pre-launch announcement and does not report a competition result.",
+        "The short video introduces the SaaS through the customer problem, the workflow, and the benefits. You can watch it above, explore Rivetport, or open the Product Hunt entry."
       ]
     },
     {

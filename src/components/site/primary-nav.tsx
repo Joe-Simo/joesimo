@@ -45,21 +45,10 @@ export function PrimaryNav({
   const [activeHref, setActiveHref] = useState<NavHref | null>(
     initialActiveHref,
   );
-  const [isDesktop, setIsDesktop] = useState(false);
   const language = useSiteLanguage();
 
   useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsDesktop(desktopQuery.matches);
-
-    update();
-    desktopQuery.addEventListener("change", update);
-
-    return () => desktopQuery.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (sectionPrefix || !isDesktop) {
+    if (sectionPrefix) {
       return;
     }
 
@@ -158,7 +147,7 @@ export function PrimaryNav({
       window.removeEventListener("resize", scheduleResizeUpdate);
       window.removeEventListener("hashchange", scheduleHashUpdate);
     };
-  }, [isDesktop, items, sectionPrefix]);
+  }, [items, sectionPrefix]);
 
   return (
     <>

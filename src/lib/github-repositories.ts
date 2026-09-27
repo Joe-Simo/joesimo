@@ -8,6 +8,7 @@ const githubApiBaseUrl = `https://api.github.com/users/${githubOwner}/repos`;
 const githubReposPerPage = 100;
 const githubMaxPages = 10;
 const githubRevalidateSeconds = 60 * 60 * 6;
+const githubRequestTimeoutMilliseconds = 8_000;
 
 type GithubApiRepository = {
   archived: boolean;
@@ -97,7 +98,7 @@ function toPublicGithubRepository(
   };
 }
 
-async function fetchGithubRepositoryPage(page: number) {
+async function fetchGithubRepositoryPage(page: number, signal: AbortSignal) {
   const url = new URL(githubApiBaseUrl);
   url.searchParams.set("type", "owner");
   url.searchParams.set("sort", "updated");
@@ -110,6 +111,7 @@ async function fetchGithubRepositoryPage(page: number) {
       "User-Agent": "joesimo.com",
       "X-GitHub-Api-Version": "2022-11-28",
     },
+    signal,
     next: {
       revalidate: githubRevalidateSeconds,
       tags: ["github-public-repositories"],
@@ -185,9 +187,10 @@ function mergeFallbackRepositories(
 export async function getGithubRepositories(): Promise<GithubRepository[]> {
   try {
     const repositories: GithubApiRepository[] = [];
+    const signal = AbortSignal.timeout(githubRequestTimeoutMilliseconds);
 
     for (let page = 1; page <= githubMaxPages; page += 1) {
-      const pageRepositories = await fetchGithubRepositoryPage(page);
+      const pageRepositories = await fetchGithubRepositoryPage(page, signal);
       repositories.push(...pageRepositories);
 
       if (pageRepositories.length < githubReposPerPage) {

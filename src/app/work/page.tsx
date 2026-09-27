@@ -21,9 +21,27 @@ export const metadata: Metadata = {
     canonical: "/work",
   },
   openGraph: {
-    title: pageTitle,
+    title: `${pageTitle} / joesimo.com`,
     description: pageDescription,
     url: "/work",
+    siteName: "joesimo.com",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Joe Simo / joesimo.com",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@joesimo",
+    title: `${pageTitle} / joesimo.com`,
+    description: pageDescription,
+    images: ["/twitter-image"],
   },
 };
 

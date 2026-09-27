@@ -1,5 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
+import { blogPosts } from "../../src/lib/site-data";
+
 export const completedRoute = "preview,runtime,api,ship,changes";
 export const workRoutes = [
   { heading: "sim0", path: "/work/sim0" },
@@ -109,6 +111,15 @@ export async function expectHomeDestinationSection(
   await expect(section).toBeVisible();
 
   return section;
+}
+
+export async function expectHomeCaseStudyLinks(section: Locator) {
+  await expect(
+    section.locator('.joe-case-study-link[href^="/work/"]'),
+  ).toHaveCount(workRoutes.length);
+  await expect(
+    section.locator('.joe-case-study-link[href^="/blog/"]'),
+  ).toHaveCount(blogPosts.filter((post) => post.repository).length);
 }
 
 export async function blockHeavyMedia(page: Page) {

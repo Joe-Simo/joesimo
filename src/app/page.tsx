@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { JoeHomeStage } from "@/components/site/joe-home-stage";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -10,6 +12,12 @@ import {
   socialChannels,
 } from "@/lib/site-data";
 import { getGithubRepositories } from "@/lib/github-repositories";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Home() {
   const githubRepositories = await getGithubRepositories();

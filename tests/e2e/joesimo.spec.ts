@@ -1,7 +1,9 @@
 import { expect, type Locator, type Page, test } from "@playwright/test";
 
+import { blogPosts, joeProfile } from "../../src/lib/site-data";
 import {
   collectConsoleProblems,
+  expectHomeCaseStudyLinks,
   expectHomeDestinationLink,
   expectHomeDestinationSection,
   expectNoVisibleScrollbar,
@@ -144,7 +146,7 @@ test.describe("Joe Simo personal site", () => {
     await expect(page.locator(".joe-hero a")).toHaveCount(1);
     await expect(
       page.locator(".joe-hero").getByRole("link", { name: /latest blog/i }),
-    ).toHaveAttribute("href", "/blog/vercel-v0-api-billing-bug-report");
+    ).toHaveAttribute("href", "/blog/introducing-rivetport");
     await expect(page.getByRole("button", { name: "Open jump menu" })).toHaveCount(0);
     await expect(page.locator(".joe-signal-field")).toHaveCount(0);
     await expect(page.locator(".simo-public-trail-canvas")).toHaveCount(0);
@@ -165,7 +167,7 @@ test.describe("Joe Simo personal site", () => {
     const pageText = await page.locator("body").innerText();
 
     expect(pageText).not.toMatch(
-      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|AI-native|public trail|famous developers|GSAP|WebGL|proof route|owned frames|readable product surface/i,
+      /Operated sim0 case|Run The Case|placeholder|fake|scraped|awwwards|site of the year|public trail|famous developers|GSAP|WebGL|proof route|owned frames|readable product surface/i,
     );
     expect(pageText).not.toMatch(/\bID (#|\w)/i);
     const privateMessageAction = ["Email", "Joe"].join(" ");
@@ -327,9 +329,7 @@ test.describe("Joe Simo personal site", () => {
       workSection.locator('.joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(workSection.locator(".joe-product-card")).toHaveCount(4);
-    await expect(workSection.locator(".joe-case-study-link")).toHaveCount(
-      workRoutes.length,
-    );
+    await expectHomeCaseStudyLinks(workSection);
     for (const route of workRoutes) {
       await expect(
         workSection.locator(`.joe-case-study-link[href="${route.path}"]`),
@@ -709,6 +709,8 @@ test.describe("Joe Simo personal site", () => {
     });
 
     expect(response?.status()).toBe(404);
+    await expect(page).toHaveTitle("404 / joesimo.com");
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
 
     const footer = page.locator("footer");
 
@@ -761,11 +763,11 @@ test.describe("Joe Simo personal site", () => {
     await page.getByRole("button", { name: /idioma:/i }).click();
     await page.getByRole("menuitemradio", { name: "English" }).click();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+    await expect(page.getByText(joeProfile.headline)).toBeVisible();
 
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+    await expect(page.getByText(joeProfile.headline)).toBeVisible();
 
     await expectPageHealthy(page, problems);
   });
@@ -782,7 +784,7 @@ test.describe("Joe Simo personal site", () => {
       "ready",
     );
 
-    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+    await expect(page.getByText(joeProfile.headline)).toBeVisible();
     await page.getByRole("button", { name: /language:/i }).click();
     await page.getByRole("menuitemradio", { name: "Español" }).click();
 
@@ -802,7 +804,7 @@ test.describe("Joe Simo personal site", () => {
     ).toBeVisible();
     await expect
       .poll(() => renderedPageText(page))
-      .not.toContain("Designer/developer, FL.");
+      .not.toContain(joeProfile.headline);
     await expect(
       page.getByRole("link", { name: /Work Trabajo/ }),
     ).toHaveCount(0);
@@ -810,7 +812,7 @@ test.describe("Joe Simo personal site", () => {
     await page.getByRole("button", { name: /language:|idioma:/i }).click();
     await page.getByRole("menuitemradio", { name: "English" }).click();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.getByText("Designer/developer, FL.")).toBeVisible();
+    await expect(page.getByText(joeProfile.headline)).toBeVisible();
     await expect
       .poll(() => renderedPageText(page))
       .not.toContain("Diseñador/desarrollador, FL.");
@@ -970,9 +972,7 @@ test.describe("Joe Simo personal site", () => {
       page.locator('#work .joe-github-card[data-visibility="private"]'),
     ).toHaveCount(0);
     await expect(page.locator("#work .joe-product-card")).toHaveCount(4);
-    await expect(page.locator("#work .joe-case-study-link")).toHaveCount(
-      workRoutes.length,
-    );
+    await expectHomeCaseStudyLinks(page.locator("#work"));
     await expect(
       page.locator('#work .joe-case-study-link[href="/work/sim0"]'),
     ).toBeVisible();
@@ -991,7 +991,7 @@ test.describe("Joe Simo personal site", () => {
     await expectPageHealthy(page, problems);
   });
 
-  test("serves the public route surface", async ({ request }) => {
+  test("serves the public route surface", async ({ page, request }) => {
     const okRoutes = [
       "/",
       "/robots.txt",
@@ -1000,6 +1000,7 @@ test.describe("Joe Simo personal site", () => {
       "/opengraph-image",
       "/twitter-image",
       "/blog",
+      "/work",
     ];
 
     for (const route of okRoutes) {
@@ -1031,7 +1032,67 @@ test.describe("Joe Simo personal site", () => {
     const blogHtml = await blogResponse.text();
 
     expect(blogHtml).toContain("The time I found a v0 API billing bug");
+    expect(blogHtml).toContain(
+      '<meta property="og:image" content="https://joesimo.com/opengraph-image"/>',
+    );
+    expect(blogHtml).toContain(
+      '<meta name="twitter:title" content="Blog / joesimo.com"/>',
+    );
     expect(blogHtml).not.toContain('name="robots" content="noindex, follow"');
+
+    const workResponse = await request.get("/work");
+    const workHtml = await workResponse.text();
+
+    expect(workResponse.status()).toBe(200);
+    expect(workHtml).toContain(
+      '<meta property="og:image" content="https://joesimo.com/opengraph-image"/>',
+    );
+    expect(workHtml).toContain(
+      '<meta name="twitter:title" content="Work / joesimo.com"/>',
+    );
+
+    await page.goto("/blog", { waitUntil: "domcontentloaded" });
+    const supportingPostsList = page.getByRole("list", {
+      name: "More posts",
+    });
+
+    await expect(supportingPostsList).toBeVisible();
+    await expect(supportingPostsList.getByRole("listitem")).toHaveCount(
+      blogPosts.length - 1,
+    );
+
+    const rivetportArticleResponse = await request.get(
+      "/blog/introducing-rivetport",
+    );
+    const rivetportArticleHtml = await rivetportArticleResponse.text();
+
+    expect(rivetportArticleResponse.status()).toBe(200);
+    expect(rivetportArticleHtml).toContain(
+      "Introducing Rivetport: keep your API contract, move your backend",
+    );
+    expect(rivetportArticleHtml).toContain(
+      "does not report a competition result",
+    );
+    expect(rivetportArticleHtml).not.toContain("upcoming launch");
+
+    await page.goto("/blog/introducing-rivetport", {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: "Introducing Rivetport: keep your API contract, move your backend",
+      }),
+    ).toBeVisible();
+    const heroImageFrame = page.locator(
+      ".blog-article-hero .blog-evidence-figure > div",
+    );
+    const heroImageBox = await heroImageFrame.boundingBox();
+
+    expect(heroImageBox?.width ?? 0).toBeGreaterThan(0);
+    expect(
+      (heroImageBox?.width ?? 0) / (heroImageBox?.height ?? 1),
+    ).toBeCloseTo(1920 / 1080, 1);
 
     const blogPostResponse = await request.get(
       "/blog/vercel-v0-api-billing-bug-report",
@@ -1049,6 +1110,7 @@ test.describe("Joe Simo personal site", () => {
     const sitemapXml = await sitemapResponse.text();
 
     expect(sitemapXml).toContain("https://joesimo.com/blog");
+    expect(sitemapXml).not.toContain("<lastmod>");
     expect(sitemapXml).toContain(
       "https://joesimo.com/blog/vercel-v0-api-billing-bug-report",
     );
