@@ -24,6 +24,32 @@ export function SiteFooter({
       >
         Joe Simo
       </a>
+      <p className="site-footer-note">
+        <LocalizedText
+          en="Available for "
+          es="Disponible para "
+        />
+        <a
+          href="https://www.upwork.com/services/product/2111907589295199878"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <LocalizedText
+            en="Next.js launch-readiness audits"
+            es="auditorías de preparación para el lanzamiento con Next.js"
+          />
+          <span className="sr-only">
+            <LocalizedText
+              en=", opens in a new tab"
+              es=", abre en una pestaña nueva"
+            />
+          </span>
+        </a>
+        <LocalizedText
+          en=" on Upwork"
+          es=" en Upwork"
+        />
+      </p>
       {socialChannels.length ? (
         <nav
           aria-label="Social links"
