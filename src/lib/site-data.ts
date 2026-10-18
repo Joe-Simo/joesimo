@@ -742,7 +742,7 @@ export const standaloneLiveProducts: readonly StandaloneProduct[] = [
 // sim0.com serves a coming-soon page. Note: the page's particle canvas
 // throws an uncaught IndexSizeError (getImageData on a zero-width canvas) in
 // automated/headless Chromium contexts, though interactive browsers render
-// fine — worth a one-line width guard whenever the sim0 landing is touched.
+// fine; worth a one-line width guard whenever the sim0 landing is touched.
 export const finishedPrivateProductSlugs = [
   "sim0",
   "signature-copier",
@@ -3569,7 +3569,7 @@ export const blogPosts: readonly BlogPost[] = [
   "facts": [
     {
       "label": "Product",
-      "value": "Rivetport — API compatibility, managed."
+      "value": "Rivetport: API compatibility, managed."
     },
     {
       "label": "For",
@@ -3659,7 +3659,7 @@ export const blogPosts: readonly BlogPost[] = [
     title: "Rebuilding World of Vanilla: a 2019 WordPress site, restored in Next.js",
     kicker: "Archive restoration",
     summary:
-      "I reopened a World of Warcraft community site I built in 2019 and reconstructed it as a production-quality Next.js archive—keeping its steel, gold, and Azeroth character while replacing the broken WordPress surface underneath.",
+      "I reopened a World of Warcraft community site I built in 2019 and reconstructed it as a production-quality Next.js archive, keeping its steel, gold, and Azeroth character while replacing the broken WordPress surface underneath.",
     excerpt:
       "World of Vanilla began as a WordPress community site during the road to WoW Classic. Seven years later, its backup still held the visual identity but not a working product. This is how I restored the archive, made every surviving route honest and usable, and gave it a modern local account system.",
     publishedAt: "2026-09-01",
@@ -3708,7 +3708,7 @@ export const blogPosts: readonly BlogPost[] = [
     facts: [
       {
         label: "Original project",
-        value: "World of Vanilla — WordPress community site, 2019",
+        value: "World of Vanilla: WordPress community site, 2019",
       },
       {
         label: "Restoration",
@@ -3811,9 +3811,9 @@ export const blogPosts: readonly BlogPost[] = [
     title: "Get It in Writing: my Convex All Gas Hackathon entry",
     kicker: "Hackathon build log",
     summary:
-      "Three days, one consumer app: paste the official page you're about to rely on, see what it actually promises, and get the gap confirmed in writing — by a real business, over real email. How it was built, filmed against production, and submitted.",
+      "Three days, one consumer app: paste the official page you're about to rely on, see what it actually promises, and get the gap confirmed in writing, by a real business, over real email. How it was built, filmed against production, and submitted.",
     excerpt:
-      "Convex ran a hackathon with OpenAI, Firecrawl, and AgentMail: build an everyday app, not a developer tool. I built Get It in Writing — it reads a provider's official pages, separates real promises from reassuring language, and emails one precise question so the answer becomes proof you keep.",
+      "Convex ran a hackathon with OpenAI, Firecrawl, and AgentMail: build an everyday app, not a developer tool. I built Get It in Writing: it reads a provider's official pages, separates real promises from reassuring language, and emails one precise question so the answer becomes proof you keep.",
     publishedAt: "2026-08-31",
     dateLabel: "August 31, 2026",
     readingTime: "7 min read",
@@ -3827,12 +3827,12 @@ export const blogPosts: readonly BlogPost[] = [
     heroMedia: {
       kind: "artifact",
       src: "/media/blog/all-gas-get-it-in-writing/04-proof-card.webp",
-      alt: "Get It in Writing Proof Card reading 'Confirmed—with conditions' with a WRITTEN REPLY seal and both promises listed with their exact conditions",
+      alt: "Get It in Writing Proof Card reading 'Confirmed, with conditions' with a WRITTEN REPLY seal and both promises listed with their exact conditions",
       width: 1440,
       height: 900,
       tone: "desaturated",
       caption:
-        "The artifact the whole product exists for: a written reply interpreted into a Proof Card — confirmed, with the sender's own hedge preserved as a condition.",
+        "The artifact the whole product exists for: a written reply interpreted into a Proof Card, confirmed, with the sender's own hedge preserved as a condition.",
       sourceLabel: "resilient-salamander-937.convex.site",
     },
     gallery: [
@@ -3873,11 +3873,11 @@ export const blogPosts: readonly BlogPost[] = [
     facts: [
       {
         label: "Event",
-        value: "Convex All Gas Hackathon — with OpenAI, Firecrawl & AgentMail",
+        value: "Convex All Gas Hackathon, with OpenAI, Firecrawl & AgentMail",
       },
       {
         label: "Entry",
-        value: "Get It in Writing — decision protection for everyday life",
+        value: "Get It in Writing: decision protection for everyday life",
       },
       {
         label: "Live product",
@@ -3893,7 +3893,7 @@ export const blogPosts: readonly BlogPost[] = [
       },
       {
         label: "Submitted",
-        value: "August 31, 2026 — three weeks before the deadline",
+        value: "August 31, 2026, three weeks before the deadline",
       },
       {
         label: "Winners",
@@ -3904,7 +3904,7 @@ export const blogPosts: readonly BlogPost[] = [
       {
         label: "Aug 29",
         value:
-          "Kickoff. The brief says everyday apps, not developer tools — I commit to the sentence 'Don't rely on probably.'",
+          "Kickoff. The brief says everyday apps, not developer tools; I commit to the sentence 'Don't rely on probably.'",
       },
       {
         label: "Aug 30",
@@ -3914,7 +3914,7 @@ export const blogPosts: readonly BlogPost[] = [
       {
         label: "Aug 30",
         value:
-          "The ink stage lands — a WebGPU fluid solver reworked until ink bleeds from the word 'probably.' itself.",
+          "The ink stage lands: a WebGPU fluid solver reworked until ink bleeds from the word 'probably.' itself.",
       },
       {
         label: "Aug 31",
@@ -3933,50 +3933,50 @@ export const blogPosts: readonly BlogPost[] = [
       },
       {
         label: "Aug 31",
-        value: "Submitted on vibeapps.dev — on the third attempt, after two opaque server errors.",
+        value: "Submitted on vibeapps.dev, on the third attempt, after two opaque server errors.",
       },
     ],
     sections: [
       {
         heading: "The contest",
         body: [
-          "Convex ran a three-week hackathon with OpenAI, Firecrawl, and AgentMail as sponsors: build a new full-stack app where Convex runs it, Firecrawl feeds it data, and AgentMail gives it an inbox. The judging criteria were refreshingly opinionated — everyday apps, not developer tools; sponsors doing real work, not sitting in the README; a live URL judges can open; and a demo video under three minutes that clicks through the real product.",
-          "After Paradox — a testing tool for other developers — the constraint I gave myself was the opposite: build something my mom could need. The prize pool is $25,000 in cash and Codex credits, with winners announced September 25.",
+          "Convex ran a three-week hackathon with OpenAI, Firecrawl, and AgentMail as sponsors: build a new full-stack app where Convex runs it, Firecrawl feeds it data, and AgentMail gives it an inbox. The judging criteria were refreshingly opinionated: everyday apps, not developer tools; sponsors doing real work, not sitting in the README; a live URL judges can open; and a demo video under three minutes that clicks through the real product.",
+          "After Paradox, a testing tool for other developers, the constraint I gave myself was the opposite: build something my mom could need. The prize pool is $25,000 in cash and Codex credits, with winners announced September 25.",
         ],
       },
       {
         heading: "Don't rely on \"probably.\"",
         body: [
-          "Websites are full of sentences that sound like promises. 'Free cancellation.' 'Pet friendly.' 'Connecting rooms available upon request.' People book, buy, and rent believing them, and discover at check-in that a feature listing is not a guarantee. Get It in Writing takes the page you're about to rely on and the things that must be true, then does what a careful person would do with an hour to spare: reads the provider's own site, marks each requirement as established, conditional, conflicting, or simply never promised — every verdict pinned to a verbatim quote — and, for the gap that matters, drafts one precise email to a source-verified official address.",
-          "Nothing sends without the owner approving the exact recipient and wording. When the written answer comes back, it's interpreted requirement by requirement into a private Proof Card that preserves the answer, its exact conditions, and the original message. The sources stay monitored afterward: if the official page changes, both versions stay visible. Under the hood it's a fully reactive Convex app — realtime queries on every screen, a state machine on mutations and crons, HTTP actions receiving AgentMail webhooks.",
+          "Websites are full of sentences that sound like promises. 'Free cancellation.' 'Pet friendly.' 'Connecting rooms available upon request.' People book, buy, and rent believing them, and discover at check-in that a feature listing is not a guarantee. Get It in Writing takes the page you're about to rely on and the things that must be true, then does what a careful person would do with an hour to spare: reads the provider's own site, marks each requirement as established, conditional, conflicting, or simply never promised (every verdict pinned to a verbatim quote), and, for the gap that matters, drafts one precise email to a source-verified official address.",
+          "Nothing sends without the owner approving the exact recipient and wording. When the written answer comes back, it's interpreted requirement by requirement into a private Proof Card that preserves the answer, its exact conditions, and the original message. The sources stay monitored afterward: if the official page changes, both versions stay visible. Under the hood it's a fully reactive Convex app: realtime queries on every screen, a state machine on mutations and crons, HTTP actions receiving AgentMail webhooks.",
         ],
       },
       {
         heading: "A real hotel, a real reply",
         body: [
-          "The rule I set on day one: nothing simulated. The demo wallet's cases are actual pipeline runs against a real hotel's website, and one case carries a genuine written reply. That honesty cost me repeatedly, in ways that turned into the best parts of the product. When I tried to seed a source-backed Proof Card, the classifier refused three of my phrasings because the official page didn't actually say what I claimed — scope mismatch, not established. I was being fact-checked by my own product, and it was right every time.",
-          "The reply exposed a real bug, too. It was sent from Apple Mail as HTML-only, arrived with an empty text body, and got scored as unresponsive. The fix — converting HTML to readable text and hydrating the stored thread over the AgentMail API before interpretation — landed because I insisted on a real correspondent instead of a fixture. The re-interpreted verdict preserved the sender's own hedge as a condition: confirmed, 'as long as the service runs.'",
+          "The rule I set on day one: nothing simulated. The demo wallet's cases are actual pipeline runs against a real hotel's website, and one case carries a genuine written reply. That honesty cost me repeatedly, in ways that turned into the best parts of the product. When I tried to seed a source-backed Proof Card, the classifier refused three of my phrasings because the official page didn't actually say what I claimed: scope mismatch, not established. I was being fact-checked by my own product, and it was right every time.",
+          "The reply exposed a real bug, too. It was sent from Apple Mail as HTML-only, arrived with an empty text body, and got scored as unresponsive. The fix, converting HTML to readable text and hydrating the stored thread over the AgentMail API before interpretation, landed because I insisted on a real correspondent instead of a fixture. The re-interpreted verdict preserved the sender's own hedge as a condition: confirmed, 'as long as the service runs.'",
         ],
       },
       {
         heading: "Ink that bleeds from a word",
         body: [
-          "The judging bar for design was my own: the landing had to feel inevitable, not templated. I started from an open-source WebGPU fluid solver and rebuilt it into something unrecognizable — a compute-shader ink simulation whose emitter is the rasterized mask of the word 'probably.' in the headline. The ink seeps out of the one word the product exists to distrust, and the cursor stirs it. Reduced motion gets a static seal, forced colors get a readable layout, and no-WebGPU browsers get a fallback chain that ends in a visible glyph.",
-          "The same restraint shaped the product surfaces: paper tones, one cobalt accent, status stamps that read like a passport, and a Proof Card designed to feel like a document you'd keep — because that's the entire pitch.",
+          "The judging bar for design was my own: the landing had to feel inevitable, not templated. I started from an open-source WebGPU fluid solver and rebuilt it into something unrecognizable: a compute-shader ink simulation whose emitter is the rasterized mask of the word 'probably.' in the headline. The ink seeps out of the one word the product exists to distrust, and the cursor stirs it. Reduced motion gets a static seal, forced colors get a readable layout, and no-WebGPU browsers get a fallback chain that ends in a visible glyph.",
+          "The same restraint shaped the product surfaces: paper tones, one cobalt accent, status stamps that read like a passport, and a Proof Card designed to feel like a document you'd keep, because that's the entire pitch.",
         ],
       },
       {
         heading: "Filming against production, again",
         body: [
-          "The film rig from Paradox came back: the site runs under a virtual clock — requestAnimationFrame, timers, and Date.now all faked — advanced one tick per frame with a 4K screenshot piped into ffmpeg, so the film is a perfectly smooth 60fps recording of the real product. The research scene creates an actual case on camera and compresses a two-minute live pipeline run into eight seconds of timelapse. Nothing is a mockup; the wallet, the verdicts, and the reply on screen are all production data.",
-          "The rig taught me two new lessons. Framer-motion entrances never finish under a fake clock, so every wallet card filmed as an invisible blank until I shot those scenes with prefers-reduced-motion emulated — a fallback the app already supported properly. And my first two narrations were wrong in ways only a viewer could tell me: the first listed everything the product doesn't do, the second described a process without ever saying what the app is. The final cut opens like a person talking: 'You're about to book a hotel. The website says free cancellation… probably.' My personal email appeared in one frame; it shipped blurred at the DOM level.",
+          "The film rig from Paradox came back: the site runs under a virtual clock (requestAnimationFrame, timers, and Date.now all faked) advanced one tick per frame with a 4K screenshot piped into ffmpeg, so the film is a perfectly smooth 60fps recording of the real product. The research scene creates an actual case on camera and compresses a two-minute live pipeline run into eight seconds of timelapse. Nothing is a mockup; the wallet, the verdicts, and the reply on screen are all production data.",
+          "The rig taught me two new lessons. Framer-motion entrances never finish under a fake clock, so every wallet card filmed as an invisible blank until I shot those scenes with prefers-reduced-motion emulated, a fallback the app already supported properly. And my first two narrations were wrong in ways only a viewer could tell me: the first listed everything the product doesn't do, the second described a process without ever saying what the app is. The final cut opens like a person talking: 'You're about to book a hotel. The website says free cancellation… probably.' My personal email appeared in one frame; it shipped blurred at the DOM level.",
         ],
       },
       {
         heading: "Locked doors, an open demo, and a stubborn submit button",
         body: [
-          "A live app wired to my OpenAI, Firecrawl, and AgentMail accounts can't offer public sign-ups during judging, so account creation is refused at the server and the landing card became a rate-limited waitlist. Judges get a shared demo wallet instead — real cases, real Proof Cards, and the ability to run live research inside shared budgets, while sending, editing, and deleting stay with the owner. The wallet's meta case is my favorite flourish: I used the product on itself, asking the maker — me — to confirm in writing that cases stay private and nothing sends without approval.",
-          "Submission was the only cliffhanger. The hackathon form threw two opaque server errors and one browser upload failure before the identical payload sailed through on the third complete attempt — an evening spent reading the judging platform's open-source code to prove my entry wasn't the problem. It's live now, attached to judging, with the video, the repo, and the judge credentials inside. Winners on September 25. Whatever happens, somewhere in a hotel's inbox there's a precise little email that turned 'probably' into proof — and that was the point.",
+          "A live app wired to my OpenAI, Firecrawl, and AgentMail accounts can't offer public sign-ups during judging, so account creation is refused at the server and the landing card became a rate-limited waitlist. Judges get a shared demo wallet instead: real cases, real Proof Cards, and the ability to run live research inside shared budgets, while sending, editing, and deleting stay with the owner. The wallet's meta case is my favorite flourish: I used the product on itself, asking the maker (me) to confirm in writing that cases stay private and nothing sends without approval.",
+          "Submission was the only cliffhanger. The hackathon form threw two opaque server errors and one browser upload failure before the identical payload sailed through on the third complete attempt, an evening spent reading the judging platform's open-source code to prove my entry wasn't the problem. It's live now, attached to judging, with the video, the repo, and the judge credentials inside. Winners on September 25. Whatever happens, somewhere in a hotel's inbox there's a precise little email that turned 'probably' into proof, and that was the point.",
         ],
       },
     ],
@@ -3987,7 +3987,7 @@ export const blogPosts: readonly BlogPost[] = [
     title: "Building Paradox for OpenAI's WebMCP Challenge",
     kicker: "Hackathon build log",
     summary:
-      "Ten days, one entry: a testing tool for WebMCP apps that finds the race a human and an AI agent ship together — and proves the fix. How Paradox was built, filmed, reviewed by 22 agents, and submitted five days early.",
+      "Ten days, one entry: a testing tool for WebMCP apps that finds the race a human and an AI agent ship together, and proves the fix. How Paradox was built, filmed, reviewed by 22 agents, and submitted five days early.",
     excerpt:
       "OpenAI ran a 10-day WebMCP hackathon on Devpost. Instead of adding agent tools to an app, I built the testing tool every other entry would need: Paradox explores every ordering of a human-agent session and proves whether the fix survives all of them.",
     publishedAt: "2026-08-29",
@@ -4003,7 +4003,7 @@ export const blogPosts: readonly BlogPost[] = [
     heroMedia: {
       kind: "artifact",
       src: "/media/blog/webmcp-challenge-paradox/05-counterexample-focus.webp",
-      alt: "Paradox counterexample view: the app approved a state nobody reviewed — $2,399 reviewed, $23,999 changed, $23,999 committed",
+      alt: "Paradox counterexample view: the app approved a state nobody reviewed. $2,399 reviewed, $23,999 changed, $23,999 committed",
       width: 1440,
       height: 900,
       tone: "desaturated",
@@ -4020,7 +4020,7 @@ export const blogPosts: readonly BlogPost[] = [
         height: 900,
         tone: "desaturated",
         caption:
-          "The landing at the moment the race commits — the only color that ever enters the WebGPU universe.",
+          "The landing at the moment the race commits: the only color that ever enters the WebGPU universe.",
         sourceLabel: "paradoxwebmcp.com",
       },
       {
@@ -4042,18 +4042,18 @@ export const blogPosts: readonly BlogPost[] = [
         height: 900,
         tone: "desaturated",
         caption:
-          "Verify: the exact counterexample replayed against the guarded contract — blocked, STATE_CHANGED, zero survivors.",
+          "Verify: the exact counterexample replayed against the guarded contract, blocked, STATE_CHANGED, zero survivors.",
         sourceLabel: "paradoxwebmcp.com",
       },
     ],
     facts: [
       {
         label: "Event",
-        value: "The WebMCP Challenge — OpenAI, on Devpost",
+        value: "The WebMCP Challenge by OpenAI, on Devpost",
       },
       {
         label: "Entry",
-        value: "Paradox — a testing tool for WebMCP apps",
+        value: "Paradox: a testing tool for WebMCP apps",
       },
       {
         label: "Live product",
@@ -4073,7 +4073,7 @@ export const blogPosts: readonly BlogPost[] = [
       },
       {
         label: "Submitted",
-        value: "August 29, 2026 — five days before the deadline",
+        value: "August 29, 2026, five days before the deadline",
       },
     ],
     timeline: [
@@ -4087,7 +4087,7 @@ export const blogPosts: readonly BlogPost[] = [
       },
       {
         label: "Days 4-5",
-        value: "The observatory redesign — a WebGPU black hole where color only enters when the race commits.",
+        value: "The observatory redesign: a WebGPU black hole where color only enters when the race commits.",
       },
       {
         label: "Day 6",
@@ -4110,43 +4110,43 @@ export const blogPosts: readonly BlogPost[] = [
       {
         heading: "The challenge",
         body: [
-          "OpenAI ran a 10-day hackathon on Devpost around WebMCP — the emerging W3C standard that lets a website register structured tools directly on the page, so an agent like ChatGPT can operate the same live application a human is using. Thousands of participants, judged on WebMCP leverage, execution, impact, and creativity.",
+          "OpenAI ran a 10-day hackathon on Devpost around WebMCP, the emerging W3C standard that lets a website register structured tools directly on the page, so an agent like ChatGPT can operate the same live application a human is using. Thousands of participants, judged on WebMCP leverage, execution, impact, and creativity.",
           "Most entries would add tools to an app. I went the other way: WebMCP creates a brand-new class of bug the moment two operators share one live state, and nobody had built the tool for it. Playwright tests your pages; agent evals test your prompts. Paradox tests what happens when a human and an AI agent act on the same state at the same time.",
         ],
       },
       {
         heading: "The race",
         body: [
-          "The demo scenario is a real expense app. An agent inspects expense 481 at $2,399, version 7, and gets a version-bound review token. A human edits the amount to $23,999, version 8. The agent completes its review — and the intentionally unsafe implementation approves $23,999 against a review of $2,399. The agent was never wrong; the application's tool contract was.",
-          "Paradox records those operations as semantic events and explores every ordering: 36 schedules, 27 of which violate the invariant, with the shortest failure minimized from 9 machine steps to 3 essential operations. Then it proves the fix — a version guard on the tool contract — by replaying the exact counterexample (blocked with STATE_CHANGED) and re-exploring the full model to zero surviving counterexamples. Every number on screen comes from a deterministic TypeScript model checker. No LLM decides what is safe.",
+          "The demo scenario is a real expense app. An agent inspects expense 481 at $2,399, version 7, and gets a version-bound review token. A human edits the amount to $23,999, version 8. The agent completes its review, and the intentionally unsafe implementation approves $23,999 against a review of $2,399. The agent was never wrong; the application's tool contract was.",
+          "Paradox records those operations as semantic events and explores every ordering: 36 schedules, 27 of which violate the invariant, with the shortest failure minimized from 9 machine steps to 3 essential operations. Then it proves the fix, a version guard on the tool contract, by replaying the exact counterexample (blocked with STATE_CHANGED) and re-exploring the full model to zero surviving counterexamples. Every number on screen comes from a deterministic TypeScript model checker. No LLM decides what is safe.",
         ],
       },
       {
         heading: "Building with an AI trio",
         body: [
-          "I directed three AI systems with different jobs. Codex was the primary engineering collaborator for the architecture, the domain model, and the original explorer. ChatGPT operated the product live through its real WebMCP surface — including a clean-room judging pass on production where I improvised an amount the site had never seen, proving the results are computed, not canned. Claude Code drove the observatory redesign, generalized the engine into an installable SDK with a fully automatic analysis tier, produced the film, and ran verification loops after every change.",
+          "I directed three AI systems with different jobs. Codex was the primary engineering collaborator for the architecture, the domain model, and the original explorer. ChatGPT operated the product live through its real WebMCP surface, including a clean-room judging pass on production where I improvised an amount the site had never seen, proving the results are computed, not canned. Claude Code drove the observatory redesign, generalized the engine into an installable SDK with a fully automatic analysis tier, produced the film, and ran verification loops after every change.",
           "The division that mattered most was between the AI collaborators and the product itself: Paradox uses no model API at runtime. Agents built the tool; deterministic code decides correctness.",
         ],
       },
       {
         heading: "Filming a product that renders itself",
         body: [
-          "The 2-minute demo is not a screen recording. The site runs under a virtual clock — requestAnimationFrame, timers, and Date.now all faked — advanced 16.67 milliseconds at a time, with a 4K screenshot captured on every tick and piped straight into ffmpeg. The result is a perfectly smooth 60fps film of the real product, regardless of how fast the machine renders WebGPU.",
+          "The 2-minute demo is not a screen recording. The site runs under a virtual clock (requestAnimationFrame, timers, and Date.now all faked) advanced 16.67 milliseconds at a time, with a 4K screenshot captured on every tick and piped straight into ffmpeg. The result is a perfectly smooth 60fps film of the real product, regardless of how fast the machine renders WebGPU.",
           "The first cut ran 2:40 with long silent holds and whooshy transitions. I hated it, so it became a 2:00 keynote-style cut: narration nearly wall-to-wall, quiet dip-to-black act changes, a score built from Apple-licensed Final Cut Pro sound effects, and a QC gate that literally fails the build if any silence exceeds 3.5 seconds.",
         ],
       },
       {
         heading: "The 22-agent review",
         body: [
-          "Before submitting, I turned the same adversarial mindset on my own project. Twenty-two review agents swept nine dimensions — the live site, WebMCP spec conformance, the SDK install path, every published code sample, the submission document, all six screenshots, repo hygiene, the test pipeline, and the video frame by frame — and every finding had to survive an independent verifier prompted to refute it.",
+          "Before submitting, I turned the same adversarial mindset on my own project. Twenty-two review agents swept nine dimensions (the live site, WebMCP spec conformance, the SDK install path, every published code sample, the submission document, all six screenshots, repo hygiene, the test pipeline, and the video frame by frame), and every finding had to survive an independent verifier prompted to refute it.",
           "Twelve findings were confirmed and fixed, from a committed SDK bundle that would not load under Node ESM to an unstyled status label in the capability rail. The best catch was not even a finding: a stale dev server had been silently serving an old build to the end-to-end tests, which meant hours of green checkmarks had been validating yesterday's code. The whole suite was re-run against reality before the tag went on.",
         ],
       },
       {
         heading: "Submitted",
         body: [
-          "Paradox went in on August 29 — five days before the deadline. The video is public, the Devpost page is live, the repo is tagged webmcp-challenge-v1.0, and everything is frozen through judging. The entry closes on the sentence the whole project stands on: the agent is never the culprit — the tool contract is.",
-          "Whatever the judges decide, the category feels real. The stale-read race ships in carts, bookings, refunds, and permissions the moment agents and humans share live state. Next up: more automatic hazard classes, broader invariant libraries, and CI integration — so any WebMCP app can explore its futures before its users do.",
+          "Paradox went in on August 29, five days before the deadline. The video is public, the Devpost page is live, the repo is tagged webmcp-challenge-v1.0, and everything is frozen through judging. The entry closes on the sentence the whole project stands on: the agent is never the culprit; the tool contract is.",
+          "Whatever the judges decide, the category feels real. The stale-read race ships in carts, bookings, refunds, and permissions the moment agents and humans share live state. Next up: more automatic hazard classes, broader invariant libraries, and CI integration, so any WebMCP app can explore its futures before its users do.",
         ],
       },
     ],

@@ -583,7 +583,7 @@ function GitHubSection({
               >
                 <span>
                   <strong>{post.title}</strong>
-                  <small>{post.kicker} — public repository</small>
+                  <small>{post.kicker} · public repository</small>
                 </span>
                 <ArrowRight aria-hidden />
               </Link>

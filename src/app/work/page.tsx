@@ -93,7 +93,7 @@ export default function WorkIndexPage() {
                   <span>
                     <strong>{project.title}</strong>
                     <small>
-                      {project.role} — {project.status}
+                      {project.role} · {project.status}
                     </small>
                   </span>
                   <SiteIcon aria-hidden iconKey="arrowUpRight" />
