@@ -651,10 +651,10 @@ export const lovePresentationRepoLink: SiteAction = {
 
 export const signature0Link: SiteAction = {
   id: "open-signature0",
-  label: "Open signature0",
+  label: "Open Signature0",
   href: "https://signature0.com",
   external: true,
-  ariaLabel: "Open signature0 in a new tab",
+  ariaLabel: "Open Signature0 in a new tab",
   kind: "primary",
 };
 
@@ -675,6 +675,69 @@ export const astrosimoLink: SiteAction = {
   ariaLabel: "Open Astrosimo in a new tab",
   kind: "primary",
 };
+
+export type StandaloneProduct = {
+  slug: string;
+  summary: string;
+  link: SiteAction;
+};
+
+// Live products without a case study yet. They render in the same
+// "Official product links" grid after the case-study-backed products.
+export const standaloneLiveProducts: readonly StandaloneProduct[] = [
+  {
+    slug: "rivetport",
+    summary:
+      "Keeps an old REST API contract working while the backend changes, by publishing tested bridges between OpenAPI versions.",
+    link: {
+      id: "open-rivetport",
+      label: "Open Rivetport",
+      href: "https://rivetport.com",
+      external: true,
+      ariaLabel: "Open Rivetport in a new tab",
+      kind: "primary",
+    },
+  },
+  {
+    slug: "flaregit",
+    summary:
+      "Git for people and coding agents: every change gets an isolated workspace, and only approved commits land.",
+    link: {
+      id: "open-flaregit",
+      label: "Open FlareGit",
+      href: "https://flaregit.com",
+      external: true,
+      ariaLabel: "Open FlareGit in a new tab",
+      kind: "primary",
+    },
+  },
+  {
+    slug: "a0",
+    summary:
+      "A small programming language that AI agents edit through revision-checked structured edits, compiling one source to many targets.",
+    link: {
+      id: "open-a0",
+      label: "Open A0",
+      href: "https://a0lang.com",
+      external: true,
+      ariaLabel: "Open A0 in a new tab",
+      kind: "primary",
+    },
+  },
+  {
+    slug: "goblins-os",
+    summary:
+      "An open Linux desktop, written in Rust, that helps turn ideas into working software on your own machine.",
+    link: {
+      id: "open-goblins-os",
+      label: "Open Goblins OS",
+      href: "https://goblinsos.com",
+      external: true,
+      ariaLabel: "Open Goblins OS in a new tab",
+      kind: "primary",
+    },
+  },
+];
 
 // sim0.com serves a coming-soon page. Note: the page's particle canvas
 // throws an uncaught IndexSizeError (getImageData on a zero-width canvas) in
@@ -879,7 +942,7 @@ export const royalShellLogoMedia: SiteMedia = {
 export const chessLmUnityMedia: SiteMedia = {
   kind: "artifact",
   src: "/media/work/chesslm-unity.webp",
-  alt: "ChessLM Unity chessboard capture",
+  alt: "ChessLM 3D chessboard capture",
   width: 1440,
   height: 900,
   tone: "desaturated",
@@ -993,7 +1056,7 @@ export const chessLmTrainingReelMedia: ProofMedia = {
   kind: "video",
   src: "/media/work/chesslm-training-reel.webm",
   posterSrc: chessLmUnityMedia.src,
-  alt: "ChessLM training reel from web workspace and Unity board captures",
+  alt: "ChessLM training reel from web workspace and 3D board captures",
   width: 1600,
   height: 900,
   label: "Training reel",
@@ -2754,20 +2817,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
   {
     slug: "signature-copier",
     code: "W09",
-    title: "Signature Copier",
+    title: "Signature0",
     started: {
       label: "Apr 2026",
       sortKey: "2026-04-20",
       sourceLabel: "Local project directory date",
     },
-    role: "Outlook paste workflow",
+    role: "Email design and sending for agencies",
     methodStage: "breakage",
     schemaType: "SoftwareApplication",
     applicationCategory: "UtilitiesApplication",
     summary:
-      "A focused utility for preparing signature-copying workflows that survive real email paste behavior.",
+      "Email design and sending for agencies: a brand system, a visual email canvas, and campaign sending for each client brand. It began as a signature copying utility.",
     evidence: [
       "Official product site at signature0.com",
+      "Earlier signature copying utility captured below",
       "App capture",
       "Outlook-oriented image and paste workflow assets",
       "Mobile and desktop review captures",
@@ -2784,12 +2848,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     links: [signature0Link],
-    status: "Utility project",
+    status: "Live product",
     sourcePath: "project/signature-copier",
     tier: "specimen",
     story: {
       signal:
-        "Signature Copier starts from a real paste failure and turns it into a focused preparation utility.",
+        "Signature0 started from a real signature paste failure and grew into email design and sending for agencies.",
       problem:
         "Email signatures can look correct in source form and still fail when pasted into Outlook.",
       constraint:
@@ -2800,11 +2864,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         "Keep the workflow narrow enough to be reliable.",
       ],
       outcome:
-        "The case shows a small utility built around a real copy/paste interface break.",
+        "The original utility was built around a real copy/paste interface break. Signature0 is now email design and sending for agencies.",
     },
     proofCaptions: {
       "signature-copier-app": {
-        eyebrow: "Paste workflow",
+        eyebrow: "Earlier utility",
         title: "Application capture",
         detail:
           "The capture shows a utility shaped around real email signature paste behavior.",
@@ -2816,7 +2880,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       label: "Result",
       title: "What changed",
       detail:
-        "Signature Copier documents a small utility built around a real copy/paste interface break.",
+        "Signature0 began as a small utility built around a real copy/paste interface break and is now email design and sending for agencies.",
     },
     safeClaimIds: ["signature-paste", "signature-outlook"],
     proofMode: "specimen",
@@ -2895,16 +2959,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       sortKey: "2026-02-10",
       sourceLabel: "Repository created",
     },
-    role: "Chess training product and Unity client",
+    role: "Chess training product",
     methodStage: "signals",
     schemaType: "SoftwareApplication",
     applicationCategory: "EducationalApplication",
     summary:
-      "A chess training product with a Next.js web/backend app and a Unity client for browser, iPhone, and iPad.",
+      "A chess training product built as a Next.js web app, with a training workspace and a 3D board.",
     evidence: [
       "Official product site at chesslm.com",
       "Next.js web/backend and classic training workspace",
-      "Unity client for browser, iPhone, and iPad",
+      "3D WebGL board",
       "Gateway-first production API boundary",
       "Classical chess and Chess960 support",
     ],
@@ -2912,7 +2976,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         id: "chesslm-unity",
         captionId: "chesslm-unity",
-        label: "Unity board",
+        label: "3D board",
         claimIds: ["chesslm-unity", "chesslm-board"],
         media: chessLmUnityMedia,
         sourcePath: "project/chesslm",
@@ -2934,36 +2998,36 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     tier: "case",
     story: {
       signal:
-        "ChessLM carries one training product across a web workspace and Unity board.",
+        "ChessLM carries one training product across a web workspace and a 3D board.",
       problem:
         "A chess training product has to keep reasoning, board state, and client targets aligned.",
       constraint:
         "The public case uses owned captures and keeps provider secrets server-side.",
       approach: [
         "Use the web workspace for training.",
-        "Use the Unity board as the client.",
-        "Keep the product boundary clear across browser, iPhone, and iPad targets.",
+        "Use the 3D board for play.",
+        "Keep board state consistent between the workspace and the board.",
       ],
       outcome:
-        "The case shows the same training product across browser and game-client contexts.",
+        "The case shows the same training product across the workspace and the board.",
     },
     humanStake: {
       blockedPerson: "A player trying to connect coaching, board state, and the next move.",
       confusion:
         "Training gets noisy when reasoning, board state, and client target feel like separate products.",
       madeVisible:
-        "The reel connects web workspace and Unity board.",
+        "The reel connects the web workspace and the 3D board.",
       whyItMatters:
         "A player should be able to follow the lesson without wondering which surface owns the state.",
     },
     miniWorld: {
-      hook: "Carry one training product from the web workspace into the Unity board.",
+      hook: "Carry one training product from the web workspace onto the 3D board.",
       humanStake: {
         blockedPerson: "A player trying to connect coaching, board state, and the next move.",
         confusion:
           "Training gets noisy when reasoning, board state, and client target feel like separate products.",
         madeVisible:
-          "The reel connects web workspace and Unity board.",
+          "The reel connects the web workspace and the 3D board.",
         whyItMatters:
           "A player should be able to follow the lesson without wondering which surface owns the state.",
       },
@@ -2983,9 +3047,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "proof-operation",
           label: "Operate",
-          title: "The product crosses clients.",
+          title: "The product carries across surfaces.",
           body:
-            "The training reel moves from workspace context into the Unity board without exposing provider secrets.",
+            "The training reel moves from workspace context onto the 3D board without exposing provider secrets.",
           mediaId: "chesslm-training-reel",
           captionId: "chesslm-unity",
           claimIds: ["chesslm-unity", "chesslm-web"],
@@ -2994,9 +3058,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "decision-moment",
           label: "Decision",
-          title: "The board becomes the client.",
+          title: "The board carries the same state.",
           body:
-            "The Unity board capture shows the training client across browser, iPhone, and iPad direction.",
+            "The 3D board capture shows where training turns into play.",
           assetId: "chesslm-unity",
           captionId: "chesslm-unity",
           claimIds: ["chesslm-unity", "chesslm-board"],
@@ -3005,9 +3069,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "outcome",
           label: "Receipt",
-          title: "One product crosses two clients.",
+          title: "One product, workspace to board.",
           body:
-            "The case shows a training product moving between browser workspace and game-client board while secrets stay server-side.",
+            "The case shows a training product moving between the browser workspace and the 3D board while secrets stay server-side.",
           assetId: "chesslm-unity",
           captionId: "chesslm-unity",
           claimIds: ["chesslm-unity", "chesslm-training"],
@@ -3017,10 +3081,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     proofCaptions: {
       "chesslm-unity": {
-        eyebrow: "Unity client",
-        title: "Unity board",
+        eyebrow: "3D board",
+        title: "3D board",
         detail:
-          "The board capture shows the training product as a game-client app.",
+          "The board capture shows the 3D WebGL board in the ChessLM web app.",
         sourceLabel: "Training capture",
         evidenceStatus: "local-proof",
       },
@@ -3029,7 +3093,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         title: "Training workspace",
         detail:
           "The workspace capture shows the browser training app for the same product.",
-        sourceLabel: "Unity board capture",
+        sourceLabel: "Workspace capture",
         evidenceStatus: "local-proof",
       },
     },
@@ -3037,12 +3101,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       label: "Result",
       title: "What changed",
       detail:
-        "ChessLM connects a web workspace and Unity client while keeping secrets out of the client.",
+        "ChessLM connects a web workspace and a 3D board while keeping secrets out of the client.",
     },
     safeClaimIds: ["chesslm-unity", "chesslm-web", "chesslm-training"],
     proofMode: "reel",
     proofSummary:
-      "Web workspace and Unity board captures show the same product across browser and game-client contexts.",
+      "Web workspace and 3D board captures show the same product in training and play.",
     homepageFeature: {
       rank: 4,
       mediaAssetIds: ["chesslm-workspace", "chesslm-unity"],

@@ -25,6 +25,7 @@ import {
   credentialGroups,
   blogPosts,
   finishedPrivateProductSlugs,
+  standaloneLiveProducts,
   isHomepageProject,
   latestBlogPost,
   portfolioSections,
@@ -38,6 +39,7 @@ import {
   type PublicEvidenceAsset,
   type PublicProjectCaseStudy,
   type PortfolioSection,
+  type SiteAction,
 } from "@/lib/site-data";
 
 type JoeHomeAppProps = {
@@ -289,14 +291,14 @@ const projectTranslations: ProjectTranslationMap = {
   },
   chesslm: {
     es: {
-      role: "Producto de entrenamiento de ajedrez y cliente Unity",
+      role: "Producto de entrenamiento de ajedrez",
       status: "Producto de entrenamiento",
       summary:
-        "Un producto de entrenamiento de ajedrez con app web/backend en Next.js y cliente Unity para navegador, iPhone y iPad.",
+        "Un producto de entrenamiento de ajedrez hecho como app web en Next.js, con espacio de entrenamiento y tablero 3D.",
       evidence: [
         "Sitio oficial en chesslm.com",
         "App web/backend en Next.js y espacio clásico de entrenamiento",
-        "Cliente Unity para navegador, iPhone y iPad",
+        "Tablero 3D en WebGL",
         "Límite de API de producción primero en servidor",
         "Soporte para ajedrez clásico y Chess960",
       ],
@@ -462,9 +464,15 @@ function GitHubSection({
     </a>
   );
 
-  const renderProductCard = (project: PublicProjectCaseStudy) => {
-    const link = primaryProductLink(project);
-
+  const renderProductCard = ({
+    slug,
+    link,
+    summary,
+  }: {
+    slug: string;
+    link: SiteAction | undefined;
+    summary: string;
+  }) => {
     if (!link) {
       return null;
     }
@@ -473,9 +481,9 @@ function GitHubSection({
       <a
         aria-label={link.ariaLabel ?? `${link.label} in a new tab`}
         className="joe-product-card"
-        data-product-slug={project.slug}
+        data-product-slug={slug}
         href={link.href}
-        key={project.slug}
+        key={slug}
         rel="noreferrer"
         target="_blank"
       >
@@ -484,7 +492,7 @@ function GitHubSection({
         </span>
         <div className="joe-product-card-copy">
           <h3>{actionTitle(link.label)}</h3>
-          <p>{project.summary}</p>
+          <p>{summary}</p>
         </div>
         <span className="joe-product-card-meta">{domainLabel(link.href)}</span>
         <ArrowRight aria-hidden className="joe-product-card-icon" />
@@ -529,7 +537,16 @@ function GitHubSection({
             aria-labelledby="work-products-title"
             className="joe-product-grid"
           >
-            {liveProducts.map((project) => renderProductCard(project))}
+            {liveProducts.map((project) =>
+              renderProductCard({
+                slug: project.slug,
+                link: primaryProductLink(project),
+                summary: project.summary,
+              }),
+            )}
+            {standaloneLiveProducts.map((product) =>
+              renderProductCard(product),
+            )}
           </div>
         </div>
         <div className="joe-case-study-block">
