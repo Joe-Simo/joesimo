@@ -646,6 +646,34 @@
   color: var(--muted-foreground);
 }
 
+.site-footer-note {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.site-footer-note a {
+  border-radius: 4px;
+  color: inherit;
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
+.site-footer-note a:hover,
+.site-footer-note a:focus-visible {
+  color: var(--foreground);
+  text-decoration-color: currentColor;
+}
+
+.site-footer-note a:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
 header nav a[aria-current="location"] {
   position: relative;
   color: var(--foreground);
