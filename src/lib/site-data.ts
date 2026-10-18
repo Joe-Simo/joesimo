@@ -939,9 +939,9 @@ export const royalShellLogoMedia: SiteMedia = {
   tone: "desaturated",
 };
 
-export const chessLmUnityMedia: SiteMedia = {
+export const chessLmBoardMedia: SiteMedia = {
   kind: "artifact",
-  src: "/media/work/chesslm-unity.webp",
+  src: "/media/work/chesslm-board.webp",
   alt: "ChessLM 3D chessboard capture",
   width: 1440,
   height: 900,
@@ -1055,7 +1055,7 @@ export const chessLmTrainingReelMedia: ProofMedia = {
   id: "chesslm-training-reel",
   kind: "video",
   src: "/media/work/chesslm-training-reel.webm",
-  posterSrc: chessLmUnityMedia.src,
+  posterSrc: chessLmBoardMedia.src,
   alt: "ChessLM training reel from web workspace and 3D board captures",
   width: 1600,
   height: 900,
@@ -2974,11 +2974,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     assets: [
       {
-        id: "chesslm-unity",
-        captionId: "chesslm-unity",
+        id: "chesslm-3d-board",
+        captionId: "chesslm-3d-board",
         label: "3D board",
-        claimIds: ["chesslm-unity", "chesslm-board"],
-        media: chessLmUnityMedia,
+        claimIds: ["chesslm-3d-board", "chesslm-board"],
+        media: chessLmBoardMedia,
         sourcePath: "project/chesslm",
         treatment: "hero",
       },
@@ -3051,8 +3051,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           body:
             "The training reel moves from workspace context onto the 3D board without exposing provider secrets.",
           mediaId: "chesslm-training-reel",
-          captionId: "chesslm-unity",
-          claimIds: ["chesslm-unity", "chesslm-web"],
+          captionId: "chesslm-3d-board",
+          claimIds: ["chesslm-3d-board", "chesslm-web"],
           evidenceStatus: "local-proof",
         },
         {
@@ -3061,9 +3061,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "The board carries the same state.",
           body:
             "The 3D board capture shows where training turns into play.",
-          assetId: "chesslm-unity",
-          captionId: "chesslm-unity",
-          claimIds: ["chesslm-unity", "chesslm-board"],
+          assetId: "chesslm-3d-board",
+          captionId: "chesslm-3d-board",
+          claimIds: ["chesslm-3d-board", "chesslm-board"],
           evidenceStatus: "local-proof",
         },
         {
@@ -3072,15 +3072,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           title: "One product, workspace to board.",
           body:
             "The case shows a training product moving between the browser workspace and the 3D board while secrets stay server-side.",
-          assetId: "chesslm-unity",
-          captionId: "chesslm-unity",
-          claimIds: ["chesslm-unity", "chesslm-training"],
+          assetId: "chesslm-3d-board",
+          captionId: "chesslm-3d-board",
+          claimIds: ["chesslm-3d-board", "chesslm-training"],
           evidenceStatus: "local-proof",
         },
       ],
     },
     proofCaptions: {
-      "chesslm-unity": {
+      "chesslm-3d-board": {
         eyebrow: "3D board",
         title: "3D board",
         detail:
@@ -3103,13 +3103,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       detail:
         "ChessLM connects a web workspace and a 3D board while keeping secrets out of the client.",
     },
-    safeClaimIds: ["chesslm-unity", "chesslm-web", "chesslm-training"],
+    safeClaimIds: ["chesslm-3d-board", "chesslm-web", "chesslm-training"],
     proofMode: "reel",
     proofSummary:
       "Web workspace and 3D board captures show the same product in training and play.",
     homepageFeature: {
       rank: 4,
-      mediaAssetIds: ["chesslm-workspace", "chesslm-unity"],
+      mediaAssetIds: ["chesslm-workspace", "chesslm-3d-board"],
       thumbnailMedia: chessLmWorkThumbMedia,
       treatment: "training-strip",
     },

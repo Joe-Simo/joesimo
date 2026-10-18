@@ -30,6 +30,6 @@ describe("live product links", () => {
 
     const chesslm = getProjectCaseStudy("chesslm");
     const chesslmCopy = JSON.stringify(chesslm);
-    expect(chesslmCopy).not.toMatch(/Unity/);
+    expect(chesslmCopy).not.toMatch(/unity/i);
   });
 });
