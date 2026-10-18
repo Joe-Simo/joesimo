@@ -688,7 +688,7 @@ export const standaloneLiveProducts: readonly StandaloneProduct[] = [
   {
     slug: "rivetport",
     summary:
-      "Keeps an old REST API contract working while the backend changes, by publishing tested bridges between OpenAPI versions.",
+      "Keeps your existing API contract working while the backend changes underneath it.",
     link: {
       id: "open-rivetport",
       label: "Open Rivetport",
@@ -701,7 +701,7 @@ export const standaloneLiveProducts: readonly StandaloneProduct[] = [
   {
     slug: "flaregit",
     summary:
-      "Git for people and coding agents: every change gets an isolated workspace, and only approved commits land.",
+      "Git for people and coding agents: isolated workspaces, and only approved commits land.",
     link: {
       id: "open-flaregit",
       label: "Open FlareGit",
@@ -714,7 +714,7 @@ export const standaloneLiveProducts: readonly StandaloneProduct[] = [
   {
     slug: "a0",
     summary:
-      "A small programming language that AI agents edit through revision-checked structured edits, compiling one source to many targets.",
+      "A typed programming language for AI that compiles to native code, WebAssembly, and C.",
     link: {
       id: "open-a0",
       label: "Open A0",
@@ -727,7 +727,7 @@ export const standaloneLiveProducts: readonly StandaloneProduct[] = [
   {
     slug: "goblins-os",
     summary:
-      "An open Linux desktop, written in Rust, that helps turn ideas into working software on your own machine.",
+      "An open Linux desktop, written in Rust, for turning ideas into working software.",
     link: {
       id: "open-goblins-os",
       label: "Open Goblins OS",
@@ -2828,7 +2828,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     schemaType: "SoftwareApplication",
     applicationCategory: "UtilitiesApplication",
     summary:
-      "Email design and sending for agencies: a brand system, a visual email canvas, and campaign sending for each client brand. It began as a signature copying utility.",
+      "Email design and sending for agencies, with a brand system and visual canvas per client.",
     evidence: [
       "Official product site at signature0.com",
       "Earlier signature copying utility captured below",
