@@ -1599,6 +1599,28 @@ export const githubRepositories: GithubRepository[] = [
     visibility: "public",
   },
   {
+    name: "larder",
+    href: "https://github.com/Joe-Simo/larder",
+    description:
+      "The kitchen memory Alexa+ is missing: an MCP server for a household's pantry, recipes, cart and confirmed orders",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/larder",
+    homepage: "https://larder-pi-six.vercel.app",
+    meta: ["github", "public repo", "TypeScript", "MCP"],
+    visibility: "public",
+  },
+  {
+    name: "undercard",
+    href: "https://github.com/Joe-Simo/undercard",
+    description:
+      "Book the undercard your city actually wants. Show briefs from the Qloo taste graph.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/undercard",
+    homepage: "https://undercard-phi.vercel.app",
+    meta: ["github", "public repo", "TypeScript", "Qloo"],
+    visibility: "public",
+  },
+  {
     name: "goblins-os",
     href: "https://github.com/Joe-Simo/goblins-os",
     description:
