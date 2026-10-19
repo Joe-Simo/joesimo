@@ -246,6 +246,12 @@ describe("Joe Simo site data", () => {
     expect(githubRepositories.map((repository) => repository.name)).toContain(
       "skills",
     );
+    for (const hackathonEntry of ["larder", "undercard"]) {
+      expect(
+        githubRepositories.find((repository) => repository.name === hackathonEntry)
+          ?.homepage,
+      ).toMatch(/^https:\/\/[a-z0-9-]+\.vercel\.app$/);
+    }
     expect(githubRepositories.map((repository) => repository.name)).not.toContain(
       "GitHub / @Joe-Simo",
     );

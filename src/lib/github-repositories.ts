@@ -134,11 +134,14 @@ async function fetchGithubRepositoryPage(page: number, signal: AbortSignal) {
 // Flagship-first ordering for the homepage rail. Forks and asset-only
 // packages stay off the rail so every visible slot argues for engineering
 // depth; goblins-os leads because it is the strongest public artifact.
+// Hackathon entries sit together after it, newest submissions last.
 const curatedRepositoryOrder = [
   "goblins-os",
   "world-of-vanilla",
   "get-it-in-writing",
   "paradox-webmcp",
+  "larder",
+  "undercard",
   "joesimo",
   "skills",
   "love-presentation",
