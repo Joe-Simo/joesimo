@@ -246,7 +246,7 @@ describe("Joe Simo site data", () => {
     expect(githubRepositories.map((repository) => repository.name)).toContain(
       "skills",
     );
-    for (const hackathonEntry of ["larder", "undercard"]) {
+    for (const hackathonEntry of ["larder", "undercard", "places-along"]) {
       expect(
         githubRepositories.find((repository) => repository.name === hackathonEntry)
           ?.homepage,
@@ -254,6 +254,12 @@ describe("Joe Simo site data", () => {
     }
     expect(githubRepositories.map((repository) => repository.name)).not.toContain(
       "GitHub / @Joe-Simo",
+    );
+    expect(
+      githubRepositories.find((repository) => repository.name === "places-along")
+        ?.note,
+    ).toBe(
+      "Approved for a EUR 300 award, Geoapify Open Geospatial Program, Oct 2026.",
     );
 
     expect(
