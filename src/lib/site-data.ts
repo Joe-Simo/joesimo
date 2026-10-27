@@ -159,6 +159,8 @@ export type GithubRepository = {
   source: string;
   homepage?: string;
   meta: string[];
+  /** Short, sourced credibility line shown under the description. */
+  note?: string;
   visibility: "private" | "profile" | "public";
 };
 
@@ -1618,6 +1620,18 @@ export const githubRepositories: GithubRepository[] = [
     source: "github.com/Joe-Simo/undercard",
     homepage: "https://undercard-phi.vercel.app",
     meta: ["github", "public repo", "TypeScript", "Qloo"],
+    visibility: "public",
+  },
+  {
+    name: "places-along",
+    href: "https://github.com/Joe-Simo/places-along",
+    description:
+      "Stops along a route (coffee, EV charging, food, rest), answered two ways with Geoapify: an MCP agent and a typed OpenAPI client, side by side.",
+    kind: "Public repo",
+    source: "github.com/Joe-Simo/places-along",
+    homepage: "https://places-along.vercel.app",
+    meta: ["github", "public repo", "TypeScript", "Geoapify"],
+    note: "Approved for a EUR 300 award, Geoapify Open Geospatial Program, Oct 2026.",
     visibility: "public",
   },
   {

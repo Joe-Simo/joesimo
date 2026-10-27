@@ -4822,6 +4822,12 @@ header nav a[aria-current="location"]::after {
   -webkit-line-clamp: 3;
 }
 
+.joe-page-grid .joe-github-card-copy .joe-github-card-note {
+  color: var(--joe-ink);
+  display: block;
+  overflow: visible;
+}
+
 .joe-page-grid .joe-github-card-meta,
 .joe-page-grid .joe-product-card-meta {
   align-self: end;

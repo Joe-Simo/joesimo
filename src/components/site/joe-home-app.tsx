@@ -455,6 +455,9 @@ function GitHubSection({
       <div className="joe-github-card-copy">
         <h3>{repository.name}</h3>
         <p>{repository.description}</p>
+        {repository.note ? (
+          <p className="joe-github-card-note">{repository.note}</p>
+        ) : null}
       </div>
       <span className="joe-github-card-meta">
         {repository.meta.slice(1, 4).join(" / ")}

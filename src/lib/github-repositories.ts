@@ -142,11 +142,25 @@ const curatedRepositoryOrder = [
   "paradox-webmcp",
   "larder",
   "undercard",
+  "places-along",
   "joesimo",
   "skills",
   "love-presentation",
 ];
 const excludedRepositoryNames = new Set(["joe-simo-pet"]);
+
+// Sourced credibility lines keep showing when the live GitHub API result
+// replaces the fallback entry, which only carries the API's description.
+const repositoryNotes = new Map(
+  fallbackGithubRepositories
+    .filter((repository) => repository.note)
+    .map((repository) => [repository.name, repository.note]),
+);
+
+function withRepositoryNote(repository: GithubRepository): GithubRepository {
+  const note = repositoryNotes.get(repository.name);
+  return note ? { ...repository, note } : repository;
+}
 
 function repositoryRank(name: string) {
   const index = curatedRepositoryOrder.indexOf(name);
@@ -179,7 +193,7 @@ function mergeFallbackRepositories(
   );
 
   for (const repository of repositories) {
-    mergedByName.set(repository.name, repository);
+    mergedByName.set(repository.name, withRepositoryNote(repository));
   }
 
   return [...mergedByName.values()].sort(
